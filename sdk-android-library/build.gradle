@@ -66,5 +66,6 @@ dependencies {
     api "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
     api "org.jetbrains.kotlinx:kotlinx-coroutines-core:0.22.5"
     api 'com.github.kotlin-graphics:kotlin-unsigned:v2.1'
-    api project(path: ':xycore')
+    //api project(path: ':xycore')
+    implementation 'com.github.XYOracleNetwork:sdk-core-android:-SNAPSHOT'
 }

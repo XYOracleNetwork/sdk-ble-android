@@ -54,7 +54,9 @@ dependencies {
     releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.6.1'
     // Optional, if you use support library fragments:
     debugImplementation 'com.squareup.leakcanary:leakcanary-support-fragment:1.6.1'
-    implementation project(':xycore')
-    implementation project(':xyui')
+    //implementation project(':xycore')
+    //implementation project(':xyui')
+    implementation 'com.github.XYOracleNetwork:sdk-core-android:master-SNAPSHOT'
+    implementation 'com.github.XYOracleNetwork:sdk-ui-android:master-SNAPSHOT'
     implementation project(':sdk-android-library')
 }

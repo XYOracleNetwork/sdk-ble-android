@@ -22,11 +22,8 @@
         </activity>
         <activity
             android:name="network.xyo.ble.sample.activities.XYOFinderDeviceActivity"
-            android:theme="@style/XYTheme"/>
+            android:theme="@style/XYTheme" />
 
-        <meta-data
-            android:name="io.fabric.ApiKey"
-            android:value="56d31be9d7f80310774b150332565f86e76506c4" />
     </application>
 
 </manifest>
