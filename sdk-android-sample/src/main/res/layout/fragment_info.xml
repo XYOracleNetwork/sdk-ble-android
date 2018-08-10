@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:tag="0"
+    android:theme="@style/XYTheme">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="6dp"
+            android:layout_marginEnd="12dp"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="6dp"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/layout_margin_normal"
+                android:orientation="horizontal">
+
+                <network.xyo.ui.views.XYButton
+                    android:id="@+id/button_startTest"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/btn_start_test" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/layout_margin_normal"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/familyLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="@string/family"
+                    android:textColor="@color/black" />
+
+                <TextView
+                    android:id="@+id/text_family"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:layout_marginTop="4dp"
+                    tools:text="Name" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/layout_margin_normal"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/majorLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/major"
+                    android:textColor="@color/black" />
+
+                <TextView
+                    android:id="@+id/text_major"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:text="11111" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/layout_margin_normal"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/minorLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/minor"
+                    android:textColor="@color/black" />
+
+                <TextView
+                    android:id="@+id/text_minor"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:text="00000" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/layout_margin_normal"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/rssiLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/rssi"
+                    android:textColor="@color/black" />
+
+                <TextView
+                    android:id="@+id/text_rssi"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:text="-999" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/layout_margin_normal"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/pulsesLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/pulses"
+                    android:textColor="@color/black" />
+
+                <TextView
+                    android:id="@+id/test_pulse_count"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:text="99" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/layout_margin_normal"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/enterLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/enter"
+                    android:textColor="@color/black" />
+
+                <TextView
+                    android:id="@+id/text_enter_count"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:text="2" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/layout_margin_normal">
+
+                <TextView
+                    android:id="@+id/exitLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/exit"
+                    android:textColor="@color/black" />
+
+                <TextView
+                    android:id="@+id/text_exit_count"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:text="1" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/layout_margin_normal"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:labelFor="@+id/edit_lock_value"
+                    android:text="@string/lock"
+                    android:textColor="@color/black" />
+
+                <EditText
+                    android:id="@+id/edit_lock_value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:width="120dp"
+                    android:focusable="false"
+                    tools:text="1234567890" />
+            </LinearLayout>
+
+            <View style="@style/divider" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/layout_margin_normal"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/layout_margin_normal">
+
+                    <network.xyo.ui.views.XYButton
+                        android:id="@+id/button_find"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/btn_find" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/layout_margin_normal"
+                    android:orientation="horizontal">
+
+                    <network.xyo.ui.views.XYButton
+                        android:id="@+id/button_stay_awake"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/btn_stay_awake" />
+
+                    <network.xyo.ui.views.XYButton
+                        android:id="@+id/button_fall_asleep"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:text="@string/btn_fall_asleep" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/layout_margin_normal"
+                    android:orientation="horizontal">
+
+                    <network.xyo.ui.views.XYButton
+                        android:id="@+id/button_lock"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/btn_lock" />
+
+                    <network.xyo.ui.views.XYButton
+                        android:id="@+id/button_unlock"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:text="@string/btn_unlock" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <View style="@style/divider" />
+
+            <network.xyo.ui.views.XYTextView
+                android:id="@+id/adList"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/layout_margin_normal" />
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</RelativeLayout>

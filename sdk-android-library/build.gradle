@@ -1,0 +1,70 @@
+apply plugin: 'com.android.library'
+apply plugin: 'com.google.gms.google-services'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
+
+buildscript {
+    repositories {
+        mavenCentral()
+        mavenLocal()
+        jcenter()
+        google()
+        maven { url 'https://jitpack.io' }
+    }
+
+    dependencies {
+        classpath "com.android.tools.build:gradle:$android_plugin_version"
+        classpath "com.google.gms:google-services:$google_services_version"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
+
+kotlin {
+    experimental {
+        coroutines 'enable'
+    }
+}
+
+android {
+    compileSdkVersion 27
+    buildToolsVersion '27.0.3'
+
+    defaultConfig {
+        minSdkVersion 19
+        targetSdkVersion 27
+        defaultPublishConfig 'release'
+        publishNonDefault true
+    }
+
+    sourceSets {
+        main {
+            assets {
+                srcDir 'assets'
+            }
+        }
+    }
+
+    buildTypes {
+        release {
+            debuggable false
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            minifyEnabled false
+            debuggable true
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    api "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+    api "org.jetbrains.kotlinx:kotlinx-coroutines-core:0.22.5"
+    api 'com.github.kotlin-graphics:kotlin-unsigned:v2.1'
+    api project(path: ':xycore')
+}

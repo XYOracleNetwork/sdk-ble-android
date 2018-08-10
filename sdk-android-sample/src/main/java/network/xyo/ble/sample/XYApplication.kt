@@ -1,0 +1,51 @@
+package network.xyo.ble.sample
+
+import android.app.Application
+import android.os.Build
+import com.squareup.leakcanary.LeakCanary
+import network.xyo.core.XYBase
+import network.xyo.ble.sample.BuildConfig
+import network.xyo.ble.devices.*
+import network.xyo.ble.scanner.XYFilteredSmartScan
+import network.xyo.ble.scanner.XYFilteredSmartScanLegacy
+import network.xyo.ble.scanner.XYFilteredSmartScanModern
+
+class XYApplication : Application() {
+    private var _scanner: XYFilteredSmartScan? = null
+    val scanner: XYFilteredSmartScan
+        get() {
+            if (_scanner == null) {
+                _scanner = if (Build.VERSION.SDK_INT >= 21) {
+                    XYFilteredSmartScanModern(this.applicationContext)
+                } else {
+                    XYFilteredSmartScanLegacy(this.applicationContext)
+                }
+            }
+            return _scanner!!
+        }
+
+    override fun onCreate() {
+        XYBase.logInfo("XYApplication", "onCreate")
+        super.onCreate()
+        this.initializeLeakDetection()
+
+        XYAppleBluetoothDevice.enable(true)
+        XYIBeaconBluetoothDevice.enable(true)
+        XYFinderBluetoothDevice.enable(true)
+        XY4BluetoothDevice.enable(true)
+        XY3BluetoothDevice.enable(true)
+        XY2BluetoothDevice.enable(true)
+        XYGpsBluetoothDevice.enable(true)
+        scanner.start()
+    }
+
+    override fun onTerminate() {
+        XYBase.logInfo("XYApplication", "onTerminate")
+        scanner.stop()
+        super.onTerminate()
+    }
+
+    private fun initializeLeakDetection() {
+        if (BuildConfig.DEBUG) LeakCanary.install(this)
+    }
+}
