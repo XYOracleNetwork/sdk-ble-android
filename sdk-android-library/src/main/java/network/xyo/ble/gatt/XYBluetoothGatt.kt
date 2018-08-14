@@ -134,7 +134,7 @@ open class XYBluetoothGatt protected constructor(
         }
     }
 
-    protected fun connect() : Deferred<XYBluetoothResult<Boolean>> {
+    fun connect() : Deferred<XYBluetoothResult<Boolean>> {
         return asyncBle {
             logInfo("connect")
             var error: XYBluetoothError? = null
@@ -220,7 +220,7 @@ open class XYBluetoothGatt protected constructor(
         }
     }
 
-    protected fun disconnect() : Deferred<XYBluetoothResult<Boolean>>{
+    fun disconnect() : Deferred<XYBluetoothResult<Boolean>>{
         return asyncBle {
             logInfo("disconnect")
             var error: XYBluetoothError? = null

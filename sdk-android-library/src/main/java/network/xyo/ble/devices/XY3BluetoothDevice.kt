@@ -35,12 +35,26 @@ open class XY3BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
     val extendedControlService = ExtendedControlService(this)
     val sensorService = SensorService(this)
 
+    private var lastButtonPressTime = 0L
+
+    enum class StayAwake(val state: Int) {
+        Off(0),
+        On(1)
+    }
+
+    enum class ButtonPress(val state:Int) {
+        None(0),
+        Single(1),
+        Double(2),
+        Long(3)
+    }
+
     internal val buttonListener = object: XYBluetoothGattCallback() {
         override fun onCharacteristicChanged(gatt: BluetoothGatt?, characteristic: BluetoothGattCharacteristic?) {
             logInfo("onCharacteristicChanged")
             super.onCharacteristicChanged(gatt, characteristic)
             if (characteristic?.uuid == controlService.button.uuid) {
-                reportButtonPressed(characteristic.getIntValue(BluetoothGattCharacteristic.FORMAT_UINT8, 0))
+                reportButtonPressed(buttonPressFromInt(characteristic.getIntValue(BluetoothGattCharacteristic.FORMAT_UINT8, 0)))
             }
         }
     }
@@ -82,7 +96,20 @@ open class XY3BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
         return extendedConfigService.registration.set(0)
     }
 
-    fun reportButtonPressed(state: Int) {
+    override fun onDetect(scanResult: XYScanResult?) {
+        super.onDetect(scanResult)
+        if (scanResult != null) {
+            if (pressFromScanResult(scanResult)) {
+                if (now - lastButtonPressTime > BUTTON_ADVERTISEMENT_LENGTH) {
+                    logInfo("onDetect: pressFromScanResult: first")
+                    reportButtonPressed(ButtonPress.Single)
+                    lastButtonPressTime = now
+                }
+            }
+        }
+    }
+
+    fun reportButtonPressed(state: ButtonPress) {
         logInfo("reportButtonPressed")
         synchronized(listeners) {
             for (listener in listeners) {
@@ -90,9 +117,10 @@ open class XY3BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
                 if (xy3Listener != null) {
                     launch(CommonPool) {
                         when (state) {
-                            1 -> xy3Listener.buttonSinglePressed()
-                            2 -> xy3Listener.buttonDoublePressed()
-                            3 -> xy3Listener.buttonLongPressed()
+                            ButtonPress.Single -> xy3Listener.buttonSinglePressed()
+                            ButtonPress.Double -> xy3Listener.buttonDoublePressed()
+                            ButtonPress.Long -> xy3Listener.buttonLongPressed()
+                            else -> {}
                         }
                         //everytime a notify fires, we have to re-enable it
                         controlService.button.enableNotify(true)
@@ -112,19 +140,10 @@ open class XY3BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
 
         private val FAMILY_UUID = UUID.fromString("08885dd0-111b-11e4-9191-0800200c9a66")!!
 
+        //this is how long the xy4 will broadcast ads with power level 8 when a button is pressed once
+        private const val BUTTON_ADVERTISEMENT_LENGTH = 30 * 1000
+
         private val DEFAULT_LOCK_CODE = byteArrayOf(0x2f.toByte(), 0xbe.toByte(), 0xa2.toByte(), 0x07.toByte(), 0x52.toByte(), 0xfe.toByte(), 0xbf.toByte(), 0x31.toByte(), 0x1d.toByte(), 0xac.toByte(), 0x5d.toByte(), 0xfa.toByte(), 0x7d.toByte(), 0x77.toByte(), 0x76.toByte(), 0x80.toByte())
-
-        enum class StayAwake(val state: Int) {
-            Off(0),
-            On(1)
-        }
-
-        enum class ButtonPress(val state:Int) {
-            None(0),
-            Single(1),
-            Double(2),
-            Long(3)
-        }
 
         fun enable(enable: Boolean) {
             if (enable) {
@@ -135,7 +154,7 @@ open class XY3BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
             }
         }
 
-        fun majorFromScanResult(scanResult: XYScanResult): Int? {
+        private fun majorFromScanResult(scanResult: XYScanResult): Int? {
             val bytes = scanResult.scanRecord?.getManufacturerSpecificData(XYAppleBluetoothDevice.MANUFACTURER_ID)
             return if (bytes != null) {
                 val buffer = ByteBuffer.wrap(bytes)
@@ -145,13 +164,36 @@ open class XY3BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
             }
         }
 
-        fun minorFromScanResult(scanResult: XYScanResult): Int? {
+        private fun minorFromScanResult(scanResult: XYScanResult): Int? {
             val bytes = scanResult.scanRecord?.getManufacturerSpecificData(XYAppleBluetoothDevice.MANUFACTURER_ID)
             return if (bytes != null) {
                 val buffer = ByteBuffer.wrap(bytes)
                 buffer.getShort(20).toInt().and(0xfff0).or(0x0004)
             } else {
                 null
+            }
+        }
+
+        fun buttonPressFromInt(index: Int): ButtonPress {
+            return when (index) {
+                1 -> ButtonPress.Single
+                2 -> ButtonPress.Double
+                3 -> ButtonPress.Long
+                else -> {
+                    ButtonPress.None
+                }
+            }
+        }
+
+        internal fun pressFromScanResult(scanResult: XYScanResult): Boolean {
+            val bytes = scanResult.scanRecord?.getManufacturerSpecificData(XYAppleBluetoothDevice.MANUFACTURER_ID)
+            return if (bytes != null) {
+                val buffer = ByteBuffer.wrap(bytes)
+                val minor = Ushort(buffer.getShort(20))
+                val buttonBit = minor.and(0x0008)
+                buttonBit == Ushort(0x0008)
+            } else {
+                false
             }
         }
 

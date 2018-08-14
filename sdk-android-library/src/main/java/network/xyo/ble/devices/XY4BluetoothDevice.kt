@@ -83,7 +83,6 @@ open class XY4BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
 
     override fun onDetect(scanResult: XYScanResult?) {
         super.onDetect(scanResult)
-        logInfo("onDetect: $scanResult")
         if (scanResult != null) {
             if (pressFromScanResult(scanResult)) {
                 logInfo("onDetect: pressFromScanResult: true")
@@ -121,7 +120,7 @@ open class XY4BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
                 }
             }
         }
-        reportButtonPressed(this, state)
+        reportGlobalButtonPressed(this, state)
     }
 
     override val minor: Ushort
@@ -148,7 +147,7 @@ open class XY4BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
 
         private val FAMILY_UUID = UUID.fromString("a44eacf4-0104-0000-0000-5f784c9977b5")!!
 
-        protected val listeners = HashMap<String, Listener>()
+        protected val globalListeners = HashMap<String, Listener>()
 
         val DefaultLockCode = byteArrayOf(0x00.toByte(), 0x01.toByte(), 0x02.toByte(), 0x03.toByte(), 0x04.toByte(), 0x05.toByte(), 0x06.toByte(), 0x07.toByte(), 0x08.toByte(), 0x09.toByte(), 0x0a.toByte(), 0x0b.toByte(), 0x0c.toByte(), 0x0d.toByte(), 0x0e.toByte(), 0x0f.toByte())
 
@@ -187,27 +186,27 @@ open class XY4BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
             }
         }
 
-        fun addListener(key: String, listener: Listener) {
+        fun addGlobalListener(key: String, listener: Listener) {
             launch(CommonPool) {
-                synchronized(listeners) {
-                    listeners.put(key, listener)
+                synchronized(globalListeners) {
+                    globalListeners.put(key, listener)
                 }
             }
         }
 
-        fun removeListener(key: String) {
+        fun removeGlobalListener(key: String) {
             launch(CommonPool) {
-                synchronized(listeners) {
-                    listeners.remove(key)
+                synchronized(globalListeners) {
+                    globalListeners.remove(key)
                 }
             }
         }
 
-        fun reportButtonPressed(device: XY4BluetoothDevice, state: ButtonPress) {
+        fun reportGlobalButtonPressed(device: XY4BluetoothDevice, state: ButtonPress) {
             logInfo("reportButtonPressed (Global)")
             launch(CommonPool) {
-                synchronized(listeners) {
-                    for (listener in listeners) {
+                synchronized(globalListeners) {
+                    for (listener in globalListeners) {
                         val xyFinderListener = listener.value as? XYFinderBluetoothDevice.Listener
                         if (xyFinderListener != null) {
                             logInfo("reportButtonPressed: $xyFinderListener")
@@ -250,6 +249,7 @@ open class XY4BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
             return if (bytes != null) {
                 val buffer = ByteBuffer.wrap(bytes)
                 val minor = Ushort(buffer.getShort(20))
+                logInfo("pressFromScanResult: Minor: ${minor.toInt().toString(16)}")
                 val buttonBit = minor.and(0x0008)
                 buttonBit == Ushort(0x0008)
             } else {

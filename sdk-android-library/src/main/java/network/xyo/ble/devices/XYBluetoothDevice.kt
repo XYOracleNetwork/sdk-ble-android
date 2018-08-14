@@ -143,10 +143,11 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, private
     }
 
     internal open fun onConnectionStateChange(newState: Int) {
-        logInfo("onConnectionStateChange: $hash : $newState")
+        logInfo("onConnectionStateChange: $id : $newState")
         synchronized(listeners) {
-            for ((_, listener) in listeners) {
+            for ((tag, listener) in listeners) {
                 launch(CommonPool) {
+                    logInfo("onConnectionStateChange: $tag : $newState")
                     listener.connectionStateChanged(this@XYBluetoothDevice, newState)
                     if (newState == BluetoothGatt.STATE_CONNECTED) {
                         lastAccessTime = now
