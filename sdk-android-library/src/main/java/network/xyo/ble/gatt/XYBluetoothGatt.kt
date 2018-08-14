@@ -95,6 +95,10 @@ open class XYBluetoothGatt protected constructor(
 
     }
 
+    internal open fun onConnectionStateChange(newState: Int) {
+
+    }
+
     protected fun connectGatt() : Deferred<XYBluetoothResult<Boolean>> {
         return asyncBle {
             logInfo("connectGatt")
@@ -609,11 +613,15 @@ open class XYBluetoothGatt protected constructor(
             logInfo("onConnectionStateChange: ${gatt?.device?.address} $newState : $status")
             synchronized(gattListeners) {
                 _connectionState = newState
-                for ((_, listener) in gattListeners) {
+                for ((tag, listener) in gattListeners) {
                     launch(CommonPool) {
+                        logInfo("onConnectionStateChange: $tag")
                         listener.onConnectionStateChange(gatt, status, newState)
                     }
                 }
+            }
+            if (status == BluetoothGatt.GATT_SUCCESS) {
+                this@XYBluetoothGatt.onConnectionStateChange(newState)
             }
         }
 
@@ -745,7 +753,7 @@ open class XYBluetoothGatt protected constructor(
 
                     logInfo("cleanUpIfNeeded: Checking")
 
-                    if (!stayConnected && !closed && references == 0 && lastAccessTime == localAccessTime) {
+                    if (!stayConnected && !closed && references == 0 && lastAccessTime < localAccessTime) {
                         logInfo("cleanUpIfNeeded: Cleaning")
                         close().await()
                     }

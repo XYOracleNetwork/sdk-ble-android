@@ -76,7 +76,7 @@ class XYDeviceItemView(context: Context, attrs: AttributeSet) : RelativeLayout(c
         }
 
         override fun connectionStateChanged(device: XYBluetoothDevice, newState: Int) {
-
+            XYBase.logInfo(TAG,"connectionStateChanged")
         }
     }
 

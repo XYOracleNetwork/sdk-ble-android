@@ -67,6 +67,7 @@ class XYOFinderDeviceActivity : XYOAppBaseActivity() {
         }
 
         override fun connectionStateChanged(device: XYBluetoothDevice, newState: Int) {
+            logInfo("connectionStateChanged: $newState")
             if (newState == 2) {
                 showToast("Connected")
                 update()
@@ -104,6 +105,7 @@ class XYOFinderDeviceActivity : XYOAppBaseActivity() {
         }
 
         override fun connectionStateChanged(device: XYBluetoothDevice, newState: Int) {
+            logInfo("connectionStateChanged: $newState")
             if (newState == 2) {
                 showToast("Connected")
                 update()
@@ -125,21 +127,34 @@ class XYOFinderDeviceActivity : XYOAppBaseActivity() {
         }
     }
 
+    private fun addListener() {
+        logInfo("addListener: $device")
+        (device as? XY4BluetoothDevice)?.addListener(TAG, xy4DeviceListener)
+        (device as? XY3BluetoothDevice)?.addListener(TAG, xy3DeviceListener)
+    }
+
+    private fun removeListener() {
+        logInfo("removeListener: $device")
+        (device as? XY4BluetoothDevice)?.removeListener(TAG)
+        (device as? XY3BluetoothDevice)?.removeListener(TAG)
+    }
+
     override fun onPostCreate(savedInstanceState: Bundle?) {
         super.onPostCreate(savedInstanceState)
-        if (device != null) {
-            if ((device as? XY4BluetoothDevice) != null) {
-                device!!.addListener(TAG, xy4DeviceListener)
-            } else {
-                if ((device as? XY3BluetoothDevice) != null) {
-                    device!!.addListener(TAG, xy3DeviceListener)
-                }
-            }
-            //update()
-        }
+        addListener()
 
         //readUpdates()
         //enableButtonNotify()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        removeListener()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        addListener()
     }
 
     fun showProgressSpinner() {

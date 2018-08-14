@@ -249,7 +249,6 @@ open class XY4BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
             return if (bytes != null) {
                 val buffer = ByteBuffer.wrap(bytes)
                 val minor = Ushort(buffer.getShort(20))
-                logInfo("pressFromScanResult: Minor: ${minor.toInt().toString(16)}")
                 val buttonBit = minor.and(0x0008)
                 buttonBit == Ushort(0x0008)
             } else {

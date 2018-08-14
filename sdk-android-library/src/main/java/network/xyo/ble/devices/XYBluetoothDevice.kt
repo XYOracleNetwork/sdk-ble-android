@@ -142,12 +142,12 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, private
         }
     }
 
-    internal open fun onConnectionStateChange(newState: Int) {
-        logInfo("onConnectionStateChange: $id : $newState")
+    override fun onConnectionStateChange(newState: Int) {
+        logInfo("onConnectionStateChange: $id : $newState: $listeners.size")
         synchronized(listeners) {
             for ((tag, listener) in listeners) {
                 launch(CommonPool) {
-                    logInfo("onConnectionStateChange: $tag : $newState")
+                    logInfo("connectionStateChanged: $tag : $newState")
                     listener.connectionStateChanged(this@XYBluetoothDevice, newState)
                     if (newState == BluetoothGatt.STATE_CONNECTED) {
                         lastAccessTime = now
@@ -173,6 +173,7 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, private
     }
 
     fun addListener(key: String, listener: Listener) {
+        logInfo("addListener:$key:$listener")
         launch(CommonPool) {
             synchronized(listeners) {
                 listeners.put(key, listener)
@@ -181,6 +182,7 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, private
     }
 
     fun removeListener(key: String) {
+        logInfo("removeListener:$key")
         launch(CommonPool) {
             synchronized(listeners) {
                 listeners.remove(key)

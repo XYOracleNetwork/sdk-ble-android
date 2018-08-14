@@ -9,6 +9,7 @@ import network.xyo.ble.sample.R
 import network.xyo.ble.sample.XYApplication
 
 import network.xyo.ble.scanner.XYFilteredSmartScan
+import network.xyo.core.XYBase
 
 /**
  * Created by arietrouw on 12/28/17.
@@ -32,7 +33,7 @@ class XYBLEStatsView(context: Context, attrs: AttributeSet) : LinearLayout(conte
         }
 
         override fun connectionStateChanged(device: XYBluetoothDevice, newState: Int) {
-
+            XYBase.logInfo(TAG, "connectionStateChanged")
         }
 
         override fun statusChanged(status: XYFilteredSmartScan.BluetoothStatus) {
