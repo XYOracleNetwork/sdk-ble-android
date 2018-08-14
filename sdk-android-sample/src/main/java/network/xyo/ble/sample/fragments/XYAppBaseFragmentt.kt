@@ -2,19 +2,19 @@ package network.xyo.ble.sample.fragments
 
 import android.content.Context
 import android.widget.TextView
+import kotlinx.coroutines.experimental.CommonPool
+import kotlinx.coroutines.experimental.Job
+import kotlinx.coroutines.experimental.launch
 import network.xyo.ble.sample.R
 import network.xyo.ble.sample.activities.XYOFinderDeviceActivity
 import network.xyo.ble.services.Service
 import network.xyo.ui.XYBaseFragment
 import network.xyo.ui.ui
-import kotlinx.coroutines.experimental.CommonPool
-import kotlinx.coroutines.experimental.Job
-import kotlinx.coroutines.experimental.launch
 
 abstract class XYAppBaseFragment : XYBaseFragment() {
 
     var activity: XYOFinderDeviceActivity? = null
-    private val parentJob = Job()
+    private var parentJob = Job()
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -38,13 +38,14 @@ abstract class XYAppBaseFragment : XYBaseFragment() {
         ui {
             activity?.showProgressSpinner()
         }
-        launch(CommonPool + parentJob) {
+        parentJob = launch(CommonPool) {
             val result = service.get().await()
-                when {
-                    result.error != null -> ui { textView.text = result.error.toString() }
-                    result.value != null -> ui { textView.text = result.value.toString() }
-                    else -> ui { textView.text = getString(R.string.not_available) }
-                }
+            val error = result.error
+            when {
+                error != null -> ui { textView.text = error.message.toString() }
+                result.value != null -> ui { textView.text = result.value.toString() }
+                else -> ui { textView.text = getString(R.string.not_available) }
+            }
 
             ui {
                 activity?.hideProgressSpinner()
@@ -56,10 +57,11 @@ abstract class XYAppBaseFragment : XYBaseFragment() {
         ui {
             activity?.showProgressSpinner()
         }
-        launch(CommonPool + parentJob) {
+        parentJob = launch(CommonPool) {
             val result = service.get().await()
+            val error = result.error
             when {
-                result.error != null -> ui { textView?.text = result.error.toString() }
+                error != null -> ui { textView?.text = error.message.toString() }
                 result.value != null -> ui { textView?.text = result.value.toString() }
                 else -> ui { textView?.text = getString(R.string.not_available) }
             }

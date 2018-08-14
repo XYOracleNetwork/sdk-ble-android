@@ -3,12 +3,11 @@ package network.xyo.ble.sample
 import android.app.Application
 import android.os.Build
 import com.squareup.leakcanary.LeakCanary
-import network.xyo.core.XYBase
-import network.xyo.ble.sample.BuildConfig
 import network.xyo.ble.devices.*
 import network.xyo.ble.scanner.XYFilteredSmartScan
 import network.xyo.ble.scanner.XYFilteredSmartScanLegacy
 import network.xyo.ble.scanner.XYFilteredSmartScanModern
+import network.xyo.core.XYBase
 
 class XYApplication : Application() {
     private var _scanner: XYFilteredSmartScan? = null
