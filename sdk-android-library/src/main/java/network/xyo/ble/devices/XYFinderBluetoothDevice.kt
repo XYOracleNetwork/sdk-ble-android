@@ -1,12 +1,14 @@
 package network.xyo.ble.devices
 
 import android.content.Context
+import kotlinx.coroutines.experimental.CommonPool
 import network.xyo.core.XYBase
 import network.xyo.ble.gatt.XYBluetoothError
 import network.xyo.ble.gatt.XYBluetoothResult
 import network.xyo.ble.gatt.asyncBle
 import network.xyo.ble.scanner.XYScanResult
 import kotlinx.coroutines.experimental.Deferred
+import kotlinx.coroutines.experimental.launch
 import java.nio.ByteBuffer
 import java.util.*
 
@@ -33,6 +35,13 @@ open class XYFinderBluetoothDevice(context: Context, scanResult: XYScanResult, h
         Near,
         VeryNear,
         Touching
+    }
+
+    enum class ButtonPress(val state:Int) {
+        None(0),
+        Single(1),
+        Double(2),
+        Long(3)
     }
 
     override fun compareTo(other: XYFinderBluetoothDevice): Int {
@@ -158,6 +167,29 @@ open class XYFinderBluetoothDevice(context: Context, scanResult: XYScanResult, h
             return Math.pow(10.0, b)
         }
 
+    internal open fun reportButtonPressed(state: ButtonPress) {
+        logInfo("reportButtonPressed")
+        launch(CommonPool) {
+            synchronized(listeners) {
+                for (listener in listeners) {
+                    val xyFinderListener = listener.value as? Listener
+                    if (xyFinderListener != null) {
+                        logInfo("reportButtonPressed: $xyFinderListener")
+                        launch(CommonPool) {
+                            when (state) {
+                                ButtonPress.Single -> xyFinderListener.buttonSinglePressed(this@XYFinderBluetoothDevice)
+                                ButtonPress.Double -> xyFinderListener.buttonDoublePressed(this@XYFinderBluetoothDevice)
+                                ButtonPress.Long -> xyFinderListener.buttonLongPressed(this@XYFinderBluetoothDevice)
+                                else -> {
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     open class Listener : XYIBeaconBluetoothDevice.Listener() {
         open fun buttonSinglePressed(device: XYFinderBluetoothDevice) {}
 
@@ -171,6 +203,17 @@ open class XYFinderBluetoothDevice(context: Context, scanResult: XYScanResult, h
         fun enable(enable: Boolean) {
             if (enable) {
                 XYIBeaconBluetoothDevice.enable(true)
+            }
+        }
+
+        fun buttonPressFromInt(index: Int): ButtonPress {
+            return when (index) {
+                1 -> ButtonPress.Single
+                2 -> ButtonPress.Double
+                3 -> ButtonPress.Long
+                else -> {
+                    ButtonPress.None
+                }
             }
         }
 

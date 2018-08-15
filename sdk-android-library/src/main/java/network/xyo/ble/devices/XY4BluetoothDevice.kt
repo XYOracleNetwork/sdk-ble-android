@@ -41,12 +41,14 @@ open class XY4BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
             super.onCharacteristicChanged(gatt, characteristic)
             if (characteristic?.uuid == primary.buttonState.uuid) {
                 reportButtonPressed(buttonPressFromInt(characteristic.getIntValue(BluetoothGattCharacteristic.FORMAT_UINT8, 0)))
+                enableButtonNotifyIfConnected()
             }
         }
     }
 
     init {
         addGattListener("xy4", buttonListener)
+        enableButtonNotifyIfConnected()
     }
 
     override val prefix = "xy:ibeacon"
@@ -95,32 +97,25 @@ open class XY4BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
         }
     }
 
-    fun reportButtonPressed(state: ButtonPress) {
-        logInfo("reportButtonPressed")
-        launch(CommonPool) {
-            synchronized(listeners) {
-                for (listener in listeners) {
-                    val xyFinderListener = listener.value as? XYFinderBluetoothDevice.Listener
-                    if (xyFinderListener != null) {
-                        logInfo("reportButtonPressed: $xyFinderListener")
-                        launch(CommonPool) {
-                            when (state) {
-                                ButtonPress.Single -> xyFinderListener.buttonSinglePressed(this@XY4BluetoothDevice)
-                                ButtonPress.Double -> xyFinderListener.buttonDoublePressed(this@XY4BluetoothDevice)
-                                ButtonPress.Long -> xyFinderListener.buttonLongPressed(this@XY4BluetoothDevice)
-                                else -> {
-                                }
-                            }
-                            if (connectionState == ConnectionState.Connected) {
-                                //every time a notify fires, we have to re-enable it
-                                primary.buttonState.enableNotify(true)
-                            }
-                        }
-                    }
-                }
-            }
+    fun enableButtonNotifyIfConnected() {
+        logInfo("enableButtonNotifyIfConnected")
+        if (connectionState == ConnectionState.Connected) {
+            logInfo("enableButtonNotifyIfConnected: Connected")
+            primary.buttonState.enableNotify(true)
         }
-        reportGlobalButtonPressed(this, state)
+    }
+
+    override fun onConnectionStateChange(newState: Int) {
+        logInfo("onConnectionStateChange")
+        super.onConnectionStateChange(newState)
+        enableButtonNotifyIfConnected()
+    }
+
+    override fun reportButtonPressed(state: ButtonPress) {
+        super.reportButtonPressed(state)
+        //every time a notify fires, we have to re-enable it
+        enableButtonNotifyIfConnected()
+        XY4BluetoothDevice.reportGlobalButtonPressed(this, state)
     }
 
     override val minor: Ushort
@@ -129,19 +124,7 @@ open class XY4BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
             return _minor.and(0xfff0).or(0x0004)
         }
 
-    open class Listener : XYFinderBluetoothDevice.Listener() {
-        override fun buttonSinglePressed(device: XYFinderBluetoothDevice) {
-
-        }
-
-        override fun buttonDoublePressed(device: XYFinderBluetoothDevice) {
-
-        }
-
-        override fun buttonLongPressed(device: XYFinderBluetoothDevice) {
-
-        }
-    }
+    open class Listener : XYFinderBluetoothDevice.Listener()
 
     companion object : XYBase() {
 
@@ -157,24 +140,6 @@ open class XY4BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
         enum class StayAwake(val state: Int) {
             Off(0),
             On(1)
-        }
-
-        enum class ButtonPress(val state: Int) {
-            None(0),
-            Single(1),
-            Double(2),
-            Long(3)
-        }
-
-        fun buttonPressFromInt(index: Int): ButtonPress {
-            return when (index) {
-                1 -> ButtonPress.Single
-                2 -> ButtonPress.Double
-                3 -> ButtonPress.Long
-                else -> {
-                    ButtonPress.None
-                }
-            }
         }
 
         fun enable(enable: Boolean) {

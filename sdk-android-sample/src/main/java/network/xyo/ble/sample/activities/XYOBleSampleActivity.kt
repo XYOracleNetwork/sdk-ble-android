@@ -7,6 +7,9 @@ import network.xyo.core.XYPermissions
 import network.xyo.ble.sample.R
 import network.xyo.ble.sample.adapters.XYDeviceAdapter
 import kotlinx.android.synthetic.main.activity_xyo_ble_sample.*
+import network.xyo.ble.devices.XY4BluetoothDevice
+import network.xyo.ble.devices.XYFinderBluetoothDevice
+import network.xyo.ble.scanner.XYFilteredSmartScan
 
 class XYOBleSampleActivity : XYOAppBaseActivity() {
     private var adapter: BaseAdapter? = null
@@ -21,14 +24,43 @@ class XYOBleSampleActivity : XYOAppBaseActivity() {
         listview!!.adapter = adapter
     }
 
+    private fun connectListeners() {
+        XY4BluetoothDevice.addGlobalListener(tag, object: XY4BluetoothDevice.Listener() {
+            override fun buttonSinglePressed(device: XYFinderBluetoothDevice) {
+                super.buttonSinglePressed(device)
+                showToast("XY4 Button Single Pressed")
+            }
+
+            override fun buttonDoublePressed(device: XYFinderBluetoothDevice) {
+                super.buttonDoublePressed(device)
+                showToast("XY4 Button Double Pressed")
+            }
+
+            override fun buttonLongPressed(device: XYFinderBluetoothDevice) {
+                super.buttonLongPressed(device)
+                showToast("XY4 Button Long Pressed")
+            }
+        })
+    }
+
+    private fun disconnectListeners() {
+        XY4BluetoothDevice.removeGlobalListener(tag)
+    }
+
     override fun onResume() {
         logInfo("onResume")
         super.onResume()
+        connectListeners()
         val permissions = XYPermissions(this)
         permissions.requestPermission(android.Manifest.permission.ACCESS_FINE_LOCATION,
                 "Location services are needed to connection and track your finders.",
                 XYPermissions.LOCATION_PERMISSIONS_REQ_CODE)
         adapter?.notifyDataSetChanged()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        disconnectListeners()
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {

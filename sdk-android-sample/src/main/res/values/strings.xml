@@ -17,6 +17,7 @@
     <string name="exit">Exit:\u0020</string>
     <string name="lock">Lock:\u0020</string>
     <string name="name">Name:\u0020</string>
+    <string name="connected">Connected:\u0020</string>
     <string name="address">Address:\u0020</string>
     <string name="uuid">UUID:\u0020</string>
     <string name="uptime">Uptime:\u0020</string>

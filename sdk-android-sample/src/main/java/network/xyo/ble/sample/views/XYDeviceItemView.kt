@@ -13,6 +13,8 @@ import network.xyo.ble.devices.XYIBeaconBluetoothDevice
 import network.xyo.ble.sample.R
 import network.xyo.ble.sample.activities.XYOFinderDeviceActivity
 import kotlinx.android.synthetic.main.device_item.view.*
+import network.xyo.ble.devices.XYFinderBluetoothDevice
+import network.xyo.ble.gatt.XYBluetoothGatt
 
 /**
  * Created by arietrouw on 12/27/17.
@@ -24,27 +26,33 @@ class XYDeviceItemView(context: Context, attrs: AttributeSet) : RelativeLayout(c
 
     init {
         setOnClickListener {
+            val device = device
             if (device != null) {
-                val intent = Intent(context, XYOFinderDeviceActivity::class.java)
-                intent.putExtra(XYOFinderDeviceActivity.EXTRA_DEVICEHASH, device!!.hashCode())
-                context.startActivity(intent)
+                openDevice(device)
             }
         }
     }
 
+    fun openDevice(device: XYBluetoothDevice) {
+        val intent = Intent(context, XYOFinderDeviceActivity::class.java)
+        intent.putExtra(XYOFinderDeviceActivity.EXTRA_DEVICEHASH, device.hashCode())
+        context.startActivity(intent)
+    }
+
     fun update() {
         post {
-            text_family.text = device!!.javaClass.simpleName
-            text_name.text = device!!.name
-            text_address.text = device!!.address
-            text_rssi.text = device!!.rssi.toString()
+            text_family.text = device?.javaClass?.simpleName
+            text_name.text = device?.name
+            text_connected.text = (device?.connectionState == XYBluetoothGatt.ConnectionState.Connected).toString()
+            text_address.text = device?.address
+            text_rssi.text = device?.rssi.toString()
             val majorLabelView = findViewById<TextView>(R.id.majorLabel)
             val minorLabelView = findViewById<TextView>(R.id.minorLabel)
 
             val ibeacon = device as? XYIBeaconBluetoothDevice
             if (ibeacon != null) {
-                text_major.text = ibeacon.major.toInt().toString()
-                text_minor.text = ibeacon.minor.toInt().toString()
+                text_major.text = "0x${ibeacon.major.toInt().toString(16)}"
+                text_minor.text = "0x${ibeacon.minor.toInt().toString(16)}"
                 text_uuid.text = ibeacon.uuid.toString()
                 text_major.visibility = View.VISIBLE
                 text_minor.visibility = View.VISIBLE
@@ -62,7 +70,7 @@ class XYDeviceItemView(context: Context, attrs: AttributeSet) : RelativeLayout(c
         }
     }
 
-    private val deviceListener = object : XYBluetoothDevice.Listener() {
+    private val deviceListener = object : XYFinderBluetoothDevice.Listener() {
         override fun entered(device: XYBluetoothDevice) {
 
         }
@@ -78,6 +86,11 @@ class XYDeviceItemView(context: Context, attrs: AttributeSet) : RelativeLayout(c
         override fun connectionStateChanged(device: XYBluetoothDevice, newState: Int) {
             XYBase.logInfo(TAG,"connectionStateChanged")
         }
+
+        override fun buttonSinglePressed(device: XYFinderBluetoothDevice) {
+            super.buttonSinglePressed(device)
+            openDevice(device)
+        }
     }
 
     fun setDevice(device: XYBluetoothDevice?) {
@@ -89,12 +102,11 @@ class XYDeviceItemView(context: Context, attrs: AttributeSet) : RelativeLayout(c
 
         this.device = device
 
-        device!!.addListener(TAG, deviceListener)
+        device?.addListener(TAG, deviceListener)
         update()
     }
 
     companion object {
-
         private val TAG = XYDeviceItemView::class.java.simpleName
     }
 }

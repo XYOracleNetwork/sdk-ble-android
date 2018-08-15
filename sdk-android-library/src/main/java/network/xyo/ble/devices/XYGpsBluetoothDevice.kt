@@ -58,16 +58,14 @@ open class XYGpsBluetoothDevice(context: Context, scanResult: XYScanResult, hash
                 val xy3Listener = listener as? Listener
                 if (xy3Listener != null) {
                     launch(CommonPool) {
-                        xy3Listener.buttonSinglePressed()
+                        xy3Listener.buttonSinglePressed(this@XYGpsBluetoothDevice)
                     }
                 }
             }
         }
     }
 
-    open class Listener : XYFinderBluetoothDevice.Listener() {
-        fun buttonSinglePressed() {}
-    }
+    open class Listener : XYFinderBluetoothDevice.Listener()
 
     companion object : XYBase() {
 

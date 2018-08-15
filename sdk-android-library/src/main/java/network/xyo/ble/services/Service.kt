@@ -24,7 +24,6 @@ abstract class Service(val device: XYBluetoothDevice) : XYBase() {
         }
 
         fun set(value: Int) : Deferred<XYBluetoothResult<Int>> {
-            logInfo("IntegerCharacteristic: Set")
             return service.writeInt(uuid, value, formatType, offset)
         }
     }
