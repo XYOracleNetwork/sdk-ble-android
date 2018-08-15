@@ -31,6 +31,7 @@ open class XYBluetoothBase(context: Context) : XYBase() {
     companion object {
         //this is the thread that all calls should happen on for gatt calls.
         val BluetoothThread = newFixedThreadPoolContext(1, "BluetoothThread")
+        val BluetoothQueue = newFixedThreadPoolContext(1, "BluetoothQueue")
     }
 
 }

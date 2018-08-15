@@ -47,18 +47,18 @@ class InfoFragment : XYAppBaseFragment(), View.OnClickListener {
         ui {
             logInfo("update")
             if (activity?.device != null) {
-                text_family.text = activity?.device!!.name
-                text_rssi.text = activity?.device!!.rssi.toString()
+                text_family.text = activity?.device?.name
+                text_rssi.text = activity?.device?.rssi.toString()
 
                 val iBeaconDevice = activity?.device as XYIBeaconBluetoothDevice?
                 if (iBeaconDevice != null) {
-                    text_major.text = iBeaconDevice.major.toInt().toString()
-                    text_minor.text = iBeaconDevice.minor.toInt().toString()
+                    text_major.text = "0x${iBeaconDevice.major.toInt().toString(16)}"
+                    text_minor.text = "0x${iBeaconDevice.minor.toInt().toString(16)}"
                 }
 
-                test_pulse_count.text = activity?.device!!.detectCount.toString()
-                text_enter_count.text = activity?.device!!.enterCount.toString()
-                text_exit_count.text = activity?.device!!.exitCount.toString()
+                test_pulse_count.text = activity?.device?.detectCount.toString()
+                text_enter_count.text = activity?.device?.enterCount.toString()
+                text_exit_count.text = activity?.device?.exitCount.toString()
             }
 
         }

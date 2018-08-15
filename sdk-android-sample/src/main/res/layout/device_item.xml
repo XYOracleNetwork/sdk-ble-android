@@ -29,6 +29,18 @@
                 android:layout_height="wrap_content"
                 android:padding="@dimen/pad_device_item_tv" />
 
+            <TextView
+                style="@style/device_item_tv_header"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/connected" />
+
+            <TextView
+                android:id="@+id/text_connected"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/pad_device_item_tv" />
+
         </LinearLayout>
 
         <LinearLayout

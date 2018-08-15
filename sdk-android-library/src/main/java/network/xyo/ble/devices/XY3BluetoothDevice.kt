@@ -42,13 +42,6 @@ open class XY3BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
         On(1)
     }
 
-    enum class ButtonPress(val state:Int) {
-        None(0),
-        Single(1),
-        Double(2),
-        Long(3)
-    }
-
     internal val buttonListener = object: XYBluetoothGattCallback() {
         override fun onCharacteristicChanged(gatt: BluetoothGatt?, characteristic: BluetoothGattCharacteristic?) {
             logInfo("onCharacteristicChanged")
@@ -109,32 +102,7 @@ open class XY3BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
         }
     }
 
-    fun reportButtonPressed(state: ButtonPress) {
-        logInfo("reportButtonPressed")
-        synchronized(listeners) {
-            for (listener in listeners) {
-                val xy3Listener = listener.value as? Listener
-                if (xy3Listener != null) {
-                    launch(CommonPool) {
-                        when (state) {
-                            ButtonPress.Single -> xy3Listener.buttonSinglePressed()
-                            ButtonPress.Double -> xy3Listener.buttonDoublePressed()
-                            ButtonPress.Long -> xy3Listener.buttonLongPressed()
-                            else -> {}
-                        }
-                        //everytime a notify fires, we have to re-enable it
-                        controlService.button.enableNotify(true)
-                    }
-                }
-            }
-        }
-    }
-
-    open class Listener : XYFinderBluetoothDevice.Listener() {
-        open fun buttonSinglePressed() {}
-        open fun buttonDoublePressed() {}
-        open fun buttonLongPressed() {}
-    }
+    open class Listener : XYFinderBluetoothDevice.Listener()
 
     companion object : XYBase() {
 
@@ -171,17 +139,6 @@ open class XY3BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
                 buffer.getShort(20).toInt().and(0xfff0).or(0x0004)
             } else {
                 null
-            }
-        }
-
-        fun buttonPressFromInt(index: Int): ButtonPress {
-            return when (index) {
-                1 -> ButtonPress.Single
-                2 -> ButtonPress.Double
-                3 -> ButtonPress.Long
-                else -> {
-                    ButtonPress.None
-                }
             }
         }
 
