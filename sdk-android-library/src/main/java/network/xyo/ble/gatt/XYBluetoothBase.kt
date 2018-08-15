@@ -3,9 +3,15 @@ package network.xyo.ble.gatt
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothManager
 import android.content.Context
+import android.os.Handler
+import android.os.Looper
 
 import kotlinx.coroutines.experimental.newFixedThreadPoolContext
 import network.xyo.core.XYBase
+import kotlin.coroutines.experimental.AbstractCoroutineContextElement
+import kotlin.coroutines.experimental.Continuation
+import kotlin.coroutines.experimental.ContinuationInterceptor
+import kotlin.coroutines.experimental.CoroutineContext
 
 open class XYBluetoothBase(context: Context) : XYBase() {
 
@@ -30,8 +36,33 @@ open class XYBluetoothBase(context: Context) : XYBase() {
 
     companion object {
         //this is the thread that all calls should happen on for gatt calls.
-        val BluetoothThread = newFixedThreadPoolContext(1, "BluetoothThread")
+        val BluetoothThread : CoroutineContext
         val BluetoothQueue = newFixedThreadPoolContext(1, "BluetoothQueue")
+
+        init {
+            if (android.os.Build.VERSION.SDK_INT < 20) {
+                BluetoothThread = newFixedThreadPoolContext(1, "BluetoothThread")
+            } else {
+                //if the device is before 20, use the UI thread for the BLE calls
+                BluetoothThread = object : AbstractCoroutineContextElement(ContinuationInterceptor), ContinuationInterceptor {
+                    override fun <T> interceptContinuation(continuation: Continuation<T>): Continuation<T> =
+                            AndroidContinuation(continuation)
+                }
+            }
+        }
+
+        private class AndroidContinuation<T>(val cont: Continuation<T>) : Continuation<T> by cont {
+            override fun resume(value: T) {
+                if (Looper.myLooper() == Looper.getMainLooper()) cont.resume(value)
+                else Handler(Looper.getMainLooper()).post { cont.resume(value) }
+            }
+
+            override fun resumeWithException(exception: Throwable) {
+                if (Looper.myLooper() == Looper.getMainLooper()) cont.resumeWithException(exception)
+                else Handler(Looper.getMainLooper()).post { cont.resumeWithException(exception) }
+            }
+        }
+
     }
 
 }
