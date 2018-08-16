@@ -68,24 +68,20 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, private
     //this should only be called from the onEnter function so that
     //there is one onExit for every onEnter
     private fun checkForExit() {
+        lastAccessTime = now
         if (checkingForExit) {
             return
         }
         checkingForExit = true
         launch(CommonPool) {
             while (checkingForExit) {
-                //logInfo("checkForExit: $id")
+                logInfo("checkForExit: $id : $rssi : $now : $outOfRangeDelay : $lastAdTime : $lastAccessTime")
                 delay(outOfRangeDelay)
 
                 //check if something else has already marked it as exited
                 //this should only happen if another system (exit on connection drop for example)
                 //marks this as out of range
-                if (rssi == null) {
-                    return@launch
-                }
-
                 if ((now - lastAdTime) > outOfRangeDelay && (now - lastAccessTime) > outOfRangeDelay) {
-                    checkingForExit = false
                     if (rssi != null) {
                         rssi = null
                         onExit()
@@ -97,6 +93,7 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, private
                                 localNotifyExit(this@XYBluetoothDevice)
                             }
                         }
+                        checkingForExit = false
                     }
                 }
             }
@@ -212,7 +209,7 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, private
 
         //the period of time to wait for marking something as out of range
         //if we have not gotten any ads or been connected to it
-        const val OUTOFRANGE_DELAY = 1500000
+        const val OUTOFRANGE_DELAY = 10000
 
         internal var canCreate = false
         val manufacturerToCreator = HashMap<Int, XYCreator>()
