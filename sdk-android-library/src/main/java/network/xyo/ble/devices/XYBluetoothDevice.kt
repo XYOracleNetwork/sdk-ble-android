@@ -75,7 +75,7 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, private
         checkingForExit = true
         launch(CommonPool) {
             while (checkingForExit) {
-                logInfo("checkForExit: $id : $rssi : $now : $outOfRangeDelay : $lastAdTime : $lastAccessTime")
+                //logInfo("checkForExit: $id : $rssi : $now : $outOfRangeDelay : $lastAdTime : $lastAccessTime")
                 delay(outOfRangeDelay)
 
                 //check if something else has already marked it as exited
