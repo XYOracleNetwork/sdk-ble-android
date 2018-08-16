@@ -18,7 +18,7 @@ class GenericAccessFragment : XYAppBaseFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        // Inflate the layout for this fragment
+
         return inflater.inflate(R.layout.fragment_generic_access, container, false)
     }
 
@@ -30,8 +30,16 @@ class GenericAccessFragment : XYAppBaseFragment() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        button_generic_refresh.isEnabled = true
+    }
+
     private fun setGenericAccessValues() {
         ui {
+            button_generic_refresh.isEnabled = false
+            activity?.showProgressSpinner()
+
             text_device_name.text = ""
             text_appearance.text = ""
             text_privacy_flag.text = ""
@@ -60,27 +68,84 @@ class GenericAccessFragment : XYAppBaseFragment() {
     }
 
     private fun getX4Values(device: XY4BluetoothDevice) {
-        initServiceSetTextView(device.genericAccessService.deviceName, text_device_name)
-        initServiceSetTextView(device.genericAccessService.appearance, text_appearance)
-        initServiceSetTextView(device.genericAccessService.privacyFlag, text_privacy_flag)
-        initServiceSetTextView(device.genericAccessService.reconnectionAddress, text_reconnection_address)
-        initServiceSetTextView(device.genericAccessService.peripheralPreferredConnectionParameters, text_peripheral_params)
+        device.connection {
+            var result = device.genericAccessService.deviceName.get().await()
+            text_device_name.text = "${result.value ?: result.error?.message ?: "Error"}"
+
+            result = device.genericAccessService.appearance.get().await()
+            text_appearance.text = "${result.value ?: result.error?.message ?: "Error"}"
+
+            result = device.genericAccessService.privacyFlag.get().await()
+            text_privacy_flag.text = "${result.value ?: result.error?.message ?: "Error"}"
+
+            result = device.genericAccessService.reconnectionAddress.get().await()
+            text_reconnection_address.text = "${result.value ?: result.error?.message ?: "Error"}"
+
+            result = device.genericAccessService.peripheralPreferredConnectionParameters.get().await()
+            text_peripheral_params.text = "${result.value ?: result.error?.message ?: "Error"}"
+
+            ui {
+                this@GenericAccessFragment.isVisible.let {
+                    button_generic_refresh?.isEnabled = true
+                    activity?.hideProgressSpinner()
+                }
+
+            }
+        }
     }
 
     private fun getX3Values(device: XY3BluetoothDevice) {
-        initServiceSetTextView(device.genericAccessService.deviceName, text_device_name)
-        initServiceSetTextView(device.genericAccessService.appearance, text_appearance)
-        initServiceSetTextView(device.genericAccessService.privacyFlag, text_privacy_flag)
-        initServiceSetTextView(device.genericAccessService.reconnectionAddress, text_reconnection_address)
-        initServiceSetTextView(device.genericAccessService.peripheralPreferredConnectionParameters, text_peripheral_params)
+        device.connection {
+            var result = device.genericAccessService.deviceName.get().await()
+            text_device_name.text = "${result.value ?: result.error?.message ?: "Error"}"
+
+            result = device.genericAccessService.appearance.get().await()
+            text_appearance.text = "${result.value ?: result.error?.message ?: "Error"}"
+
+            result = device.genericAccessService.privacyFlag.get().await()
+            text_privacy_flag.text = "${result.value ?: result.error?.message ?: "Error"}"
+
+            result = device.genericAccessService.reconnectionAddress.get().await()
+            text_reconnection_address.text = "${result.value ?: result.error?.message ?: "Error"}"
+
+            result = device.genericAccessService.peripheralPreferredConnectionParameters.get().await()
+            text_peripheral_params.text = "${result.value ?: result.error?.message ?: "Error"}"
+
+            ui {
+                this@GenericAccessFragment.isVisible.let {
+                    button_generic_refresh?.isEnabled = true
+                    activity?.hideProgressSpinner()
+                }
+
+            }
+        }
     }
 
     private fun getX2Values(device: XY2BluetoothDevice) {
-        initServiceSetTextView(device.genericAccessService.deviceName, text_device_name)
-        initServiceSetTextView(device.genericAccessService.appearance, text_appearance)
-        initServiceSetTextView(device.genericAccessService.privacyFlag, text_privacy_flag)
-        initServiceSetTextView(device.genericAccessService.reconnectionAddress, text_reconnection_address)
-        initServiceSetTextView(device.genericAccessService.peripheralPreferredConnectionParameters, text_peripheral_params)
+        device.connection {
+            var result = device.genericAccessService.deviceName.get().await()
+            text_device_name.text = "${result.value ?: result.error?.message ?: "Error"}"
+
+            result = device.genericAccessService.appearance.get().await()
+            text_appearance.text = "${result.value ?: result.error?.message ?: "Error"}"
+
+            result = device.genericAccessService.privacyFlag.get().await()
+            text_privacy_flag.text = "${result.value ?: result.error?.message ?: "Error"}"
+
+            result = device.genericAccessService.reconnectionAddress.get().await()
+            text_reconnection_address.text = "${result.value ?: result.error?.message ?: "Error"}"
+
+            result = device.genericAccessService.peripheralPreferredConnectionParameters.get().await()
+            text_peripheral_params.text = "${result.value ?: result.error?.message ?: "Error"}"
+
+            ui {
+                this@GenericAccessFragment.isVisible.let {
+                    button_generic_refresh?.isEnabled = true
+                    activity?.hideProgressSpinner()
+                }
+
+            }
+        }
     }
 
     companion object {

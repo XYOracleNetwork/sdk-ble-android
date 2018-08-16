@@ -29,8 +29,16 @@ class LinkLossFragment : XYAppBaseFragment() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        button_link_loss_refresh.isEnabled = true
+    }
+
     private fun initLinkLossValues() {
         ui {
+            button_link_loss_refresh.isEnabled = false
+            activity?.showProgressSpinner()
+
             text_alert_level.text = ""
         }
 
@@ -38,25 +46,52 @@ class LinkLossFragment : XYAppBaseFragment() {
             is XY4BluetoothDevice -> {
                 val x4 = (activity?.device as? XY4BluetoothDevice)
                 x4?.let {
-                    initServiceSetTextView(x4.linkLossService.alertLevel, text_alert_level)
+                    getX4Values(x4)
                 }
             }
             is XY3BluetoothDevice -> {
                 val x3 = (activity?.device as? XY3BluetoothDevice)
                 x3?.let {
-                    initServiceSetTextView(x3.linkLossService.alertLevel, text_alert_level)
+                    getX3Values(x3)
                 }
             }
             is XY2BluetoothDevice -> {
-                val x2 = (activity?.device as? XY3BluetoothDevice)
-                x2?.let {
-                    initServiceSetTextView(x2.linkLossService.alertLevel, text_alert_level)
-                }
+                unsupported("Not supported by XY2BluetoothDevice")
             }
             else -> {
                 unsupported("unknown device")
             }
 
+        }
+    }
+
+    private fun getX4Values(device: XY4BluetoothDevice) {
+        device.connection {
+            val result = device.linkLossService.alertLevel.get().await()
+            text_alert_level.text = "${result.value ?: result.error?.message ?: "Error"}"
+
+            ui {
+                this@LinkLossFragment.isVisible.let {
+                    button_link_loss_refresh?.isEnabled = true
+                    activity?.hideProgressSpinner()
+                }
+
+            }
+        }
+    }
+
+    private fun getX3Values(device: XY3BluetoothDevice) {
+        device.connection {
+            val result = device.linkLossService.alertLevel.get().await()
+            text_alert_level.text = "${result.value ?: result.error?.message ?: "Error"}"
+
+            ui {
+                this@LinkLossFragment.isVisible.let {
+                    button_link_loss_refresh?.isEnabled = true
+                    activity?.hideProgressSpinner()
+                }
+
+            }
         }
     }
 

@@ -5,9 +5,9 @@ import android.bluetooth.*
 import android.content.Context
 import android.os.Build
 import android.os.Handler
+import kotlinx.coroutines.experimental.*
 import network.xyo.ble.CallByVersion
 import network.xyo.ble.scanner.XYScanResult
-import kotlinx.coroutines.experimental.*
 import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.coroutines.experimental.suspendCoroutine
@@ -99,7 +99,7 @@ open class XYBluetoothGatt protected constructor(
 
     }
 
-    protected fun connectGatt() : Deferred<XYBluetoothResult<Boolean>> {
+    fun connectGatt() : Deferred<XYBluetoothResult<Boolean>> {
         return asyncBle {
             logInfo("connectGatt")
             var error: XYBluetoothError? = null
@@ -612,7 +612,7 @@ open class XYBluetoothGatt protected constructor(
 
     //make a safe session to interact with the device
     //if null is passed back, the sdk was unable to create the safe session
-    fun <T> connection(closure: suspend ()-> XYBluetoothResult<T>) : Deferred<XYBluetoothResult<T>> {
+    fun <T> connectionWithResult(closure: suspend ()-> XYBluetoothResult<T>) : Deferred<XYBluetoothResult<T>> {
         val deferred = asyncBle<T> {
             logInfo("connection")
             var value: T? = null
@@ -636,6 +636,29 @@ open class XYBluetoothGatt protected constructor(
             return@asyncBle XYBluetoothResult(value, error)
         }
         return deferred
+    }
+
+    fun connection(closure: suspend ()-> Unit) : Deferred<XYBluetoothResult<Unit>> {
+        return asyncBle {
+            logInfo("connection")
+            var value: Unit? = null
+            var error: XYBluetoothError? = null
+            references++
+
+            if (connectGatt().await().error == null) {
+                if (connect().await().error == null) {
+                    val discovered = discover().await()
+                    error = discovered.error
+                    if (error == null) {
+                        closure()
+                    }
+                }
+            } else {
+                error = XYBluetoothError("connection: Failed to Connect")
+            }
+            references--
+            return@asyncBle XYBluetoothResult(value, error)
+        }
     }
 
     @TargetApi(Build.VERSION_CODES.KITKAT)

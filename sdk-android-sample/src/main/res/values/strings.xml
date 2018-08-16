@@ -7,6 +7,17 @@
     <string name="btn_fall_asleep">Fall Asleep</string>
     <string name="btn_lock">Lock</string>
     <string name="btn_unlock">Unlock</string>
+    <string name="disconnect">Disconnect</string>
+
+    <string name="info">Info</string>
+    <string name="alert">Alert</string>
+    <string name="battery">Battery</string>
+    <string name="time">Time</string>
+    <string name="device">Device</string>
+    <string name="gap">GAP</string>
+    <string name="gatt">GATT</string>
+    <string name="linkloss">linkLoss</string>
+    <string name="tx">Tx</string>
 
     <string name="family">Family:\u0020</string>
     <string name="major">Major:\u0020</string>
@@ -25,5 +36,33 @@
     <string name="devices">Devices:\u0020</string>
     <string name="refresh">Refresh</string>
     <string name="not_available">Not Available</string>
+    <string name="control_point">controlPoint:\u0020</string>
+    <string name="unread_alert_status">unreadAlertStatus:\u0020</string>
+    <string name="new_alert">newAlert:\u0020</string>
+    <string name="supported_new_alert_category">supportedNewAlertCategory:\u0020</string>
+    <string name="supported_unread_alert_category">supportedUnreadAlertCategory:\u0020</string>
+    <string name="tx_power_level">TX Power Level:\u0020</string>
+
+    <string name="battery_level">Battery Level:\u0020</string>
+    <string name="current_time">currentTime:\u0020</string>
+    <string name="local_time_information">localTimeInformation:\u0020</string>
+    <string name="reference_time_information">referenceTimeInformation:\u0020</string>
+    <string name="system_id">System Id:\u0020</string>
+    <string name="model_number">Model Number:\u0020</string>
+    <string name="serial">Serial#:\u0020</string>
+    <string name="firmware_revision">Firmware Revision:\u0020</string>
+    <string name="hardware_revision">Hardware Revision:\u0020</string>
+    <string name="software_revision">Software Revision:\u0020</string>
+    <string name="mfg_name">Mfg Name:\u0020</string>
+    <string name="ieee_cert">IEEE Cert:\u0020</string>
+    <string name="pnp_id">PnP Id:\u0020</string>
+    <string name="device_name">deviceName:\u0020</string>
+    <string name="appearance">appearance:\u0020</string>
+    <string name="privacy_flag">privacyFlag:\u0020</string>
+    <string name="reconnection_address">reconnectionAddress:\u0020</string>
+    <string name="peripheral_preferred_connection_parameters">peripheralPreferredConnectionParameters:\u0020</string>
+    <string name="service_changed">Service Changed:\u0020</string>
+    <string name="alert_level">Alert Level:\u0020</string>
+
 
 </resources>

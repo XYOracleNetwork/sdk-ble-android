@@ -43,7 +43,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:text="deviceName: "
+                    android:text="@string/device_name"
                     android:textColor="@color/black" />
 
                 <TextView
@@ -64,7 +64,7 @@
                     android:id="@+id/appearanceLabel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="appearance: "
+                    android:text="@string/appearance"
                     android:textColor="@color/black" />
 
                 <TextView
@@ -83,7 +83,7 @@
                     android:id="@+id/privacyFlagLabel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="privacyFlag: "
+                    android:text="@string/privacy_flag"
                     android:textColor="@color/black" />
 
                 <TextView
@@ -102,7 +102,7 @@
                     android:id="@+id/reconnectionAddressLabel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="reconnectionAddress: "
+                    android:text="@string/reconnection_address"
                     android:textColor="@color/black" />
 
                 <TextView
@@ -121,7 +121,7 @@
                     android:id="@+id/peripheralPreferredConnectionParametersLabel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="peripheralPreferredConnectionParameters: "
+                    android:text="@string/peripheral_preferred_connection_parameters"
                     android:textColor="@color/black" />
 
                 <TextView

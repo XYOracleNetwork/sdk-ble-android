@@ -46,12 +46,12 @@ open class XYIBeaconBluetoothDevice(context: Context, scanResult: XYScanResult?,
             buffer.position(2) //skip the type and size
 
             //get uuid
-            val high = buffer.getLong()
-            val low = buffer.getLong()
+            val high = buffer.long
+            val low = buffer.long
             _uuid = UUID(high, low)
 
-            _major = Ushort(buffer.getShort())
-            _minor = Ushort(buffer.getShort())
+            _major = Ushort(buffer.short)
+            _minor = Ushort(buffer.short)
             _power = Ubyte(buffer.get())
         } else {
             _uuid = UUID(0, 0)
@@ -89,8 +89,8 @@ open class XYIBeaconBluetoothDevice(context: Context, scanResult: XYScanResult?,
                 buffer.position(2) //skip the type and size
 
                 //get uuid
-                val high = buffer.getLong()
-                val low = buffer.getLong()
+                val high = buffer.long
+                val low = buffer.long
                 UUID(high, low)
             } else {
                 null

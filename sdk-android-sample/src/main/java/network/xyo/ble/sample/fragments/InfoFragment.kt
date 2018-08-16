@@ -6,14 +6,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import kotlinx.android.synthetic.main.fragment_info.*
-import network.xyo.ble.devices.XY3BluetoothDevice
-import network.xyo.ble.devices.XY4BluetoothDevice
-import network.xyo.ble.devices.XYFinderBluetoothDevice
-import network.xyo.ble.devices.XYIBeaconBluetoothDevice
-import network.xyo.ble.gatt.XYBluetoothResult
+import kotlinx.coroutines.experimental.CommonPool
+import kotlinx.coroutines.experimental.Deferred
+import kotlinx.coroutines.experimental.async
+import kotlinx.coroutines.experimental.launch
+import network.xyo.ble.devices.*
+import network.xyo.ble.gatt.XYBluetoothGatt
 import network.xyo.ble.sample.R
 import network.xyo.ui.ui
-import kotlinx.coroutines.experimental.*
 import kotlin.experimental.and
 
 
@@ -29,6 +29,7 @@ class InfoFragment : XYAppBaseFragment(), View.OnClickListener {
         super.onViewCreated(view, savedInstanceState)
 
         button_startTest.setOnClickListener(this)
+        button_connected.setOnClickListener(this)
         button_find.setOnClickListener(this)
         button_stay_awake.setOnClickListener(this)
         button_fall_asleep.setOnClickListener(this)
@@ -54,11 +55,18 @@ class InfoFragment : XYAppBaseFragment(), View.OnClickListener {
                 if (iBeaconDevice != null) {
                     text_major.text = "0x${iBeaconDevice.major.toInt().toString(16)}"
                     text_minor.text = "0x${iBeaconDevice.minor.toInt().toString(16)}"
+
                 }
 
                 test_pulse_count.text = activity?.device?.detectCount.toString()
                 text_enter_count.text = activity?.device?.enterCount.toString()
                 text_exit_count.text = activity?.device?.exitCount.toString()
+            }
+
+            if (activity?.device?.connectionState == XYBluetoothGatt.ConnectionState.Connected) {
+                button_connected.text = "Disconnect"
+            } else {
+                button_connected.text = "Connect"
             }
 
         }
@@ -68,6 +76,9 @@ class InfoFragment : XYAppBaseFragment(), View.OnClickListener {
         when (view?.id) {
             R.id.button_startTest -> {
                 startTest()
+            }
+            R.id.button_connected -> {
+                toggleConnection()
             }
             R.id.button_find -> {
                 find()
@@ -101,6 +112,24 @@ class InfoFragment : XYAppBaseFragment(), View.OnClickListener {
         }
     }
 
+    private fun toggleConnection() {
+        val device: XYBluetoothDevice? = activity?.device
+        if (device?.connectionState == XYBluetoothGatt.ConnectionState.Connected) {
+            device.disconnect()
+            // button_connected.text = "Connect"
+        } else {
+            launch {
+                val connection = device?.connectGatt()?.await()
+                val error = connection?.error
+                if (!error?.message.isNullOrEmpty()) {
+                    activity?.showToast(error?.message.toString())
+                }
+            }
+            // button_connected.text = "Disconnected"
+        }
+
+    }
+
     private fun find() {
         logInfo("beepButton: got xyDevice")
         ui {
@@ -110,7 +139,8 @@ class InfoFragment : XYAppBaseFragment(), View.OnClickListener {
         launch(CommonPool) {
             (activity?.device as? XYFinderBluetoothDevice)?.find()?.await()
             ui {
-                button_find.isEnabled = true
+                this@InfoFragment.isVisible.let { button_find?.isEnabled = true }
+
             }
         }
     }
@@ -129,7 +159,7 @@ class InfoFragment : XYAppBaseFragment(), View.OnClickListener {
                 activity?.showToast("Stay Awake Set")
             }
             ui {
-                button_stay_awake.isEnabled = true
+                this@InfoFragment.isVisible.let { button_stay_awake?.isEnabled = true }
             }
         }
     }
@@ -148,7 +178,7 @@ class InfoFragment : XYAppBaseFragment(), View.OnClickListener {
                 activity?.showToast("Fall Asleep Set")
             }
             ui {
-                button_fall_asleep.isEnabled = true
+                this@InfoFragment.isVisible.let { button_fall_asleep?.isEnabled = true }
             }
         }
     }
@@ -164,13 +194,13 @@ class InfoFragment : XYAppBaseFragment(), View.OnClickListener {
             when {
                 locked == null -> showToast("Device does not support Lock")
                 locked.error == null -> {
-                    activity?.showToast(locked.toString())
+                    activity?.showToast("Locked: ${locked.value}")
                     updateStayAwakeEnabledStates() //TODO
                 }
                 else -> activity?.showToast("Lock Error: ${locked.error}")
             }
             ui {
-                button_lock.isEnabled = true
+                this@InfoFragment.isVisible.let { button_lock?.isEnabled = true }
             }
         }
     }
@@ -186,13 +216,13 @@ class InfoFragment : XYAppBaseFragment(), View.OnClickListener {
             when {
                 unlocked == null -> showToast("Device does not support Unlock")
                 unlocked.error == null -> {
-                    activity?.showToast("Unlocked: ${unlocked}")
+                    activity?.showToast("Unlocked: ${unlocked.value}")
                     updateStayAwakeEnabledStates() //TODO
                 }
                 else -> activity?.showToast("Unlock Error: ${unlocked.error}")
             }
             ui {
-                button_unlock.isEnabled = true
+                this@InfoFragment.isVisible.let { button_unlock?.isEnabled = true }
             }
         }
     }
@@ -204,14 +234,16 @@ class InfoFragment : XYAppBaseFragment(), View.OnClickListener {
             val xy4 = activity?.device as? XY4BluetoothDevice
             if (xy4 != null) {
                 val stayAwake = xy4.primary.stayAwake.get().await()
-                logInfo("updateStayAwakeEnabledStates: $stayAwake")
+                logInfo("updateStayAwakeEnabledStates: ${stayAwake.value}")
                 ui {
-                    if (stayAwake.value != 0) {
-                        button_fall_asleep.isEnabled = true
-                        button_stay_awake.isEnabled = false
-                    } else {
-                        button_fall_asleep.isEnabled = false
-                        button_stay_awake.isEnabled = true
+                    this@InfoFragment.isVisible.let {
+                        if (stayAwake.value != 0) {
+                            button_fall_asleep.isEnabled = true
+                            button_stay_awake.isEnabled = false
+                        } else {
+                            button_fall_asleep.isEnabled = false
+                            button_stay_awake.isEnabled = true
+                        }
                     }
                 }
             } else {
@@ -241,7 +273,6 @@ class InfoFragment : XYAppBaseFragment(), View.OnClickListener {
 
     private fun updateAdList() {
         ui {
-            // val adList: XYTextView? = findViewById(R.id.adList)
             var txt = ""
             for ((_, ad) in activity?.device!!.ads) {
                 txt = txt + ad.toString() + "\r\n"
@@ -258,12 +289,14 @@ class InfoFragment : XYAppBaseFragment(), View.OnClickListener {
             if (xy4 != null) {
                 val lock = xy4.primary.lock.get().await()
 
-                logInfo("updateLock: ${lock}")
+                logInfo("updateLock: $lock.value")
                 ui {
-                    if (lock.error != null || lock.error != null) {
-                        edit_lock_value.setText("----")
-                    } else {
-                        edit_lock_value.setText(bytesToHex(lock.value!!))
+                    this@InfoFragment.isVisible.let {
+                        if (lock.error != null) {
+                            edit_lock_value.setText("not supported")
+                        } else {
+                            edit_lock_value.setText(bytesToHex(lock.value!!))
+                        }
                     }
                 }
             }
@@ -286,6 +319,8 @@ class InfoFragment : XYAppBaseFragment(), View.OnClickListener {
     private fun testXy4() {
         //TODO - disable btn, show progress
         logInfo("textXy4")
+        //updateLockValue()
+
         launch {
             val xy4 = activity?.device as? XY4BluetoothDevice
             xy4?.connection {
@@ -298,7 +333,6 @@ class InfoFragment : XYAppBaseFragment(), View.OnClickListener {
                         logInfo("testXy4: Fail: $text : ${write.error}")
                     }
                 }
-                return@connection XYBluetoothResult(true)
             }
         }
     }

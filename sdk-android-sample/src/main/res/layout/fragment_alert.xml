@@ -44,7 +44,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:text="controlPoint: "
+                    android:text="@string/control_point"
                     android:textColor="@color/black" />
 
                 <TextView
@@ -65,7 +65,7 @@
                     android:id="@+id/unreadAlertStatusLabel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="unreadAlertStatus: "
+                    android:text="@string/unread_alert_status"
                     android:textColor="@color/black" />
 
                 <TextView
@@ -84,7 +84,7 @@
                     android:id="@+id/newAlertLabel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="newAlert: "
+                    android:text="@string/new_alert"
                     android:textColor="@color/black" />
 
                 <TextView
@@ -103,7 +103,7 @@
                     android:id="@+id/supportedNewAlertCategoryLabel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="supportedNewAlertCategory: "
+                    android:text="@string/supported_new_alert_category"
                     android:textColor="@color/black" />
 
                 <TextView
@@ -122,7 +122,7 @@
                     android:id="@+id/supportedUnreadAlertCategoryLabel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="supportedUnreadAlertCategory"
+                    android:text="@string/supported_unread_alert_category"
                     android:textColor="@color/black" />
 
                 <TextView

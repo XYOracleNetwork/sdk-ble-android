@@ -2,14 +2,13 @@ package network.xyo.ble.sample.activities
 
 import android.os.Bundle
 import android.widget.BaseAdapter
-import network.xyo.core.XYBase
-import network.xyo.core.XYPermissions
-import network.xyo.ble.sample.R
-import network.xyo.ble.sample.adapters.XYDeviceAdapter
 import kotlinx.android.synthetic.main.activity_xyo_ble_sample.*
 import network.xyo.ble.devices.XY4BluetoothDevice
 import network.xyo.ble.devices.XYFinderBluetoothDevice
-import network.xyo.ble.scanner.XYFilteredSmartScan
+import network.xyo.ble.sample.R
+import network.xyo.ble.sample.adapters.XYDeviceAdapter
+import network.xyo.core.XYBase
+import network.xyo.core.XYPermissions
 
 class XYOBleSampleActivity : XYOAppBaseActivity() {
     private var adapter: BaseAdapter? = null

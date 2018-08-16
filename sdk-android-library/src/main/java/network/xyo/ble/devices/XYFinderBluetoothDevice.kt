@@ -2,13 +2,13 @@ package network.xyo.ble.devices
 
 import android.content.Context
 import kotlinx.coroutines.experimental.CommonPool
-import network.xyo.core.XYBase
+import kotlinx.coroutines.experimental.Deferred
+import kotlinx.coroutines.experimental.launch
 import network.xyo.ble.gatt.XYBluetoothError
 import network.xyo.ble.gatt.XYBluetoothResult
 import network.xyo.ble.gatt.asyncBle
 import network.xyo.ble.scanner.XYScanResult
-import kotlinx.coroutines.experimental.Deferred
-import kotlinx.coroutines.experimental.launch
+import network.xyo.core.XYBase
 import java.nio.ByteBuffer
 import java.util.*
 
@@ -239,8 +239,8 @@ open class XYFinderBluetoothDevice(context: Context, scanResult: XYScanResult, h
                     buffer.position(2) //skip the type and size
 
                     // get uuid
-                    val high = buffer.getLong()
-                    val low = buffer.getLong()
+                    val high = buffer.long
+                    val low = buffer.long
                     val uuidFromScan = UUID(high, low)
 
                     for ((uuid, creator) in uuidToCreator) {

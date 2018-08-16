@@ -44,7 +44,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:text="currentTime: "
+                    android:text="@string/current_time"
                     android:textColor="@color/black" />
 
                 <TextView
@@ -65,7 +65,7 @@
                     android:id="@+id/localTimeInformationLabel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="localTimeInformation: "
+                    android:text="@string/local_time_information"
                     android:textColor="@color/black" />
 
                 <TextView
@@ -84,7 +84,7 @@
                     android:id="@+id/referenceTimeInformationLabel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="referenceTimeInformation: "
+                    android:text="@string/reference_time_information"
                     android:textColor="@color/black" />
 
                 <TextView

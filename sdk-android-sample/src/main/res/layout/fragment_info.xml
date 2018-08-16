@@ -20,7 +20,7 @@
             android:layout_marginTop="6dp"
             android:orientation="vertical">
 
-            <LinearLayout
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/layout_margin_normal"
@@ -30,8 +30,16 @@
                     android:id="@+id/button_startTest"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
                     android:text="@string/btn_start_test" />
-            </LinearLayout>
+
+                <network.xyo.ui.views.XYButton
+                    android:id="@+id/button_connected"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:text="@string/disconnect" />
+            </RelativeLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -190,7 +198,7 @@
 
                 <EditText
                     android:id="@+id/edit_lock_value"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:width="120dp"
                     android:focusable="false"

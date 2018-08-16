@@ -44,7 +44,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:text="System Id: "
+                    android:text="@string/system_id"
                     android:textColor="@color/black" />
 
                 <TextView
@@ -65,7 +65,7 @@
                     android:id="@+id/modelNumberLabel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Model Number: "
+                    android:text="@string/model_number"
                     android:textColor="@color/black" />
 
                 <TextView
@@ -84,7 +84,7 @@
                     android:id="@+id/SerialNumberLabel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Serial#: "
+                    android:text="@string/serial"
                     android:textColor="@color/black" />
 
                 <TextView
@@ -103,7 +103,7 @@
                     android:id="@+id/firmwareRevisionLabel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Firmware Revision: "
+                    android:text="@string/firmware_revision"
                     android:textColor="@color/black" />
 
                 <TextView
@@ -122,7 +122,7 @@
                     android:id="@+id/hardwareRevisionLabel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Software Revision: "
+                    android:text="@string/hardware_revision"
                     android:textColor="@color/black" />
 
                 <TextView
@@ -141,7 +141,7 @@
                     android:id="@+id/softwareRevisionLabel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Software Revision: "
+                    android:text="@string/software_revision"
                     android:textColor="@color/black" />
 
                 <TextView
@@ -160,7 +160,7 @@
                     android:id="@+id/mfgNameLabel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Mfg Name: "
+                    android:text="@string/mfg_name"
                     android:textColor="@color/black" />
 
                 <TextView
@@ -179,7 +179,7 @@
                     android:id="@+id/ieeeLabel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="IEEE Cert: "
+                    android:text="@string/ieee_cert"
                     android:textColor="@color/black" />
 
                 <TextView
@@ -198,7 +198,7 @@
                     android:id="@+id/PnpLabel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="PnP Id: "
+                    android:text="@string/pnp_id"
                     android:textColor="@color/black" />
 
                 <TextView

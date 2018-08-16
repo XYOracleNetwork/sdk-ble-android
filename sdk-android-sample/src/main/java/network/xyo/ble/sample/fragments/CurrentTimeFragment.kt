@@ -17,7 +17,7 @@ class CurrentTimeFragment : XYAppBaseFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        // Inflate the layout for this fragment
+
         return inflater.inflate(R.layout.fragment_current_time, container, false)
     }
 
@@ -29,9 +29,14 @@ class CurrentTimeFragment : XYAppBaseFragment() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        button_time_refresh.isEnabled = true
+    }
+
     private fun setTimeValues() {
         ui {
-            //button_time_refresh.isEnabled = false
+            button_time_refresh.isEnabled = false
             activity?.showProgressSpinner()
 
             text_localTimeInformation.text = ""
@@ -58,15 +63,43 @@ class CurrentTimeFragment : XYAppBaseFragment() {
     }
 
     private fun getX3Values(device: XY3BluetoothDevice) {
-        initServiceSetTextView(device.currentTimeService.currentTime, text_currentTime)
-        initServiceSetTextView(device.currentTimeService.localTimeInformation, text_localTimeInformation)
-        initServiceSetTextView(device.currentTimeService.referenceTimeInformation, text_referenceTimeInformation)
+        device.connection {
+            var result = device.currentTimeService.currentTime.get().await()
+            text_currentTime.text = "${result.value ?: result.error?.message ?: "Error"}"
+
+            result = device.currentTimeService.localTimeInformation.get().await()
+            text_localTimeInformation.text = "${result.value ?: result.error?.message ?: "Error"}"
+
+            result = device.currentTimeService.referenceTimeInformation.get().await()
+            text_referenceTimeInformation.text = "${result.value ?: result.error?.message ?: "Error"}"
+
+            ui {
+                this@CurrentTimeFragment.isVisible.let {
+                    button_time_refresh?.isEnabled = true
+                    activity?.hideProgressSpinner()
+                }
+            }
+        }
     }
 
     private fun getX4Values(device: XY4BluetoothDevice) {
-        initServiceSetTextView(device.currentTimeService.currentTime, text_currentTime)
-        initServiceSetTextView(device.currentTimeService.localTimeInformation, text_localTimeInformation)
-        initServiceSetTextView(device.currentTimeService.referenceTimeInformation, text_referenceTimeInformation)
+        device.connection {
+            var result = device.currentTimeService.currentTime.get().await()
+            text_currentTime.text = "${result.value ?: result.error?.message ?: "Error"}"
+
+            result = device.currentTimeService.localTimeInformation.get().await()
+            text_localTimeInformation.text = "${result.value ?: result.error?.message ?: "Error"}"
+
+            result = device.currentTimeService.referenceTimeInformation.get().await()
+            text_referenceTimeInformation.text = "${result.value ?: result.error?.message ?: "Error"}"
+
+            ui {
+                this@CurrentTimeFragment.isVisible.let {
+                    button_time_refresh?.isEnabled = true
+                    activity?.hideProgressSpinner()
+                }
+            }
+        }
     }
 
     companion object {

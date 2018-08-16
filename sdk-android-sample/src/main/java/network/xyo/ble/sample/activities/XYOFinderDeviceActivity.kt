@@ -25,7 +25,7 @@ import network.xyo.ui.XYBaseFragment
 class XYOFinderDeviceActivity : XYOAppBaseActivity() {
 
     var device: XYBluetoothDevice? = null
-    private lateinit var mSectionsPagerAdapter: SectionsPagerAdapter
+    private lateinit var sectionsPagerAdapter: SectionsPagerAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,8 +39,8 @@ class XYOFinderDeviceActivity : XYOAppBaseActivity() {
         }
         setContentView(R.layout.device_activity)
 
-        mSectionsPagerAdapter = SectionsPagerAdapter(supportFragmentManager)
-        container.adapter = mSectionsPagerAdapter
+        sectionsPagerAdapter = SectionsPagerAdapter(supportFragmentManager)
+        container.adapter = sectionsPagerAdapter
 
         container.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tabs))
         tabs.addOnTabSelectedListener(TabLayout.ViewPagerOnTabSelectedListener(container))
@@ -163,7 +163,7 @@ class XYOFinderDeviceActivity : XYOAppBaseActivity() {
     }
 
     fun update() {
-        val frag = mSectionsPagerAdapter.getFragmentByPosition(container.currentItem)
+        val frag = sectionsPagerAdapter.getFragmentByPosition(container.currentItem)
         (frag as? XYAppBaseFragment)?.update()
     }
 
@@ -217,6 +217,7 @@ class XYOFinderDeviceActivity : XYOAppBaseActivity() {
                 8 -> {
                     frag = TxPowerFragment.newInstance()
                 }
+                else -> frag = InfoFragment.newInstance()
             }
 
             return frag
