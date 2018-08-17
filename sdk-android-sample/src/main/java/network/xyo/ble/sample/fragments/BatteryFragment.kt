@@ -25,16 +25,25 @@ class BatteryFragment : XYAppBaseFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         button_battery_refresh.setOnClickListener {
-            getBatteryLevel()
+            setBatteryLevel()
         }
     }
 
     override fun onResume() {
         super.onResume()
-        button_battery_refresh.isEnabled = true
+        updateUI()
     }
 
-    private fun getBatteryLevel() {
+    private fun updateUI() {
+        ui {
+            button_battery_refresh?.isEnabled = true
+            activity?.hideProgressSpinner()
+
+            text_battery_level.text = activity?.data?.level
+        }
+    }
+
+    private fun setBatteryLevel() {
         logInfo("batteryButton: onClick")
         ui {
             button_battery_refresh.isEnabled = false
@@ -66,12 +75,11 @@ class BatteryFragment : XYAppBaseFragment() {
     private fun getX4Values(device: XY4BluetoothDevice) {
         device.connection {
             val result = device.batteryService.level.get().await()
-            text_battery_level.text = "${result.value ?: result.error?.message ?: "Error"}"
+            activity?.data?.level = "${result.value ?: result.error?.message ?: "Error"}"
 
             ui {
                 this@BatteryFragment.isVisible.let {
-                    button_battery_refresh?.isEnabled = true
-                    activity?.hideProgressSpinner()
+                    updateUI()
                 }
             }
         }
@@ -80,19 +88,17 @@ class BatteryFragment : XYAppBaseFragment() {
     private fun getX3Values(device: XY3BluetoothDevice) {
         device.connection {
             val result = device.batteryService.level.get().await()
-            text_battery_level.text = "${result.value ?: result.error?.message ?: "Error"}"
+            activity?.data?.level = "${result.value ?: result.error?.message ?: "Error"}"
 
             ui {
                 this@BatteryFragment.isVisible.let {
-                    button_battery_refresh?.isEnabled = true
-                    activity?.hideProgressSpinner()
+                    updateUI()
                 }
             }
         }
     }
 
     companion object {
-        private const val TAG = "BatteryFragment"
 
         fun newInstance() =
                 BatteryFragment()

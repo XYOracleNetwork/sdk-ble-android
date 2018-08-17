@@ -14,6 +14,7 @@ import network.xyo.ble.devices.XY4BluetoothDevice
 import network.xyo.ble.devices.XYBluetoothDevice
 import network.xyo.ble.devices.XYFinderBluetoothDevice
 import network.xyo.ble.sample.R
+import network.xyo.ble.sample.XYDeviceData
 import network.xyo.ble.sample.fragments.*
 import network.xyo.ui.XYBaseFragment
 
@@ -26,6 +27,8 @@ class XYOFinderDeviceActivity : XYOAppBaseActivity() {
 
     var device: XYBluetoothDevice? = null
     private lateinit var sectionsPagerAdapter: SectionsPagerAdapter
+    lateinit var data : XYDeviceData
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,6 +41,9 @@ class XYOFinderDeviceActivity : XYOAppBaseActivity() {
             finish()
         }
         setContentView(R.layout.device_activity)
+
+        data = XYDeviceData()
+
 
         sectionsPagerAdapter = SectionsPagerAdapter(supportFragmentManager)
         container.adapter = sectionsPagerAdapter

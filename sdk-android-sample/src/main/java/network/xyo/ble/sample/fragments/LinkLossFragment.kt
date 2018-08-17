@@ -17,7 +17,7 @@ class LinkLossFragment : XYAppBaseFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        // Inflate the layout for this fragment
+
         return inflater.inflate(R.layout.fragment_link_loss, container, false)
     }
 
@@ -31,7 +31,16 @@ class LinkLossFragment : XYAppBaseFragment() {
 
     override fun onResume() {
         super.onResume()
-        button_link_loss_refresh.isEnabled = true
+        updateUI()
+    }
+
+    private fun updateUI() {
+        ui {
+            button_link_loss_refresh?.isEnabled = true
+            activity?.hideProgressSpinner()
+
+            text_alert_level.text = activity?.data?.alertLevel
+        }
     }
 
     private fun initLinkLossValues() {
@@ -68,14 +77,12 @@ class LinkLossFragment : XYAppBaseFragment() {
     private fun getX4Values(device: XY4BluetoothDevice) {
         device.connection {
             val result = device.linkLossService.alertLevel.get().await()
-            text_alert_level.text = "${result.value ?: result.error?.message ?: "Error"}"
+            activity?.data?.alertLevel = "${result.value ?: result.error?.message ?: "Error"}"
 
             ui {
                 this@LinkLossFragment.isVisible.let {
-                    button_link_loss_refresh?.isEnabled = true
-                    activity?.hideProgressSpinner()
+                    updateUI()
                 }
-
             }
         }
     }
@@ -83,20 +90,17 @@ class LinkLossFragment : XYAppBaseFragment() {
     private fun getX3Values(device: XY3BluetoothDevice) {
         device.connection {
             val result = device.linkLossService.alertLevel.get().await()
-            text_alert_level.text = "${result.value ?: result.error?.message ?: "Error"}"
+            activity?.data?.alertLevel = "${result.value ?: result.error?.message ?: "Error"}"
 
             ui {
                 this@LinkLossFragment.isVisible.let {
-                    button_link_loss_refresh?.isEnabled = true
-                    activity?.hideProgressSpinner()
+                    updateUI()
                 }
-
             }
         }
     }
 
     companion object {
-        private const val TAG = "LinkLossFragment"
 
         fun newInstance() =
                 LinkLossFragment()

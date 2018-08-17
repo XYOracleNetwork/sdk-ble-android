@@ -31,7 +31,16 @@ class TxPowerFragment : XYAppBaseFragment() {
 
     override fun onResume() {
         super.onResume()
-        button_tx_refresh.isEnabled = true
+        updateUI()
+    }
+
+    private fun updateUI() {
+        ui {
+            button_tx_refresh?.isEnabled = true
+            activity?.hideProgressSpinner()
+
+            text_tx_power.text = activity?.data?.txPowerLevel
+        }
     }
 
     private fun setTxValues() {
@@ -61,21 +70,18 @@ class TxPowerFragment : XYAppBaseFragment() {
             else -> {
                 unsupported("unknown device")
             }
-
         }
     }
 
     private fun getX4Values(device: XY4BluetoothDevice) {
         device.connection {
             val result = device.txPowerService.txPowerLevel.get().await()
-            text_tx_power.text = "${result.value ?: result.error?.message ?: "Error"}"
+            activity?.data?.txPowerLevel = "${result.value ?: result.error?.message ?: "Error"}"
 
             ui {
                 this@TxPowerFragment.isVisible.let {
-                    button_tx_refresh?.isEnabled = true
-                    activity?.hideProgressSpinner()
+                    updateUI()
                 }
-
             }
         }
     }
@@ -83,20 +89,17 @@ class TxPowerFragment : XYAppBaseFragment() {
     private fun getX3Values(device: XY3BluetoothDevice) {
         device.connection {
             val result = device.txPowerService.txPowerLevel.get().await()
-            text_tx_power.text = "${result.value ?: result.error?.message ?: "Error"}"
+            activity?.data?.txPowerLevel = "${result.value ?: result.error?.message ?: "Error"}"
 
             ui {
                 this@TxPowerFragment.isVisible.let {
-                    button_tx_refresh?.isEnabled = true
-                    activity?.hideProgressSpinner()
+                    updateUI()
                 }
-
             }
         }
     }
 
     companion object {
-        private const val TAG = "TxPowerFragment"
 
         fun newInstance() =
                 TxPowerFragment()

@@ -64,9 +64,9 @@ class InfoFragment : XYAppBaseFragment(), View.OnClickListener {
             }
 
             if (activity?.device?.connectionState == XYBluetoothGatt.ConnectionState.Connected) {
-                button_connected.text = "Disconnect"
+                button_connected.text = getString(R.string.disconnect)
             } else {
-                button_connected.text = "Connect"
+                button_connected.text = getString(R.string.btn_connect)
             }
 
         }
@@ -75,7 +75,8 @@ class InfoFragment : XYAppBaseFragment(), View.OnClickListener {
     override fun onClick(view: View?) {
         when (view?.id) {
             R.id.button_startTest -> {
-                startTest()
+                //startTest()
+                selfTest()
             }
             R.id.button_connected -> {
                 toggleConnection()
@@ -128,6 +129,14 @@ class InfoFragment : XYAppBaseFragment(), View.OnClickListener {
             // button_connected.text = "Disconnected"
         }
 
+    }
+
+    private fun selfTest() {
+        logInfo("selfTest")
+        launch(CommonPool) {
+            val res =(activity?.device as? XY4BluetoothDevice)?.primary?.reset?.get()?.await()
+            logInfo("bob selfTest: $res")
+        }
     }
 
     private fun find() {
@@ -293,7 +302,7 @@ class InfoFragment : XYAppBaseFragment(), View.OnClickListener {
                 ui {
                     this@InfoFragment.isVisible.let {
                         if (lock.error != null) {
-                            edit_lock_value.setText("not supported")
+                            edit_lock_value.setText(getString(R.string.not_supported))
                         } else {
                             edit_lock_value.setText(bytesToHex(lock.value!!))
                         }

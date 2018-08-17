@@ -31,23 +31,30 @@ class DeviceFragment : XYAppBaseFragment() {
 
     override fun onResume() {
         super.onResume()
-        button_device_refresh.isEnabled = true
+        updateUI()
+    }
+
+    private fun updateUI() {
+        ui {
+            button_device_refresh?.isEnabled = true
+            activity?.hideProgressSpinner()
+
+            text_system_id.text = activity?.data?.systemId
+            text_model_number.text = activity?.data?.modelNumberString
+            text_serial_number.text = activity?.data?.serialNumberString
+            text_firmware_revision.text = activity?.data?.firmwareRevisionString
+            text_hardware_revision.text = activity?.data?.hardwareRevisionString
+            text_software_revision.text = activity?.data?.softwareRevisionString
+            text_mfg_name.text = activity?.data?.manufacturerNameString
+            text_ieee.text = activity?.data?.ieeeRegulatoryCertificationDataList
+            text_pnp_id.text = activity?.data?.pnpId
+        }
     }
 
     private fun setDeviceValues() {
         ui {
             button_device_refresh.isEnabled = false
             activity?.showProgressSpinner()
-
-            text_system_id.text = ""
-            text_model_number.text = ""
-            text_serial_number.text = ""
-            text_firmware_revision.text = ""
-            text_hardware_revision.text = ""
-            text_software_revision.text = ""
-            text_mfg_name.text = ""
-            text_ieee.text = ""
-            text_pnp_id.text = ""
         }
 
         when (activity?.device) {
@@ -73,36 +80,36 @@ class DeviceFragment : XYAppBaseFragment() {
     private fun getX4Values(device: XY4BluetoothDevice) {
         device.connection {
             var resultInt = device.deviceInformationService.systemId.get().await()
-            text_system_id.text = "${resultInt.value ?: resultInt.error?.message ?: "Error"}"
+            activity?.data?.systemId = "${resultInt.value ?: resultInt.error?.message ?: "Error"}"
 
             var result = device.deviceInformationService.modelNumberString.get().await()
-            text_model_number.text = result.value ?: result.error?.message ?: "Error"
+            activity?.data?.modelNumberString = result.value ?: result.error?.message ?: "Error"
 
             result = device.deviceInformationService.serialNumberString.get().await()
-            text_serial_number.text = result.value ?: result.error?.message ?: "Error"
+            activity?.data?.serialNumberString = result.value ?: result.error?.message ?: "Error"
 
             result = device.deviceInformationService.firmwareRevisionString.get().await()
-            text_firmware_revision.text = result.value ?: result.error?.message ?: "Error"
+            activity?.data?.firmwareRevisionString = result.value ?: result.error?.message ?: "Error"
 
             result = device.deviceInformationService.hardwareRevisionString.get().await()
-            text_hardware_revision.text = result.value ?: result.error?.message ?: "Error"
+            activity?.data?.hardwareRevisionString = result.value ?: result.error?.message ?: "Error"
 
             result = device.deviceInformationService.softwareRevisionString.get().await()
-            text_software_revision.text = result.value ?: result.error?.message ?: "Error"
+            activity?.data?.softwareRevisionString = result.value ?: result.error?.message ?: "Error"
 
             result = device.deviceInformationService.manufacturerNameString.get().await()
-            text_mfg_name.text = result.value ?: result.error?.message ?: "Error"
+            activity?.data?.manufacturerNameString = result.value ?: result.error?.message ?: "Error"
 
             resultInt = device.deviceInformationService.ieeeRegulatoryCertificationDataList.get().await()
-            text_ieee.text = "${resultInt.value ?: resultInt.error?.message ?: "Error"}"
+            activity?.data?.ieeeRegulatoryCertificationDataList = "${resultInt.value
+                    ?: resultInt.error?.message ?: "Error"}"
 
             resultInt = device.deviceInformationService.pnpId.get().await()
-            text_pnp_id.text = "${resultInt.value ?: resultInt.error?.message ?: "Error"}"
+            activity?.data?.pnpId = "${resultInt.value ?: resultInt.error?.message ?: "Error"}"
 
             ui {
                 this@DeviceFragment.isVisible.let {
-                    button_device_refresh?.isEnabled = true
-                    activity?.hideProgressSpinner()
+                    updateUI()
                 }
 
             }
@@ -112,36 +119,36 @@ class DeviceFragment : XYAppBaseFragment() {
     private fun getX3Values(device: XY3BluetoothDevice) {
         device.connection {
             var resultInt = device.deviceInformationService.systemId.get().await()
-            text_system_id.text = "${resultInt.value ?: resultInt.error?.message ?: "Error"}"
+            activity?.data?.systemId = "${resultInt.value ?: resultInt.error?.message ?: "Error"}"
 
             var result = device.deviceInformationService.modelNumberString.get().await()
-            text_model_number.text = result.value ?: result.error?.message ?: "Error"
+            activity?.data?.modelNumberString = result.value ?: result.error?.message ?: "Error"
 
             result = device.deviceInformationService.serialNumberString.get().await()
-            text_serial_number.text = result.value ?: result.error?.message ?: "Error"
+            activity?.data?.serialNumberString = result.value ?: result.error?.message ?: "Error"
 
             result = device.deviceInformationService.firmwareRevisionString.get().await()
-            text_firmware_revision.text = result.value ?: result.error?.message ?: "Error"
+            activity?.data?.firmwareRevisionString = result.value ?: result.error?.message ?: "Error"
 
             result = device.deviceInformationService.hardwareRevisionString.get().await()
-            text_hardware_revision.text = result.value ?: result.error?.message ?: "Error"
+            activity?.data?.hardwareRevisionString = result.value ?: result.error?.message ?: "Error"
 
             result = device.deviceInformationService.softwareRevisionString.get().await()
-            text_software_revision.text = result.value ?: result.error?.message ?: "Error"
+            activity?.data?.softwareRevisionString = result.value ?: result.error?.message ?: "Error"
 
             result = device.deviceInformationService.manufacturerNameString.get().await()
-            text_mfg_name.text = result.value ?: result.error?.message ?: "Error"
+            activity?.data?.manufacturerNameString = result.value ?: result.error?.message ?: "Error"
 
             resultInt = device.deviceInformationService.ieeeRegulatoryCertificationDataList.get().await()
-            text_ieee.text = "${resultInt.value ?: resultInt.error?.message ?: "Error"}"
+            activity?.data?.ieeeRegulatoryCertificationDataList = "${resultInt.value
+                    ?: resultInt.error?.message ?: "Error"}"
 
             resultInt = device.deviceInformationService.pnpId.get().await()
-            text_pnp_id.text = "${resultInt.value ?: resultInt.error?.message ?: "Error"}"
+            activity?.data?.pnpId = "${resultInt.value ?: resultInt.error?.message ?: "Error"}"
 
             ui {
                 this@DeviceFragment.isVisible.let {
-                    button_device_refresh?.isEnabled = true
-                    activity?.hideProgressSpinner()
+                    updateUI()
                 }
 
             }
@@ -151,36 +158,36 @@ class DeviceFragment : XYAppBaseFragment() {
     private fun getX2Values(device: XY2BluetoothDevice) {
         device.connection {
             var resultInt = device.deviceInformationService.systemId.get().await()
-            text_system_id.text = "${resultInt.value ?: resultInt.error?.message ?: "Error"}"
+            activity?.data?.systemId = "${resultInt.value ?: resultInt.error?.message ?: "Error"}"
 
             var result = device.deviceInformationService.modelNumberString.get().await()
-            text_model_number.text = result.value ?: result.error?.message ?: "Error"
+            activity?.data?.modelNumberString = result.value ?: result.error?.message ?: "Error"
 
             result = device.deviceInformationService.serialNumberString.get().await()
-            text_serial_number.text = result.value ?: result.error?.message ?: "Error"
+            activity?.data?.serialNumberString = result.value ?: result.error?.message ?: "Error"
 
             result = device.deviceInformationService.firmwareRevisionString.get().await()
-            text_firmware_revision.text = result.value ?: result.error?.message ?: "Error"
+            activity?.data?.firmwareRevisionString = result.value ?: result.error?.message ?: "Error"
 
             result = device.deviceInformationService.hardwareRevisionString.get().await()
-            text_hardware_revision.text = result.value ?: result.error?.message ?: "Error"
+            activity?.data?.hardwareRevisionString = result.value ?: result.error?.message ?: "Error"
 
             result = device.deviceInformationService.softwareRevisionString.get().await()
-            text_software_revision.text = result.value ?: result.error?.message ?: "Error"
+            activity?.data?.softwareRevisionString = result.value ?: result.error?.message ?: "Error"
 
             result = device.deviceInformationService.manufacturerNameString.get().await()
-            text_mfg_name.text = result.value ?: result.error?.message ?: "Error"
+            activity?.data?.manufacturerNameString = result.value ?: result.error?.message ?: "Error"
 
             resultInt = device.deviceInformationService.ieeeRegulatoryCertificationDataList.get().await()
-            text_ieee.text = "${resultInt.value ?: resultInt.error?.message ?: "Error"}"
+            activity?.data?.ieeeRegulatoryCertificationDataList = "${resultInt.value
+                    ?: resultInt.error?.message ?: "Error"}"
 
             resultInt = device.deviceInformationService.pnpId.get().await()
-            text_pnp_id.text = "${resultInt.value ?: resultInt.error?.message ?: "Error"}"
+            activity?.data?.pnpId = "${resultInt.value ?: resultInt.error?.message ?: "Error"}"
 
             ui {
                 this@DeviceFragment.isVisible.let {
-                    button_device_refresh?.isEnabled = true
-                    activity?.hideProgressSpinner()
+                    updateUI()
                 }
 
             }
@@ -188,7 +195,6 @@ class DeviceFragment : XYAppBaseFragment() {
     }
 
     companion object {
-        private const val TAG = "DeviceFragment"
 
         fun newInstance() =
                 DeviceFragment()

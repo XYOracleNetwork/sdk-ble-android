@@ -31,19 +31,13 @@ class AlertFragment : XYAppBaseFragment() {
 
     override fun onResume() {
         super.onResume()
-        button_alert_refresh.isEnabled = true
+        updateUI()
     }
 
     private fun setAlertValues() {
         ui {
             button_alert_refresh.isEnabled = false
             activity?.showProgressSpinner()
-
-            text_control_point.text = ""
-            text_unread_alert_status.text = ""
-            text_new_alert.text = ""
-            text_new_alert_category.text = ""
-            text_unread_alert_category.text = ""
         }
 
         when (activity?.device) {
@@ -65,29 +59,41 @@ class AlertFragment : XYAppBaseFragment() {
         }
     }
 
+    private fun updateUI() {
+        ui {
+            button_alert_refresh?.isEnabled = true
+            activity?.hideProgressSpinner()
+
+            text_control_point.text = activity?.data?.controlPoint
+            text_unread_alert_status.text = activity?.data?.unreadAlertStatus
+            text_new_alert.text = activity?.data?.newAlert
+            text_new_alert_category.text = activity?.data?.supportedNewAlertCategory
+            text_unread_alert_category.text = activity?.data?.supportedUnreadAlertCategory
+        }
+    }
+
     private fun getX4Values(device: XY4BluetoothDevice) {
         device.connection {
             var result = device.alertNotification.controlPoint.get().await()
-            text_control_point.text = "${result.value ?: result.error?.message ?: "Error"}"
+            activity?.data?.controlPoint = "${result.value ?: result.error?.message ?: "Error"}"
 
             result = device.alertNotification.unreadAlertStatus.get().await()
-            text_unread_alert_status.text = "${result.value ?: result.error?.message ?: "Error"}"
+            activity?.data?.unreadAlertStatus = "${result.value ?: result.error?.message
+            ?: "Error"}"
 
             result = device.alertNotification.newAlert.get().await()
-            text_new_alert.text = "${result.value ?: result.error?.message ?: "Error"}"
+            activity?.data?.newAlert = "${result.value ?: result.error?.message ?: "Error"}"
 
             result = device.alertNotification.supportedNewAlertCategory.get().await()
-            text_new_alert_category.text = "${result.value ?: result.error?.message ?: "Error"}"
+            activity?.data?.supportedNewAlertCategory = "${result.value ?: result.error?.message
+            ?: "Error"}"
 
             result = device.alertNotification.supportedUnreadAlertCategory.get().await()
-            text_unread_alert_category.text = "${result.value ?: result.error?.message ?: "Error"}"
+            activity?.data?.supportedUnreadAlertCategory = "${result.value ?: result.error?.message
+            ?: "Error"}"
 
-            ui {
-                this@AlertFragment.isVisible.let {
-                    button_alert_refresh?.isEnabled = true
-                    activity?.hideProgressSpinner()
-                }
-
+            this@AlertFragment.isVisible.let {
+                updateUI()
             }
         }
     }
@@ -95,25 +101,25 @@ class AlertFragment : XYAppBaseFragment() {
     private fun getX3Values(device: XY3BluetoothDevice) {
         device.connection {
             var result = device.alertNotification.controlPoint.get().await()
-            text_control_point.text = "${result.value ?: result.error?.message ?: "Error"}"
+            activity?.data?.controlPoint = "${result.value ?: result.error?.message ?: "Error"}"
 
             result = device.alertNotification.unreadAlertStatus.get().await()
-            text_unread_alert_status.text = "${result.value ?: result.error?.message ?: "Error"}"
+            activity?.data?.unreadAlertStatus = "${result.value ?: result.error?.message
+            ?: "Error"}"
 
             result = device.alertNotification.newAlert.get().await()
-            text_new_alert.text = "${result.value ?: result.error?.message ?: "Error"}"
+            activity?.data?.newAlert = "${result.value ?: result.error?.message ?: "Error"}"
 
             result = device.alertNotification.supportedNewAlertCategory.get().await()
-            text_new_alert_category.text = "${result.value ?: result.error?.message ?: "Error"}"
+            activity?.data?.supportedNewAlertCategory = "${result.value ?: result.error?.message
+            ?: "Error"}"
 
             result = device.alertNotification.supportedUnreadAlertCategory.get().await()
-            text_unread_alert_category.text = "${result.value ?: result.error?.message ?: "Error"}"
+            activity?.data?.supportedUnreadAlertCategory = "${result.value ?: result.error?.message
+            ?: "Error"}"
 
-            ui {
-                this@AlertFragment.isVisible.let {
-                    button_alert_refresh?.isEnabled = true
-                    activity?.hideProgressSpinner()
-                }
+            this@AlertFragment.isVisible.let {
+                updateUI()
             }
         }
     }
@@ -126,7 +132,6 @@ class AlertFragment : XYAppBaseFragment() {
     }
 
     companion object {
-        private const val TAG = "AlertFragment"
 
         fun newInstance() =
                 AlertFragment()

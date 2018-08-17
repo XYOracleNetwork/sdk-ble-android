@@ -32,19 +32,26 @@ class GenericAccessFragment : XYAppBaseFragment() {
 
     override fun onResume() {
         super.onResume()
-        button_generic_refresh.isEnabled = true
+        updateUI()
+    }
+
+    private fun updateUI() {
+        ui {
+            button_generic_refresh?.isEnabled = true
+            activity?.hideProgressSpinner()
+
+            text_device_name.text = activity?.data?.deviceName
+            text_appearance.text = activity?.data?.appearance
+            text_privacy_flag.text = activity?.data?.privacyFlag
+            text_reconnection_address.text = activity?.data?.reconnectionAddress
+            text_peripheral_params.text = activity?.data?.peripheralPreferredConnectionParameters
+        }
     }
 
     private fun setGenericAccessValues() {
         ui {
             button_generic_refresh.isEnabled = false
             activity?.showProgressSpinner()
-
-            text_device_name.text = ""
-            text_appearance.text = ""
-            text_privacy_flag.text = ""
-            text_reconnection_address.text = ""
-            text_peripheral_params.text = ""
         }
 
         when (activity?.device) {
@@ -63,31 +70,31 @@ class GenericAccessFragment : XYAppBaseFragment() {
             else -> {
                 unsupported("unknown device")
             }
-
         }
     }
 
     private fun getX4Values(device: XY4BluetoothDevice) {
         device.connection {
             var result = device.genericAccessService.deviceName.get().await()
-            text_device_name.text = "${result.value ?: result.error?.message ?: "Error"}"
+            activity?.data?.deviceName = "${result.value ?: result.error?.message ?: "Error"}"
 
             result = device.genericAccessService.appearance.get().await()
-            text_appearance.text = "${result.value ?: result.error?.message ?: "Error"}"
+            activity?.data?.appearance = "${result.value ?: result.error?.message ?: "Error"}"
 
             result = device.genericAccessService.privacyFlag.get().await()
-            text_privacy_flag.text = "${result.value ?: result.error?.message ?: "Error"}"
+            activity?.data?.privacyFlag = "${result.value ?: result.error?.message ?: "Error"}"
 
             result = device.genericAccessService.reconnectionAddress.get().await()
-            text_reconnection_address.text = "${result.value ?: result.error?.message ?: "Error"}"
+            activity?.data?.reconnectionAddress = "${result.value ?: result.error?.message
+            ?: "Error"}"
 
             result = device.genericAccessService.peripheralPreferredConnectionParameters.get().await()
-            text_peripheral_params.text = "${result.value ?: result.error?.message ?: "Error"}"
+            activity?.data?.peripheralPreferredConnectionParameters = "${result.value
+                    ?: result.error?.message ?: "Error"}"
 
             ui {
                 this@GenericAccessFragment.isVisible.let {
-                    button_generic_refresh?.isEnabled = true
-                    activity?.hideProgressSpinner()
+                    updateUI()
                 }
 
             }
@@ -97,24 +104,25 @@ class GenericAccessFragment : XYAppBaseFragment() {
     private fun getX3Values(device: XY3BluetoothDevice) {
         device.connection {
             var result = device.genericAccessService.deviceName.get().await()
-            text_device_name.text = "${result.value ?: result.error?.message ?: "Error"}"
+            activity?.data?.deviceName = "${result.value ?: result.error?.message ?: "Error"}"
 
             result = device.genericAccessService.appearance.get().await()
-            text_appearance.text = "${result.value ?: result.error?.message ?: "Error"}"
+            activity?.data?.appearance = "${result.value ?: result.error?.message ?: "Error"}"
 
             result = device.genericAccessService.privacyFlag.get().await()
-            text_privacy_flag.text = "${result.value ?: result.error?.message ?: "Error"}"
+            activity?.data?.privacyFlag = "${result.value ?: result.error?.message ?: "Error"}"
 
             result = device.genericAccessService.reconnectionAddress.get().await()
-            text_reconnection_address.text = "${result.value ?: result.error?.message ?: "Error"}"
+            activity?.data?.reconnectionAddress = "${result.value ?: result.error?.message
+            ?: "Error"}"
 
             result = device.genericAccessService.peripheralPreferredConnectionParameters.get().await()
-            text_peripheral_params.text = "${result.value ?: result.error?.message ?: "Error"}"
+            activity?.data?.peripheralPreferredConnectionParameters = "${result.value
+                    ?: result.error?.message ?: "Error"}"
 
             ui {
                 this@GenericAccessFragment.isVisible.let {
-                    button_generic_refresh?.isEnabled = true
-                    activity?.hideProgressSpinner()
+                    updateUI()
                 }
 
             }
@@ -124,24 +132,25 @@ class GenericAccessFragment : XYAppBaseFragment() {
     private fun getX2Values(device: XY2BluetoothDevice) {
         device.connection {
             var result = device.genericAccessService.deviceName.get().await()
-            text_device_name.text = "${result.value ?: result.error?.message ?: "Error"}"
+            activity?.data?.deviceName = "${result.value ?: result.error?.message ?: "Error"}"
 
             result = device.genericAccessService.appearance.get().await()
-            text_appearance.text = "${result.value ?: result.error?.message ?: "Error"}"
+            activity?.data?.appearance = "${result.value ?: result.error?.message ?: "Error"}"
 
             result = device.genericAccessService.privacyFlag.get().await()
-            text_privacy_flag.text = "${result.value ?: result.error?.message ?: "Error"}"
+            activity?.data?.privacyFlag = "${result.value ?: result.error?.message ?: "Error"}"
 
             result = device.genericAccessService.reconnectionAddress.get().await()
-            text_reconnection_address.text = "${result.value ?: result.error?.message ?: "Error"}"
+            activity?.data?.reconnectionAddress = "${result.value ?: result.error?.message
+            ?: "Error"}"
 
             result = device.genericAccessService.peripheralPreferredConnectionParameters.get().await()
-            text_peripheral_params.text = "${result.value ?: result.error?.message ?: "Error"}"
+            activity?.data?.peripheralPreferredConnectionParameters = "${result.value
+                    ?: result.error?.message ?: "Error"}"
 
             ui {
                 this@GenericAccessFragment.isVisible.let {
-                    button_generic_refresh?.isEnabled = true
-                    activity?.hideProgressSpinner()
+                    updateUI()
                 }
 
             }
@@ -149,7 +158,6 @@ class GenericAccessFragment : XYAppBaseFragment() {
     }
 
     companion object {
-        private const val TAG = "GenericAccessFragment"
 
         fun newInstance() =
                 GenericAccessFragment()
