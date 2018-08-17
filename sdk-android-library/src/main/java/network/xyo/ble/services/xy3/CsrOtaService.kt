@@ -12,9 +12,9 @@ class CsrOtaService(device: XYBluetoothDevice) : Service(device) {
         }
 
     companion object {
-        val uuid = UUID.fromString("00001016-D102-11E1-9B23-00025B00A5A5")
+        val uuid: UUID = UUID.fromString("00001016-D102-11E1-9B23-00025B00A5A5")
 
-        enum class characteristics(val uuid: UUID) {
+        enum class Characteristics(val uuid: UUID) {
         }
     }
 }

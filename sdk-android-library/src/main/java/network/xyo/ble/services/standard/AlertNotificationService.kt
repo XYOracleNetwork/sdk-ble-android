@@ -11,16 +11,16 @@ class AlertNotificationService(device: XYBluetoothDevice) : Service(device) {
             return uuid
         }
 
-    val controlPoint = IntegerCharacteristic(this, characteristics.ControlPoint.uuid)
-    val unreadAlertStatus = IntegerCharacteristic(this, characteristics.UnreadAlertStatus.uuid)
-    val newAlert = IntegerCharacteristic(this, characteristics.NewAlert.uuid)
-    val supportedNewAlertCategory = IntegerCharacteristic(this, characteristics.SupportedNewAlertCategory.uuid)
-    val supportedUnreadAlertCategory = IntegerCharacteristic(this, characteristics.SupportedUnreadAlertCategory.uuid)
+    val controlPoint = IntegerCharacteristic(this, Characteristics.ControlPoint.uuid)
+    val unreadAlertStatus = IntegerCharacteristic(this, Characteristics.UnreadAlertStatus.uuid)
+    val newAlert = IntegerCharacteristic(this, Characteristics.NewAlert.uuid)
+    val supportedNewAlertCategory = IntegerCharacteristic(this, Characteristics.SupportedNewAlertCategory.uuid)
+    val supportedUnreadAlertCategory = IntegerCharacteristic(this, Characteristics.SupportedUnreadAlertCategory.uuid)
 
     companion object {
-        val uuid = UUID.fromString("00001811-0000-1000-8000-00805F9B34FB")
+        val uuid: UUID = UUID.fromString("00001811-0000-1000-8000-00805F9B34FB")
 
-        enum class characteristics(val uuid: UUID) {
+        enum class Characteristics(val uuid: UUID) {
             ControlPoint(                   UUID.fromString("00002a44-0000-1000-8000-00805f9b34fb")),
             UnreadAlertStatus(              UUID.fromString("00002a45-0000-1000-8000-00805f9b34fb")),
             NewAlert(                       UUID.fromString("00002a46-0000-1000-8000-00805f9b34fb")),

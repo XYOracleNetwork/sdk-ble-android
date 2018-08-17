@@ -11,9 +11,9 @@ class EddystoneConfigService(device: XYBluetoothDevice) : Service(device) {
         }
 
     companion object {
-        val uuid = UUID.fromString("ee0c2080-8786-40ba-ab96-99b91ac981d8")
+        val uuid: UUID = UUID.fromString("ee0c2080-8786-40ba-ab96-99b91ac981d8")
 
-        enum class characteristics(val uuid: UUID) {
+        enum class Characteristics(val uuid: UUID) {
         }
     }
 }
