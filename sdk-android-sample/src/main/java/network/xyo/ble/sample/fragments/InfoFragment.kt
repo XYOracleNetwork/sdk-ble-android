@@ -14,7 +14,6 @@ import network.xyo.ble.devices.*
 import network.xyo.ble.gatt.XYBluetoothGatt
 import network.xyo.ble.sample.R
 import network.xyo.ui.ui
-import kotlin.experimental.and
 
 
 class InfoFragment : XYAppBaseFragment(), View.OnClickListener {
@@ -64,9 +63,9 @@ class InfoFragment : XYAppBaseFragment(), View.OnClickListener {
             }
 
             if (activity?.device?.connectionState == XYBluetoothGatt.ConnectionState.Connected) {
-                button_connected.text = "Disconnect"
+                button_connected.text = getString(R.string.disconnect)
             } else {
-                button_connected.text = "Connect"
+                button_connected.text = getString(R.string.btn_connect)
             }
 
         }
@@ -128,6 +127,13 @@ class InfoFragment : XYAppBaseFragment(), View.OnClickListener {
             // button_connected.text = "Disconnected"
         }
 
+    }
+
+    private fun selfTest() {
+        logInfo("selfTest")
+        launch(CommonPool) {
+            val res = (activity?.device as? XY4BluetoothDevice)?.primary?.reset?.get()?.await()
+        }
     }
 
     private fun find() {
@@ -275,7 +281,7 @@ class InfoFragment : XYAppBaseFragment(), View.OnClickListener {
         ui {
             var txt = ""
             for ((_, ad) in activity?.device!!.ads) {
-                txt = txt + ad.toString() + "\r\n"
+                txt = txt + ad.data?.toHex() + "\r\n"
             }
             adList?.text = txt
         }
@@ -293,9 +299,9 @@ class InfoFragment : XYAppBaseFragment(), View.OnClickListener {
                 ui {
                     this@InfoFragment.isVisible.let {
                         if (lock.error != null) {
-                            edit_lock_value.setText("not supported")
+                            edit_lock_value.setText(getString(R.string.not_supported))
                         } else {
-                            edit_lock_value.setText(bytesToHex(lock.value!!))
+                            edit_lock_value.setText(lock.value?.toHex())
                         }
                     }
                 }
@@ -303,17 +309,19 @@ class InfoFragment : XYAppBaseFragment(), View.OnClickListener {
         }
     }
 
-    private val hexArray = "0123456789ABCDEF".toCharArray()
+    private val HEX_CHARS = "0123456789ABCDEF".toCharArray()
+    private fun ByteArray.toHex(): String {
+        val result = StringBuffer()
 
-    private fun bytesToHex(bytes: ByteArray): String {
-        val hexChars = CharArray(bytes.size * 2)
-        for (j in bytes.indices) {
-            val v = (bytes[j] and 0xFF.toByte()).toInt()
-
-            hexChars[j * 2] = hexArray[v ushr 4]
-            hexChars[j * 2 + 1] = hexArray[v and 0x0F]
+        forEach {
+            val octet = it.toInt()
+            val firstIndex = (octet and 0xF0).ushr(4)
+            val secondIndex = octet and 0x0F
+            result.append(HEX_CHARS[firstIndex])
+            result.append(HEX_CHARS[secondIndex])
         }
-        return String(hexChars)
+
+        return result.toString()
     }
 
     private fun testXy4() {
@@ -350,7 +358,6 @@ class InfoFragment : XYAppBaseFragment(), View.OnClickListener {
     }
 
     companion object {
-        private const val TAG = "InfoFragment"
 
         fun newInstance() =
                 InfoFragment()

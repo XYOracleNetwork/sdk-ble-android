@@ -69,7 +69,7 @@ open class XYGpsBluetoothDevice(context: Context, scanResult: XYScanResult, hash
 
     companion object : XYBase() {
 
-        val FAMILY_UUID = UUID.fromString("9474f7c6-47a4-11e6-beb8-9e71128cae77")
+        val FAMILY_UUID: UUID = UUID.fromString("9474f7c6-47a4-11e6-beb8-9e71128cae77")
 
         val DEFAULT_LOCK_CODE = byteArrayOf(0x2f.toByte(), 0xbe.toByte(), 0xa2.toByte(), 0x07.toByte(), 0x52.toByte(), 0xfe.toByte(), 0xbf.toByte(), 0x31.toByte(), 0x1d.toByte(), 0xac.toByte(), 0x5d.toByte(), 0xfa.toByte(), 0x7d.toByte(), 0x77.toByte(), 0x76.toByte(), 0x80.toByte())
 

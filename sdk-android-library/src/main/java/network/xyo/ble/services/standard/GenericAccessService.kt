@@ -11,17 +11,17 @@ class GenericAccessService(device: XYBluetoothDevice) : Service(device) {
             return TxPowerService.uuid
         }
 
-    val deviceName = IntegerCharacteristic(this, characteristics.DeviceName.uuid)
-    val appearance = IntegerCharacteristic(this, characteristics.Appearance.uuid)
-    val privacyFlag = IntegerCharacteristic(this, characteristics.PrivacyFlag.uuid)
-    val reconnectionAddress = IntegerCharacteristic(this, characteristics.ReconnectionAddress.uuid)
-    val peripheralPreferredConnectionParameters = IntegerCharacteristic(this, characteristics.PeripheralPreferredConnectionParameters.uuid)
+    val deviceName = IntegerCharacteristic(this, Characteristics.DeviceName.uuid)
+    val appearance = IntegerCharacteristic(this, Characteristics.Appearance.uuid)
+    val privacyFlag = IntegerCharacteristic(this, Characteristics.PrivacyFlag.uuid)
+    val reconnectionAddress = IntegerCharacteristic(this, Characteristics.ReconnectionAddress.uuid)
+    val peripheralPreferredConnectionParameters = IntegerCharacteristic(this, Characteristics.PeripheralPreferredConnectionParameters.uuid)
 
 
     companion object {
-        val uuid = UUID.fromString("00001800-0000-1000-8000-00805F9B34FB")
+        val uuid: UUID = UUID.fromString("00001800-0000-1000-8000-00805F9B34FB")
 
-        enum class characteristics(val uuid: UUID) {
+        enum class Characteristics(val uuid: UUID) {
             DeviceName(                                 UUID.fromString("00002a00-0000-1000-8000-00805f9b34fb")),
             Appearance(                                 UUID.fromString("00002a01-0000-1000-8000-00805f9b34fb")),
             PrivacyFlag(                                UUID.fromString("00002a02-0000-1000-8000-00805f9b34fb")),

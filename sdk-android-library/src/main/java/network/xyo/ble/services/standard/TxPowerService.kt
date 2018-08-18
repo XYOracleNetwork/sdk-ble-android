@@ -11,12 +11,12 @@ class TxPowerService(device: XYBluetoothDevice) : Service(device) {
             return GenericAccessService.uuid
         }
 
-    val txPowerLevel = IntegerCharacteristic(this, characteristics.TxPowerLevel.uuid)
+    val txPowerLevel = IntegerCharacteristic(this, Characteristics.TxPowerLevel.uuid)
 
     companion object {
-        val uuid = UUID.fromString("00001800-0000-1000-8000-00805F9B34FB")
+        val uuid: UUID = UUID.fromString("00001800-0000-1000-8000-00805F9B34FB")
 
-        enum class characteristics(val uuid: UUID) {
+        enum class Characteristics(val uuid: UUID) {
             TxPowerLevel(UUID.fromString("00002a07-0000-1000-8000-00805f9b34fb"))
         }
     }

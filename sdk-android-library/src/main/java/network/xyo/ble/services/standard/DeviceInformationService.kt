@@ -11,20 +11,20 @@ class DeviceInformationService(device: XYBluetoothDevice) : Service(device) {
             return uuid
         }
 
-    val systemId = IntegerCharacteristic(this, characteristics.SystemId.uuid)
-    val modelNumberString = StringCharacteristic(this, characteristics.ModelNumberString.uuid)
-    val serialNumberString = StringCharacteristic(this, characteristics.SerialNumberString.uuid)
-    val firmwareRevisionString = StringCharacteristic(this, characteristics.FirmwareRevisionString.uuid)
-    val hardwareRevisionString = StringCharacteristic(this, characteristics.HardwareRevisionString.uuid)
-    val softwareRevisionString = StringCharacteristic(this, characteristics.SoftwareRevisionString.uuid)
-    val manufacturerNameString = StringCharacteristic(this, characteristics.ManufacturerNameString.uuid)
-    val ieeeRegulatoryCertificationDataList = IntegerCharacteristic(this, characteristics.IEEE11073_20601RegulatoryCertificationDataList.uuid)
-    val pnpId = IntegerCharacteristic(this, characteristics.PnPId.uuid)
+    val systemId = IntegerCharacteristic(this, Characteristics.SystemId.uuid)
+    val modelNumberString = StringCharacteristic(this, Characteristics.ModelNumberString.uuid)
+    val serialNumberString = StringCharacteristic(this, Characteristics.SerialNumberString.uuid)
+    val firmwareRevisionString = StringCharacteristic(this, Characteristics.FirmwareRevisionString.uuid)
+    val hardwareRevisionString = StringCharacteristic(this, Characteristics.HardwareRevisionString.uuid)
+    val softwareRevisionString = StringCharacteristic(this, Characteristics.SoftwareRevisionString.uuid)
+    val manufacturerNameString = StringCharacteristic(this, Characteristics.ManufacturerNameString.uuid)
+    val ieeeRegulatoryCertificationDataList = IntegerCharacteristic(this, Characteristics.IEEE11073_20601RegulatoryCertificationDataList.uuid)
+    val pnpId = IntegerCharacteristic(this, Characteristics.PnPId.uuid)
 
     companion object {
-        val uuid = UUID.fromString("0000180A-0000-1000-8000-00805F9B34FB")
+        val uuid: UUID = UUID.fromString("0000180A-0000-1000-8000-00805F9B34FB")
 
-        enum class characteristics(val uuid: UUID) {
+        enum class Characteristics(val uuid: UUID) {
             SystemId(                                       UUID.fromString("00002a23-0000-1000-8000-00805f9b34fb")),
             ModelNumberString(                              UUID.fromString("00002a24-0000-1000-8000-00805f9b34fb")),
             SerialNumberString(                             UUID.fromString("00002a25-0000-1000-8000-00805f9b34fb")),

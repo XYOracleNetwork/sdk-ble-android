@@ -17,7 +17,7 @@ class GenericAttributeFragment : XYAppBaseFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        // Inflate the layout for this fragment
+
         return inflater.inflate(R.layout.fragment_generic_attribute, container, false)
     }
 
@@ -25,21 +25,28 @@ class GenericAttributeFragment : XYAppBaseFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         button_gatt_refresh.setOnClickListener {
-            initGattValues()
+            setGattValues()
         }
     }
 
     override fun onResume() {
         super.onResume()
-        button_gatt_refresh.isEnabled = true
+        updateUI()
     }
 
-    private fun initGattValues() {
+    private fun updateUI() {
         ui {
-            button_gatt_refresh.isEnabled = false
-            activity?.showProgressSpinner()
+            button_gatt_refresh.isEnabled = true
+            activity?.hideProgressSpinner()
 
-            text_service_changed.text = ""
+            text_service_changed.text = activity?.data?.serviceChanged
+        }
+    }
+
+    private fun setGattValues() {
+        ui {
+            button_gatt_refresh?.isEnabled = true
+            activity?.hideProgressSpinner()
         }
 
         when (activity?.device) {
@@ -72,14 +79,12 @@ class GenericAttributeFragment : XYAppBaseFragment() {
     private fun getX4Values(device: XY4BluetoothDevice) {
         device.connection {
             val result = device.genericAttributeService.serviceChanged.get().await()
-            text_service_changed.text = "${result.value ?: result.error?.message ?: "Error"}"
+            activity?.data?.serviceChanged = "${result.value ?: result.error?.message ?: "Error"}"
 
             ui {
                 this@GenericAttributeFragment.isVisible.let {
-                    button_gatt_refresh?.isEnabled = true
-                    activity?.hideProgressSpinner()
+                    updateUI()
                 }
-
             }
         }
     }
@@ -87,14 +92,12 @@ class GenericAttributeFragment : XYAppBaseFragment() {
     private fun getX3Values(device: XY3BluetoothDevice) {
         device.connection {
             val result = device.genericAttributeService.serviceChanged.get().await()
-            text_service_changed.text = "${result.value ?: result.error?.message ?: "Error"}"
+            activity?.data?.serviceChanged = "${result.value ?: result.error?.message ?: "Error"}"
 
             ui {
                 this@GenericAttributeFragment.isVisible.let {
-                    button_gatt_refresh?.isEnabled = true
-                    activity?.hideProgressSpinner()
+                    updateUI()
                 }
-
             }
         }
     }
@@ -102,20 +105,17 @@ class GenericAttributeFragment : XYAppBaseFragment() {
     private fun getX2Values(device: XY2BluetoothDevice) {
         device.connection {
             val result = device.genericAttributeService.serviceChanged.get().await()
-            text_service_changed.text = "${result.value ?: result.error?.message ?: "Error"}"
+            activity?.data?.serviceChanged = "${result.value ?: result.error?.message ?: "Error"}"
 
             ui {
                 this@GenericAttributeFragment.isVisible.let {
-                    button_gatt_refresh?.isEnabled = true
-                    activity?.hideProgressSpinner()
+                    updateUI()
                 }
-
             }
         }
     }
 
     companion object {
-        private const val TAG = "GenericAttributeFragment"
 
         fun newInstance() =
                 GenericAttributeFragment()

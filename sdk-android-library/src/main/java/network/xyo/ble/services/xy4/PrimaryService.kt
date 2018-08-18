@@ -11,34 +11,34 @@ class PrimaryService(device: XYBluetoothDevice) : Service(device) {
             return Companion.uuid
         }
 
-    val stayAwake = IntegerCharacteristic(this, characteristics.StayAwake.uuid)
-    val unlock = BytesCharacteristic(this, characteristics.Unlock.uuid)
-    val lock = BytesCharacteristic(this, characteristics.Lock.uuid)
-    val major = IntegerCharacteristic(this, characteristics.Major.uuid)
-    val minor = IntegerCharacteristic(this, characteristics.Minor.uuid)
-    val uuid = BytesCharacteristic(this, characteristics.Uuid.uuid)
-    val buttonState = IntegerCharacteristic(this, characteristics.ButtonState.uuid)
-    val buzzer = IntegerCharacteristic(this, characteristics.Buzzer.uuid)
-    val buzzerConfig = BytesCharacteristic(this, characteristics.BuzzerConfig.uuid)
-    val adConfig = BytesCharacteristic(this, characteristics.AdConfig.uuid)
-    val buttonConfig = BytesCharacteristic(this, characteristics.ButtonConfig.uuid)
-    val lastError = IntegerCharacteristic(this, characteristics.LastError.uuid)
-    val uptime = IntegerCharacteristic(this, characteristics.Uptime.uuid)
-    val reset = IntegerCharacteristic(this, characteristics.Reset.uuid)
-    val selfTest = IntegerCharacteristic(this, characteristics.SelfTest.uuid)
-    val debug = IntegerCharacteristic(this, characteristics.Debug.uuid)
-    val leftBehind = IntegerCharacteristic(this, characteristics.LeftBehind.uuid)
-    val eddyStoneUid = BytesCharacteristic(this, characteristics.EddystoneUID.uuid)
-    val eddyStoneUrl = BytesCharacteristic(this, characteristics.EddystoneURL.uuid)
-    val eddyStoneEid = BytesCharacteristic(this, characteristics.EddystoneEID.uuid)
-    val color = BytesCharacteristic(this, characteristics.Color.uuid)
-    val hardwareCreateDate = BytesCharacteristic(this, characteristics.HardwareCreateDate.uuid)
+    val stayAwake = IntegerCharacteristic(this, Characteristics.StayAwake.uuid)
+    val unlock = BytesCharacteristic(this, Characteristics.Unlock.uuid)
+    val lock = BytesCharacteristic(this, Characteristics.Lock.uuid)
+    val major = IntegerCharacteristic(this, Characteristics.Major.uuid)
+    val minor = IntegerCharacteristic(this, Characteristics.Minor.uuid)
+    val uuid = BytesCharacteristic(this, Characteristics.Uuid.uuid)
+    val buttonState = IntegerCharacteristic(this, Characteristics.ButtonState.uuid)
+    val buzzer = IntegerCharacteristic(this, Characteristics.Buzzer.uuid)
+    val buzzerConfig = BytesCharacteristic(this, Characteristics.BuzzerConfig.uuid)
+    val adConfig = BytesCharacteristic(this, Characteristics.AdConfig.uuid)
+    val buttonConfig = BytesCharacteristic(this, Characteristics.ButtonConfig.uuid)
+    val lastError = IntegerCharacteristic(this, Characteristics.LastError.uuid)
+    val uptime = IntegerCharacteristic(this, Characteristics.Uptime.uuid)
+    val reset = IntegerCharacteristic(this, Characteristics.Reset.uuid)
+    val selfTest = IntegerCharacteristic(this, Characteristics.SelfTest.uuid)
+    val debug = IntegerCharacteristic(this, Characteristics.Debug.uuid)
+    val leftBehind = IntegerCharacteristic(this, Characteristics.LeftBehind.uuid)
+    val eddyStoneUid = BytesCharacteristic(this, Characteristics.EddystoneUID.uuid)
+    val eddyStoneUrl = BytesCharacteristic(this, Characteristics.EddystoneURL.uuid)
+    val eddyStoneEid = BytesCharacteristic(this, Characteristics.EddystoneEID.uuid)
+    val color = BytesCharacteristic(this, Characteristics.Color.uuid)
+    val hardwareCreateDate = BytesCharacteristic(this, Characteristics.HardwareCreateDate.uuid)
 
     companion object {
 
-        val uuid = UUID.fromString("a44eacf4-0104-0001-0000-5f784c9977b5")
+        val uuid: UUID = UUID.fromString("a44eacf4-0104-0001-0000-5f784c9977b5")
 
-        enum class characteristics(val uuid: UUID) {
+        enum class Characteristics(val uuid: UUID) {
             StayAwake(UUID.fromString(          "a44eacf4-0104-0001-0001-5f784c9977b5")),
             Unlock(UUID.fromString(             "a44eacf4-0104-0001-0002-5f784c9977b5")),
             Lock(UUID.fromString(               "a44eacf4-0104-0001-0003-5f784c9977b5")),

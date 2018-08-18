@@ -11,18 +11,18 @@ class ControlService(device: XYBluetoothDevice) : Service(device) {
             return uuid
         }
 
-    val buzzer = IntegerCharacteristic(this, characteristics.Buzzer.uuid)
-    val handshake = IntegerCharacteristic(this, characteristics.Handshake.uuid)
-    val version = StringCharacteristic(this, characteristics.Version.uuid)
-    val buzzerSelect = IntegerCharacteristic(this, characteristics.BuzzerSelect.uuid)
-    val surge = IntegerCharacteristic(this, characteristics.Surge.uuid)
-    val button = IntegerCharacteristic(this, characteristics.Button.uuid)
-    val disconnect = IntegerCharacteristic(this, characteristics.Disconnect.uuid)
+    val buzzer = IntegerCharacteristic(this, Characteristics.Buzzer.uuid)
+    val handshake = IntegerCharacteristic(this, Characteristics.Handshake.uuid)
+    val version = StringCharacteristic(this, Characteristics.Version.uuid)
+    val buzzerSelect = IntegerCharacteristic(this, Characteristics.BuzzerSelect.uuid)
+    val surge = IntegerCharacteristic(this, Characteristics.Surge.uuid)
+    val button = IntegerCharacteristic(this, Characteristics.Button.uuid)
+    val disconnect = IntegerCharacteristic(this, Characteristics.Disconnect.uuid)
 
     companion object {
-        val uuid = UUID.fromString("F014ED15-0439-3000-E001-00001001FFFF")
+        val uuid: UUID = UUID.fromString("F014ED15-0439-3000-E001-00001001FFFF")
 
-        enum class characteristics(val uuid: UUID) {
+        enum class Characteristics(val uuid: UUID) {
             Buzzer(UUID.fromString("F014FFF1-0439-3000-E001-00001001FFFF")),
             Handshake(UUID.fromString("F014FFF2-0439-3000-E001-00001001FFFF")),
             Version(UUID.fromString("F014FFF4-0439-3000-E001-00001001FFFF")),
