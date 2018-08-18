@@ -228,57 +228,51 @@ open class XYBluetoothGatt protected constructor(
         return asyncBle {
             logInfo("disconnect")
             var error: XYBluetoothError? = null
-            var value: Boolean? = null
 
-            val gatt = this@XYBluetoothGatt.gatt
+            val gatt = this@XYBluetoothGatt.gatt ?: return@asyncBle XYBluetoothResult(true, XYBluetoothError("Already Disconnected"))
 
-            if (gatt == null) {
-                error = XYBluetoothError("asyncDisconnect: No Gatt")
-            }
-
-            if (gatt != null) {
-                val listenerName = "asyncDisconnect$nowNano"
-                value = suspendCoroutine { cont ->
-                    val listener = object : XYBluetoothGattCallback() {
-                        override fun onConnectionStateChange(gatt: BluetoothGatt?, status: Int, newState: Int) {
-                            super.onConnectionStateChange(gatt, status, newState)
-                            when {
-                                status == BluetoothGatt.GATT_FAILURE -> {
-                                    error = XYBluetoothError("asyncDisconnect: disconnection failed(status): $status : $newState")
-                                    removeGattListener(listenerName)
-                                    cont.resume(null)
-                                }
-                                newState == BluetoothGatt.STATE_DISCONNECTED -> {
-                                    removeGattListener(listenerName)
-                                    cont.resume(true)
-                                }
-                                newState == BluetoothGatt.STATE_DISCONNECTING -> {
-                                    //wait some more
-                                }
-                                else -> {
-                                    //error = XYBluetoothError("asyncDisconnect: connection failed(state): $status : $newState")
-                                    //cont.resume(null)
-                                }
+            val listenerName = "asyncDisconnect$nowNano"
+            val value = suspendCoroutine<Boolean> { cont ->
+                val listener = object : XYBluetoothGattCallback() {
+                    override fun onConnectionStateChange(gatt: BluetoothGatt?, status: Int, newState: Int) {
+                        super.onConnectionStateChange(gatt, status, newState)
+                        when {
+                            status == BluetoothGatt.GATT_FAILURE -> {
+                                error = XYBluetoothError("asyncDisconnect: disconnection failed(status): $status : $newState")
+                                removeGattListener(listenerName)
+                                cont.resume(false)
+                            }
+                            newState == BluetoothGatt.STATE_DISCONNECTED -> {
+                                removeGattListener(listenerName)
+                                cont.resume(true)
+                            }
+                            newState == BluetoothGatt.STATE_DISCONNECTING -> {
+                                //wait some more
+                            }
+                            else -> {
+                                //error = XYBluetoothError("asyncDisconnect: connection failed(state): $status : $newState")
+                                //cont.resume(null)
                             }
                         }
                     }
-                    addGattListener(listenerName, listener)
+                }
+                addGattListener(listenerName, listener)
 
-                    when (connectionState) {
-                        ConnectionState.Disconnected -> {
-                            logInfo("asyncDisconnect:already disconnected")
-                            removeGattListener(listenerName)
-                            cont.resume(true)
-                        }
-                        ConnectionState.Disconnecting -> logInfo("asyncDisconnect:disconnecting")
-                        //dont call connect since already in progress
-                        else -> {
-                            logInfo("asyncDisconnect:starting disconnect")
-                            gatt.disconnect()
-                        }
+                when (connectionState) {
+                    ConnectionState.Disconnected -> {
+                        logInfo("asyncDisconnect:already disconnected")
+                        removeGattListener(listenerName)
+                        cont.resume(true)
+                    }
+                    ConnectionState.Disconnecting -> logInfo("asyncDisconnect:disconnecting")
+                    //dont call connect since already in progress
+                    else -> {
+                        logInfo("asyncDisconnect:starting disconnect")
+                        gatt.disconnect()
                     }
                 }
             }
+
             return@asyncBle XYBluetoothResult(value, error)
         }
     }
@@ -286,13 +280,14 @@ open class XYBluetoothGatt protected constructor(
     protected fun close() : Deferred<XYBluetoothResult<Boolean>> {
         return asyncBle {
             logInfo("close")
+            val gatt = gatt ?: return@asyncBle XYBluetoothResult(true)
             if (connectionState != ConnectionState.Disconnected) {
                 disconnect().await()
             }
-            gatt?.close()
+            gatt.close()
             logInfo("close: Closed")
             removeGattListener("default")
-            gatt = null
+            this@XYBluetoothGatt.gatt = null
             return@asyncBle XYBluetoothResult(true)
         }
     }
