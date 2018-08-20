@@ -12,7 +12,6 @@ import network.xyo.ble.devices.XY4BluetoothDevice
 import network.xyo.ble.sample.R
 import network.xyo.ui.ui
 
-//TODO - this is server only?
 class AlertFragment : XYAppBaseFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,

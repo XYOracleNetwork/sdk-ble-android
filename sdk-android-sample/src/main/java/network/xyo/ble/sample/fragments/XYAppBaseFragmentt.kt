@@ -24,8 +24,6 @@ abstract class XYAppBaseFragment : XYBaseFragment() {
         activity?.hideProgressSpinner()
     }
 
-    open fun update() {}
-
     open fun unsupported(text: String) {
         activity?.showToast(text)
         ui {

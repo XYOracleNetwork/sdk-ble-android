@@ -40,10 +40,10 @@ class InfoFragment : XYAppBaseFragment(), View.OnClickListener {
         super.onResume()
         logInfo("onResume: InfoFragment")
         updateAdList()
-        update()
+        updateUI()
     }
 
-    override fun update() {
+    private fun updateUI() {
         ui {
             logInfo("update")
             if (activity?.device != null) {
@@ -127,13 +127,6 @@ class InfoFragment : XYAppBaseFragment(), View.OnClickListener {
             // button_connected.text = "Disconnected"
         }
 
-    }
-
-    private fun selfTest() {
-        logInfo("selfTest")
-        launch(CommonPool) {
-            val res = (activity?.device as? XY4BluetoothDevice)?.primary?.reset?.get()?.await()
-        }
     }
 
     private fun find() {

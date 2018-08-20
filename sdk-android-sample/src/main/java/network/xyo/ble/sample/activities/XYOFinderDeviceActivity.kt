@@ -59,24 +59,21 @@ class XYOFinderDeviceActivity : XYOAppBaseActivity() {
 
     private val xy3DeviceListener = object : XY3BluetoothDevice.Listener() {
         override fun entered(device: XYBluetoothDevice) {
-            update()
             showToast("Entered")
         }
 
         override fun exited(device: XYBluetoothDevice) {
-            update()
             showToast("Exited")
         }
 
         override fun detected(device: XYBluetoothDevice) {
-            update()
+
         }
 
         override fun connectionStateChanged(device: XYBluetoothDevice, newState: Int) {
             logInfo("connectionStateChanged: $newState")
             if (newState == 2) {
                 showToast("Connected")
-                update()
             } else {
                 showToast("Disconnected")
             }
@@ -97,24 +94,20 @@ class XYOFinderDeviceActivity : XYOAppBaseActivity() {
 
     private val xy4DeviceListener = object : XY4BluetoothDevice.Listener() {
         override fun entered(device: XYBluetoothDevice) {
-            update()
             showToast("Entered")
         }
 
         override fun exited(device: XYBluetoothDevice) {
-            update()
             showToast("Exited")
         }
 
         override fun detected(device: XYBluetoothDevice) {
-            update()
         }
 
         override fun connectionStateChanged(device: XYBluetoothDevice, newState: Int) {
             logInfo("connectionStateChanged: $newState")
             if (newState == 2) {
                 showToast("Connected")
-                update()
             } else {
                 showToast("Disconnected")
             }
@@ -168,11 +161,6 @@ class XYOFinderDeviceActivity : XYOAppBaseActivity() {
         progress_spinner.visibility = View.GONE
     }
 
-    fun update() {
-        val frag = sectionsPagerAdapter.getFragmentByPosition(container.currentItem)
-        (frag as? XYAppBaseFragment)?.update()
-    }
-
 //    private fun readUpdates() {
 //        launch(CommonPool) {
 //            updateStayAwakeEnabledStates().await()
@@ -180,8 +168,7 @@ class XYOFinderDeviceActivity : XYOAppBaseActivity() {
 //            update()
 //        }
 //    }
-
-
+    
     companion object {
         var EXTRA_DEVICEHASH = "DeviceHash"
         private val TAG = XYOFinderDeviceActivity::class.java.simpleName
@@ -239,8 +226,5 @@ class XYOFinderDeviceActivity : XYOAppBaseActivity() {
             return fragment
         }
 
-        fun getFragmentByPosition(position: Int): XYBaseFragment {
-            return fragments.get(position)
-        }
     }
 }
