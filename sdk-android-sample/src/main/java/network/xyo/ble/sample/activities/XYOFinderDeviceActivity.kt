@@ -6,7 +6,8 @@ import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
 import android.util.SparseArray
-import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import kotlinx.android.synthetic.main.device_activity.*
 import network.xyo.ble.devices.XY3BluetoothDevice
@@ -27,7 +28,7 @@ class XYOFinderDeviceActivity : XYOAppBaseActivity() {
 
     var device: XYBluetoothDevice? = null
     private lateinit var sectionsPagerAdapter: SectionsPagerAdapter
-    lateinit var data : XYDeviceData
+    lateinit var data: XYDeviceData
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -154,11 +155,11 @@ class XYOFinderDeviceActivity : XYOAppBaseActivity() {
     }
 
     fun showProgressSpinner() {
-        progress_spinner.visibility = View.VISIBLE
+        progress_spinner.visibility = VISIBLE
     }
 
     fun hideProgressSpinner() {
-        progress_spinner.visibility = View.GONE
+        progress_spinner.visibility = GONE
     }
 
 //    private fun readUpdates() {
@@ -168,7 +169,7 @@ class XYOFinderDeviceActivity : XYOAppBaseActivity() {
 //            update()
 //        }
 //    }
-    
+
     companion object {
         var EXTRA_DEVICEHASH = "DeviceHash"
         private val TAG = XYOFinderDeviceActivity::class.java.simpleName

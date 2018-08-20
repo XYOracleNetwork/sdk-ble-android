@@ -266,6 +266,26 @@
                         android:layout_marginStart="16dp"
                         android:text="@string/btn_unlock" />
                 </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/layout_margin_normal"
+                    android:orientation="horizontal">
+
+                    <network.xyo.ui.views.XYButton
+                        android:id="@+id/button_enable_notify"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/btn_enable_notify" />
+
+                    <network.xyo.ui.views.XYButton
+                        android:id="@+id/button_disable_notify"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:text="@string/btn_disable_notify" />
+                </LinearLayout>
             </LinearLayout>
 
             <View style="@style/divider" />

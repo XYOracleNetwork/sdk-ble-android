@@ -2,8 +2,10 @@ package network.xyo.ble.sample.adapters
 
 import android.app.Activity
 import android.view.View
+import android.view.View.GONE
 import android.view.ViewGroup
 import android.widget.BaseAdapter
+import kotlinx.android.synthetic.main.activity_xyo_ble_sample.*
 import network.xyo.ble.devices.XYBluetoothDevice
 import network.xyo.ble.devices.XYFinderBluetoothDevice
 import network.xyo.ble.sample.R
@@ -17,7 +19,7 @@ class XYDeviceAdapter(private val activity: Activity) : BaseAdapter() {
     private var devices: List<XYFinderBluetoothDevice>
     private var lastSort = System.currentTimeMillis()
 
-    private val scanner : XYFilteredSmartScan
+    private val scanner: XYFilteredSmartScan
         get() {
             return (activity.applicationContext as XYApplication).scanner
         }
@@ -37,9 +39,12 @@ class XYDeviceAdapter(private val activity: Activity) : BaseAdapter() {
     }
 
     fun refreshDevices() {
-        if ((System.currentTimeMillis() -  lastSort) > 5000) {
+        if ((System.currentTimeMillis() - lastSort) > 5000) {
             devices = XYFinderBluetoothDevice.sortedList(scanner.devices)
-            ui { notifyDataSetChanged() }
+            ui {
+                activity.progress_spinner_scanner.visibility = GONE
+                notifyDataSetChanged()
+            }
             lastSort = System.currentTimeMillis()
         }
     }
