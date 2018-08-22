@@ -7,7 +7,6 @@ import network.xyo.ble.devices.XY4BluetoothDevice
 import network.xyo.ble.devices.XYFinderBluetoothDevice
 import network.xyo.ble.sample.R
 import network.xyo.ble.sample.adapters.XYDeviceAdapter
-import network.xyo.core.XYBase
 import network.xyo.core.XYPermissions
 
 class XYOBleSampleActivity : XYOAppBaseActivity() {
@@ -16,7 +15,6 @@ class XYOBleSampleActivity : XYOAppBaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         logInfo("onCreate")
         super.onCreate(savedInstanceState)
-        XYBase.init(this)
         setContentView(R.layout.activity_xyo_ble_sample)
 
         adapter = XYDeviceAdapter(this)

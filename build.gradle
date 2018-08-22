@@ -3,9 +3,9 @@
 buildscript {
     ext.kotlin_version = '1.2.60'
     ext.android_plugin_version = '3.1.4'
-    ext.android_support_version = '27.1.1'
     ext.google_services_version = '4.0.1'
     ext.dagger_version = '2.10'
+    ext.androidx_version = '1.0.0-rc01'
 
     repositories {
         jcenter()
@@ -15,6 +15,8 @@ buildscript {
         classpath "com.android.tools.build:gradle:$android_plugin_version"
         classpath "com.google.gms:google-services:$google_services_version"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath 'com.github.dcendents:android-maven-gradle-plugin:2.1'
+
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
@@ -26,6 +28,7 @@ buildscript {
         ]
     }
 }
+
 allprojects {
     repositories {
         jcenter()

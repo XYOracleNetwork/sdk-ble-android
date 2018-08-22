@@ -1,13 +1,15 @@
 package network.xyo.ble.sample.activities
 
 import android.os.Bundle
-import android.support.design.widget.TabLayout
-import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentManager
-import android.support.v4.app.FragmentPagerAdapter
 import android.util.SparseArray
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentPagerAdapter
+import androidx.viewpager.widget.PagerAdapter
+import androidx.viewpager.widget.ViewPager
+import com.google.android.material.tabs.TabLayout
 import kotlinx.android.synthetic.main.device_activity.*
 import network.xyo.ble.devices.XY3BluetoothDevice
 import network.xyo.ble.devices.XY4BluetoothDevice
@@ -48,7 +50,7 @@ class XYOFinderDeviceActivity : XYOAppBaseActivity() {
         sectionsPagerAdapter = SectionsPagerAdapter(supportFragmentManager)
         container.adapter = sectionsPagerAdapter
 
-        container.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tabs))
+        container.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tabs) as ViewPager.OnPageChangeListener)
         tabs.addOnTabSelectedListener(TabLayout.ViewPagerOnTabSelectedListener(container))
     }
 

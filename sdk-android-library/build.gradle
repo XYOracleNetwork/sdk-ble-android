@@ -7,11 +7,9 @@ group='com.github.XYOracleNetwork'
 
 buildscript {
     repositories {
-        mavenCentral()
-        mavenLocal()
         jcenter()
-        google()
         maven { url 'https://jitpack.io' }
+        google()
     }
 
     dependencies {
@@ -29,12 +27,12 @@ kotlin {
 }
 
 android {
-    compileSdkVersion 27
+    compileSdkVersion 28
     buildToolsVersion '27.0.3'
 
     defaultConfig {
-        minSdkVersion 19
-        targetSdkVersion 27
+        minSdkVersion 21
+        targetSdkVersion 28
         defaultPublishConfig 'release'
         versionName "0.1"
     }
@@ -66,9 +64,11 @@ android {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    api "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
-    api "org.jetbrains.kotlinx:kotlinx-coroutines-core:0.22.5"
-    api 'com.github.kotlin-graphics:kotlin-unsigned:v2.1'
-    //api project(path: ':xycore')
-    implementation 'com.github.XYOracleNetwork:sdk-core-android:-SNAPSHOT'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:0.22.5"
+    implementation 'com.github.kotlin-graphics:kotlin-unsigned:v2.1'
+    implementation project(path: ':xycore')
+    //implementation 'com.github.XYOracleNetwork:sdk-core-android:-SNAPSHOT'
+
+    implementation "androidx.annotation:annotation:$androidx_version"
 }

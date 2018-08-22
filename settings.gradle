@@ -1,8 +1,8 @@
 include ':sdk-android-sample'
 include ':sdk-android-library'
 
-//include 'xycore'
-//project(':xycore').projectDir = new File(settingsDir, '../sdk-core-android/core-android-library')
-//
-//include 'xyui'
-//project(':xyui').projectDir = new File(settingsDir, '../sdk-ui-android/ui-android-library')
+include 'xycore'
+project(':xycore').projectDir = new File(settingsDir, '../sdk-core-android/core-android-library')
+
+include 'xyui'
+project(':xyui').projectDir = new File(settingsDir, '../sdk-ui-android/ui-android-library')

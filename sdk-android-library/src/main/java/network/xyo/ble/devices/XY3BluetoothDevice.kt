@@ -11,8 +11,6 @@ import network.xyo.ble.services.xy3.*
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.Deferred
 import kotlinx.coroutines.experimental.launch
-import network.xyo.ble.services.standard.*
-import network.xyo.ble.services.xy3.*
 import unsigned.Ushort
 import java.nio.ByteBuffer
 import java.util.*
@@ -102,6 +100,21 @@ open class XY3BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
         }
     }
 
+    private fun enableButtonNotifyIfConnected() {
+        logInfo("enableButtonNotifyIfConnected")
+        if (connectionState == ConnectionState.Connected) {
+            logInfo("enableButtonNotifyIfConnected: Connected")
+            controlService.button.enableNotify(true)
+        }
+    }
+
+    override fun reportButtonPressed(state: ButtonPress) {
+        super.reportButtonPressed(state)
+        //every time a notify fires, we have to re-enable it
+        enableButtonNotifyIfConnected()
+        XY3BluetoothDevice.reportGlobalButtonPressed(this, state)
+    }
+
     open class Listener : XYFinderBluetoothDevice.Listener()
 
     companion object : XYBase() {
@@ -112,6 +125,8 @@ open class XY3BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
         private const val BUTTON_ADVERTISEMENT_LENGTH = 30 * 1000
 
         private val DEFAULT_LOCK_CODE = byteArrayOf(0x2f.toByte(), 0xbe.toByte(), 0xa2.toByte(), 0x07.toByte(), 0x52.toByte(), 0xfe.toByte(), 0xbf.toByte(), 0x31.toByte(), 0x1d.toByte(), 0xac.toByte(), 0x5d.toByte(), 0xfa.toByte(), 0x7d.toByte(), 0x77.toByte(), 0x76.toByte(), 0x80.toByte())
+
+        protected val globalListeners = HashMap<String, Listener>()
 
         fun enable(enable: Boolean) {
             if (enable) {
@@ -151,6 +166,45 @@ open class XY3BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
                 buttonBit == Ushort(0x0008)
             } else {
                 false
+            }
+        }
+
+        fun addGlobalListener(key: String, listener: Listener) {
+            launch(CommonPool) {
+                synchronized(globalListeners) {
+                    globalListeners.put(key, listener)
+                }
+            }
+        }
+
+        fun removeGlobalListener(key: String) {
+            launch(CommonPool) {
+                synchronized(globalListeners) {
+                    globalListeners.remove(key)
+                }
+            }
+        }
+
+        fun reportGlobalButtonPressed(device: XY3BluetoothDevice, state: ButtonPress) {
+            logInfo("reportButtonPressed (Global)")
+            launch(CommonPool) {
+                synchronized(globalListeners) {
+                    for (listener in globalListeners) {
+                        val xyFinderListener = listener.value as? XYFinderBluetoothDevice.Listener
+                        if (xyFinderListener != null) {
+                            logInfo("reportButtonPressed: $xyFinderListener")
+                            launch(CommonPool) {
+                                when (state) {
+                                    ButtonPress.Single -> xyFinderListener.buttonSinglePressed(device)
+                                    ButtonPress.Double -> xyFinderListener.buttonDoublePressed(device)
+                                    ButtonPress.Long -> xyFinderListener.buttonLongPressed(device)
+                                    else -> {
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
 

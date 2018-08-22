@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -8,7 +8,7 @@
     android:theme="@style/XYTheme"
     tools:context="network.xyo.ble.sample.activities.XYOFinderDeviceActivity">
 
-    <android.support.design.widget.AppBarLayout
+    <com.google.android.material.widget.AppBarLayout
         android:id="@+id/appbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -26,70 +26,70 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <android.support.design.widget.TabLayout
+        <com.google.android.material.tabs.TabLayout
             android:id="@+id/tabs"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:tabMode="scrollable">
 
-            <android.support.design.widget.TabItem
+            <com.google.android.material.tabs.TabItem
                 android:id="@+id/tabGeneral"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/info" />
 
-            <android.support.design.widget.TabItem
+            <com.google.android.material.tabs.TabItem
                 android:id="@+id/tabAlert"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/alert" />
 
-            <android.support.design.widget.TabItem
+            <com.google.android.material.tabs.TabItem
                 android:id="@+id/tabBattery"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/battery" />
 
-            <android.support.design.widget.TabItem
+            <com.google.android.material.tabs.TabItem
                 android:id="@+id/tabTime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/time" />
 
-            <android.support.design.widget.TabItem
+            <com.google.android.material.tabs.TabItem
                 android:id="@+id/tabInfo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/device" />
 
-            <android.support.design.widget.TabItem
+            <com.google.android.material.tabs.TabItem
                 android:id="@+id/tabGap"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/gap" />
 
-            <android.support.design.widget.TabItem
+            <com.google.android.material.tabs.TabItem
                 android:id="@+id/tabGatt"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/gatt" />
 
-            <android.support.design.widget.TabItem
+            <com.google.android.material.tabs.TabItem
                 android:id="@+id/tabLinkLoss"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/linkloss" />
 
-            <android.support.design.widget.TabItem
+            <com.google.android.material.tabs.TabItem
                 android:id="@+id/tabTx"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/tx" />
 
-        </android.support.design.widget.TabLayout>
-    </android.support.design.widget.AppBarLayout>
+        </com.google.android.material.tabs.TabLayout>
+    </com.google.android.material.widget.AppBarLayout>
 
-    <android.support.v4.view.ViewPager
+    <androidx.viewpager.widget.ViewPager
         android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -105,4 +105,4 @@
         android:background="@android:color/transparent"
         android:visibility="gone" />
 
-</android.support.design.widget.CoordinatorLayout>
+</com.google.android.material.widget.CoordinatorLayout>

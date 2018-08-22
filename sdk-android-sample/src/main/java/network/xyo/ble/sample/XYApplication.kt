@@ -2,7 +2,7 @@ package network.xyo.ble.sample
 
 import android.app.Application
 import android.os.Build
-import com.squareup.leakcanary.LeakCanary
+//import com.squareup.leakcanary.LeakCanary
 import network.xyo.ble.devices.*
 import network.xyo.ble.scanner.XYFilteredSmartScan
 import network.xyo.ble.scanner.XYFilteredSmartScanLegacy
@@ -45,6 +45,6 @@ class XYApplication : Application() {
     }
 
     private fun initializeLeakDetection() {
-        if (BuildConfig.DEBUG) LeakCanary.install(this)
+        //if (BuildConfig.DEBUG) LeakCanary.install(this)
     }
 }

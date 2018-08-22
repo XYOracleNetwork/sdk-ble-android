@@ -103,7 +103,7 @@ open class XYFinderBluetoothDevice(context: Context, scanResult: XYScanResult, h
 
     //signal the user to where it is, usually make it beep
     open fun find() : Deferred<XYBluetoothResult<Int>> {
-        logException(UnsupportedOperationException(), true)
+        logError(UnsupportedOperationException(), true)
         return asyncBle {
             return@asyncBle XYBluetoothResult<Int>(XYBluetoothError("Not Implemented"))
         }
@@ -111,49 +111,49 @@ open class XYFinderBluetoothDevice(context: Context, scanResult: XYScanResult, h
 
     //turn off finding, if supported
     open fun stopFind() : Deferred<XYBluetoothResult<Int>> {
-        logException(UnsupportedOperationException(), true)
+        logError(UnsupportedOperationException(), true)
         return asyncBle {
             return@asyncBle XYBluetoothResult<Int>(XYBluetoothError("Not Implemented"))
         }
     }
 
     open fun lock() : Deferred<XYBluetoothResult<ByteArray>> {
-        logException(UnsupportedOperationException(), true)
+        logError(UnsupportedOperationException(), true)
         return asyncBle {
             return@asyncBle XYBluetoothResult<ByteArray>(XYBluetoothError("Not Implemented"))
         }
     }
 
     open fun unlock() : Deferred<XYBluetoothResult<ByteArray>> {
-        logException(UnsupportedOperationException(), true)
+        logError(UnsupportedOperationException(), true)
         return asyncBle {
             return@asyncBle XYBluetoothResult<ByteArray>(XYBluetoothError("Not Implemented"))
         }
     }
 
     open fun stayAwake() : Deferred<XYBluetoothResult<Int>> {
-        logException(UnsupportedOperationException(), true)
+        logError(UnsupportedOperationException(), true)
         return asyncBle {
             return@asyncBle XYBluetoothResult<Int>(XYBluetoothError("Not Implemented"))
         }
     }
 
     open fun fallAsleep() : Deferred<XYBluetoothResult<Int>> {
-        logException(UnsupportedOperationException(), true)
+        logError(UnsupportedOperationException(), true)
         return asyncBle {
             return@asyncBle XYBluetoothResult<Int>(XYBluetoothError("Not Implemented"))
         }
     }
 
     open fun restart() : Deferred<XYBluetoothResult<Int>> {
-        logException(UnsupportedOperationException(), true)
+        logError(UnsupportedOperationException(), true)
         return asyncBle {
             return@asyncBle XYBluetoothResult<Int>(XYBluetoothError("Not Implemented"))
         }
     }
 
     open fun batteryLevel() : Deferred<XYBluetoothResult<Int>> {
-        logException(UnsupportedOperationException(), true)
+        logError(UnsupportedOperationException(), true)
         return asyncBle {
             return@asyncBle XYBluetoothResult<Int>(XYBluetoothError("Not Implemented"))
         }
