@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import kotlinx.android.synthetic.main.fragment_tx_power.*
+import kotlinx.coroutines.experimental.launch
 import network.xyo.ble.devices.XY2BluetoothDevice
 import network.xyo.ble.devices.XY3BluetoothDevice
 import network.xyo.ble.devices.XY4BluetoothDevice
@@ -31,21 +32,24 @@ class TxPowerFragment : XYAppBaseFragment() {
 
     override fun onResume() {
         super.onResume()
-        updateUI()
+
+        if (activity?.data?.txPowerLevel.isNullOrEmpty() && activity?.isBusy() == false) {
+            setTxValues()
+        } else {
+            updateUI()
+        }
     }
 
     private fun updateUI() {
         ui {
-            button_tx_refresh?.isEnabled = true
             activity?.hideProgressSpinner()
 
-            text_tx_power.text = activity?.data?.txPowerLevel
+            text_tx_power?.text = activity?.data?.txPowerLevel
         }
     }
 
     private fun setTxValues() {
         ui {
-            button_tx_refresh.isEnabled = false
             activity?.showProgressSpinner()
 
             text_tx_power.text = ""
@@ -65,37 +69,49 @@ class TxPowerFragment : XYAppBaseFragment() {
                 }
             }
             is XY2BluetoothDevice -> {
-                unsupported("Not supported by XY2BluetoothDevice")
+                text_tx_power.text = getString(R.string.not_supported_x2)
             }
             else -> {
-                unsupported("unknown device")
+                text_tx_power.text = getString(R.string.unknown_device)
             }
         }
     }
 
     private fun getX4Values(device: XY4BluetoothDevice) {
-        device.connection {
-            val result = device.txPowerService.txPowerLevel.get().await()
-            activity?.data?.txPowerLevel = "${result.value ?: result.error?.message ?: "Error"}"
+        launch {
+            var hasConnectionError = true
 
-            ui {
-                this@TxPowerFragment.isVisible.let {
-                    updateUI()
+            val conn = device.connection {
+                hasConnectionError = false
+
+                device.txPowerService.txPowerLevel.get().await().let { it ->
+                    activity?.data?.txPowerLevel = "${it.value ?: it.error?.message ?: "Error"}"
                 }
+
             }
+            conn.await()
+
+            updateUI()
+            checkConnectionError(hasConnectionError)
         }
     }
 
     private fun getX3Values(device: XY3BluetoothDevice) {
-        device.connection {
-            val result = device.txPowerService.txPowerLevel.get().await()
-            activity?.data?.txPowerLevel = "${result.value ?: result.error?.message ?: "Error"}"
+        launch {
+            var hasConnectionError = true
 
-            ui {
-                this@TxPowerFragment.isVisible.let {
-                    updateUI()
+            val conn = device.connection {
+                hasConnectionError = false
+
+                device.txPowerService.txPowerLevel.get().await().let { it ->
+                    activity?.data?.txPowerLevel = "${it.value ?: it.error?.message ?: "Error"}"
                 }
+
             }
+            conn.await()
+
+            updateUI()
+            checkConnectionError(hasConnectionError)
         }
     }
 

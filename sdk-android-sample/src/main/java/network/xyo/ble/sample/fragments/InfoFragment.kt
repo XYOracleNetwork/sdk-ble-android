@@ -39,7 +39,7 @@ class InfoFragment : XYAppBaseFragment(), View.OnClickListener {
         button_enable_notify.setOnClickListener(this)
 
         when (activity?.device) {
-            is XY4BluetoothDevice  -> {
+            is XY4BluetoothDevice -> {
                 button_enable_notify.visibility = VISIBLE
                 button_disable_notify.visibility = VISIBLE
             }
@@ -60,6 +60,10 @@ class InfoFragment : XYAppBaseFragment(), View.OnClickListener {
         super.onResume()
         logInfo("onResume: InfoFragment")
         updateAdList()
+        updateUI()
+    }
+
+    override fun update() {
         updateUI()
     }
 
@@ -93,9 +97,6 @@ class InfoFragment : XYAppBaseFragment(), View.OnClickListener {
 
     override fun onClick(view: View?) {
         when (view?.id) {
-            R.id.button_startTest -> {
-               startTest()
-            }
             R.id.button_connected -> {
                 toggleConnection()
             }
@@ -123,34 +124,22 @@ class InfoFragment : XYAppBaseFragment(), View.OnClickListener {
         }
     }
 
-    private fun startTest() {
-        val xy4 = activity?.device as? XY4BluetoothDevice
-        if (xy4 != null) {
-            testXy4()
-        } else {
-            val xy3 = activity?.device as? XY3BluetoothDevice
-            if (xy3 != null) {
-                testXy3()
-            } else {
-
-            }
-        }
-    }
-
     private fun toggleConnection() {
         val device: XYBluetoothDevice? = activity?.device
         if (device?.connectionState == XYBluetoothGatt.ConnectionState.Connected) {
             device.disconnect()
-            // button_connected.text = "Connect"
+            updateUI()
         } else {
+           //
+            // ui { activity?.showProgressSpinner() }
             launch {
                 val connection = device?.connectGatt()?.await()
                 val error = connection?.error
                 if (!error?.message.isNullOrEmpty()) {
                     activity?.showToast(error?.message.toString())
                 }
+                updateUI()
             }
-            // button_connected.text = "Disconnected"
         }
 
     }
@@ -278,12 +267,12 @@ class InfoFragment : XYAppBaseFragment(), View.OnClickListener {
         }
     }
 
-    private fun enableButtonNotify(enable : Boolean): Deferred<Unit> {
+    private fun enableButtonNotify(enable: Boolean): Deferred<Unit> {
         return async(CommonPool) {
             val xy4 = activity?.device as? XY4BluetoothDevice
             if (xy4 != null) {
                 val notify = xy4.primary.buttonState.enableNotify(enable).await()
-                ui{
+                ui {
                     showToast(notify.toString())
                 }
 
@@ -291,7 +280,7 @@ class InfoFragment : XYAppBaseFragment(), View.OnClickListener {
                 val xy3 = activity?.device as? XY3BluetoothDevice
                 if (xy3 != null) {
                     val notify = xy3.controlService.button.enableNotify(enable).await()
-                    ui{
+                    ui {
                         showToast(notify.toString())
                     }
                 }
@@ -348,10 +337,6 @@ class InfoFragment : XYAppBaseFragment(), View.OnClickListener {
     }
 
     private fun testXy4() {
-        //TODO - disable btn, show progress
-        logInfo("textXy4")
-        //updateLockValue()
-
         launch {
             val xy4 = activity?.device as? XY4BluetoothDevice
             xy4?.connection {
@@ -366,18 +351,6 @@ class InfoFragment : XYAppBaseFragment(), View.OnClickListener {
                 }
             }
         }
-    }
-
-    private fun testXy3() {
-
-    }
-
-    private fun testXy2() {
-
-    }
-
-    private fun testXyGps() {
-
     }
 
     companion object {

@@ -10,8 +10,6 @@ import network.xyo.ble.sample.R
 import network.xyo.ble.sample.adapters.XYDeviceAdapter
 import network.xyo.core.XYBase
 import network.xyo.core.XYPermissions
-import android.app.ProgressDialog
-
 
 
 class XYOBleSampleActivity : XYOAppBaseActivity() {

@@ -5,16 +5,14 @@ import android.content.Intent
 import android.util.AttributeSet
 import android.view.View
 import android.widget.RelativeLayout
-import android.widget.TextView
-import network.xyo.core.XYBase
+import kotlinx.android.synthetic.main.device_item.view.*
 import network.xyo.ble.devices.XYBluetoothDevice
-
+import network.xyo.ble.devices.XYFinderBluetoothDevice
 import network.xyo.ble.devices.XYIBeaconBluetoothDevice
+import network.xyo.ble.gatt.XYBluetoothGatt
 import network.xyo.ble.sample.R
 import network.xyo.ble.sample.activities.XYOFinderDeviceActivity
-import kotlinx.android.synthetic.main.device_item.view.*
-import network.xyo.ble.devices.XYFinderBluetoothDevice
-import network.xyo.ble.gatt.XYBluetoothGatt
+import network.xyo.core.XYBase
 
 /**
  * Created by arietrouw on 12/27/17.
@@ -46,24 +44,22 @@ class XYDeviceItemView(context: Context, attrs: AttributeSet) : RelativeLayout(c
             text_connected.text = (device?.connectionState == XYBluetoothGatt.ConnectionState.Connected).toString()
             text_address.text = device?.address
             text_rssi.text = device?.rssi.toString()
-            val majorLabelView = findViewById<TextView>(R.id.majorLabel)
-            val minorLabelView = findViewById<TextView>(R.id.minorLabel)
 
             val ibeacon = device as? XYIBeaconBluetoothDevice
             if (ibeacon != null) {
-                text_major.text = "0x${ibeacon.major.toInt().toString(16)}"
-                text_minor.text = "0x${ibeacon.minor.toInt().toString(16)}"
+                text_major.text = String.format(context.getString(R.string.hex_placeholder), ibeacon.major.toInt().toString(16))
+                text_minor.text = String.format(context.getString(R.string.hex_placeholder), ibeacon.minor.toInt().toString(16))
                 text_uuid.text = ibeacon.uuid.toString()
                 text_major.visibility = View.VISIBLE
                 text_minor.visibility = View.VISIBLE
-                majorLabelView.visibility = View.VISIBLE
-                minorLabelView.visibility = View.VISIBLE
+                majorLabel.visibility = View.VISIBLE
+                minorLabel.visibility = View.VISIBLE
             } else {
                 text_uuid.text = "N/A"
                 text_major.visibility = View.GONE
                 text_minor.visibility = View.GONE
-                majorLabelView.visibility = View.GONE
-                minorLabelView.visibility = View.GONE
+                majorLabel.visibility = View.GONE
+                minorLabel.visibility = View.GONE
             }
 
             text_pulses.text = device!!.detectCount.toString()

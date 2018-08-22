@@ -68,5 +68,7 @@
     <string name="alert_level">Alert Level:\u0020</string>
     <string name="not_supported">not supported</string>
     <string name="hex_placeholder">0x%s</string>
+    <string name="unknown_device">unknown device</string>
+    <string name="not_supported_x2">Not supported by XY2BluetoothDevice</string>
 
 </resources>

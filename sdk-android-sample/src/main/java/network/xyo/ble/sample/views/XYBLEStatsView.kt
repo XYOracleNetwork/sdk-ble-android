@@ -3,11 +3,9 @@ package network.xyo.ble.sample.views
 import android.content.Context
 import android.util.AttributeSet
 import android.widget.LinearLayout
-import android.widget.TextView
+import kotlinx.android.synthetic.main.blestats_view.view.*
 import network.xyo.ble.devices.XYBluetoothDevice
-import network.xyo.ble.sample.R
 import network.xyo.ble.sample.XYApplication
-
 import network.xyo.ble.scanner.XYFilteredSmartScan
 import network.xyo.core.XYBase
 
@@ -48,17 +46,10 @@ class XYBLEStatsView(context: Context, attrs: AttributeSet) : LinearLayout(conte
 
     fun update() {
         post {
-            val uptimeView = findViewById<TextView>(R.id.text_uptime)!!
-            uptimeView.text = ("%.2f").format(scanner.uptimeSeconds)
-
-            val pulseCountView = findViewById<TextView>(R.id.text_pulses)!!
-            pulseCountView.text = scanner.scanResultCount.toString()
-
-            val pulsePerSecView = findViewById<TextView>(R.id.text_pulses_per_second)!!
-            pulsePerSecView.text = ("%.2f").format(scanner.resultsPerSecond)
-
-            val devices = findViewById<TextView>(R.id.text_devices)
-            devices.text = scanner.devices.size.toString()
+            text_uptime.text = ("%.2f").format(scanner.uptimeSeconds)
+            text_pulses.text = scanner.scanResultCount.toString()
+            text_pulses_per_second.text = ("%.2f").format(scanner.resultsPerSecond)
+            text_devices.text = scanner.devices.size.toString()
         }
     }
 

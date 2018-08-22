@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import kotlinx.android.synthetic.main.fragment_alert.*
+import kotlinx.coroutines.experimental.launch
 import network.xyo.ble.devices.XY2BluetoothDevice
 import network.xyo.ble.devices.XY3BluetoothDevice
 import network.xyo.ble.devices.XY4BluetoothDevice
@@ -30,12 +31,17 @@ class AlertFragment : XYAppBaseFragment() {
 
     override fun onResume() {
         super.onResume()
-        updateUI()
+
+        if (activity?.data?.controlPoint.isNullOrEmpty() && activity?.isBusy() == false) {
+            setAlertValues()
+        } else {
+            updateUI()
+        }
+
     }
 
     private fun setAlertValues() {
         ui {
-            button_alert_refresh.isEnabled = false
             activity?.showProgressSpinner()
         }
 
@@ -49,10 +55,10 @@ class AlertFragment : XYAppBaseFragment() {
                 x3?.let { getX3Values(it) }
             }
             is XY2BluetoothDevice -> {
-                unsupported("Not supported by XY2BluetoothDevice")
+                text_control_point.text = getString(R.string.not_supported_x2)
             }
             else -> {
-                unsupported("unknown device")
+                text_control_point.text = getString(R.string.unknown_device)
             }
 
         }
@@ -60,73 +66,89 @@ class AlertFragment : XYAppBaseFragment() {
 
     private fun updateUI() {
         ui {
-            button_alert_refresh?.isEnabled = true
             activity?.hideProgressSpinner()
 
-            text_control_point.text = activity?.data?.controlPoint
-            text_unread_alert_status.text = activity?.data?.unreadAlertStatus
-            text_new_alert.text = activity?.data?.newAlert
-            text_new_alert_category.text = activity?.data?.supportedNewAlertCategory
-            text_unread_alert_category.text = activity?.data?.supportedUnreadAlertCategory
+            text_control_point?.text = activity?.data?.controlPoint
+            text_unread_alert_status?.text = activity?.data?.unreadAlertStatus
+            text_new_alert?.text = activity?.data?.newAlert
+            text_new_alert_category?.text = activity?.data?.supportedNewAlertCategory
+            text_unread_alert_category?.text = activity?.data?.supportedUnreadAlertCategory
         }
     }
 
     private fun getX4Values(device: XY4BluetoothDevice) {
-        device.connection {
-            var result = device.alertNotification.controlPoint.get().await()
-            activity?.data?.controlPoint = "${result.value ?: result.error?.message ?: "Error"}"
+        launch {
+            var hasConnectionError = true
 
-            result = device.alertNotification.unreadAlertStatus.get().await()
-            activity?.data?.unreadAlertStatus = "${result.value ?: result.error?.message
-            ?: "Error"}"
+            val conn = device.connection {
+                hasConnectionError = false
 
-            result = device.alertNotification.newAlert.get().await()
-            activity?.data?.newAlert = "${result.value ?: result.error?.message ?: "Error"}"
+                device.alertNotification.controlPoint.get().await().let { it ->
+                    activity?.data?.controlPoint = "${it.value ?: it.error?.message ?: "Error"}"
+                }
 
-            result = device.alertNotification.supportedNewAlertCategory.get().await()
-            activity?.data?.supportedNewAlertCategory = "${result.value ?: result.error?.message
-            ?: "Error"}"
+                device.alertNotification.unreadAlertStatus.get().await().let { it ->
+                    activity?.data?.unreadAlertStatus = "${it.value ?: it.error?.message
+                    ?: "Error"}"
+                }
 
-            result = device.alertNotification.supportedUnreadAlertCategory.get().await()
-            activity?.data?.supportedUnreadAlertCategory = "${result.value ?: result.error?.message
-            ?: "Error"}"
+                device.alertNotification.newAlert.get().await().let { it ->
+                    activity?.data?.newAlert = "${it.value ?: it.error?.message ?: "Error"}"
+                }
 
-            this@AlertFragment.isVisible.let {
-                updateUI()
+                device.alertNotification.supportedNewAlertCategory.get().await().let { it ->
+                    activity?.data?.supportedNewAlertCategory = "${it.value ?: it.error?.message
+                    ?: "Error"}"
+                }
+
+                device.alertNotification.supportedUnreadAlertCategory.get().await().let { it ->
+                    activity?.data?.supportedUnreadAlertCategory = "${it.value ?: it.error?.message
+                    ?: "Error"}"
+                }
+
             }
+            conn.await()
+
+            updateUI()
+            checkConnectionError(hasConnectionError)
         }
     }
 
     private fun getX3Values(device: XY3BluetoothDevice) {
-        device.connection {
-            var result = device.alertNotification.controlPoint.get().await()
-            activity?.data?.controlPoint = "${result.value ?: result.error?.message ?: "Error"}"
+        launch {
+            var hasConnectionError = true
 
-            result = device.alertNotification.unreadAlertStatus.get().await()
-            activity?.data?.unreadAlertStatus = "${result.value ?: result.error?.message
-            ?: "Error"}"
+            val conn = device.connection {
+                hasConnectionError = false
 
-            result = device.alertNotification.newAlert.get().await()
-            activity?.data?.newAlert = "${result.value ?: result.error?.message ?: "Error"}"
+                device.alertNotification.controlPoint.get().await().let { it ->
+                    activity?.data?.controlPoint = "${it.value ?: it.error?.message ?: "Error"}"
+                }
 
-            result = device.alertNotification.supportedNewAlertCategory.get().await()
-            activity?.data?.supportedNewAlertCategory = "${result.value ?: result.error?.message
-            ?: "Error"}"
+                device.alertNotification.unreadAlertStatus.get().await().let { it ->
+                    activity?.data?.unreadAlertStatus = "${it.value ?: it.error?.message
+                    ?: "Error"}"
+                }
 
-            result = device.alertNotification.supportedUnreadAlertCategory.get().await()
-            activity?.data?.supportedUnreadAlertCategory = "${result.value ?: result.error?.message
-            ?: "Error"}"
+                device.alertNotification.newAlert.get().await().let { it ->
+                    activity?.data?.newAlert = "${it.value ?: it.error?.message ?: "Error"}"
+                }
 
-            this@AlertFragment.isVisible.let {
-                updateUI()
+                device.alertNotification.supportedNewAlertCategory.get().await().let { it ->
+                    activity?.data?.supportedNewAlertCategory = "${it.value ?: it.error?.message
+                    ?: "Error"}"
+                }
+
+                device.alertNotification.supportedUnreadAlertCategory.get().await().let { it ->
+                    activity?.data?.supportedUnreadAlertCategory = "${it.value ?: it.error?.message
+                    ?: "Error"}"
+                }
+
             }
-        }
-    }
+            conn.await()
 
-    override fun unsupported(text: String) {
-        super.unsupported(text)
-        ui {
-            button_alert_refresh.isEnabled = true
+            updateUI()
+            checkConnectionError(hasConnectionError)
         }
     }
 
