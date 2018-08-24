@@ -20,19 +20,15 @@ buildscript {
     }
 }
 
-kotlin {
-    experimental {
-        coroutines 'enable'
-    }
-}
+
 
 android {
-    compileSdkVersion 27
+    compileSdkVersion 28
     buildToolsVersion '27.0.3'
 
     defaultConfig {
-        minSdkVersion 19
-        targetSdkVersion 27
+        minSdkVersion 21
+        targetSdkVersion 28
         defaultPublishConfig 'release'
         versionName "0.1"
     }
@@ -67,6 +63,8 @@ dependencies {
     api "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
     api "org.jetbrains.kotlinx:kotlinx-coroutines-core:0.22.5"
     api 'com.github.kotlin-graphics:kotlin-unsigned:v2.1'
-    //api project(path: ':xycore')
-    implementation 'com.github.XYOracleNetwork:sdk-core-android:-SNAPSHOT'
+    implementation "androidx.annotation:annotation:$androidx_version"
+
+    api project(path: ':xycore')
+    //implementation 'com.github.XYOracleNetwork:sdk-core-android:-SNAPSHOT'
 }

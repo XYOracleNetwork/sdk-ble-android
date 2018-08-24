@@ -2,6 +2,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
+apply plugin: 'com.github.dcendents.android-maven'
 
 kotlin {
     experimental {
@@ -9,13 +10,17 @@ kotlin {
     }
 }
 
+androidExtensions {
+    experimental = true
+}
+
 android {
-    compileSdkVersion 27
+    compileSdkVersion 28
     buildToolsVersion '27.0.3'
     defaultConfig {
         applicationId "network.xyo.ble.sample"
-        minSdkVersion 19
-        targetSdkVersion 27
+        minSdkVersion 21
+        targetSdkVersion 28
         versionCode 1
         versionName "1.0.1"
 
@@ -41,17 +46,20 @@ buildscript {
     dependencies {
         classpath "com.android.tools.build:gradle:$android_plugin_version"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath 'com.github.dcendents:android-maven-gradle-plugin:2.1'
     }
 }
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation 'com.android.support:design:27.1.1'
-    implementation 'com.android.support:support-v4:27.1.1'
+    implementation 'com.google.android.material:material:1.0.0-rc01'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0-rc01'
+    implementation "androidx.coordinatorlayout:coordinatorlayout:$androidx_version"
     // Optional, if you use support library fragments:
-    //implementation project(':xycore')
-    //implementation project(':xyui')
-    implementation 'com.github.XYOracleNetwork:sdk-core-android:master-SNAPSHOT'
-    implementation 'com.github.XYOracleNetwork:sdk-ui-android:master-SNAPSHOT'
+    implementation project(':xycore')
+    implementation project(':xyui')
+    //implementation 'com.github.XYOracleNetwork:sdk-core-android:master-SNAPSHOT'
+    //implementation 'com.github.XYOracleNetwork:sdk-ui-android:master-SNAPSHOT'
     implementation project(':sdk-android-library')
+    implementation "com.android.support:design:$android_support_version"
 }

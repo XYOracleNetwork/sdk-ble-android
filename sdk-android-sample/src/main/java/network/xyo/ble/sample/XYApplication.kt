@@ -23,7 +23,6 @@ class XYApplication : Application() {
         }
 
     override fun onCreate() {
-        XYBase.logInfo("XYApplication", "onCreate")
         super.onCreate()
 
         XYAppleBluetoothDevice.enable(true)

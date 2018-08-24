@@ -18,7 +18,7 @@ class XYOBleSampleActivity : XYOAppBaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         logInfo("onCreate")
         super.onCreate(savedInstanceState)
-        XYBase.init(this)
+
         setContentView(R.layout.activity_xyo_ble_sample)
 
         progress_spinner_scanner.visibility = VISIBLE

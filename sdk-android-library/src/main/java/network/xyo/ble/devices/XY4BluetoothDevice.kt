@@ -97,7 +97,7 @@ open class XY4BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
         }
     }
 
-    fun enableButtonNotifyIfConnected() {
+    private fun enableButtonNotifyIfConnected() {
         logInfo("enableButtonNotifyIfConnected")
         if (connectionState == ConnectionState.Connected) {
             logInfo("enableButtonNotifyIfConnected: Connected")

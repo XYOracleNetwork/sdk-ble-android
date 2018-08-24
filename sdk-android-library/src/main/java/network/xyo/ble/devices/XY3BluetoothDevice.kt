@@ -3,16 +3,14 @@ package network.xyo.ble.devices
 import android.bluetooth.BluetoothGatt
 import android.bluetooth.BluetoothGattCharacteristic
 import android.content.Context
-import network.xyo.core.XYBase
+import kotlinx.coroutines.experimental.CommonPool
+import kotlinx.coroutines.experimental.Deferred
+import kotlinx.coroutines.experimental.launch
 import network.xyo.ble.gatt.XYBluetoothResult
 import network.xyo.ble.scanner.XYScanResult
 import network.xyo.ble.services.standard.*
 import network.xyo.ble.services.xy3.*
-import kotlinx.coroutines.experimental.CommonPool
-import kotlinx.coroutines.experimental.Deferred
-import kotlinx.coroutines.experimental.launch
-import network.xyo.ble.services.standard.*
-import network.xyo.ble.services.xy3.*
+import network.xyo.core.XYBase
 import unsigned.Ushort
 import java.nio.ByteBuffer
 import java.util.*
@@ -42,7 +40,7 @@ open class XY3BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
         On(1)
     }
 
-    internal val buttonListener = object: XYBluetoothGattCallback() {
+    internal val buttonListener = object : XYBluetoothGattCallback() {
         override fun onCharacteristicChanged(gatt: BluetoothGatt?, characteristic: BluetoothGattCharacteristic?) {
             logInfo("onCharacteristicChanged")
             super.onCharacteristicChanged(gatt, characteristic)
@@ -56,7 +54,7 @@ open class XY3BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
         addGattListener("xy3", buttonListener)
     }
 
-    override val minor : Ushort
+    override val minor: Ushort
         get() {
             //we have to mask the low nibble for the power level
             return _minor.and(0xfff0).or(0x0004)
@@ -64,27 +62,27 @@ open class XY3BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
 
     override val prefix = "xy:ibeacon"
 
-    override fun find() : Deferred<XYBluetoothResult<Int>> {
+    override fun find(): Deferred<XYBluetoothResult<Int>> {
         logInfo("find")
         return controlService.buzzerSelect.set(3)
     }
 
-    override fun lock() : Deferred<XYBluetoothResult<ByteArray>> {
+    override fun lock(): Deferred<XYBluetoothResult<ByteArray>> {
         logInfo("lock")
         return basicConfigService.lock.set(DEFAULT_LOCK_CODE)
     }
 
-    override fun unlock() : Deferred<XYBluetoothResult<ByteArray>> {
+    override fun unlock(): Deferred<XYBluetoothResult<ByteArray>> {
         logInfo("unlock")
         return basicConfigService.unlock.set(DEFAULT_LOCK_CODE)
     }
 
-    override fun stayAwake() : Deferred<XYBluetoothResult<Int>> {
+    override fun stayAwake(): Deferred<XYBluetoothResult<Int>> {
         logInfo("stayAwake")
         return extendedConfigService.registration.set(1)
     }
 
-    override fun fallAsleep() : Deferred<XYBluetoothResult<Int>> {
+    override fun fallAsleep(): Deferred<XYBluetoothResult<Int>> {
         logInfo("fallAsleep")
         return extendedConfigService.registration.set(0)
     }
@@ -102,6 +100,21 @@ open class XY3BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
         }
     }
 
+    private fun enableButtonNotifyIfConnected() {
+        logInfo("enableButtonNotifyIfConnected")
+        if (connectionState == ConnectionState.Connected) {
+            logInfo("enableButtonNotifyIfConnected: Connected")
+            controlService.button.enableNotify(true)
+        }
+    }
+
+    override fun reportButtonPressed(state: ButtonPress) {
+        super.reportButtonPressed(state)
+        //every time a notify fires, we have to re-enable it
+        enableButtonNotifyIfConnected()
+        XY3BluetoothDevice.reportGlobalButtonPressed(this, state)
+    }
+
     open class Listener : XYFinderBluetoothDevice.Listener()
 
     companion object : XYBase() {
@@ -112,6 +125,8 @@ open class XY3BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
         private const val BUTTON_ADVERTISEMENT_LENGTH = 30 * 1000
 
         private val DEFAULT_LOCK_CODE = byteArrayOf(0x2f.toByte(), 0xbe.toByte(), 0xa2.toByte(), 0x07.toByte(), 0x52.toByte(), 0xfe.toByte(), 0xbf.toByte(), 0x31.toByte(), 0x1d.toByte(), 0xac.toByte(), 0x5d.toByte(), 0xfa.toByte(), 0x7d.toByte(), 0x77.toByte(), 0x76.toByte(), 0x80.toByte())
+
+        protected val globalListeners = HashMap<String, Listener>()
 
         fun enable(enable: Boolean) {
             if (enable) {
@@ -151,6 +166,45 @@ open class XY3BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
                 buttonBit == Ushort(0x0008)
             } else {
                 false
+            }
+        }
+
+        fun addGlobalListener(key: String, listener: Listener) {
+            launch(CommonPool) {
+                synchronized(globalListeners) {
+                    globalListeners.put(key, listener)
+                }
+            }
+        }
+
+        fun removeGlobalListener(key: String) {
+            launch(CommonPool) {
+                synchronized(globalListeners) {
+                    globalListeners.remove(key)
+                }
+            }
+        }
+
+        fun reportGlobalButtonPressed(device: XY3BluetoothDevice, state: ButtonPress) {
+            logInfo("reportButtonPressed (Global)")
+            launch(CommonPool) {
+                synchronized(globalListeners) {
+                    for (listener in globalListeners) {
+                        val xyFinderListener = listener.value as? XYFinderBluetoothDevice.Listener
+                        if (xyFinderListener != null) {
+                            logInfo("reportButtonPressed: $xyFinderListener")
+                            launch(CommonPool) {
+                                when (state) {
+                                    ButtonPress.Single -> xyFinderListener.buttonSinglePressed(device)
+                                    ButtonPress.Double -> xyFinderListener.buttonDoublePressed(device)
+                                    ButtonPress.Long -> xyFinderListener.buttonLongPressed(device)
+                                    else -> {
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
 
