@@ -34,7 +34,7 @@ android {
         minSdkVersion 19
         targetSdkVersion 27
         defaultPublishConfig 'release'
-        versionName "0.1"
+        versionName "v1.0"
     }
 
     sourceSets {
@@ -67,6 +67,5 @@ dependencies {
     api "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
     api "org.jetbrains.kotlinx:kotlinx-coroutines-core:0.22.5"
     api 'com.github.kotlin-graphics:kotlin-unsigned:v2.1'
-    //api project(path: ':xycore')
-    implementation 'com.github.XYOracleNetwork:sdk-core-android:-SNAPSHOT'
+    implementation 'com.github.XYOracleNetwork:sdk-core-android:v1.0'
 }

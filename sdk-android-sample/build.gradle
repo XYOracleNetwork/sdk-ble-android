@@ -17,7 +17,7 @@ android {
         minSdkVersion 19
         targetSdkVersion 27
         versionCode 1
-        versionName "1.0.1"
+        versionName "v1.0"
 
     }
     buildTypes {
@@ -48,10 +48,8 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.android.support:design:27.1.1'
     implementation 'com.android.support:support-v4:27.1.1'
-    // Optional, if you use support library fragments:
-    //implementation project(':xycore')
-    //implementation project(':xyui')
-    implementation 'com.github.XYOracleNetwork:sdk-core-android:master-SNAPSHOT'
-    implementation 'com.github.XYOracleNetwork:sdk-ui-android:master-SNAPSHOT'
+
+    implementation 'com.github.XYOracleNetwork:sdk-core-android:v1.0'
+    implementation 'com.github.XYOracleNetwork:sdk-ui-android:v1.0'
     implementation project(':sdk-android-library')
 }
