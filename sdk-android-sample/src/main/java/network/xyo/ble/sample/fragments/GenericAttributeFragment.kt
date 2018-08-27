@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import kotlinx.android.synthetic.main.fragment_generic_attribute.*
+import kotlinx.coroutines.experimental.launch
 import network.xyo.ble.devices.XY2BluetoothDevice
 import network.xyo.ble.devices.XY3BluetoothDevice
 import network.xyo.ble.devices.XY4BluetoothDevice
@@ -31,21 +32,24 @@ class GenericAttributeFragment : XYAppBaseFragment() {
 
     override fun onResume() {
         super.onResume()
-        updateUI()
+
+        if (activity?.data?.serviceChanged.isNullOrEmpty() && activity?.isBusy() == false) {
+            setGattValues()
+        } else {
+            updateUI()
+        }
     }
 
     private fun updateUI() {
         ui {
-            button_gatt_refresh.isEnabled = true
             activity?.hideProgressSpinner()
 
-            text_service_changed.text = activity?.data?.serviceChanged
+            text_service_changed?.text = activity?.data?.serviceChanged
         }
     }
 
     private fun setGattValues() {
         ui {
-            button_gatt_refresh?.isEnabled = true
             activity?.hideProgressSpinner()
         }
 
@@ -70,48 +74,66 @@ class GenericAttributeFragment : XYAppBaseFragment() {
                 }
             }
             else -> {
-                unsupported("unknown device")
+                text_service_changed.text = getString(R.string.unknown_device)
             }
 
         }
     }
 
     private fun getX4Values(device: XY4BluetoothDevice) {
-        device.connection {
-            val result = device.genericAttributeService.serviceChanged.get().await()
-            activity?.data?.serviceChanged = "${result.value ?: result.error?.message ?: "Error"}"
+        launch {
+            var hasConnectionError = true
 
-            ui {
-                this@GenericAttributeFragment.isVisible.let {
-                    updateUI()
+            val conn = device.connection {
+                hasConnectionError = false
+
+                device.genericAttributeService.serviceChanged.get().await().let { it ->
+                    activity?.data?.serviceChanged = "${it.value ?: it.error?.message ?: "Error"}"
                 }
+
             }
+            conn.await()
+
+            updateUI()
+            checkConnectionError(hasConnectionError)
         }
     }
 
     private fun getX3Values(device: XY3BluetoothDevice) {
-        device.connection {
-            val result = device.genericAttributeService.serviceChanged.get().await()
-            activity?.data?.serviceChanged = "${result.value ?: result.error?.message ?: "Error"}"
+        launch {
+            var hasConnectionError = true
 
-            ui {
-                this@GenericAttributeFragment.isVisible.let {
-                    updateUI()
+            val conn = device.connection {
+                hasConnectionError = false
+
+                device.genericAttributeService.serviceChanged.get().await().let { it ->
+                    activity?.data?.serviceChanged = "${it.value ?: it.error?.message ?: "Error"}"
                 }
+
             }
+            conn.await()
+
+            updateUI()
+            checkConnectionError(hasConnectionError)
         }
     }
 
     private fun getX2Values(device: XY2BluetoothDevice) {
-        device.connection {
-            val result = device.genericAttributeService.serviceChanged.get().await()
-            activity?.data?.serviceChanged = "${result.value ?: result.error?.message ?: "Error"}"
+        launch {
+            var hasConnectionError = true
 
-            ui {
-                this@GenericAttributeFragment.isVisible.let {
-                    updateUI()
+            val conn = device.connection {
+                hasConnectionError = false
+
+                device.genericAttributeService.serviceChanged.get().await().let { it ->
+                    activity?.data?.serviceChanged = "${it.value ?: it.error?.message ?: "Error"}"
                 }
+
             }
+            conn.await()
+
+            updateUI()
+            checkConnectionError(hasConnectionError)
         }
     }
 

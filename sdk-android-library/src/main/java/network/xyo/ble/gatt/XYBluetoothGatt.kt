@@ -636,7 +636,7 @@ open class XYBluetoothGatt protected constructor(
     fun connection(closure: suspend ()-> Unit) : Deferred<XYBluetoothResult<Unit>> {
         return asyncBle {
             logInfo("connection")
-            var value: Unit? = null
+            val value: Unit? = null
             var error: XYBluetoothError? = null
             references++
 

@@ -1,13 +1,16 @@
 package network.xyo.ble.sample.activities
 
 import android.os.Bundle
+import android.view.View.VISIBLE
 import android.widget.BaseAdapter
 import kotlinx.android.synthetic.main.activity_xyo_ble_sample.*
 import network.xyo.ble.devices.XY4BluetoothDevice
 import network.xyo.ble.devices.XYFinderBluetoothDevice
 import network.xyo.ble.sample.R
 import network.xyo.ble.sample.adapters.XYDeviceAdapter
+import network.xyo.core.XYBase
 import network.xyo.core.XYPermissions
+
 
 class XYOBleSampleActivity : XYOAppBaseActivity() {
     private var adapter: BaseAdapter? = null
@@ -15,14 +18,17 @@ class XYOBleSampleActivity : XYOAppBaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         logInfo("onCreate")
         super.onCreate(savedInstanceState)
+
         setContentView(R.layout.activity_xyo_ble_sample)
+
+        progress_spinner_scanner.visibility = VISIBLE
 
         adapter = XYDeviceAdapter(this)
         listview!!.adapter = adapter
     }
 
     private fun connectListeners() {
-        XY4BluetoothDevice.addGlobalListener(tag, object: XY4BluetoothDevice.Listener() {
+        XY4BluetoothDevice.addGlobalListener(tag, object : XY4BluetoothDevice.Listener() {
             override fun buttonSinglePressed(device: XYFinderBluetoothDevice) {
                 super.buttonSinglePressed(device)
                 showToast("XY4 Button Single Pressed")

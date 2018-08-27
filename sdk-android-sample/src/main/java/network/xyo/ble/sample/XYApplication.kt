@@ -2,7 +2,6 @@ package network.xyo.ble.sample
 
 import android.app.Application
 import android.os.Build
-//import com.squareup.leakcanary.LeakCanary
 import network.xyo.ble.devices.*
 import network.xyo.ble.scanner.XYFilteredSmartScan
 import network.xyo.ble.scanner.XYFilteredSmartScanLegacy
@@ -24,9 +23,7 @@ class XYApplication : Application() {
         }
 
     override fun onCreate() {
-        XYBase.logInfo("XYApplication", "onCreate")
         super.onCreate()
-        this.initializeLeakDetection()
 
         XYAppleBluetoothDevice.enable(true)
         XYIBeaconBluetoothDevice.enable(true)
@@ -44,7 +41,4 @@ class XYApplication : Application() {
         super.onTerminate()
     }
 
-    private fun initializeLeakDetection() {
-        //if (BuildConfig.DEBUG) LeakCanary.install(this)
-    }
 }

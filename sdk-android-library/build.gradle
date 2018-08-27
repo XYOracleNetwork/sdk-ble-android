@@ -1,5 +1,4 @@
 apply plugin: 'com.android.library'
-apply plugin: 'com.google.gms.google-services'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'com.github.dcendents.android-maven'
@@ -7,28 +6,25 @@ group='com.github.XYOracleNetwork'
 
 buildscript {
     repositories {
+        mavenCentral()
+        mavenLocal()
         jcenter()
-        maven { url 'https://jitpack.io' }
         google()
+        maven { url 'https://jitpack.io' }
     }
 
     dependencies {
         classpath "com.android.tools.build:gradle:$android_plugin_version"
-        classpath "com.google.gms:google-services:$google_services_version"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath 'com.github.dcendents:android-maven-gradle-plugin:2.1'
     }
 }
 
-kotlin {
-    experimental {
-        coroutines 'enable'
-    }
-}
+
 
 android {
     compileSdkVersion 28
-    buildToolsVersion '27.0.3'
+    buildToolsVersion '28.0.2'
 
     defaultConfig {
         minSdkVersion 21
@@ -66,10 +62,9 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     api "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
     api "org.jetbrains.kotlinx:kotlinx-coroutines-core:0.22.5"
-    api "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
     api 'com.github.kotlin-graphics:kotlin-unsigned:v2.1'
-    implementation project(path: ':xycore')
-    //implementation 'com.github.XYOracleNetwork:sdk-core-android:-SNAPSHOT'
-
     implementation "androidx.annotation:annotation:$androidx_version"
+
+    api project(path: ':xycore')
+    //implementation 'com.github.XYOracleNetwork:sdk-core-android:-SNAPSHOT'
 }

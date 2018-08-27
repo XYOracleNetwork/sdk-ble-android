@@ -4,6 +4,8 @@ package network.xyo.ble.sample.fragments
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import kotlinx.android.synthetic.main.fragment_info.*
 import kotlinx.coroutines.experimental.CommonPool
@@ -34,27 +36,49 @@ class InfoFragment : XYAppBaseFragment(), View.OnClickListener {
         button_fall_asleep.setOnClickListener(this)
         button_lock.setOnClickListener(this)
         button_unlock.setOnClickListener(this)
+        button_enable_notify.setOnClickListener(this)
+
+        when (activity?.device) {
+            is XY4BluetoothDevice -> {
+                button_enable_notify.visibility = VISIBLE
+                button_disable_notify.visibility = VISIBLE
+            }
+            is XY3BluetoothDevice -> {
+                button_enable_notify.visibility = VISIBLE
+                button_disable_notify.visibility = VISIBLE
+            }
+
+            else -> {
+                button_enable_notify.visibility = GONE
+                button_disable_notify.visibility = GONE
+            }
+
+        }
     }
 
     override fun onResume() {
         super.onResume()
         logInfo("onResume: InfoFragment")
         updateAdList()
-        update()
+        updateUI()
     }
 
     override fun update() {
+        updateUI()
+    }
+
+    private fun updateUI() {
         ui {
             logInfo("update")
             if (activity?.device != null) {
+
                 text_family.text = activity?.device?.name
                 text_rssi.text = activity?.device?.rssi.toString()
 
                 val iBeaconDevice = activity?.device as XYIBeaconBluetoothDevice?
                 if (iBeaconDevice != null) {
-                    text_major.text = "0x${iBeaconDevice.major.toInt().toString(16)}"
-                    text_minor.text = "0x${iBeaconDevice.minor.toInt().toString(16)}"
-
+                    text_major.text = String.format(getString(R.string.hex_placeholder), iBeaconDevice.major.toInt().toString(16))
+                    text_minor.text = String.format(getString(R.string.hex_placeholder), iBeaconDevice.minor.toInt().toString(16))
                 }
 
                 test_pulse_count.text = activity?.device?.detectCount.toString()
@@ -73,9 +97,6 @@ class InfoFragment : XYAppBaseFragment(), View.OnClickListener {
 
     override fun onClick(view: View?) {
         when (view?.id) {
-            R.id.button_startTest -> {
-                startTest()
-            }
             R.id.button_connected -> {
                 toggleConnection()
             }
@@ -94,19 +115,11 @@ class InfoFragment : XYAppBaseFragment(), View.OnClickListener {
             R.id.button_unlock -> {
                 unlock()
             }
-        }
-    }
-
-    private fun startTest() {
-        val xy4 = activity?.device as? XY4BluetoothDevice
-        if (xy4 != null) {
-            testXy4()
-        } else {
-            val xy3 = activity?.device as? XY3BluetoothDevice
-            if (xy3 != null) {
-                testXy3()
-            } else {
-
+            R.id.button_enable_notify -> {
+                enableButtonNotify(true)
+            }
+            R.id.button_disable_notify -> {
+                enableButtonNotify(false)
             }
         }
     }
@@ -115,25 +128,20 @@ class InfoFragment : XYAppBaseFragment(), View.OnClickListener {
         val device: XYBluetoothDevice? = activity?.device
         if (device?.connectionState == XYBluetoothGatt.ConnectionState.Connected) {
             device.disconnect()
-            // button_connected.text = "Connect"
+            updateUI()
         } else {
+           //
+            // ui { activity?.showProgressSpinner() }
             launch {
                 val connection = device?.connectGatt()?.await()
                 val error = connection?.error
                 if (!error?.message.isNullOrEmpty()) {
                     activity?.showToast(error?.message.toString())
                 }
+                updateUI()
             }
-            // button_connected.text = "Disconnected"
         }
 
-    }
-
-    private fun selfTest() {
-        logInfo("selfTest")
-        launch(CommonPool) {
-            val res = (activity?.device as? XY4BluetoothDevice)?.primary?.reset?.get()?.await()
-        }
     }
 
     private fun find() {
@@ -259,18 +267,22 @@ class InfoFragment : XYAppBaseFragment(), View.OnClickListener {
         }
     }
 
-    fun enableButtonNotify(): Deferred<Unit> {
+    private fun enableButtonNotify(enable: Boolean): Deferred<Unit> {
         return async(CommonPool) {
-            logInfo("enableButtonNotify")
             val xy4 = activity?.device as? XY4BluetoothDevice
             if (xy4 != null) {
-                val notify = xy4.primary.buttonState.enableNotify(true).await()
-                showToast(notify.toString())
+                val notify = xy4.primary.buttonState.enableNotify(enable).await()
+                ui {
+                    showToast(notify.toString())
+                }
+
             } else {
                 val xy3 = activity?.device as? XY3BluetoothDevice
                 if (xy3 != null) {
-                    val notify = xy3.controlService.button.enableNotify(true).await()
-                    showToast(notify.toString())
+                    val notify = xy3.controlService.button.enableNotify(enable).await()
+                    ui {
+                        showToast(notify.toString())
+                    }
                 }
             }
             return@async
@@ -325,10 +337,6 @@ class InfoFragment : XYAppBaseFragment(), View.OnClickListener {
     }
 
     private fun testXy4() {
-        //TODO - disable btn, show progress
-        logInfo("textXy4")
-        //updateLockValue()
-
         launch {
             val xy4 = activity?.device as? XY4BluetoothDevice
             xy4?.connection {
@@ -343,18 +351,6 @@ class InfoFragment : XYAppBaseFragment(), View.OnClickListener {
                 }
             }
         }
-    }
-
-    private fun testXy3() {
-
-    }
-
-    private fun testXy2() {
-
-    }
-
-    private fun testXyGps() {
-
     }
 
     companion object {

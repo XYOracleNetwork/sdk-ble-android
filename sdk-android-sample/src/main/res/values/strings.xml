@@ -8,6 +8,8 @@
     <string name="btn_lock">Lock</string>
     <string name="btn_unlock">Unlock</string>
     <string name="btn_connect">Connect</string>
+    <string name="btn_enable_notify">Enable Notify</string>
+    <string name="btn_disable_notify">Disable Notify</string>
     <string name="disconnect">Disconnect</string>
 
     <string name="info">Info</string>
@@ -65,6 +67,8 @@
     <string name="service_changed">Service Changed:\u0020</string>
     <string name="alert_level">Alert Level:\u0020</string>
     <string name="not_supported">not supported</string>
-
+    <string name="hex_placeholder">0x%s</string>
+    <string name="unknown_device">unknown device</string>
+    <string name="not_supported_x2">Not supported by XY2BluetoothDevice</string>
 
 </resources>

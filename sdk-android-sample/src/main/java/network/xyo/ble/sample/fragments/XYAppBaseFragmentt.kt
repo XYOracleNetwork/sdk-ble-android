@@ -26,10 +26,14 @@ abstract class XYAppBaseFragment : XYBaseFragment() {
 
     open fun update() {}
 
-    open fun unsupported(text: String) {
-        activity?.showToast(text)
-        ui {
-            activity?.hideProgressSpinner()
+
+    fun checkConnectionError(hasConnectionError: Boolean) {
+        if (hasConnectionError) {
+            ui {
+                activity?.hideProgressSpinner()
+                showToast("Connection failed. Try Refresh")
+            }
+
         }
     }
 

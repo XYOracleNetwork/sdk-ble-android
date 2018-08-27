@@ -53,11 +53,11 @@ open class XYFinderBluetoothDevice(context: Context, scanResult: XYScanResult, h
             }
             return -1
         }
-        when {
-            d2== null -> return 1
-            d1 == d2 -> return 0
-            d1 > d2 -> return 1
-            else -> return -1
+        return when {
+            d2== null -> 1
+            d1 == d2 -> 0
+            d1 > d2 -> 1
+            else -> -1
         }
     }
 
@@ -263,15 +263,13 @@ open class XYFinderBluetoothDevice(context: Context, scanResult: XYScanResult, h
             return XYIBeaconBluetoothDevice.hashFromScanResult(scanResult)
         }
 
-        val compareDistance = object : kotlin.Comparator<XYFinderBluetoothDevice> {
-            override fun compare(o1: XYFinderBluetoothDevice?, o2: XYFinderBluetoothDevice?): Int {
-                if (o1 == null || o2 == null) {
-                    if (o1 != null && o2 == null) return -1
-                    if (o2 != null && o1 == null) return 1
-                    return 0
-                }
-                return o1.compareTo(o2)
+        val compareDistance = kotlin.Comparator<XYFinderBluetoothDevice> { o1, o2 ->
+            if (o1 == null || o2 == null) {
+                if (o1 != null && o2 == null) return@Comparator -1
+                if (o2 != null && o1 == null) return@Comparator 1
+                return@Comparator 0
             }
+            o1.compareTo(o2)
         }
 
         fun sortedList(devices: HashMap<Int, XYBluetoothDevice>) : List<XYFinderBluetoothDevice> {

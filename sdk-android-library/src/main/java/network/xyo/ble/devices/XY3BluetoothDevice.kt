@@ -3,14 +3,14 @@ package network.xyo.ble.devices
 import android.bluetooth.BluetoothGatt
 import android.bluetooth.BluetoothGattCharacteristic
 import android.content.Context
-import network.xyo.core.XYBase
+import kotlinx.coroutines.experimental.CommonPool
+import kotlinx.coroutines.experimental.Deferred
+import kotlinx.coroutines.experimental.launch
 import network.xyo.ble.gatt.XYBluetoothResult
 import network.xyo.ble.scanner.XYScanResult
 import network.xyo.ble.services.standard.*
 import network.xyo.ble.services.xy3.*
-import kotlinx.coroutines.experimental.CommonPool
-import kotlinx.coroutines.experimental.Deferred
-import kotlinx.coroutines.experimental.launch
+import network.xyo.core.XYBase
 import unsigned.Ushort
 import java.nio.ByteBuffer
 import java.util.*
@@ -40,7 +40,7 @@ open class XY3BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
         On(1)
     }
 
-    internal val buttonListener = object: XYBluetoothGattCallback() {
+    internal val buttonListener = object : XYBluetoothGattCallback() {
         override fun onCharacteristicChanged(gatt: BluetoothGatt?, characteristic: BluetoothGattCharacteristic?) {
             logInfo("onCharacteristicChanged")
             super.onCharacteristicChanged(gatt, characteristic)
@@ -54,7 +54,7 @@ open class XY3BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
         addGattListener("xy3", buttonListener)
     }
 
-    override val minor : Ushort
+    override val minor: Ushort
         get() {
             //we have to mask the low nibble for the power level
             return _minor.and(0xfff0).or(0x0004)
@@ -62,27 +62,27 @@ open class XY3BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
 
     override val prefix = "xy:ibeacon"
 
-    override fun find() : Deferred<XYBluetoothResult<Int>> {
+    override fun find(): Deferred<XYBluetoothResult<Int>> {
         logInfo("find")
         return controlService.buzzerSelect.set(3)
     }
 
-    override fun lock() : Deferred<XYBluetoothResult<ByteArray>> {
+    override fun lock(): Deferred<XYBluetoothResult<ByteArray>> {
         logInfo("lock")
         return basicConfigService.lock.set(DEFAULT_LOCK_CODE)
     }
 
-    override fun unlock() : Deferred<XYBluetoothResult<ByteArray>> {
+    override fun unlock(): Deferred<XYBluetoothResult<ByteArray>> {
         logInfo("unlock")
         return basicConfigService.unlock.set(DEFAULT_LOCK_CODE)
     }
 
-    override fun stayAwake() : Deferred<XYBluetoothResult<Int>> {
+    override fun stayAwake(): Deferred<XYBluetoothResult<Int>> {
         logInfo("stayAwake")
         return extendedConfigService.registration.set(1)
     }
 
-    override fun fallAsleep() : Deferred<XYBluetoothResult<Int>> {
+    override fun fallAsleep(): Deferred<XYBluetoothResult<Int>> {
         logInfo("fallAsleep")
         return extendedConfigService.registration.set(0)
     }

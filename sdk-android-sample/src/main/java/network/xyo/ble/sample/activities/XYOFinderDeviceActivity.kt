@@ -2,7 +2,8 @@ package network.xyo.ble.sample.activities
 
 import android.os.Bundle
 import android.util.SparseArray
-import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -20,7 +21,6 @@ import network.xyo.ble.sample.XYDeviceData
 import network.xyo.ble.sample.fragments.*
 import network.xyo.ui.XYBaseFragment
 
-
 /**
  * Created by arietrouw on 12/28/17.
  */
@@ -29,7 +29,7 @@ class XYOFinderDeviceActivity : XYOAppBaseActivity() {
 
     var device: XYBluetoothDevice? = null
     private lateinit var sectionsPagerAdapter: SectionsPagerAdapter
-    lateinit var data : XYDeviceData
+    lateinit var data: XYDeviceData
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -48,10 +48,12 @@ class XYOFinderDeviceActivity : XYOAppBaseActivity() {
 
 
         sectionsPagerAdapter = SectionsPagerAdapter(supportFragmentManager)
+
         container.adapter = sectionsPagerAdapter
 
+        container.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tabs))
         container.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tabs) as ViewPager.OnPageChangeListener)
-        tabs.addOnTabSelectedListener(TabLayout.ViewPagerOnTabSelectedListener(container))
+
     }
 
     override fun onStop() {
@@ -71,14 +73,14 @@ class XYOFinderDeviceActivity : XYOAppBaseActivity() {
         }
 
         override fun detected(device: XYBluetoothDevice) {
-            update()
+
         }
 
         override fun connectionStateChanged(device: XYBluetoothDevice, newState: Int) {
             logInfo("connectionStateChanged: $newState")
+            update()
             if (newState == 2) {
                 showToast("Connected")
-                update()
             } else {
                 showToast("Disconnected")
             }
@@ -114,9 +116,9 @@ class XYOFinderDeviceActivity : XYOAppBaseActivity() {
 
         override fun connectionStateChanged(device: XYBluetoothDevice, newState: Int) {
             logInfo("connectionStateChanged: $newState")
+            update()
             if (newState == 2) {
                 showToast("Connected")
-                update()
             } else {
                 showToast("Disconnected")
             }
@@ -163,26 +165,21 @@ class XYOFinderDeviceActivity : XYOAppBaseActivity() {
     }
 
     fun showProgressSpinner() {
-        progress_spinner.visibility = View.VISIBLE
+        progress_spinner.visibility = VISIBLE
     }
 
     fun hideProgressSpinner() {
-        progress_spinner.visibility = View.GONE
+        progress_spinner.visibility = GONE
+    }
+
+    fun isBusy(): Boolean {
+        return progress_spinner.isShown
     }
 
     fun update() {
         val frag = sectionsPagerAdapter.getFragmentByPosition(container.currentItem)
-        (frag as? XYAppBaseFragment)?.update()
+        (frag as? InfoFragment)?.update()
     }
-
-//    private fun readUpdates() {
-//        launch(CommonPool) {
-//            updateStayAwakeEnabledStates().await()
-//            updateLockValue().await()
-//            update()
-//        }
-//    }
-
 
     companion object {
         var EXTRA_DEVICEHASH = "DeviceHash"
@@ -244,5 +241,6 @@ class XYOFinderDeviceActivity : XYOAppBaseActivity() {
         fun getFragmentByPosition(position: Int): XYBaseFragment {
             return fragments.get(position)
         }
+
     }
 }
