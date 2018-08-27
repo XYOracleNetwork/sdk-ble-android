@@ -28,7 +28,7 @@ allprojects {
 ```
 ```gradle
 dependencies {
-    implementation 'com.github.XYOracleNetwork:sdk-ble-android:[version]'
+    implementation 'com.github.XYOracleNetwork:sdk-ble-android:v1.0'
 }
 ```
 
