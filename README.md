@@ -11,9 +11,6 @@ Not only will this SDK make XYO apps better, but bring XYO functionality to exis
   - Kotlin
   - Build Tools 27+
   
-[![Build Status](https://semaphoreapp.com/api/v1/projects/d4cca506-99be-44d2-b19e-176f36ec8cf1/128505/shields_badge.svg)](https://semaphoreapp.com/boennemann/badges)
-[![GitHub version](https://badge.fury.io/gh/boennemann%2Fbadges.svg)](http://badge.fury.io/gh/boennemann%2Fbadges)
-  
 ### Installing
 
 You can add sdk-ble-android to your existing app by cloning the project and manually adding it
