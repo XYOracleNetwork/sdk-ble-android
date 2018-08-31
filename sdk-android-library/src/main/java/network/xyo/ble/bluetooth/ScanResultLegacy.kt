@@ -116,6 +116,8 @@ class ScanResultLegacy : Parcelable {
     }
 
     companion object {
+
+        @JvmField
         val CREATOR: Parcelable.Creator<ScanResultLegacy> = object : Parcelable.Creator<ScanResultLegacy> {
             @NonNull
             override fun createFromParcel(@NonNull source: Parcel): ScanResultLegacy {
