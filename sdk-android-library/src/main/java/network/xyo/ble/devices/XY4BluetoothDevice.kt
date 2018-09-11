@@ -10,6 +10,7 @@ import network.xyo.ble.gatt.XYBluetoothResult
 import network.xyo.ble.scanner.XYScanResult
 import network.xyo.ble.services.EddystoneConfigService
 import network.xyo.ble.services.EddystoneService
+import network.xyo.ble.services.dialog.SpotaService
 import network.xyo.ble.services.standard.*
 import network.xyo.ble.services.xy4.PrimaryService
 import network.xyo.core.XYBase
@@ -32,6 +33,7 @@ open class XY4BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
     val eddystoneConfigService = EddystoneConfigService(this)
 
     val primary = PrimaryService(this)
+    val spotaService = SpotaService(this)
 
     private var lastButtonPressTime = 0L
 
