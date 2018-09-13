@@ -6,6 +6,8 @@ import android.content.Context
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.Deferred
 import kotlinx.coroutines.experimental.launch
+import network.xyo.ble.firmware.OtaFile
+import network.xyo.ble.firmware.OtaUpdate
 import network.xyo.ble.gatt.XYBluetoothResult
 import network.xyo.ble.scanner.XYScanResult
 import network.xyo.ble.services.EddystoneConfigService
@@ -17,6 +19,7 @@ import network.xyo.core.XYBase
 import unsigned.Ushort
 import java.nio.ByteBuffer
 import java.util.*
+
 
 open class XY4BluetoothDevice(context: Context, scanResult: XYScanResult, hash: Int) : XYFinderBluetoothDevice(context, scanResult, hash) {
 
@@ -99,7 +102,29 @@ open class XY4BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
         }
     }
 
+    private val updateListener = object : OtaUpdate.Listener() {
+        override fun updated(device: XYBluetoothDevice) {
+            logInfo("updateListener: updated")
+        }
+
+        override fun failed(device: XYBluetoothDevice, error: String) {
+            logInfo("updateListener: failed: $error")
+        }
+    }
+
+    override fun updateFirmware(): Deferred<XYBluetoothResult<ByteArray>> {
+        //TODO - need to test
+        val otaFile = OtaFile.fromLocalStorage("xy4fw")
+
+        val updater = OtaUpdate(this, otaFile)
+        updater.addListener("XY4BluetoothDevice", updateListener)
+        updater.start()
+
+        return spotaService.SERV_STATUS.set(ByteArray(0))
+    }
+
     private fun enableButtonNotifyIfConnected() {
+
         logInfo("enableButtonNotifyIfConnected")
         if (connectionState == ConnectionState.Connected) {
             logInfo("enableButtonNotifyIfConnected: Connected")

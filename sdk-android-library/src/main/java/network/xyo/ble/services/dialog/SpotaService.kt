@@ -11,10 +11,10 @@ class SpotaService(device: XYBluetoothDevice) : Service(device) {
             return Companion.uuid
         }
 
-    val MEM_DEV = IntegerCharacteristic(this, Characteristics.MEM_DEV.uuid)
+    val MEM_DEV = BytesCharacteristic(this, Characteristics.MEM_DEV.uuid)
     val GPIO_MAP = BytesCharacteristic(this, Characteristics.GPIO_MAP.uuid)
     val MEM_INFO = BytesCharacteristic(this, Characteristics.MEM_INFO.uuid)
-    val PATCH_LEN = IntegerCharacteristic(this, Characteristics.PATCH_LEN.uuid)
+    val PATCH_LEN = BytesCharacteristic(this, Characteristics.PATCH_LEN.uuid)
     val PATCH_DATA = BytesCharacteristic(this, Characteristics.PATCH_DATA.uuid)
     val SERV_STATUS = BytesCharacteristic(this, Characteristics.SERV_STATUS.uuid)
 

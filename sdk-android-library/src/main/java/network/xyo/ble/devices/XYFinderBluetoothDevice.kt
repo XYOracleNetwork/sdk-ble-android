@@ -159,6 +159,14 @@ open class XYFinderBluetoothDevice(context: Context, scanResult: XYScanResult, h
         }
     }
 
+    open fun updateFirmware() : Deferred<XYBluetoothResult<ByteArray>> {
+        logError(UnsupportedOperationException(), true)
+        return asyncBle {
+            return@asyncBle XYBluetoothResult<ByteArray>(XYBluetoothError("Not Implemented"))
+        }
+    }
+
+
     open val distance : Double?
         get() {
             val rssi = rssi ?: return null
