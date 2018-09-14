@@ -3,14 +3,14 @@ package network.xyo.ble.scanner
 import android.bluetooth.le.ScanCallback
 import android.content.Context
 import android.location.LocationManager
+import kotlinx.coroutines.experimental.GlobalScope
+import kotlinx.coroutines.experimental.launch
 import network.xyo.ble.devices.XYBluetoothDevice
 import network.xyo.ble.devices.XYMobileBluetoothDevice
 import network.xyo.ble.gatt.XYBluetoothBase
-import kotlinx.coroutines.experimental.CommonPool
-import kotlinx.coroutines.experimental.launch
 import java.util.*
 
-abstract class XYFilteredSmartScan(context: Context): XYBluetoothBase(context) {
+abstract class XYFilteredSmartScan(context: Context) : XYBluetoothBase(context) {
 
     var startTime = 0L
     var scanResultCount = 0
@@ -41,7 +41,7 @@ abstract class XYFilteredSmartScan(context: Context): XYBluetoothBase(context) {
 
     val uptimeSeconds: Float
         get() {
-            return uptime/1000F
+            return uptime / 1000F
         }
 
     val hostDevice = XYMobileBluetoothDevice.create(context)
@@ -75,7 +75,7 @@ abstract class XYFilteredSmartScan(context: Context): XYBluetoothBase(context) {
         }
     }
 
-    fun deviceFromId(id:String) : XYBluetoothDevice? {
+    fun deviceFromId(id: String): XYBluetoothDevice? {
         for ((_, device) in devices) {
             if (device.id == id) {
                 return device
@@ -94,7 +94,7 @@ abstract class XYFilteredSmartScan(context: Context): XYBluetoothBase(context) {
         }
     }
 
-    fun areLocationServicesAvailable() : Boolean {
+    fun areLocationServicesAvailable(): Boolean {
         val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as? LocationManager
         return locationManager?.isProviderEnabled(LocationManager.GPS_PROVIDER) ?: false
     }
@@ -124,8 +124,8 @@ abstract class XYFilteredSmartScan(context: Context): XYBluetoothBase(context) {
         InternalError
     }
 
-    fun codeToScanFailed(code: Int) : ScanFailed {
-        return when(code) {
+    fun codeToScanFailed(code: Int): ScanFailed {
+        return when (code) {
             ScanCallback.SCAN_FAILED_ALREADY_STARTED -> ScanFailed.AlreadyStarted
             ScanCallback.SCAN_FAILED_APPLICATION_REGISTRATION_FAILED -> ScanFailed.ApplicationRegistrationFailed
             ScanCallback.SCAN_FAILED_FEATURE_UNSUPPORTED -> ScanFailed.FeatureUnsupported
@@ -155,7 +155,7 @@ abstract class XYFilteredSmartScan(context: Context): XYBluetoothBase(context) {
     }
 
     fun addListener(key: String, listener: Listener) {
-        launch(CommonPool){
+        GlobalScope.launch {
             synchronized(listeners) {
                 listeners.put(key, listener)
             }
@@ -163,7 +163,7 @@ abstract class XYFilteredSmartScan(context: Context): XYBluetoothBase(context) {
     }
 
     fun removeListener(key: String) {
-        launch(CommonPool){
+        GlobalScope.launch {
             synchronized(listeners) {
                 listeners.remove(key)
             }
@@ -210,7 +210,7 @@ abstract class XYFilteredSmartScan(context: Context): XYBluetoothBase(context) {
         logInfo("reportEntered")
         synchronized(listeners) {
             for ((_, listener) in listeners) {
-                launch(CommonPool) {
+                GlobalScope.launch {
                     listener.entered(device)
                 }
             }
@@ -221,7 +221,7 @@ abstract class XYFilteredSmartScan(context: Context): XYBluetoothBase(context) {
         logInfo("reportExited")
         synchronized(listeners) {
             for ((_, listener) in listeners) {
-                launch(CommonPool) {
+                GlobalScope.launch {
                     listener.exited(device)
                 }
             }
@@ -232,7 +232,7 @@ abstract class XYFilteredSmartScan(context: Context): XYBluetoothBase(context) {
         //logInfo("reportDetected")
         synchronized(listeners) {
             for ((_, listener) in listeners) {
-                launch(CommonPool) {
+                GlobalScope.launch {
                     listener.detected(device)
                 }
             }

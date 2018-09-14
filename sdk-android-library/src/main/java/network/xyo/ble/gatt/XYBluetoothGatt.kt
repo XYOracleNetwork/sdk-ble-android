@@ -39,7 +39,7 @@ open class XYBluetoothGatt protected constructor(
 
     }
 
-    enum class ConnectionState (val state: Int) {
+    enum class ConnectionState(val state: Int) {
         Unknown(-1),
         Disconnected(BluetoothGatt.STATE_DISCONNECTED),
         Connected(BluetoothGatt.STATE_CONNECTED),
@@ -47,8 +47,8 @@ open class XYBluetoothGatt protected constructor(
         Disconnecting(BluetoothGatt.STATE_DISCONNECTING)
     }
 
-    var _connectionState : Int? = null
-    val connectionState : ConnectionState
+    var _connectionState: Int? = null
+    val connectionState: ConnectionState
         get() {
             return when (_connectionState) {
                 BluetoothGatt.STATE_DISCONNECTED -> ConnectionState.Disconnected
@@ -61,7 +61,7 @@ open class XYBluetoothGatt protected constructor(
 
     protected var _stayConnected = false
 
-    var stayConnected : Boolean
+    var stayConnected: Boolean
         get() {
             return _stayConnected
         }
@@ -99,7 +99,7 @@ open class XYBluetoothGatt protected constructor(
 
     }
 
-    fun connectGatt() : Deferred<XYBluetoothResult<Boolean>> {
+    fun connectGatt(): Deferred<XYBluetoothResult<Boolean>> {
         return asyncBle {
             logInfo("connectGatt")
             var error: XYBluetoothError? = null
@@ -138,7 +138,7 @@ open class XYBluetoothGatt protected constructor(
         }
     }
 
-    fun connect() : Deferred<XYBluetoothResult<Boolean>> {
+    fun connect(): Deferred<XYBluetoothResult<Boolean>> {
         return asyncBle {
             logInfo("connect")
             var error: XYBluetoothError? = null
@@ -199,7 +199,7 @@ open class XYBluetoothGatt protected constructor(
                         cont.resume(null)
                     } else {
                         lastAccessTime = now
-                        launch(CommonPool) {
+                        GlobalScope.launch {
                             try {
                                 withTimeout(15, TimeUnit.SECONDS) {
                                     while (!resumed) {
@@ -224,12 +224,13 @@ open class XYBluetoothGatt protected constructor(
         }
     }
 
-    fun disconnect() : Deferred<XYBluetoothResult<Boolean>>{
+    fun disconnect(): Deferred<XYBluetoothResult<Boolean>> {
         return asyncBle {
             logInfo("disconnect")
             var error: XYBluetoothError? = null
 
-            val gatt = this@XYBluetoothGatt.gatt ?: return@asyncBle XYBluetoothResult(true, XYBluetoothError("Already Disconnected"))
+            val gatt = this@XYBluetoothGatt.gatt
+                    ?: return@asyncBle XYBluetoothResult(true, XYBluetoothError("Already Disconnected"))
 
             val listenerName = "asyncDisconnect$nowNano"
             val value = suspendCoroutine<Boolean> { cont ->
@@ -277,7 +278,7 @@ open class XYBluetoothGatt protected constructor(
         }
     }
 
-    protected fun close() : Deferred<XYBluetoothResult<Boolean>> {
+    protected fun close(): Deferred<XYBluetoothResult<Boolean>> {
         return asyncBle {
             logInfo("close")
             val gatt = gatt ?: return@asyncBle XYBluetoothResult(true)
@@ -292,7 +293,7 @@ open class XYBluetoothGatt protected constructor(
         }
     }
 
-    protected fun discover() : Deferred<XYBluetoothResult<List<BluetoothGattService>>> {
+    protected fun discover(): Deferred<XYBluetoothResult<List<BluetoothGattService>>> {
         var error: XYBluetoothError? = null
         var value: List<BluetoothGattService>? = null
         return asyncBle {
@@ -351,7 +352,7 @@ open class XYBluetoothGatt protected constructor(
     }
 
     //this can only be called after a successful discover
-    protected fun findCharacteristic(service: UUID, characteristic: UUID) : Deferred<XYBluetoothResult<BluetoothGattCharacteristic>> {
+    protected fun findCharacteristic(service: UUID, characteristic: UUID): Deferred<XYBluetoothResult<BluetoothGattCharacteristic>> {
 
         return asyncBle {
 
@@ -388,7 +389,7 @@ open class XYBluetoothGatt protected constructor(
         }
     }
 
-    protected fun writeCharacteristic(characteristicToWrite: BluetoothGattCharacteristic) : Deferred<XYBluetoothResult<ByteArray>>{
+    protected fun writeCharacteristic(characteristicToWrite: BluetoothGattCharacteristic): Deferred<XYBluetoothResult<ByteArray>> {
         return queueBle {
             logInfo("writeCharacteristic")
             var error: XYBluetoothError? = null
@@ -454,7 +455,7 @@ open class XYBluetoothGatt protected constructor(
         }
     }
 
-    protected fun setCharacteristicNotify(characteristicToWrite: BluetoothGattCharacteristic, notify: Boolean) : XYBluetoothResult<Boolean> {
+    protected fun setCharacteristicNotify(characteristicToWrite: BluetoothGattCharacteristic, notify: Boolean): XYBluetoothResult<Boolean> {
         logInfo("setCharacteristicNotify")
         var error: XYBluetoothError? = null
         var value: Boolean? = null
@@ -470,7 +471,7 @@ open class XYBluetoothGatt protected constructor(
         return XYBluetoothResult(value, error)
     }
 
-    protected fun writeDescriptor(descriptorToWrite: BluetoothGattDescriptor) : Deferred<XYBluetoothResult<ByteArray>>{
+    protected fun writeDescriptor(descriptorToWrite: BluetoothGattDescriptor): Deferred<XYBluetoothResult<ByteArray>> {
         return queueBle {
             logInfo("writeDescriptor")
             var error: XYBluetoothError? = null
@@ -537,7 +538,7 @@ open class XYBluetoothGatt protected constructor(
         }
     }
 
-    protected fun readCharacteristic(characteristicToRead: BluetoothGattCharacteristic) : Deferred<XYBluetoothResult<BluetoothGattCharacteristic>>{
+    protected fun readCharacteristic(characteristicToRead: BluetoothGattCharacteristic): Deferred<XYBluetoothResult<BluetoothGattCharacteristic>> {
         return queueBle {
             logInfo("readCharacteristic")
             var error: XYBluetoothError? = null
@@ -604,10 +605,9 @@ open class XYBluetoothGatt protected constructor(
     }
 
 
-
     //make a safe session to interact with the device
     //if null is passed back, the sdk was unable to create the safe session
-    fun <T> connectionWithResult(closure: suspend ()-> XYBluetoothResult<T>) : Deferred<XYBluetoothResult<T>> {
+    fun <T> connectionWithResult(closure: suspend () -> XYBluetoothResult<T>): Deferred<XYBluetoothResult<T>> {
         val deferred = asyncBle<T> {
             logInfo("connection")
             var value: T? = null
@@ -633,7 +633,7 @@ open class XYBluetoothGatt protected constructor(
         return deferred
     }
 
-    fun connection(closure: suspend ()-> Unit) : Deferred<XYBluetoothResult<Unit>> {
+    fun connection(closure: suspend () -> Unit): Deferred<XYBluetoothResult<Unit>> {
         return asyncBle {
             logInfo("connection")
             val value: Unit? = null
@@ -658,7 +658,7 @@ open class XYBluetoothGatt protected constructor(
 
     @TargetApi(Build.VERSION_CODES.KITKAT)
     private fun connectGatt19(device: BluetoothDevice,
-                              autoConnect: Boolean) : BluetoothGatt? {
+                              autoConnect: Boolean): BluetoothGatt? {
         logInfo("connectGatt19")
         return device.connectGatt(context, autoConnect, centralCallback)
     }
@@ -666,7 +666,7 @@ open class XYBluetoothGatt protected constructor(
     @TargetApi(Build.VERSION_CODES.M)
     private fun connectGatt23(device: BluetoothDevice,
                               autoConnect: Boolean,
-                              transport: Int?) : BluetoothGatt? {
+                              transport: Int?): BluetoothGatt? {
         logInfo("connectGatt23")
         return if (transport == null) {
             device.connectGatt(context, autoConnect, centralCallback)
@@ -674,12 +674,13 @@ open class XYBluetoothGatt protected constructor(
             device.connectGatt(context, autoConnect, centralCallback, transport)
         }
     }
+
     @TargetApi(Build.VERSION_CODES.O)
     private fun connectGatt26(device: BluetoothDevice,
                               autoConnect: Boolean,
                               transport: Int?,
                               phy: Int?,
-                              handler: Handler?) : BluetoothGatt? {
+                              handler: Handler?): BluetoothGatt? {
         logInfo("connectGatt26")
         return when {
             transport == null -> device.connectGatt(context, autoConnect, centralCallback)
@@ -694,8 +695,8 @@ open class XYBluetoothGatt protected constructor(
             super.onCharacteristicChanged(gatt, characteristic)
             logInfo("onCharacteristicChanged: $characteristic")
             synchronized(gattListeners) {
-                for((key, listener) in gattListeners) {
-                    launch(CommonPool) {
+                for ((key, listener) in gattListeners) {
+                    GlobalScope.launch {
                         logInfo("onCharacteristicChanged: $key")
                         listener.onCharacteristicChanged(gatt, characteristic)
                     }
@@ -707,8 +708,8 @@ open class XYBluetoothGatt protected constructor(
             super.onCharacteristicRead(gatt, characteristic, status)
             logInfo("onCharacteristicRead: $characteristic : $status")
             synchronized(gattListeners) {
-                for((_, listener) in gattListeners) {
-                    launch(CommonPool) {
+                for ((_, listener) in gattListeners) {
+                    GlobalScope.launch {
                         listener.onCharacteristicRead(gatt, characteristic, status)
                     }
                 }
@@ -720,8 +721,8 @@ open class XYBluetoothGatt protected constructor(
             super.onCharacteristicWrite(gatt, characteristic, status)
             synchronized(gattListeners) {
                 logInfo("onCharacteristicWrite3: $status")
-                for((_, listener) in gattListeners) {
-                    launch(CommonPool) {
+                for ((_, listener) in gattListeners) {
+                    GlobalScope.launch {
                         listener.onCharacteristicWrite(gatt, characteristic, status)
                     }
                 }
@@ -734,7 +735,7 @@ open class XYBluetoothGatt protected constructor(
             synchronized(gattListeners) {
                 _connectionState = newState
                 for ((tag, listener) in gattListeners) {
-                    launch(CommonPool) {
+                    GlobalScope.launch {
                         logInfo("onConnectionStateChange: $tag")
                         listener.onConnectionStateChange(gatt, status, newState)
                     }
@@ -749,8 +750,8 @@ open class XYBluetoothGatt protected constructor(
             super.onDescriptorRead(gatt, descriptor, status)
             logInfo("onDescriptorRead: $descriptor : $status")
             synchronized(gattListeners) {
-                for((_, listener) in gattListeners) {
-                    launch(CommonPool) {
+                for ((_, listener) in gattListeners) {
+                    GlobalScope.launch {
                         listener.onDescriptorRead(gatt, descriptor, status)
                     }
                 }
@@ -761,8 +762,8 @@ open class XYBluetoothGatt protected constructor(
             super.onDescriptorWrite(gatt, descriptor, status)
             logInfo("onDescriptorWrite: $descriptor : $status")
             synchronized(gattListeners) {
-                for((_, listener) in gattListeners) {
-                    launch(CommonPool) {
+                for ((_, listener) in gattListeners) {
+                    GlobalScope.launch {
                         listener.onDescriptorWrite(gatt, descriptor, status)
                     }
                 }
@@ -773,8 +774,8 @@ open class XYBluetoothGatt protected constructor(
             super.onMtuChanged(gatt, mtu, status)
             logInfo("onMtuChanged: $mtu : $status")
             synchronized(gattListeners) {
-                for((_, listener) in gattListeners) {
-                    launch(CommonPool) {
+                for ((_, listener) in gattListeners) {
+                    GlobalScope.launch {
                         @Suppress()
                         listener.onMtuChanged(gatt, mtu, status)
                     }
@@ -786,8 +787,8 @@ open class XYBluetoothGatt protected constructor(
             super.onPhyRead(gatt, txPhy, rxPhy, status)
             logInfo("onPhyRead: $txPhy : $rxPhy : $status")
             synchronized(gattListeners) {
-                for((_, listener) in gattListeners) {
-                    launch(CommonPool) {
+                for ((_, listener) in gattListeners) {
+                    GlobalScope.launch {
                         @Suppress()
                         listener.onPhyRead(gatt, txPhy, rxPhy, status)
                     }
@@ -800,8 +801,8 @@ open class XYBluetoothGatt protected constructor(
             super.onPhyUpdate(gatt, txPhy, rxPhy, status)
             logInfo("onPhyUpdate: $txPhy : $rxPhy : $status")
             synchronized(gattListeners) {
-                for((_, listener) in gattListeners) {
-                    launch(CommonPool) {
+                for ((_, listener) in gattListeners) {
+                    GlobalScope.launch {
                         @Suppress()
                         listener.onPhyUpdate(gatt, txPhy, rxPhy, status)
                     }
@@ -815,8 +816,8 @@ open class XYBluetoothGatt protected constructor(
             this@XYBluetoothGatt.rssi = rssi
             onDetect(null)
             synchronized(gattListeners) {
-                for((_, listener) in gattListeners) {
-                    launch(CommonPool) {
+                for ((_, listener) in gattListeners) {
+                    GlobalScope.launch {
                         listener.onReadRemoteRssi(gatt, rssi, status)
                     }
                 }
@@ -827,8 +828,8 @@ open class XYBluetoothGatt protected constructor(
             super.onReliableWriteCompleted(gatt, status)
             logInfo("onReliableWriteCompleted: $status")
             synchronized(gattListeners) {
-                for((_, listener) in gattListeners) {
-                    launch(CommonPool) {
+                for ((_, listener) in gattListeners) {
+                    GlobalScope.launch {
                         listener.onReliableWriteCompleted(gatt, status)
                     }
                 }
@@ -839,8 +840,8 @@ open class XYBluetoothGatt protected constructor(
             super.onServicesDiscovered(gatt, status)
             logInfo("onServicesDiscovered: $status")
             synchronized(gattListeners) {
-                for((_, listener) in gattListeners) {
-                    launch(CommonPool) {
+                for ((_, listener) in gattListeners) {
+                    GlobalScope.launch {
                         listener.onServicesDiscovered(gatt, status)
                     }
                 }
@@ -848,13 +849,13 @@ open class XYBluetoothGatt protected constructor(
         }
     }
 
-    private var cleanUpThread : Job? = null
+    private var cleanUpThread: Job? = null
 
     //the goal is to leave connections hanging for a little bit in the case
     //that they need to be reestablished in short notice
     private fun cleanUpIfNeeded() {
         if (cleanUpThread == null) {
-            cleanUpThread = launch(CommonPool) {
+            cleanUpThread = GlobalScope.launch {
                 logInfo("cleanUpIfNeeded")
 
                 while (!closed) {

@@ -48,15 +48,15 @@ object BluetoothUuid {
     /**
      * Length of bytes for 16 bit UUID
      */
-    val UUID_BYTES_16_BIT = 2
+    const val UUID_BYTES_16_BIT = 2
     /**
      * Length of bytes for 32 bit UUID
      */
-    val UUID_BYTES_32_BIT = 4
+    const val UUID_BYTES_32_BIT = 4
     /**
      * Length of bytes for 128 bit UUID
      */
-    val UUID_BYTES_128_BIT = 16
+    const val UUID_BYTES_128_BIT = 16
 
     val RESERVED_UUIDS = arrayOf(AudioSink, AudioSource, AdvAudioDist, HSP, Handsfree, AvrcpController, AvrcpTarget, ObexObjectPush, PANU, NAP, MAP, MNS, MAS, SAP)
 
@@ -127,7 +127,7 @@ object BluetoothUuid {
      * @param uuid - UUID
      */
     fun isUuidPresent(@Nullable uuidArray: Array<ParcelUuid>?, @Nullable uuid: ParcelUuid?): Boolean {
-        if ((uuidArray == null || uuidArray.size == 0) && uuid == null)
+        if ((uuidArray == null || uuidArray.isEmpty()) && uuid == null)
             return true
 
         if (uuidArray == null)
@@ -149,11 +149,11 @@ object BluetoothUuid {
         if (uuidA == null && uuidB == null) return true
 
         if (uuidA == null) {
-            return uuidB!!.size == 0
+            return uuidB!!.isEmpty()
         }
 
         if (uuidB == null) {
-            return uuidA.size == 0
+            return uuidA.isEmpty()
         }
 
         val uuidSet = HashSet(Arrays.asList(*uuidA))
@@ -174,7 +174,7 @@ object BluetoothUuid {
         if (uuidA == null && uuidB == null) return true
 
         if (uuidA == null) {
-            return uuidB!!.size == 0
+            return uuidB!!.isEmpty()
         }
 
         if (uuidB == null) return true

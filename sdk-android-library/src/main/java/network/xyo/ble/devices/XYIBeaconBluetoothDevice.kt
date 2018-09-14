@@ -104,7 +104,7 @@ open class XYIBeaconBluetoothDevice(context: Context, scanResult: XYScanResult?,
                 for ((uuid, creator) in uuidToCreator) {
                     val bytes = scanResult.scanRecord?.getManufacturerSpecificData(XYAppleBluetoothDevice.MANUFACTURER_ID)
                     if (bytes != null) {
-                        if (uuid.equals(iBeaconUuidFromScanResult(scanResult))) {
+                        if (uuid == iBeaconUuidFromScanResult(scanResult)) {
                             creator.getDevicesFromScanResult(context, scanResult, globalDevices, foundDevices)
                             return
                         }

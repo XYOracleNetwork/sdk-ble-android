@@ -3,8 +3,8 @@ package network.xyo.ble.devices
 import android.bluetooth.BluetoothGatt
 import android.bluetooth.BluetoothGattCharacteristic
 import android.content.Context
-import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.Deferred
+import kotlinx.coroutines.experimental.GlobalScope
 import kotlinx.coroutines.experimental.launch
 import network.xyo.ble.gatt.XYBluetoothResult
 import network.xyo.ble.scanner.XYScanResult
@@ -170,7 +170,7 @@ open class XY3BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
         }
 
         fun addGlobalListener(key: String, listener: Listener) {
-            launch(CommonPool) {
+            GlobalScope.launch {
                 synchronized(globalListeners) {
                     globalListeners.put(key, listener)
                 }
@@ -178,7 +178,7 @@ open class XY3BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
         }
 
         fun removeGlobalListener(key: String) {
-            launch(CommonPool) {
+            GlobalScope.launch {
                 synchronized(globalListeners) {
                     globalListeners.remove(key)
                 }
@@ -187,13 +187,13 @@ open class XY3BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
 
         fun reportGlobalButtonPressed(device: XY3BluetoothDevice, state: ButtonPress) {
             logInfo("reportButtonPressed (Global)")
-            launch(CommonPool) {
+            GlobalScope.launch {
                 synchronized(globalListeners) {
                     for (listener in globalListeners) {
                         val xyFinderListener = listener.value as? XYFinderBluetoothDevice.Listener
                         if (xyFinderListener != null) {
                             logInfo("reportButtonPressed: $xyFinderListener")
-                            launch(CommonPool) {
+                            GlobalScope.launch {
                                 when (state) {
                                     ButtonPress.Single -> xyFinderListener.buttonSinglePressed(device)
                                     ButtonPress.Double -> xyFinderListener.buttonDoublePressed(device)

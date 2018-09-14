@@ -296,7 +296,7 @@ open class XYBluetoothGattClient protected constructor(
             val characteristicToWrite = findResult.value
             if (findResult.error == null) {
                 if (characteristicToWrite != null) {
-                    characteristicToWrite.setValue(bytes)
+                    characteristicToWrite.value = bytes
                     val writeResult = writeCharacteristic(characteristicToWrite).await()
                     value = writeResult.value
                     error = writeResult.error

@@ -61,7 +61,8 @@ android {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     api "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
-    api "org.jetbrains.kotlinx:kotlinx-coroutines-core:0.22.5"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:0.26.0"
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:0.26.0'
     api 'com.github.kotlin-graphics:kotlin-unsigned:v2.1'
     implementation "androidx.annotation:annotation:$androidx_version"
 

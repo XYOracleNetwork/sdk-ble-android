@@ -15,6 +15,7 @@ import kotlinx.coroutines.experimental.launch
 import network.xyo.ble.devices.*
 import network.xyo.ble.gatt.XYBluetoothGatt
 import network.xyo.ble.sample.R
+import network.xyo.core.XYBase
 import network.xyo.ui.ui
 
 
@@ -101,7 +102,8 @@ class InfoFragment : XYAppBaseFragment(), View.OnClickListener {
                 toggleConnection()
             }
             R.id.button_find -> {
-                find()
+                //find()
+                testFirmware()
             }
             R.id.button_stay_awake -> {
                 wake()
@@ -120,6 +122,22 @@ class InfoFragment : XYAppBaseFragment(), View.OnClickListener {
             }
             R.id.button_disable_notify -> {
                 enableButtonNotify(false)
+            }
+        }
+    }
+
+    private fun testFirmware() {
+        launch (CommonPool){
+            val result = (activity?.device as? XY4BluetoothDevice)?.updateFirmware()?.await()
+            logInfo("testFirmware result: $result")
+            val updatedVal = result?.value.toString()
+            // 16 = started & 2 = successful operation
+            if (updatedVal == "2") {
+                XYBase.logInfo("bob", "xy4OtaUpdate - 2")
+
+            } else {
+                //process next step
+                XYBase.logInfo("bob", "xy4OtaUpdate - 3")
             }
         }
     }

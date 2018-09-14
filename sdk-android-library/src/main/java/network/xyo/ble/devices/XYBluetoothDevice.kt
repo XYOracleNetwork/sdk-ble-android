@@ -4,7 +4,7 @@ import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothGatt
 import android.content.Context
 import android.os.ParcelUuid
-import kotlinx.coroutines.experimental.CommonPool
+import kotlinx.coroutines.experimental.GlobalScope
 import kotlinx.coroutines.experimental.delay
 import kotlinx.coroutines.experimental.launch
 import network.xyo.ble.ads.XYBleAd
@@ -73,7 +73,7 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, private
             return
         }
         checkingForExit = true
-        launch(CommonPool) {
+        GlobalScope.launch {
             while (checkingForExit) {
                 //logInfo("checkForExit: $id : $rssi : $now : $outOfRangeDelay : $lastAdTime : $lastAccessTime")
                 delay(outOfRangeDelay)
@@ -89,7 +89,7 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, private
                         //make it thread safe
                         val localNotifyExit = notifyExit
                         if (localNotifyExit != null) {
-                            launch(CommonPool) {
+                            GlobalScope.launch {
                                 localNotifyExit(this@XYBluetoothDevice)
                             }
                         }
@@ -106,7 +106,7 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, private
         lastAdTime = now
         synchronized(listeners) {
             for ((_, listener) in listeners) {
-                launch(CommonPool) {
+                GlobalScope.launch {
                     listener.entered(this@XYBluetoothDevice)
                 }
             }
@@ -119,7 +119,7 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, private
         exitCount++
         synchronized(listeners) {
             for ((_, listener) in listeners) {
-                launch(CommonPool) {
+                GlobalScope.launch {
                     listener.exited(this@XYBluetoothDevice)
                 }
             }
@@ -132,7 +132,7 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, private
         lastAdTime = now
         synchronized(listeners) {
             for ((_, listener) in listeners) {
-                launch(CommonPool) {
+                GlobalScope.launch {
                     listener.detected(this@XYBluetoothDevice)
                 }
             }
@@ -143,7 +143,7 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, private
         logInfo("onConnectionStateChange: $id : $newState: $listeners.size")
         synchronized(listeners) {
             for ((tag, listener) in listeners) {
-                launch(CommonPool) {
+                GlobalScope.launch {
                     logInfo("connectionStateChanged: $tag : $newState")
                     listener.connectionStateChanged(this@XYBluetoothDevice, newState)
                     if (newState == BluetoothGatt.STATE_CONNECTED) {
@@ -154,14 +154,14 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, private
         }
         //if a connection drop means we should mark it as out of range, then lets do it!
         if (exitAfterDisconnect) {
-            launch(CommonPool) {
+            GlobalScope.launch {
                 rssi = null
                 onExit()
 
                 //make it thread safe
                 val localNotifyExit = notifyExit
                 if (localNotifyExit != null) {
-                    launch(CommonPool) {
+                    GlobalScope.launch {
                         localNotifyExit(this@XYBluetoothDevice)
                     }
                 }
@@ -171,7 +171,7 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, private
 
     fun addListener(key: String, listener: Listener) {
         logInfo("addListener:$key:$listener")
-        launch(CommonPool) {
+        GlobalScope.launch {
             synchronized(listeners) {
                 listeners.put(key, listener)
             }
@@ -180,7 +180,7 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, private
 
     fun removeListener(key: String) {
         logInfo("removeListener:$key")
-        launch(CommonPool) {
+        GlobalScope.launch {
             synchronized(listeners) {
                 listeners.remove(key)
             }

@@ -1,7 +1,7 @@
 package network.xyo.ble.firmware
 
-import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.Deferred
+import kotlinx.coroutines.experimental.GlobalScope
 import kotlinx.coroutines.experimental.launch
 import network.xyo.ble.devices.XY4BluetoothDevice
 import network.xyo.ble.devices.XYBluetoothDevice
@@ -42,7 +42,7 @@ class OtaUpdate(var device: XY4BluetoothDevice, private val otaFile: OtaFile?) {
     }
 
     fun addListener(key: String, listener: Listener) {
-        launch(CommonPool) {
+        GlobalScope.launch {
             synchronized(listeners) {
                 listeners.put(key, listener)
             }
@@ -50,7 +50,7 @@ class OtaUpdate(var device: XY4BluetoothDevice, private val otaFile: OtaFile?) {
     }
 
     fun removeListener(key: String) {
-        launch(CommonPool) {
+        GlobalScope.launch {
             synchronized(listeners) {
                 listeners.remove(key)
             }
@@ -70,7 +70,7 @@ class OtaUpdate(var device: XY4BluetoothDevice, private val otaFile: OtaFile?) {
     }
 
     private fun dispatchNextStep() {
-        launch {
+        GlobalScope.launch {
             when (nextStep) {
                 OtaUpdate.Step.MemDev -> {
                     val result = setMemDev().await()
@@ -152,7 +152,7 @@ class OtaUpdate(var device: XY4BluetoothDevice, private val otaFile: OtaFile?) {
     private fun passUpdate() {
         synchronized(listeners) {
             for ((_, listener) in listeners) {
-                launch(CommonPool) {
+                GlobalScope.launch {
                     listener.updated(device)
                 }
             }
@@ -162,7 +162,7 @@ class OtaUpdate(var device: XY4BluetoothDevice, private val otaFile: OtaFile?) {
     private fun failUpdate(error: String) {
         synchronized(listeners) {
             for ((_, listener) in listeners) {
-                launch(CommonPool) {
+                GlobalScope.launch {
                     listener.failed(device, error)
                 }
             }

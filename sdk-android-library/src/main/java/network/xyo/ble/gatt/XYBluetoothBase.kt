@@ -40,11 +40,11 @@ open class XYBluetoothBase(context: Context) : XYBase() {
         val BluetoothQueue = newFixedThreadPoolContext(1, "BluetoothQueue")
 
         init {
-            if (android.os.Build.VERSION.SDK_INT < 20) {
-                BluetoothThread = newFixedThreadPoolContext(1, "BluetoothThread")
+            BluetoothThread = if (android.os.Build.VERSION.SDK_INT < 20) {
+                newFixedThreadPoolContext(1, "BluetoothThread")
             } else {
                 //if the device is before 20, use the UI thread for the BLE calls
-                BluetoothThread = object : AbstractCoroutineContextElement(ContinuationInterceptor), ContinuationInterceptor {
+                object : AbstractCoroutineContextElement(ContinuationInterceptor), ContinuationInterceptor {
                     override fun <T> interceptContinuation(continuation: Continuation<T>): Continuation<T> =
                             AndroidContinuation(continuation)
                 }

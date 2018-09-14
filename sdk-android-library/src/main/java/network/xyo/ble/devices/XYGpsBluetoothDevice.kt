@@ -3,8 +3,9 @@ package network.xyo.ble.devices
 import android.bluetooth.BluetoothGatt
 import android.bluetooth.BluetoothGattCharacteristic
 import android.content.Context
-import kotlinx.coroutines.experimental.CommonPool
+import kotlinx.coroutines.experimental.CoroutineStart
 import kotlinx.coroutines.experimental.Deferred
+import kotlinx.coroutines.experimental.GlobalScope
 import kotlinx.coroutines.experimental.launch
 import network.xyo.ble.gatt.XYBluetoothResult
 import network.xyo.ble.scanner.XYScanResult
@@ -13,6 +14,7 @@ import network.xyo.ble.services.xy3.*
 import network.xyo.core.XYBase
 import java.nio.ByteBuffer
 import java.util.*
+import kotlin.coroutines.experimental.EmptyCoroutineContext
 
 open class XYGpsBluetoothDevice(context: Context, scanResult: XYScanResult, hash: Int) : XYFinderBluetoothDevice(context, scanResult, hash) {
 
@@ -57,7 +59,7 @@ open class XYGpsBluetoothDevice(context: Context, scanResult: XYScanResult, hash
             for (listener in listeners) {
                 val xy3Listener = listener as? Listener
                 if (xy3Listener != null) {
-                    launch(CommonPool) {
+                    GlobalScope.launch {
                         xy3Listener.buttonSinglePressed(this@XYGpsBluetoothDevice)
                     }
                 }
