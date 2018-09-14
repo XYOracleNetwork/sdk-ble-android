@@ -102,8 +102,7 @@ class InfoFragment : XYAppBaseFragment(), View.OnClickListener {
                 toggleConnection()
             }
             R.id.button_find -> {
-                //find()
-                testFirmware()
+                find()
             }
             R.id.button_stay_awake -> {
                 wake()
@@ -126,21 +125,7 @@ class InfoFragment : XYAppBaseFragment(), View.OnClickListener {
         }
     }
 
-    private fun testFirmware() {
-        launch (CommonPool){
-            val result = (activity?.device as? XY4BluetoothDevice)?.updateFirmware()?.await()
-            logInfo("testFirmware result: $result")
-            val updatedVal = result?.value.toString()
-            // 16 = started & 2 = successful operation
-            if (updatedVal == "2") {
-                XYBase.logInfo("bob", "xy4OtaUpdate - 2")
 
-            } else {
-                //process next step
-                XYBase.logInfo("bob", "xy4OtaUpdate - 3")
-            }
-        }
-    }
 
     private fun toggleConnection() {
         val device: XYBluetoothDevice? = activity?.device

@@ -7,6 +7,7 @@ import network.xyo.ble.gatt.XYBluetoothResult
 import network.xyo.ble.gatt.asyncBle
 import network.xyo.ble.scanner.XYScanResult
 import network.xyo.core.XYBase
+import java.io.InputStream
 import java.nio.ByteBuffer
 import java.util.*
 import kotlin.coroutines.experimental.EmptyCoroutineContext
@@ -158,7 +159,7 @@ open class XYFinderBluetoothDevice(context: Context, scanResult: XYScanResult, h
         }
     }
 
-    open fun updateFirmware(): Deferred<XYBluetoothResult<ByteArray>> {
+    open fun updateFirmware(stream: InputStream): Deferred<XYBluetoothResult<ByteArray>> {
         logError(UnsupportedOperationException(), true)
         return asyncBle {
             return@asyncBle XYBluetoothResult<ByteArray>(XYBluetoothError("Not Implemented"))

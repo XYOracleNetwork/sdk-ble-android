@@ -17,6 +17,7 @@ import network.xyo.ble.services.standard.*
 import network.xyo.ble.services.xy4.PrimaryService
 import network.xyo.core.XYBase
 import unsigned.Ushort
+import java.io.InputStream
 import java.nio.ByteBuffer
 import java.util.*
 
@@ -112,9 +113,9 @@ open class XY4BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
         }
     }
 
-    override fun updateFirmware(): Deferred<XYBluetoothResult<ByteArray>> {
+    override fun updateFirmware(stream: InputStream): Deferred<XYBluetoothResult<ByteArray>> {
         //TODO - need to test
-        val otaFile = OtaFile.fromLocalStorage("xy4fw")
+        val otaFile = OtaFile.fromInputStream(stream)
 
         val updater = OtaUpdate(this, otaFile)
         updater.addListener("XY4BluetoothDevice", updateListener)

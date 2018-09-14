@@ -61,4 +61,5 @@ dependencies {
     //implementation 'com.github.XYOracleNetwork:sdk-ui-android:master-SNAPSHOT'
     implementation project(':sdk-android-library')
 
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0-alpha1'
 }

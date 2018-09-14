@@ -1,5 +1,6 @@
 package network.xyo.ble.sample.activities
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.SparseArray
 import android.view.View.GONE
@@ -18,6 +19,7 @@ import network.xyo.ble.devices.XYFinderBluetoothDevice
 import network.xyo.ble.sample.R
 import network.xyo.ble.sample.XYDeviceData
 import network.xyo.ble.sample.fragments.*
+import network.xyo.ble.sample.fragments.FirmwareUpdateFragment.Companion.FILE_REQUEST
 import network.xyo.ui.XYBaseFragment
 
 /**
@@ -58,6 +60,18 @@ class XYOFinderDeviceActivity : XYOAppBaseActivity() {
     override fun onStop() {
         super.onStop()
         device!!.removeListener(TAG)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        logInfo(TAG, "onActivityResult requestCode: $requestCode")
+        //when (requestCode) {
+           // FILE_REQUEST -> {
+                val frag = (supportFragmentManager.findFragmentById(R.id.container) as FirmwareUpdateFragment?)
+                frag?.onFileSelected(requestCode, resultCode, data)
+            //}
+       // }
+
     }
 
     private val xy3DeviceListener = object : XY3BluetoothDevice.Listener() {
@@ -187,7 +201,7 @@ class XYOFinderDeviceActivity : XYOAppBaseActivity() {
 
 
     inner class SectionsPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
-        private val size = 9
+        private val size = 10
         private var fragments: SparseArray<XYBaseFragment> = SparseArray(size)
 
         override fun getItem(position: Int): Fragment {
@@ -220,6 +234,9 @@ class XYOFinderDeviceActivity : XYOAppBaseActivity() {
                 }
                 8 -> {
                     frag = TxPowerFragment.newInstance()
+                }
+                9 -> {
+                    frag = FirmwareUpdateFragment.newInstance()
                 }
                 else -> frag = InfoFragment.newInstance()
             }
