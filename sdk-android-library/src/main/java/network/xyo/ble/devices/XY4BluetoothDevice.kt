@@ -115,9 +115,10 @@ open class XY4BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
 
     override fun updateFirmware(stream: InputStream): Deferred<XYBluetoothResult<ByteArray>> {
         //TODO - need to test
-        val otaFile = OtaFile.fromInputStream(stream)
 
+        val otaFile = OtaFile.fromInputStream(stream)
         val updater = OtaUpdate(this, otaFile)
+
         updater.addListener("XY4BluetoothDevice", updateListener)
         updater.start()
 

@@ -129,6 +129,12 @@ class OtaUpdate(var device: XY4BluetoothDevice, private val otaFile: OtaFile?) {
                 error = it.message.toString()
             }
             failUpdate(error)
+            return
+        }
+
+        if (byteValue.value == null) {
+            failUpdate("byteValue is empty")
+            return
         }
 
         val value = BigInteger(byteValue.value).toInt()

@@ -1,14 +1,14 @@
 package network.xyo.ble.firmware
 
 import android.os.Environment
-import network.xyo.core.XYBase
+import network.xyo.core.XYBase.Companion.logInfo
 import java.io.File
 import java.io.FileInputStream
 import java.io.InputStream
 import kotlin.experimental.xor
 
 
-class OtaFile private constructor(private val inputStream: InputStream?) {
+class OtaFileKt private constructor(private val inputStream: InputStream?) {
 
     private val crc: Byte
     private val bytes: ByteArray
@@ -40,13 +40,20 @@ class OtaFile private constructor(private val inputStream: InputStream?) {
             val intVal = byteValue.toInt()
             crcCode = crcCode xor intVal.toByte()
         }
-        XYBase.logInfo(TAG, "\"Firmware CRC: $crcCode")
+        logInfo(TAG, "\"Firmware CRC: $crcCode")
         return crcCode
     }
 
-    private fun hexStringToThreeByteArray(): Array<Array<ByteArray>> {
+    private fun hexStringToThreeByteArray() {
+//        val utils = OtaUtils()
+//        blocks = utils.initBlocksSuota(bytes)
+//        numberOfBlocks = utils.numberOfBlocks
+//        XYBase.logInfo(TAG, "\"blocks size: ${blocks?.size}")
+    }
+
+    private fun hexStringToThreeByteArray2() {
         val result = bytes
-        val resultLength = result.size
+        val resultLength = result.size-1
         run {
             var i = 0
             while (i < resultLength) {
@@ -73,7 +80,7 @@ class OtaFile private constructor(private val inputStream: InputStream?) {
         numberOfBlocks = Math.ceil(newResultLength.toDouble() / patchLen.toDouble()).toInt()
 
         // need to send all chunks of 20, then chunk of modulus remainder
-        val firmwareByteArray = emptyArray<Array<ByteArray>>()
+        blocks = emptyArray()
         var offset = 0
 
         for (i in 0 until numberOfBlocks) {
@@ -83,7 +90,7 @@ class OtaFile private constructor(private val inputStream: InputStream?) {
             }
 
             var chunkCounter = 0
-            firmwareByteArray[i] = emptyArray()
+            //firmwareByteArray[i] = emptyArray()
             var j = 0
             while (j < blockSize) {
                 var tempChunkSize = chunkSize
@@ -92,15 +99,23 @@ class OtaFile private constructor(private val inputStream: InputStream?) {
                 } else if (j + chunkSize > blockSize) {
                     tempChunkSize = blockSize % chunkSize
                 }
+                logInfo(TAG, "loop1: $i -- $chunkCounter")
                 val chunk = result.copyOfRange(offset, offset + tempChunkSize)
-                val fwByteArray = firmwareByteArray[i]
-                fwByteArray[chunkCounter] = chunk
+                blocks?.let { block ->
+                    val fwByteArray = block[i]
+                    fwByteArray?.set(chunkCounter, chunk)
+                }
+
+
+
                 offset += tempChunkSize
                 chunkCounter++
                 j += chunkSize
             }
         }
-        return firmwareByteArray
+
+        logInfo(TAG, "firmwareByteArray size: ${blocks?.size}")
+                //return firmwareByteArray
     }
 
     private fun getXorValue(array: ByteArray): Byte {
@@ -119,18 +134,18 @@ class OtaFile private constructor(private val inputStream: InputStream?) {
         private const val patchLen = 128
 
 
-        fun fromFile(file: File): OtaFile {
+        fun fromFile(file: File): OtaFileKt {
             val inputStream = FileInputStream(file)
-            return OtaFile(inputStream)
+            return OtaFileKt(inputStream)
         }
 
-        fun fromLocalStorage(filename: String, location: String = filesDir): OtaFile {
+        fun fromLocalStorage(filename: String, location: String = filesDir): OtaFileKt {
             val inputStream = FileInputStream("$location/$filename")
-            return OtaFile(inputStream)
+            return OtaFileKt(inputStream)
         }
 
-        fun fromInputStream(inputStream: InputStream?): OtaFile {
-            return OtaFile(inputStream)
+        fun fromInputStream(inputStream: InputStream?): OtaFileKt {
+            return OtaFileKt(inputStream)
         }
 
     }
