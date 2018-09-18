@@ -71,6 +71,7 @@ class OtaUpdate(var device: XY4BluetoothDevice, private val otaFile: OtaFile?) {
 
     private fun dispatchNextStep() {
         GlobalScope.launch {
+            logInfo(TAG, "dispatchNextStep: $nextStep ")
             when (nextStep) {
                 OtaUpdate.Step.MemDev -> {
                     val result = setMemDev().await()
@@ -119,18 +120,19 @@ class OtaUpdate(var device: XY4BluetoothDevice, private val otaFile: OtaFile?) {
     }
 
     private fun processNextStep(byteValue: XYBluetoothResult<ByteArray>) {
-        logInfo(TAG, "processNextStep")
+        logInfo(TAG, "init processNextStep...")
 
-        if (byteValue.error != null) {
-            logInfo(TAG, "processNextStep error: ${byteValue.error}")
-            //TODO - better error msg
-            var error = "Update failed"
-            byteValue.error?.let {
-                error = it.message.toString()
-            }
-            failUpdate(error)
-            return
-        }
+        val error = byteValue.error.toString()
+//        if (error != null && error != "None") {
+//            logInfo(TAG, "processNextStep error: ${byteValue.error}")
+//            //TODO - better error msg
+//            var error = "Update failed"
+//            byteValue.error?.let {
+//                error = it.message.toString()
+//            }
+//            failUpdate(error)
+//            return
+//        }
 
         if (byteValue.value == null) {
             failUpdate("byteValue is empty")
@@ -140,6 +142,7 @@ class OtaUpdate(var device: XY4BluetoothDevice, private val otaFile: OtaFile?) {
         val value = BigInteger(byteValue.value).toInt()
         val stringValue = String.format("%#10x", value).trim { it <= ' ' }
 
+        logInfo(TAG, "processNextStep stringValue: $stringValue")
         if (stringValue == "0x10") {
             nextStep = Step.GpioMap
             dispatchNextStep()
@@ -207,17 +210,18 @@ class OtaUpdate(var device: XY4BluetoothDevice, private val otaFile: OtaFile?) {
     }
 
     private fun setMemDev(): Deferred<XYBluetoothResult<ByteArray>> {
-        logInfo(TAG, "setMemDev")
+        logInfo(TAG, "start setMemDev... ")
         return asyncBle {
             val memType = 0x13 shl 24 or 0x00
             val result = device.spotaService.MEM_DEV.set(intToUINT32Byte(memType)).await()
+            logInfo(TAG, "setMemDev result: $result")
 
             return@asyncBle XYBluetoothResult(result.value)
         }
     }
 
     private fun setGpioMap(): Deferred<XYBluetoothResult<ByteArray>> {
-        logInfo(TAG, "setGpioMap")
+        logInfo(TAG, "start setGpioMap... ")
         return asyncBle {
             val MISO_GPIO = 0x05
             val MOSI_GPIO = 0x06
@@ -232,7 +236,7 @@ class OtaUpdate(var device: XY4BluetoothDevice, private val otaFile: OtaFile?) {
     }
 
     private fun sendEndSignal(): Deferred<XYBluetoothResult<ByteArray>> {
-        logInfo(TAG, "sendEndSignal")
+        logInfo(TAG, "start sendEndSignal...")
         return asyncBle {
             //TODO - toInt may be wrong
             val result = device.spotaService.MEM_DEV.set(intToUINT32Byte(END_SIGNAL.toInt())).await()
@@ -242,7 +246,7 @@ class OtaUpdate(var device: XY4BluetoothDevice, private val otaFile: OtaFile?) {
     }
 
     private fun setPatchLength(): Deferred<XYBluetoothResult<ByteArray>> {
-        logInfo(TAG, "setPatchLength")
+        logInfo(TAG, "start setPatchLength...")
         return asyncBle {
             var blocksize = 240
             if (lastBlock) {
@@ -256,7 +260,7 @@ class OtaUpdate(var device: XY4BluetoothDevice, private val otaFile: OtaFile?) {
     }
 
     private fun sendReboot(): Deferred<XYBluetoothResult<ByteArray>> {
-        logInfo(TAG, "sendReboot")
+        logInfo(TAG, "start sendReboot.   ")
         return asyncBle {
             //TODO - toInt may be wrong
             val result = device.spotaService.MEM_DEV.set(intToUINT32Byte(REBOOT_SIGNAL.toInt())).await()

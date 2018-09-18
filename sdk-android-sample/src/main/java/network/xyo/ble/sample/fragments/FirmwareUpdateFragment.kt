@@ -11,6 +11,7 @@ import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.launch
 import network.xyo.ble.devices.XY4BluetoothDevice
 import network.xyo.ble.sample.R
+import network.xyo.ui.ui
 import java.io.InputStream
 import java.net.URL
 
@@ -31,11 +32,12 @@ class FirmwareUpdateFragment : XYAppBaseFragment() {
         }
 
         button_update.setOnClickListener {
-            if (!tv_file_name.text.isBlank()) {
+            //if (!tv_file_name.text.isBlank()) {
                 performUpdate(tv_file_name.text.toString())
-            } else {
-                showToast("Select a file.")
-            }
+            showToast("Update started...")
+          //  } else {
+             //   showToast("Select a file.")
+           // }
         }
     }
 
@@ -43,10 +45,11 @@ class FirmwareUpdateFragment : XYAppBaseFragment() {
         launch(CommonPool) {
             logInfo(TAG, "testFirmware start: $String")
 
-            val stream = getRemoteFile(filename)
-            val result = stream?.let { (activity?.device as? XY4BluetoothDevice)?.updateFirmware(it)?.await() }
+            val inputStream = resources.openRawResource(R.raw.xy4_585_1_test)
+            val result = (activity?.device as? XY4BluetoothDevice)?.updateFirmware(inputStream)?.await()
+            inputStream.close()
             logInfo(TAG, "testFirmware result: $result")
-
+            ui { showToast(result.toString()) }
         }
     }
 
@@ -56,11 +59,8 @@ class FirmwareUpdateFragment : XYAppBaseFragment() {
         } else {
             URL(location + "?t=" + Math.random())
         }
-        val inputStream = url.openStream()
-        val tmp = inputStream
-        inputStream.close()
 
-        return tmp
+        return url.openStream()
     }
 
     fun performFileSearch() {
