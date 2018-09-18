@@ -88,6 +88,16 @@ open class XYBluetoothAdvertiser(context: Context) : XYBluetoothBase(context){
         return@asyncBle restart().await()
     }
 
+    fun changeConnectable (newConnectible : Boolean?) = asyncBle {
+        connectible = newConnectible
+        return@asyncBle restart().await()
+    }
+
+    fun changeTimeout (newTimeout : Int?) = asyncBle {
+        timeout = newTimeout
+        return@asyncBle restart().await()
+    }
+
     fun changeAdvertisingMode (newAdvertisingMode : Int) = asyncBle {
         if (newAdvertisingMode != ADVERTISE_MODE_BALANCED
                 || newAdvertisingMode != ADVERTISE_MODE_LOW_LATENCY
@@ -106,16 +116,6 @@ open class XYBluetoothAdvertiser(context: Context) : XYBluetoothBase(context){
             return@asyncBle XYBluetoothResult<Int>(XYBluetoothError("Invalid Advertising Mode"))
         }
         advertisingTxLever = newAdvertisingTxLevel
-        return@asyncBle restart().await()
-    }
-
-    fun changeConnectable (newConnectible : Boolean?) = asyncBle {
-        connectible = newConnectible
-        return@asyncBle restart().await()
-    }
-
-    fun changeTimeout (newTimeout : Int?) = asyncBle {
-        timeout = newTimeout
         return@asyncBle restart().await()
     }
 
