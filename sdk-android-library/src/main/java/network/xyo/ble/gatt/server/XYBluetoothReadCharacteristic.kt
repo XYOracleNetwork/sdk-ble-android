@@ -7,11 +7,11 @@ import kotlin.collections.HashMap
 import kotlin.coroutines.experimental.suspendCoroutine
 
 open class XYBluetoothReadCharacteristic (uuid : UUID) : XYBluetoothCharacteristic(uuid, PROPERTY_READ, PERMISSION_READ) {
-    private val listeners = HashMap<String, XYBluetoothReadCharacteristicListener>()
+    private val responders = HashMap<String, XYBluetoothReadCharacteristicResponder>()
 
     open fun onReadRequest (device: BluetoothDevice?) : ByteArray? {
-        for ((_, listener) in listeners) {
-            val response = listener.onReadRequest(device)
+        for ((_, responder) in responders) {
+            val response = responder.onReadRequest(device)
 
             if (response != null) {
                 return response
@@ -23,12 +23,12 @@ open class XYBluetoothReadCharacteristic (uuid : UUID) : XYBluetoothCharacterist
     fun waitForReadRequest (whatToRead : ByteArray?, deviceFilter : BluetoothDevice?) = async {
         val readValue = whatToRead ?: value
         value = readValue
-        val listenerKey = "waitForReadRequest $readValue $deviceFilter"
-
         val readRequest = suspendCoroutine<Any?> { cont ->
-            addListener(listenerKey, object : XYBluetoothReadCharacteristicListener {
+            val responderKey = "waitForReadRequest $readValue $deviceFilter"
+            addResponder(responderKey, object : XYBluetoothReadCharacteristicResponder {
                 override fun onReadRequest(device: BluetoothDevice?): ByteArray? {
                     if (device?.address == deviceFilter?.address || deviceFilter == null) {
+                        removeResponder(responderKey)
                         cont.resume(null)
                         return readValue
                     }
@@ -36,19 +36,17 @@ open class XYBluetoothReadCharacteristic (uuid : UUID) : XYBluetoothCharacterist
                 }
             })
         }
-
-        removeListener(listenerKey)
     }
 
-    fun addListener (key : String, listener : XYBluetoothReadCharacteristicListener) {
-        listeners[key] = listener
+    fun addResponder (key : String, responder : XYBluetoothReadCharacteristicResponder) {
+        responders[key] = responder
     }
 
-    fun removeListener (key : String) {
-        listeners.remove(key)
+    fun removeResponder (key : String) {
+        responders.remove(key)
     }
 
-    interface XYBluetoothReadCharacteristicListener {
+    interface XYBluetoothReadCharacteristicResponder {
         fun onReadRequest (device : BluetoothDevice?) : ByteArray?
     }
 }

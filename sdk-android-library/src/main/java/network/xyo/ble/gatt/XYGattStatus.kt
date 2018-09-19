@@ -1,6 +1,6 @@
 package network.xyo.ble.gatt
 
-class XYGattStatus (statusCode: Int) {
+class XYGattStatus (val statusCode: Int) {
     val message = gattStatusCodeToString(statusCode)
 
     override fun toString(): String {

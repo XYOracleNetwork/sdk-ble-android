@@ -7,15 +7,15 @@ import kotlin.collections.HashMap
 import kotlin.coroutines.experimental.suspendCoroutine
 
 open class XYBluetoothWriteCharacteristic (uuid : UUID) : XYBluetoothCharacteristic(uuid, PROPERTY_WRITE, PERMISSION_WRITE) {
-    private val listeners = HashMap<String, XYBluetoothWriteCharacteristicListener>()
+    private val responders = HashMap<String, XYBluetoothWriteCharacteristicResponder>()
 
     open fun writeChecker (byteArray: ByteArray?) : Boolean {
         return true
     }
 
     open fun onWriteRequest (writeRequestValue : ByteArray?, device : BluetoothDevice?) : Boolean? {
-        for ((_, listener) in listeners) {
-            val canWrite = listener.onWriteRequest(writeRequestValue, device)
+        for ((_, responder) in responders) {
+            val canWrite = responder.onWriteRequest(writeRequestValue, device)
 
             if (canWrite != null) {
                 if (canWrite == true) {
@@ -29,13 +29,14 @@ open class XYBluetoothWriteCharacteristic (uuid : UUID) : XYBluetoothCharacteris
     }
 
     fun waitForWriteRequest (deviceFilter : BluetoothDevice?) = async {
-        val listenerKey = "waitForWriteRequest $deviceFilter"
         val writeRequest = suspendCoroutine<Any?> { cont ->
-            addListener(listenerKey, object : XYBluetoothWriteCharacteristicListener {
+            val responderKey = "waitForWriteRequest $deviceFilter"
+            addResponder(responderKey, object : XYBluetoothWriteCharacteristicResponder {
                 override fun onWriteRequest(writeRequestValue: ByteArray?, device: BluetoothDevice?): Boolean? {
                     if (deviceFilter?.address == device?.address || deviceFilter == null) {
                         val canWrite = writeChecker(writeRequestValue)
                         if (canWrite) {
+                            removeResponder(responderKey)
                             cont.resume(writeRequestValue)
                         }
                         return canWrite
@@ -46,15 +47,15 @@ open class XYBluetoothWriteCharacteristic (uuid : UUID) : XYBluetoothCharacteris
         }
     }
 
-    fun addListener(key : String, listener : XYBluetoothWriteCharacteristicListener) {
-        listeners[key] = listener
+    fun addResponder(key : String, responder : XYBluetoothWriteCharacteristicResponder) {
+        responders[key] = responder
     }
 
-    fun removeListener(key : String) {
-        listeners.remove(key)
+    fun removeResponder(key : String) {
+        responders.remove(key)
     }
 
-    interface XYBluetoothWriteCharacteristicListener {
+    interface XYBluetoothWriteCharacteristicResponder {
         fun onWriteRequest(writeRequestValue : ByteArray?, device : BluetoothDevice?) : Boolean?
     }
 }

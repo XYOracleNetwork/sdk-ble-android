@@ -92,7 +92,7 @@ open class XYBluetoothAdvertiser(context: Context) : XYBluetoothBase(context){
         return@asyncBle restart().await()
     }
 
-    fun changeConnectable (newConnectible : Boolean?) = asyncBle {
+    fun changeContactable (newConnectible : Boolean?) = asyncBle {
         connectible = newConnectible
         return@asyncBle restart().await()
     }

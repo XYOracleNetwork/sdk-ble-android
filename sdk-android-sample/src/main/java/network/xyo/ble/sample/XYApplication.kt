@@ -50,7 +50,7 @@ class XYApplication : Application() {
 
     private fun startAdvertiser() = async {
         val advertiser = XYBluetoothAdvertiser(applicationContext)
-        advertiser.changeConnectable(true).await()
+        advertiser.changeContactable(true).await()
         advertiser.changeAdvertisingTxLevel(ADVERTISE_TX_POWER_HIGH).await()
         advertiser.changeIncludeDeviceName(true).await()
         bleAdvertiser = advertiser

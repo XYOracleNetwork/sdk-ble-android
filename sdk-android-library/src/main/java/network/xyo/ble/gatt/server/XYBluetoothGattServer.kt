@@ -2,6 +2,7 @@ package network.xyo.ble.gatt.server
 
 import android.bluetooth.*
 import android.content.Context
+import kotlinx.coroutines.experimental.async
 import network.xyo.ble.gatt.*
 import java.util.*
 import kotlin.collections.HashMap
@@ -41,30 +42,33 @@ open class XYBluetoothGattServer(context: Context) : XYBluetoothBase(context) {
     }
 
 
-    fun addService (service : XYBluetoothService) = asyncBle {
+    fun addService (serviceToAdd : XYBluetoothService) = asyncBle {
         if (androidGattServer == null) {
-            return@asyncBle XYBluetoothResult<Int>(XYBluetoothError("No Gatt Server"))
+            return@asyncBle XYBluetoothResult<XYGattStatus>(XYBluetoothError("No Gatt Server"))
         }
 
         val addCallback = suspendCoroutine<Int> { cont ->
             addListener("addService", object : BluetoothGattServerCallback() {
                 override fun onServiceAdded(status: Int, service: BluetoothGattService?) {
+                    if (service?.uuid == serviceToAdd.uuid)
                     removeListener("addService")
                     cont.resume(status)
                 }
             })
 
-            androidGattServer?.addService(service)
+            androidGattServer?.addService(serviceToAdd)
         }
 
-        services[service.uuid] = service
+        services[serviceToAdd.uuid] = serviceToAdd
+        serviceToAdd.addListener(this.toString(), serviceChangeListener)
 
-        return@asyncBle XYBluetoothResult(addCallback)
+        return@asyncBle XYBluetoothResult(XYGattStatus(addCallback))
     }
 
     fun removeService (uuid : UUID) {
         if (androidGattServer != null) {
             val service = services[uuid] ?: return
+            service.removeListener(this.toString())
             androidGattServer?.removeService(service)
             services.remove(uuid)
         }
@@ -108,7 +112,7 @@ open class XYBluetoothGattServer(context: Context) : XYBluetoothBase(context) {
         return@asyncBle XYBluetoothResult(response)
     }
 
-    fun sendNotifaction (characteristic : BluetoothGattCharacteristic, confirm : Boolean, deviceToSend: BluetoothDevice?) = asyncBle {
+    fun sendNotification (characteristic : BluetoothGattCharacteristic, confirm : Boolean, deviceToSend: BluetoothDevice?) = asyncBle {
         if (androidGattServer != null) {
             val error = suspendCoroutine<Int> { cont ->
                 addListener("sendNotification $characteristic", object : BluetoothGattServerCallback() {
@@ -147,7 +151,20 @@ open class XYBluetoothGattServer(context: Context) : XYBluetoothBase(context) {
         return@asyncBle XYBluetoothResult<Int>(XYBluetoothError("No gatt server!"))
     }
 
-    private var primaryCallback = object : BluetoothGattServerCallback() {
+    private val serviceChangeListener = object : XYBluetoothService.XYBluetoothServiceListener {
+        override fun onCharacteristicChange(characteristic: BluetoothGattCharacteristic) {
+            async {
+                val connectedDevices = androidGattServer?.connectedDevices
+                if (connectedDevices != null) {
+                    for (connectedDevice in connectedDevices) {
+                        sendNotification(characteristic, false, connectedDevice)
+                    }
+                }
+            }
+        }
+    }
+
+    private val primaryCallback = object : BluetoothGattServerCallback() {
         override fun onCharacteristicReadRequest(device: BluetoothDevice?, requestId: Int, offset: Int, characteristic: BluetoothGattCharacteristic?) {
             super.onCharacteristicReadRequest(device, requestId, offset, characteristic)
 
@@ -169,7 +186,7 @@ open class XYBluetoothGattServer(context: Context) : XYBluetoothBase(context) {
 
             val service = services[characteristic?.service?.uuid]
             if (service != null && characteristic != null && device != null) {
-                val readValue = service.onBluetoothChararisticWrite(characteristic, device, value)
+                val readValue = service.onBluetoothCharacteristicWrite(characteristic, device, value)
                 if (readValue == true) {
                     sendResponse(value, requestId, device)
                 }
