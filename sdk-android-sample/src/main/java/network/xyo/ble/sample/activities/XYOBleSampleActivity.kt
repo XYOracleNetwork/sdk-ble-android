@@ -1,6 +1,7 @@
 package network.xyo.ble.sample.activities
 
 import android.os.Bundle
+import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.widget.BaseAdapter
 import kotlinx.android.synthetic.main.activity_xyo_ble_sample.*
@@ -8,7 +9,7 @@ import network.xyo.ble.devices.XY4BluetoothDevice
 import network.xyo.ble.devices.XYFinderBluetoothDevice
 import network.xyo.ble.sample.R
 import network.xyo.ble.sample.adapters.XYDeviceAdapter
-import network.xyo.core.XYBase
+import network.xyo.ble.scanner.XYFilteredSmartScan
 import network.xyo.core.XYPermissions
 
 
@@ -46,6 +47,23 @@ class XYOBleSampleActivity : XYOAppBaseActivity() {
         })
     }
 
+    private fun checkStatus() {
+        when (scanner.status) {
+            XYFilteredSmartScan.Status.Enabled -> {
+            }
+            XYFilteredSmartScan.Status.BluetoothDisabled -> {
+                showToast("Bluetooth Disabled")
+                progress_spinner_scanner.visibility = GONE
+            }
+            XYFilteredSmartScan.Status.BluetoothUnavailable -> {
+                showToast("Bluetooth Unavailable")
+                progress_spinner_scanner.visibility = GONE
+            }
+            XYFilteredSmartScan.Status.LocationDisabled -> {
+            }
+        }
+    }
+
     private fun disconnectListeners() {
         XY4BluetoothDevice.removeGlobalListener(tag)
     }
@@ -59,6 +77,7 @@ class XYOBleSampleActivity : XYOAppBaseActivity() {
                 "Location services are needed to connection and track your finders.",
                 XYPermissions.LOCATION_PERMISSIONS_REQ_CODE)
         adapter?.notifyDataSetChanged()
+        checkStatus()
     }
 
     override fun onPause() {

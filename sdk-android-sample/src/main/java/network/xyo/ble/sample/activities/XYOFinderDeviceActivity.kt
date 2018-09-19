@@ -47,7 +47,6 @@ class XYOFinderDeviceActivity : XYOAppBaseActivity() {
 
         data = XYDeviceData()
 
-
         sectionsPagerAdapter = SectionsPagerAdapter(supportFragmentManager)
 
         container.adapter = sectionsPagerAdapter
