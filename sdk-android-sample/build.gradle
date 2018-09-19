@@ -57,8 +57,8 @@ dependencies {
     // Optional, if you use support library fragments:
     implementation project(':xycore')
     implementation project(':xyui')
-    //implementation 'com.github.XYOracleNetwork:sdk-core-android:master-SNAPSHOT'
-    //implementation 'com.github.XYOracleNetwork:sdk-ui-android:master-SNAPSHOT'
+    // implementation 'com.github.XYOracleNetwork:sdk-core-android:develop-SNAPSHOT'
+    // implementation 'com.github.XYOracleNetwork:sdk-ui-android:develop-SNAPSHOT'
     implementation project(':sdk-android-library')
 
     implementation 'androidx.legacy:legacy-support-v4:1.0.0-alpha1'

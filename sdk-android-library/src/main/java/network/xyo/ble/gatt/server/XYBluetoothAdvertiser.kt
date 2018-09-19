@@ -1,4 +1,4 @@
-package network.xyo.ble.gatt
+package network.xyo.ble.gatt.server
 
 import android.bluetooth.le.AdvertiseCallback
 import android.bluetooth.le.AdvertiseData
@@ -8,6 +8,10 @@ import android.bluetooth.le.BluetoothLeAdvertiser
 import android.content.Context
 import android.os.ParcelUuid
 import kotlinx.coroutines.experimental.Deferred
+import network.xyo.ble.gatt.XYBluetoothBase
+import network.xyo.ble.gatt.XYBluetoothError
+import network.xyo.ble.gatt.XYBluetoothResult
+import network.xyo.ble.gatt.asyncBle
 import kotlin.coroutines.experimental.suspendCoroutine
 
 open class XYBluetoothAdvertiser(context: Context) : XYBluetoothBase(context){
@@ -73,7 +77,7 @@ open class XYBluetoothAdvertiser(context: Context) : XYBluetoothBase(context){
         return@asyncBle restart().await()
     }
 
-    fun chnagePrimaryService (newPrimaryService : ParcelUuid?) = asyncBle{
+    fun chnagePrimaryService (newPrimaryService : ParcelUuid?) = asyncBle {
         primaryService = newPrimaryService
         return@asyncBle restart().await()
     }

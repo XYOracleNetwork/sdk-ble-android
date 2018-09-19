@@ -1,21 +1,23 @@
-package network.xyo.ble.gatt
+package network.xyo.ble.gatt.server
 
 import android.bluetooth.*
 import android.content.Context
+import network.xyo.ble.gatt.*
 import java.util.*
+import kotlin.collections.HashMap
 import kotlin.coroutines.experimental.suspendCoroutine
 
 open class XYBluetoothGattServer(context: Context) : XYBluetoothBase(context) {
     protected val listeners = HashMap<String, BluetoothGattServerCallback>()
     private val services = HashMap<UUID, XYBluetoothService>()
-    private var gattServer: BluetoothGattServer? = null
+    private var androidGattServer: BluetoothGattServer? = null
 
     fun startServer() : Boolean {
         var result = false
         synchronized(this) {
-            if (gattServer == null) {
-                gattServer = bluetoothManager?.openGattServer(context, primaryCallback)
-                if (gattServer != null) {
+            if (androidGattServer == null) {
+                androidGattServer = bluetoothManager?.openGattServer(context, primaryCallback)
+                if (androidGattServer != null) {
                     result = true
                 }
             }
@@ -25,8 +27,8 @@ open class XYBluetoothGattServer(context: Context) : XYBluetoothBase(context) {
 
     fun stopServer() {
         synchronized(this) {
-            gattServer?.close()
-            gattServer = null
+            androidGattServer?.close()
+            androidGattServer = null
         }
     }
 
@@ -39,18 +41,20 @@ open class XYBluetoothGattServer(context: Context) : XYBluetoothBase(context) {
     }
 
 
-    private fun addService (service : XYBluetoothService) = asyncBle {
-        if (gattServer == null) {
+    fun addService (service : XYBluetoothService) = asyncBle {
+        if (androidGattServer == null) {
             return@asyncBle XYBluetoothResult<Int>(XYBluetoothError("No Gatt Server"))
         }
 
         val addCallback = suspendCoroutine<Int> { cont ->
-             addListener("addService", object : BluetoothGattServerCallback() {
-                 override fun onServiceAdded(status: Int, service: BluetoothGattService?) {
-                     removeListener("addService")
-                     cont.resume(status)
-                 }
-             })
+            addListener("addService", object : BluetoothGattServerCallback() {
+                override fun onServiceAdded(status: Int, service: BluetoothGattService?) {
+                    removeListener("addService")
+                    cont.resume(status)
+                }
+            })
+
+            androidGattServer?.addService(service)
         }
 
         services[service.uuid] = service
@@ -58,25 +62,25 @@ open class XYBluetoothGattServer(context: Context) : XYBluetoothBase(context) {
         return@asyncBle XYBluetoothResult(addCallback)
     }
 
-    private fun removeService (uuid : UUID) {
-        if (gattServer != null) {
+    fun removeService (uuid : UUID) {
+        if (androidGattServer != null) {
             val service = services[uuid] ?: return
-            gattServer?.removeService(service)
+            androidGattServer?.removeService(service)
             services.remove(uuid)
         }
     }
 
     private fun sendResponse (byteArray : ByteArray?, requestId : Int, device: BluetoothDevice?) {
-        if (gattServer != null) {
-            gattServer?.sendResponse(device, requestId, BluetoothGatt.GATT_SUCCESS, 0, byteArray)
+        if (androidGattServer != null) {
+            androidGattServer?.sendResponse(device, requestId, BluetoothGatt.GATT_SUCCESS, 0, byteArray)
         }
     }
 
-    fun waitForWrite (characteristic: BluetoothGattCharacteristic, deviceFilter : BluetoothDevice?) = asyncBle {
+    fun waitForWrite (characteristic: BluetoothGattCharacteristic, deviceFilter: BluetoothDevice?) = asyncBle {
         val response = suspendCoroutine<ByteArray?> { cont ->
             addListener("waitForWrite $characteristic", object : BluetoothGattServerCallback() {
                 override fun onCharacteristicWriteRequest(device: BluetoothDevice?, requestId: Int, characteristic: BluetoothGattCharacteristic?, preparedWrite: Boolean, responseNeeded: Boolean, offset: Int, value: ByteArray?) {
-                    if ((device?.address == deviceFilter?.address) || deviceFilter == null) {
+                    if (device?.address == deviceFilter?.address || deviceFilter == null) {
                         characteristic?.value = value
                         sendResponse(value, requestId, device)
                         cont.resume(value)
@@ -88,11 +92,11 @@ open class XYBluetoothGattServer(context: Context) : XYBluetoothBase(context) {
         return@asyncBle XYBluetoothResult(response)
     }
 
-    fun waitForRead (characteristic: BluetoothGattCharacteristic, deviceFilter : BluetoothDevice?, value : ByteArray) = asyncBle {
+    fun waitForRead (characteristic: BluetoothGattCharacteristic, value : ByteArray, deviceFilter: BluetoothDevice?) = asyncBle {
         val response = suspendCoroutine<ByteArray?> { cont ->
             addListener("waitForRead $characteristic", object : BluetoothGattServerCallback() {
                 override fun onCharacteristicReadRequest(device: BluetoothDevice?, requestId: Int, offset: Int, characteristic: BluetoothGattCharacteristic?) {
-                    if ((device?.address == deviceFilter?.address) || deviceFilter == null) {
+                    if (device?.address == deviceFilter?.address || deviceFilter == null) {
                         characteristic?.value = value
                         sendResponse(value, requestId, device)
                         cont.resume(value)
@@ -104,18 +108,18 @@ open class XYBluetoothGattServer(context: Context) : XYBluetoothBase(context) {
         return@asyncBle XYBluetoothResult(response)
     }
 
-    fun sendNotifaction (deviceToNotify : BluetoothDevice, characteristic : BluetoothGattCharacteristic, confirm : Boolean) = asyncBle {
-        if (gattServer != null) {
+    fun sendNotifaction (characteristic : BluetoothGattCharacteristic, confirm : Boolean, deviceToSend: BluetoothDevice?) = asyncBle {
+        if (androidGattServer != null) {
             val error = suspendCoroutine<Int> { cont ->
-                addListener("sendNotification", object : BluetoothGattServerCallback() {
+                addListener("sendNotification $characteristic", object : BluetoothGattServerCallback() {
                     override fun onNotificationSent(device: BluetoothDevice?, status: Int) {
-                        if (device?.address == deviceToNotify.address) {
+                        if (device?.address == deviceToSend?.address) {
                             cont.resume(status)
                         }
                     }
                 })
 
-                gattServer?.notifyCharacteristicChanged(deviceToNotify, characteristic, confirm)
+                androidGattServer?.notifyCharacteristicChanged(deviceToSend, characteristic, confirm)
             }
 
             return@asyncBle XYBluetoothResult(error)
@@ -125,9 +129,9 @@ open class XYBluetoothGattServer(context: Context) : XYBluetoothBase(context) {
     }
 
     fun disconnect (deviceToDisconnectFrom: BluetoothDevice) = asyncBle {
-        if (gattServer != null) {
+        if (androidGattServer != null) {
             val connectionState = suspendCoroutine<Int> { cont ->
-                addListener("disconnect", object : BluetoothGattServerCallback() {
+                addListener("disconnect $deviceToDisconnectFrom", object : BluetoothGattServerCallback() {
                     override fun onConnectionStateChange(device: BluetoothDevice?, status: Int, newState: Int) {
                         if (deviceToDisconnectFrom.address == device?.address) {
                             cont.resume(newState)
@@ -135,7 +139,7 @@ open class XYBluetoothGattServer(context: Context) : XYBluetoothBase(context) {
                     }
                 })
 
-                gattServer?.cancelConnection(deviceToDisconnectFrom)
+                androidGattServer?.cancelConnection(deviceToDisconnectFrom)
             }
 
             return@asyncBle XYBluetoothResult(connectionState)
@@ -147,6 +151,14 @@ open class XYBluetoothGattServer(context: Context) : XYBluetoothBase(context) {
         override fun onCharacteristicReadRequest(device: BluetoothDevice?, requestId: Int, offset: Int, characteristic: BluetoothGattCharacteristic?) {
             super.onCharacteristicReadRequest(device, requestId, offset, characteristic)
 
+            val service = services[characteristic?.service?.uuid]
+            if (service != null && characteristic != null && device != null) {
+                val readValue = service.onBluetoothCharacteristicReadRequest(characteristic, device)
+                if (readValue != null) {
+                    sendResponse(readValue, requestId, device)
+                }
+            }
+
             for ((_, listener) in listeners) {
                 listener.onCharacteristicReadRequest(device, requestId, offset, characteristic)
             }
@@ -154,6 +166,14 @@ open class XYBluetoothGattServer(context: Context) : XYBluetoothBase(context) {
 
         override fun onCharacteristicWriteRequest(device: BluetoothDevice?, requestId: Int, characteristic: BluetoothGattCharacteristic?, preparedWrite: Boolean, responseNeeded: Boolean, offset: Int, value: ByteArray?) {
             super.onCharacteristicWriteRequest(device, requestId, characteristic, preparedWrite, responseNeeded, offset, value)
+
+            val service = services[characteristic?.service?.uuid]
+            if (service != null && characteristic != null && device != null) {
+                val readValue = service.onBluetoothChararisticWrite(characteristic, device, value)
+                if (readValue == true) {
+                    sendResponse(value, requestId, device)
+                }
+            }
 
             for ((_, listener) in listeners) {
                 listener.onCharacteristicReadRequest(device, requestId, offset, characteristic)
