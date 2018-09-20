@@ -14,6 +14,7 @@ open class XYBluetoothReadCharacteristic (uuid : UUID) : XYBluetoothCharacterist
             val response = responder.onReadRequest(device)
 
             if (response != null) {
+                value = response
                 return response
             }
         }
