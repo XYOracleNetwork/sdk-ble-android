@@ -1,48 +1,18 @@
-apply plugin: 'com.android.application'
+apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'com.github.dcendents.android-maven'
-
-kotlin {
-    experimental {
-        coroutines 'enable'
-    }
-}
-
-androidExtensions {
-    experimental = true
-}
-
-android {
-    compileSdkVersion 28
-    buildToolsVersion '28.0.2'
-    defaultConfig {
-        applicationId "network.xyo.ble.sample"
-        minSdkVersion 21
-        targetSdkVersion 28
-        versionCode 1
-        versionName "1.0.1"
-
-    }
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
-    }
-
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
-}
+group='com.github.XYOracleNetwork'
 
 buildscript {
     repositories {
+        mavenCentral()
+        mavenLocal()
         jcenter()
         google()
+        maven { url 'https://jitpack.io' }
     }
+
     dependencies {
         classpath "com.android.tools.build:gradle:$android_plugin_version"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
@@ -50,17 +20,52 @@ buildscript {
     }
 }
 
+
+
+android {
+    compileSdkVersion 28
+    buildToolsVersion '28.0.2'
+
+    defaultConfig {
+        minSdkVersion 21
+        targetSdkVersion 28
+        defaultPublishConfig 'release'
+        versionName "0.1"
+    }
+
+    sourceSets {
+        main {
+            assets {
+                srcDir 'assets'
+            }
+        }
+    }
+
+    buildTypes {
+        release {
+            debuggable false
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            minifyEnabled false
+            debuggable true
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation "com.google.android.material:material:$androidx_version"
-    implementation "androidx.coordinatorlayout:coordinatorlayout:$androidx_version"
-    // Optional, if you use support library fragments:
-    implementation project(':xycore')
-    implementation project(':xyui')
-    // implementation 'com.github.XYOracleNetwork:sdk-core-android:develop-SNAPSHOT'
-    // implementation 'com.github.XYOracleNetwork:sdk-ui-android:develop-SNAPSHOT'
-    implementation project(':sdk-android-library')
+    api "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:0.26.0"
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:0.26.0'
+    api 'com.github.kotlin-graphics:kotlin-unsigned:v2.1'
+    implementation "androidx.annotation:annotation:$androidx_version"
 
-    implementation 'androidx.legacy:legacy-support-v4:1.0.0-alpha1'
-    implementation 'com.android.support:recyclerview-v7:28.1.1'
+    // api project(path: ':xycore')
+    implementation 'com.github.XYOracleNetwork:sdk-core-android:-SNAPSHOT'
 }
