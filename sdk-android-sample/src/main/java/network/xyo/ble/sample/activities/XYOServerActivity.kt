@@ -28,7 +28,6 @@ import java.util.*
 class XYOServerActivity : XYOAppBaseActivity() {
     private var bleServer : XYBluetoothGattServer? = null
     private var bleAdvertiser : XYBluetoothAdvertiser? = null
-
     private val simpleService = XYBluetoothService(UUID.fromString("3079ca44-ae64-4797-b4e5-a31e3304c481"), BluetoothGattService.SERVICE_TYPE_PRIMARY)
     private val characteristicRead = XYBluetoothReadCharacteristic(UUID.fromString("01ef8f90-e99f-48ae-87bb-f683b93c692f"))
     private val characteristicWrite = XYBluetoothWriteCharacteristic(UUID.fromString("02ef8f90-e99f-48ae-87bb-f683b93c692f"))
@@ -56,7 +55,6 @@ class XYOServerActivity : XYOAppBaseActivity() {
         bleServer?.stopServer()
     }
 
-
     private fun createTestServer() = async {
         val server = XYBluetoothGattServer(applicationContext)
         server.startServer()
@@ -67,7 +65,7 @@ class XYOServerActivity : XYOAppBaseActivity() {
     private fun spinUpServer () = async {
         simpleService.addCharacteristic(characteristicRead)
         simpleService.addCharacteristic(characteristicWrite)
-
+        
         characteristicRead.addResponder("countResponder", countResponder)
         characteristicWrite.addResponder("log Responder",logResponder)
 
