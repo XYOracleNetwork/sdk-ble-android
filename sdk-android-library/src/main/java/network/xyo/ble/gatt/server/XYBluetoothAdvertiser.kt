@@ -102,22 +102,26 @@ open class XYBluetoothAdvertiser(context: Context) : XYBluetoothBase(context){
         return@asyncBle restart().await()
     }
 
-    fun changeAdvertisingMode (newAdvertisingMode : Int) = asyncBle {
-        if (newAdvertisingMode != ADVERTISE_MODE_BALANCED
-                || newAdvertisingMode != ADVERTISE_MODE_LOW_LATENCY
-                || newAdvertisingMode != ADVERTISE_MODE_LOW_POWER) {
-            return@asyncBle XYBluetoothResult<Int>(XYBluetoothError("Invalid Advertising Mode"))
+    fun changeAdvertisingMode (newAdvertisingMode : Int?) = asyncBle {
+        if (newAdvertisingMode != null) {
+            if (!(newAdvertisingMode == ADVERTISE_MODE_BALANCED
+                    || newAdvertisingMode == ADVERTISE_MODE_LOW_LATENCY
+                    || newAdvertisingMode == ADVERTISE_MODE_LOW_POWER)) {
+                return@asyncBle XYBluetoothResult<Int>(XYBluetoothError("Invalid Advertising Mode"))
+            }
         }
         advertisingMode = newAdvertisingMode
         return@asyncBle restart().await()
     }
 
-    fun changeAdvertisingTxLevel (newAdvertisingTxLevel : Int) = asyncBle {
-        if (newAdvertisingTxLevel != ADVERTISE_TX_POWER_HIGH
-                || newAdvertisingTxLevel != ADVERTISE_TX_POWER_LOW
-                || newAdvertisingTxLevel != ADVERTISE_TX_POWER_MEDIUM
-                || newAdvertisingTxLevel != ADVERTISE_TX_POWER_ULTRA_LOW) {
-            return@asyncBle XYBluetoothResult<Int>(XYBluetoothError("Invalid Advertising Mode"))
+    fun changeAdvertisingTxLevel (newAdvertisingTxLevel : Int?) = asyncBle {
+        if (newAdvertisingTxLevel != null) {
+            if (!(newAdvertisingTxLevel == ADVERTISE_TX_POWER_HIGH
+                    || newAdvertisingTxLevel == ADVERTISE_TX_POWER_LOW
+                    || newAdvertisingTxLevel == ADVERTISE_TX_POWER_MEDIUM
+                    || newAdvertisingTxLevel == ADVERTISE_TX_POWER_ULTRA_LOW)) {
+                return@asyncBle XYBluetoothResult<Int>(XYBluetoothError("Invalid Advertising Tx Level"))
+            }
         }
         advertisingTxLever = newAdvertisingTxLevel
         return@asyncBle restart().await()

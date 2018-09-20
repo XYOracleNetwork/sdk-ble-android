@@ -33,11 +33,11 @@ open class XYBluetoothGattServer(context: Context) : XYBluetoothBase(context) {
         }
     }
 
-    protected fun addListener (key: String, listener : BluetoothGattServerCallback) {
+    fun addListener (key: String, listener : BluetoothGattServerCallback) {
         listeners[key] = listener
     }
 
-    protected fun removeListener (key: String) {
+    fun removeListener (key: String) {
         listeners.remove(key)
     }
 

@@ -24,6 +24,10 @@
             android:name="network.xyo.ble.sample.activities.XYOFinderDeviceActivity"
             android:theme="@style/XYTheme" />
 
+        <activity
+            android:name="network.xyo.ble.sample.activities.XYOTestTheServerActivity"
+            android:theme="@style/XYTheme" />
+
     </application>
 
 </manifest>

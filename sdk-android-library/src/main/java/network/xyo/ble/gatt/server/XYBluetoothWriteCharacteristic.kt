@@ -2,6 +2,7 @@ package network.xyo.ble.gatt.server
 
 import android.bluetooth.BluetoothDevice
 import kotlinx.coroutines.experimental.async
+import java.nio.charset.Charset
 import java.util.*
 import kotlin.collections.HashMap
 import kotlin.coroutines.experimental.suspendCoroutine
