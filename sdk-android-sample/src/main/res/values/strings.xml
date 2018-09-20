@@ -23,7 +23,10 @@
     <string name="primary_service_data_title">Primary Service Data</string>
     <string name="manufacturer_id_title">Manufacturer Id</string>
     <string name="manufacturer_data_title">Manufacturer Data</string>
-    <string name="update"></string>
+    <string name="update">Update</string>
+    <string name="services">Services</string>
+    <string name="service_uuid">Service UUID</string>
+    <string name="view_service">View Service</string>
 
     <string name="btn_start_test">Start Test</string>
     <string name="btn_find">Find</string>

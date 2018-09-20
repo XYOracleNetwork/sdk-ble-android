@@ -11,7 +11,6 @@ import network.xyo.ble.devices.XY4BluetoothDevice
 import network.xyo.ble.devices.XYFinderBluetoothDevice
 import network.xyo.ble.sample.R
 import network.xyo.ble.sample.adapters.XYDeviceAdapter
-import network.xyo.core.XYBase
 import network.xyo.core.XYPermissions
 
 
@@ -32,7 +31,7 @@ class XYOBleSampleActivity : XYOAppBaseActivity() {
         val launchServerButton = findViewById<Button>(R.id.launchServer)
         launchServerButton.setOnClickListener(object : View.OnClickListener {
             override fun onClick(p0: View?) {
-                startActivity(Intent(this@XYOBleSampleActivity, XYOTestTheServerActivity::class.java))
+                startActivity(Intent(this@XYOBleSampleActivity, XYOServerActivity::class.java))
             }
         })
     }

@@ -6,17 +6,17 @@
     android:orientation="vertical">
 
     <TextView
-        android:id="@+id/uuid_service"
+        android:id="@+id/service_uuid"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="UUID"
+        android:text="@string/service_uuid"
         android:textAppearance="@style/TextAppearance.Widget.AppCompat.ExpandedMenu.Item" />
 
     <Button
-        android:id="@+id/button2"
+        android:id="@+id/view_service_button"
         android:layout_width="120dp"
-        android:layout_height="20dp"
+        android:layout_height="0dp"
         android:layout_weight="1"
-        android:text="View Service" />
+        android:text="@string/view_service" />
 
 </LinearLayout>

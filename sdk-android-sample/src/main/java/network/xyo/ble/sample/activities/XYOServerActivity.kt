@@ -9,10 +9,12 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
+import androidx.viewpager.widget.PagerAdapter
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
 import kotlinx.android.synthetic.main.activicty_ble_server.*
 import kotlinx.coroutines.experimental.async
+import kotlinx.coroutines.experimental.delay
 import network.xyo.ble.gatt.server.*
 import network.xyo.ble.sample.R
 import network.xyo.ble.sample.adapters.XYServiceListAdapter
@@ -22,10 +24,9 @@ import java.nio.ByteBuffer
 import java.nio.charset.Charset
 import java.util.*
 
-class XYOTestTheServerActivity : XYOAppBaseActivity() {
+class XYOServerActivity : XYOAppBaseActivity() {
     private var bleServer : XYBluetoothGattServer? = null
     private var bleAdvertiser : XYBluetoothAdvertiser? = null
-    private val serviceList = XYServiceListAdapter()
 
     private val simpleService = XYBluetoothService(UUID.fromString("3079ca44-ae64-4797-b4e5-a31e3304c481"), BluetoothGattService.SERVICE_TYPE_PRIMARY)
     private val characteristicRead = XYBluetoothReadCharacteristic(UUID.fromString("01ef8f90-e99f-48ae-87bb-f683b93c692f"))
@@ -36,21 +37,13 @@ class XYOTestTheServerActivity : XYOAppBaseActivity() {
         setContentView(R.layout.activicty_ble_server)
 
 
+        val pagerAdapter = SectionsPagerAdapter(supportFragmentManager)
         val serverPagerContainer = findViewById<ViewPager>(R.id.server_pager_container)
-        serverPagerContainer.adapter = SectionsPagerAdapter(supportFragmentManager)
+        serverPagerContainer.adapter = pagerAdapter
         serverPagerContainer.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(server_tabs))
         serverPagerContainer.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(server_tabs) as ViewPager.OnPageChangeListener)
 
-
-//        val recyclerView = findViewById<RecyclerView>(R.id.serviceList)
-//        val manager = LinearLayoutManager(this.applicationContext, LinearLayout.VERTICAL, false)
-//        manager.reverseLayout = true
-//        manager.stackFromEnd = true
-//        recyclerView.layoutManager = manager
-//        recyclerView.setHasFixedSize(true)
-//        recyclerView.adapter = serviceList
-//
-         spinUpServer()
+        spinUpServer()
     }
 
     override fun onDestroy() {
@@ -74,6 +67,7 @@ class XYOTestTheServerActivity : XYOAppBaseActivity() {
         characteristicWrite.addResponder("log Responder",logResponder)
 
         createTestServer().await()
+
 
         return@async
     }
@@ -101,11 +95,16 @@ class XYOTestTheServerActivity : XYOAppBaseActivity() {
     }
 
     inner class SectionsPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
-        private val size = 1
-        private var fragments: SparseArray<XYBaseFragment> = SparseArray(size)
+        private val size = 2
+        private val fragments: SparseArray<XYBaseFragment> = SparseArray(size)
 
         override fun getItem(position: Int): Fragment {
-            return AdvertiserFragment.newInstance(XYBluetoothAdvertiser(applicationContext))
+            when (position) {
+                0 -> return AdvertiserFragment.newInstance(XYBluetoothAdvertiser(applicationContext))
+                1 -> return ServicesFragment.newInstance(bleServer?.getServices())
+            }
+
+            return ServicesFragment.newInstance(bleServer?.getServices())
         }
 
         override fun getCount(): Int {
@@ -121,6 +120,5 @@ class XYOTestTheServerActivity : XYOAppBaseActivity() {
         fun getFragmentByPosition(position: Int): XYBaseFragment {
             return fragments.get(position)
         }
-
     }
 }

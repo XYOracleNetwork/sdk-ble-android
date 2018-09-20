@@ -25,7 +25,7 @@
             android:theme="@style/XYTheme" />
 
         <activity
-            android:name="network.xyo.ble.sample.activities.XYOTestTheServerActivity"
+            android:name="network.xyo.ble.sample.activities.XYOServerActivity"
             android:theme="@style/XYTheme" />
 
     </application>

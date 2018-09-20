@@ -41,6 +41,9 @@ open class XYBluetoothGattServer(context: Context) : XYBluetoothBase(context) {
         listeners.remove(key)
     }
 
+    fun getServices () : Array<BluetoothGattService> {
+        return services.values.toTypedArray()
+    }
 
     fun addService (serviceToAdd : XYBluetoothService) = asyncBle {
         if (androidGattServer == null) {
