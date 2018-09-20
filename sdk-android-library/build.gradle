@@ -66,6 +66,6 @@ dependencies {
     api 'com.github.kotlin-graphics:kotlin-unsigned:v2.1'
     implementation "androidx.annotation:annotation:$androidx_version"
 
-    api project(path: ':xycore')
-    //implementation 'com.github.XYOracleNetwork:sdk-core-android:-SNAPSHOT'
+    // api project(path: ':xycore')
+    implementation 'com.github.XYOracleNetwork:sdk-core-android:-SNAPSHOT'
 }
