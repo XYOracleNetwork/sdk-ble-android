@@ -1,6 +1,7 @@
 package network.xyo.ble.sample.activities
 
 import android.bluetooth.BluetoothDevice
+import android.bluetooth.BluetoothGattServerCallback
 import android.bluetooth.BluetoothGattService
 import android.os.Bundle
 import android.util.Log
@@ -43,7 +44,11 @@ class XYOServerActivity : XYOAppBaseActivity() {
         serverPagerContainer.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(server_tabs))
         serverPagerContainer.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(server_tabs) as ViewPager.OnPageChangeListener)
 
-        spinUpServer()
+        async {
+            spinUpServer().await()
+            val fragment = pagerAdapter.getFragmentByPosition(1) as RootServicesFragment
+            fragment.addService(simpleService)
+        }
     }
 
     override fun onDestroy() {
@@ -67,8 +72,6 @@ class XYOServerActivity : XYOAppBaseActivity() {
         characteristicWrite.addResponder("log Responder",logResponder)
 
         createTestServer().await()
-
-
         return@async
     }
 
@@ -99,12 +102,13 @@ class XYOServerActivity : XYOAppBaseActivity() {
         private val fragments: SparseArray<XYBaseFragment> = SparseArray(size)
 
         override fun getItem(position: Int): Fragment {
+            println(bleServer?.getServices()?.size)
             when (position) {
                 0 -> return AdvertiserFragment.newInstance(XYBluetoothAdvertiser(applicationContext))
-                1 -> return ServicesFragment.newInstance(bleServer?.getServices())
+                1 -> return RootServicesFragment.newInstance(bleServer?.getServices())
             }
 
-            return ServicesFragment.newInstance(bleServer?.getServices())
+            return RootServicesFragment.newInstance(bleServer?.getServices())
         }
 
         override fun getCount(): Int {

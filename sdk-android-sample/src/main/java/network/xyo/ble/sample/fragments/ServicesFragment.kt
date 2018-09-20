@@ -43,14 +43,14 @@ class ServicesFragment(services : Array<BluetoothGattService>?) : XYBaseFragment
             override fun onClick(service: BluetoothGattService) {
                 val transition = fragmentManager?.beginTransaction()
                 val serviceFragment = ServiceFragment(service)
-                transition?.replace(R.layout.fragment_services, serviceFragment)
+                transition?.replace(R.id.root_frame_services, serviceFragment)
                 transition?.addToBackStack(null)
                 transition?.commit()
             }
         })
     }
 
-    fun addService(service : XYBluetoothService) {
+    fun addService(service : BluetoothGattService) {
         ui {
             serviceList.addItem(service)
         }
