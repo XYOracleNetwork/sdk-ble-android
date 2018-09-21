@@ -1,6 +1,7 @@
 package network.xyo.ble.gatt.server
 
 import android.bluetooth.BluetoothDevice
+import kotlinx.coroutines.experimental.Deferred
 import kotlinx.coroutines.experimental.async
 import java.nio.charset.Charset
 import java.util.*
@@ -30,7 +31,7 @@ open class XYBluetoothWriteCharacteristic (uuid : UUID) : XYBluetoothCharacteris
     }
 
     fun waitForWriteRequest (deviceFilter : BluetoothDevice?) = async {
-        val writeRequest = suspendCoroutine<Any?> { cont ->
+        return@async suspendCoroutine<ByteArray?> { cont ->
             val responderKey = "waitForWriteRequest $deviceFilter"
             addResponder(responderKey, object : XYBluetoothWriteCharacteristicResponder {
                 override fun onWriteRequest(writeRequestValue: ByteArray?, device: BluetoothDevice?): Boolean? {
