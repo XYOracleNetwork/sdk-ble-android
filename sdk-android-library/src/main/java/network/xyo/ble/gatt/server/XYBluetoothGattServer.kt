@@ -5,11 +5,12 @@ import android.content.Context
 import kotlinx.coroutines.experimental.async
 import network.xyo.ble.gatt.*
 import java.util.*
+import java.util.concurrent.ConcurrentHashMap
 import kotlin.collections.HashMap
 import kotlin.coroutines.experimental.suspendCoroutine
 
 open class XYBluetoothGattServer(context: Context) : XYBluetoothBase(context) {
-    protected val listeners = HashMap<String, BluetoothGattServerCallback>()
+    protected val listeners = ConcurrentHashMap<String, BluetoothGattServerCallback>()
     private val services = HashMap<UUID, XYBluetoothService>()
     private var androidGattServer: BluetoothGattServer? = null
 
