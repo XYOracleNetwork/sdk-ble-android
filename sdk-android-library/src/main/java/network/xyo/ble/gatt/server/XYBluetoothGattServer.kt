@@ -34,11 +34,15 @@ open class XYBluetoothGattServer(context: Context) : XYBluetoothBase(context) {
     }
 
     fun addListener (key: String, listener : BluetoothGattServerCallback) {
-        listeners[key] = listener
+        synchronized(listeners) {
+            listeners[key] = listener
+        }
     }
 
     fun removeListener (key: String) {
-        listeners.remove(key)
+        synchronized(listeners) {
+            listeners.remove(key)
+        }
     }
 
     fun getServices () : Array<BluetoothGattService> {
@@ -186,7 +190,6 @@ open class XYBluetoothGattServer(context: Context) : XYBluetoothBase(context) {
 
         override fun onCharacteristicWriteRequest(device: BluetoothDevice?, requestId: Int, characteristic: BluetoothGattCharacteristic?, preparedWrite: Boolean, responseNeeded: Boolean, offset: Int, value: ByteArray?) {
             super.onCharacteristicWriteRequest(device, requestId, characteristic, preparedWrite, responseNeeded, offset, value)
-
             val service = services[characteristic?.service?.uuid]
             if (service != null && characteristic != null && device != null) {
                 val readValue = service.onBluetoothCharacteristicWrite(characteristic, device, value)

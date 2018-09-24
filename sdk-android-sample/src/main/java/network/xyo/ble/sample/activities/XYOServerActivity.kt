@@ -59,17 +59,17 @@ class XYOServerActivity : XYOAppBaseActivity() {
         val server = XYBluetoothGattServer(applicationContext)
         server.startServer()
         bleServer = server
-        return@async server.addService(simpleService).await()
+        server.addService(simpleService).await()
     }
 
     private fun spinUpServer () = async {
         simpleService.addCharacteristic(characteristicRead)
         simpleService.addCharacteristic(characteristicWrite)
-        
-        characteristicRead.addResponder("countResponder", countResponder)
-        characteristicWrite.addResponder("log Responder",logResponder)
+
 
         createTestServer().await()
+        characteristicRead.addResponder("countResponder", countResponder)
+        characteristicWrite.addResponder("log Responder",logResponder)
         return@async
     }
 
