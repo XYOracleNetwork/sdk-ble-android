@@ -1,6 +1,5 @@
 package network.xyo.ble.firmware
 
-import android.bluetooth.BluetoothGattDescriptor
 import android.util.Log
 import com.dialog.suota.data.OtaFile
 import kotlinx.coroutines.experimental.Deferred
@@ -33,7 +32,7 @@ class OtaUpdate(var device: XY4BluetoothDevice, private val otaFile: OtaFile?) {
     private var endSignalSent = false
     private var retryCount = 0
     private var chunkCount = -1
-    private var blockCount = 0
+    private var blockCounter = 0
     private var nextStep = Step.MemDev
 
     private var patchDataSize = 20
@@ -59,7 +58,8 @@ class OtaUpdate(var device: XY4BluetoothDevice, private val otaFile: OtaFile?) {
     fun start() {
         //reset()
         //otaFile?.setFileBlockSize(240, 20)
-        dispatchNextStep()
+        //dispatchNextStep()
+        startUpdate()
     }
 
     fun addListener(key: String, listener: Listener) {
@@ -87,8 +87,77 @@ class OtaUpdate(var device: XY4BluetoothDevice, private val otaFile: OtaFile?) {
         lastBlockSent = false
         lastBlockReady = false
         endSignalSent = false
-        blockCount = 0
+        blockCounter = 0
         chunkCount = -1
+    }
+
+    private fun startUpdate() {
+
+        GlobalScope.launch {
+            //STEP 1 - memdev
+            val memResult = setMemDev().await()
+            memResult.error?.let { error ->
+                logInfo(TAG, "startUpdate - MemDev ERROR: $error")
+            }
+
+            logInfo(TAG, "startUpdate MemDev memResult: $memResult")
+
+            //STEP 2 - GpioMap
+            val gpioResult = setGpioMap().await()
+            gpioResult.error?.let { error ->
+                logInfo(TAG, "startUpdate - GPIO ERROR: $error")
+            }
+
+            logInfo(TAG, "startUpdate MemDev gpioResult: $gpioResult")
+
+            //STEP 3 - (and when final block is sent)
+            val patchResult = setPatchLength().await() //setPatchLength().await()
+            patchResult.error?.let { error ->
+                logInfo(TAG, "startUpdate - patch ERROR: $error")
+            }
+
+            logInfo(TAG, "startUpdate MemDev patchResult: $gpioResult")
+
+            //STEP 4 - send blocks
+
+            while (!lastBlockSent) {
+
+                val blockResult = sendBlock().await()
+                blockResult.error?.let { error ->
+                    logInfo(TAG, "startUpdate - sendBlock ERROR: $error")
+                }
+                logInfo(TAG, "startUpdate sendBlock: $blockResult")
+
+                if (lastBlock) {
+                    logInfo(TAG, "startUpdate LAST BLOCK - SET PATCH LEN ***************: $lastBlock")
+                    val finalPatchResult = setPatchLength().await()
+
+                    finalPatchResult.error?.let { error ->
+                        logInfo(TAG, "startUpdate - finalPatchResult ERROR: $error")
+                    }
+                }
+
+            }
+
+            logInfo(TAG, "startUpdate done sending blocks......... gpioResult")
+
+            //SEND END SIGNAL
+            val endResult = sendEndSignal().await()
+            endResult.error?.let { error ->
+                logInfo(TAG, "startUpdate - endResult ERROR: $error")
+            }
+
+            logInfo(TAG, "startUpdate -- sent end signal")
+
+            //REBOOT
+            val reboot = sendReboot().await()
+            reboot.error?.let { error ->
+                logInfo(TAG, "startUpdate - reboot ERROR: $error")
+            }
+
+            logInfo(TAG, "startUpdate -- sent reboot....")
+
+        }
     }
 
     private fun dispatchNextStep() {
@@ -103,17 +172,17 @@ class OtaUpdate(var device: XY4BluetoothDevice, private val otaFile: OtaFile?) {
                     logInfo(TAG, "dispatchNextStep MemDev result: ${result.value.toString()} ")
 
                     //Returning 19 - error
-                    processNextStep(result)
+                    //processNextStep(result)
                 }
                 OtaUpdate.Step.GpioMap -> {
                     // Set mem_type for SPOTA_GPIO_MAP_UUID
                     val result = setGpioMap().await()
-                    processNextStep(result)
+                   // processNextStep(result)
                 }
                 OtaUpdate.Step.PatchLen -> {
                     // Set SPOTA_PATCH_LEN_UUID
                     val result = setPatchLength().await()
-                    processNextStep(result)
+                   // processNextStep(result)
                 }
                 OtaUpdate.Step.WriteData -> {
                     // Send a block containing blocks of 20 bytes until the patch length (default 240) has been reached
@@ -133,16 +202,16 @@ class OtaUpdate(var device: XY4BluetoothDevice, private val otaFile: OtaFile?) {
                     } else {
                         if (!lastBlockReady) {
                             val result = setPatchLength().await()
-                            processNextStep(result)
+                            //processNextStep(result)
                         } else if (!lastBlockSent) {
                             val result = sendBlock().await()
-                            processNextStep(result)
+                           // processNextStep(result)
                         } else if (!endSignalSent) {
-                            val result = sendEndSignal().await()
-                            processNextStep(result)
+                           // val result = sendEndSignal().await()
+                            //processNextStep(result)
                         } else {
                             //TODO - done
-                            val result = sendReboot().await()
+                           // val result = sendReboot().await()
                             passUpdate()
                         }
                     }
@@ -213,41 +282,41 @@ class OtaUpdate(var device: XY4BluetoothDevice, private val otaFile: OtaFile?) {
         }
     }
 
-    private fun enableNotifications(): Deferred<XYBluetoothResult<ByteArray>> {
-        return asyncBle {
-            //val memType = MEMORY_TYPE_EXTERNAL_SPI shl 24 or imageBank
-            logInfo(TAG, "start enableNotifications: ")
-            val result = device.spotaService.SPOTA_SERV_STATUS.set(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE).await()
-
-            return@asyncBle XYBluetoothResult(result.value)
-        }
-    }
+//    private fun enableNotifications(): Deferred<XYBluetoothResult<Int>> {
+//        return asyncBle {
+//            //val memType = MEMORY_TYPE_EXTERNAL_SPI shl 24 or imageBank
+//            logInfo(TAG, "start enableNotifications: ")
+//            val result = device.spotaService.SPOTA_SERV_STATUS.set(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE).await()
+//
+//            return@asyncBle XYBluetoothResult(result.value)
+//        }
+//    }
 
     //STEP 1
-    private fun setMemDev(): Deferred<XYBluetoothResult<ByteArray>> {
+    private fun setMemDev(): Deferred<XYBluetoothResult<Int>> {
         return asyncBle {
             val memType = MEMORY_TYPE_EXTERNAL_SPI shl 24 or imageBank
             logInfo(TAG, "start setMemDev: " + String.format("%#010x", memType))
-            val result = device.spotaService.SPOTA_MEM_DEV.set(intToUINT32Byte(memType)).await()
+            val result = device.spotaService.SPOTA_MEM_DEV.set(memType).await()
 
             return@asyncBle XYBluetoothResult(result.value)
         }
     }
 
     //STEP 2
-    private fun setGpioMap(): Deferred<XYBluetoothResult<ByteArray>> {
+    private fun setGpioMap(): Deferred<XYBluetoothResult<Int>> {
         return asyncBle {
             val memInfo = MISO_GPIO shl 24 or (MOSI_GPIO shl 16) or (CS_GPIO shl 8) or SCK_GPIO
             logInfo(TAG, "start setGpioMap: $memInfo")
             logInfo(TAG, "setGpioMap: " + String.format("%#010x", Integer.valueOf(memInfo)))
 
-            val result = device.spotaService.SPOTA_GPIO_MAP.set(intToUINT32Byte(memInfo)).await()
+            val result = device.spotaService.SPOTA_GPIO_MAP.set(memInfo).await()
             return@asyncBle XYBluetoothResult(result.value)
         }
     }
 
     //STEP 3 - (and when final block is sent)
-    private fun setPatchLength(): Deferred<XYBluetoothResult<ByteArray>> {
+    private fun setPatchLength(): Deferred<XYBluetoothResult<XYBluetoothResult<Int>>> {
         logInfo(TAG, "start setPatchLength...")
         return asyncBle {
             //TODO - is this correct?
@@ -258,18 +327,18 @@ class OtaUpdate(var device: XY4BluetoothDevice, private val otaFile: OtaFile?) {
             }
 
             logInfo(TAG, "start setPatchLength blockSize: $blockSize - ${String.format("%#06x", blockSize)}")
-            //IMPORTANT - patch length is UINT16
-            val result = device.spotaService.SPOTA_PATCH_LEN.set(intToUNINT16Byte(blockSize)).await()
+
+            val result = device.spotaService.SPOTA_PATCH_LEN.set(blockSize).await()
             logInfo(TAG, "start setPatchLength result: ${result.value.toString()}")
-            return@asyncBle XYBluetoothResult(result.value)
+            return@asyncBle XYBluetoothResult(result)
         }
     }
 
     //STEP 4
     private fun sendBlock(): Deferred<XYBluetoothResult<ByteArray>> {
-        logInfo(TAG, "sendBlock")
+        //logInfo(TAG, "sendBlock")
         return asyncBle {
-            val block = otaFile?.getBlock(blockCount)
+            val block = otaFile?.getBlock(blockCounter)
             val i = ++chunkCount
             var lastChunk = false
             if (chunkCount == block!!.size - 1) {
@@ -279,18 +348,18 @@ class OtaUpdate(var device: XY4BluetoothDevice, private val otaFile: OtaFile?) {
 
             if (lastChunk) {
                 if (!lastBlock) {
-                    blockCount++
+                    blockCounter++
                 } else {
                     lastBlockSent = true
                 }
-                if (blockCount + 1 == otaFile?.numberOfBlocks) {
+                if (blockCounter + 1 == otaFile?.numberOfBlocks) {
                     lastBlock = true
                 }
             }
 
             val chunk = block[i]
 
-            logInfo(TAG, "sendBlock-ending chunk: $chunkCount")
+            //logInfo(TAG, "sendBlock-ending chunk: $chunkCount")
 
             val result = device.spotaService.SPOTA_PATCH_DATA.set(chunk).await()
             return@asyncBle XYBluetoothResult(result.value)
@@ -298,20 +367,20 @@ class OtaUpdate(var device: XY4BluetoothDevice, private val otaFile: OtaFile?) {
     }
 
 
-    private fun sendEndSignal(): Deferred<XYBluetoothResult<ByteArray>> {
+    private fun sendEndSignal(): Deferred<XYBluetoothResult<Int>> {
         logInfo(TAG, "start sendEndSignal...")
         return asyncBle {
-            val result = device.spotaService.SPOTA_MEM_DEV.set(intToUINT32Byte(END_SIGNAL)).await()
+            val result = device.spotaService.SPOTA_MEM_DEV.set(END_SIGNAL).await()
             endSignalSent = true
             return@asyncBle XYBluetoothResult(result.value)
         }
     }
 
     //DONE
-    private fun sendReboot(): Deferred<XYBluetoothResult<ByteArray>> {
+    private fun sendReboot(): Deferred<XYBluetoothResult<Int>> {
         logInfo(TAG, "start sendReboot.   ")
         return asyncBle {
-            val result = device.spotaService.SPOTA_MEM_DEV.set(intToUINT32Byte(REBOOT_SIGNAL)).await()
+            val result = device.spotaService.SPOTA_MEM_DEV.set(REBOOT_SIGNAL).await()
             return@asyncBle XYBluetoothResult(result.value)
         }
     }
@@ -321,32 +390,11 @@ class OtaUpdate(var device: XY4BluetoothDevice, private val otaFile: OtaFile?) {
         MemDev, GpioMap, PatchLen, WriteData
     }
 
-    private fun intToUNINT16Byte(value: Int): ByteArray {
-        val result = ByteArray(2)
-        result[0] = (value and 0xFF).toByte()
-        result[1] = (value shr 8 and 0xFF).toByte()
-        return result
-    }
-
-    private fun intToUINT32Byte(value: Int): ByteArray {
-        val result = ByteArray(4)
-        result[0] = (value and 0xFF).toByte()
-        result[1] = (value shr 8 and 0xFF).toByte()
-        result[2] = (value shr 16 and 0xFF).toByte()
-        result[3] = (value shr 24 and 0xFF).toByte()
-        return result
-    }
-
     private fun onError(errorCode: Int): String {
         //TODO - show ui/toast
         val error = errors?.get(errorCode)
         Log.d(TAG, "Error: $errorCode $error")
         return error.toString()
-    }
-
-    fun updateFileChunkSize() {
-        fileChunkSize = Math.min(patchDataSize, mtu - 3)
-        Log.d(TAG, "OtaFile chunk size set to $fileChunkSize")
     }
 
     lateinit var errors: java.util.HashMap<Int, String>
