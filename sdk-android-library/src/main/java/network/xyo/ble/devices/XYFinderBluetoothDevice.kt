@@ -2,6 +2,7 @@ package network.xyo.ble.devices
 
 import android.content.Context
 import kotlinx.coroutines.experimental.*
+import network.xyo.ble.firmware.OtaUpdate
 import network.xyo.ble.gatt.XYBluetoothError
 import network.xyo.ble.gatt.XYBluetoothResult
 import network.xyo.ble.gatt.asyncBle
@@ -180,7 +181,7 @@ open class XYFinderBluetoothDevice(context: Context, scanResult: XYScanResult, h
         }
     }
 
-    open fun updateFirmware(filename: String) { //: Deferred<XYBluetoothResult<ByteArray>> {
+    open fun updateFirmware(filename: String, listener: OtaUpdate.Listener) { //: Deferred<XYBluetoothResult<ByteArray>> {
 //        logError(UnsupportedOperationException(), true)
 //        return asyncBle {
 //            return@asyncBle XYBluetoothResult<ByteArray>(XYBluetoothError("Not Implemented"))

@@ -102,22 +102,12 @@ open class XY4BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
         }
     }
 
-    private val updateListener = object : OtaUpdate.Listener() {
-        override fun updated(device: XYBluetoothDevice) {
-            logInfo("updateListener: updated")
-        }
-
-        override fun failed(device: XYBluetoothDevice, error: String) {
-            logInfo("updateListener: failed: $error")
-        }
-    }
-
-     override fun updateFirmware(filename: String) { // : Deferred<XYBluetoothResult<ByteArray>> {
+     override fun updateFirmware(filename: String, listener: OtaUpdate.Listener) { // : Deferred<XYBluetoothResult<ByteArray>> {
 
         val otaFile = OtaFile.getByFileName(filename)
         val updater = OtaUpdate(this, otaFile)
 
-        updater.addListener("XY4BluetoothDevice", updateListener)
+        updater.addListener("XY4BluetoothDevice", listener)
         updater.start()
     }
 

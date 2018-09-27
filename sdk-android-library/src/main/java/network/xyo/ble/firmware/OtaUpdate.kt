@@ -95,7 +95,7 @@ class OtaUpdate(var device: XY4BluetoothDevice, private val otaFile: OtaFile?) {
 
             //STEP 4 - send blocks
             while (!lastBlockSent && !hasError) {
-
+                progressUpdate()
                 val blockResult = sendBlock().await()
                 blockResult.error?.let { error ->
                     hasError = true
@@ -134,6 +134,18 @@ class OtaUpdate(var device: XY4BluetoothDevice, private val otaFile: OtaFile?) {
             }
 
             passUpdate()
+        }
+    }
+
+    private fun progressUpdate() {
+        logInfo(TAG, "progressUpdate -- listener.progress")
+        val chunkNumber = blockCounter * (otaFile?.chunksPerBlockCount ?: 0) + chunkCount + 1
+        synchronized(listeners) {
+            for ((_, listener) in listeners) {
+                GlobalScope.launch {
+                    otaFile?.totalChunkCount?.let { listener.progress(chunkNumber, it) }
+                }
+            }
         }
     }
 
@@ -267,5 +279,6 @@ class OtaUpdate(var device: XY4BluetoothDevice, private val otaFile: OtaFile?) {
     open class Listener {
         open fun updated(device: XYBluetoothDevice) {}
         open fun failed(device: XYBluetoothDevice, error: String) {}
+        open fun progress(sent: Int, total: Int) {}
     }
 }
