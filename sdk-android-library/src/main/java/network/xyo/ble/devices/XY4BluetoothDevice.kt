@@ -3,7 +3,7 @@ package network.xyo.ble.devices
 import android.bluetooth.BluetoothGatt
 import android.bluetooth.BluetoothGattCharacteristic
 import android.content.Context
-import com.dialog.suota.data.OtaFile
+import network.xyo.ble.firmware.OtaFile
 import kotlinx.coroutines.experimental.Deferred
 import kotlinx.coroutines.experimental.GlobalScope
 import kotlinx.coroutines.experimental.launch
@@ -17,7 +17,6 @@ import network.xyo.ble.services.standard.*
 import network.xyo.ble.services.xy4.PrimaryService
 import network.xyo.core.XYBase
 import unsigned.Ushort
-import java.io.InputStream
 import java.nio.ByteBuffer
 import java.util.*
 

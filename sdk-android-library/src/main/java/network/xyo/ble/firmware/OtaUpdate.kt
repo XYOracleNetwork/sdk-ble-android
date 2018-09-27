@@ -1,7 +1,5 @@
 package network.xyo.ble.firmware
 
-import android.util.Log
-import com.dialog.suota.data.OtaFile
 import kotlinx.coroutines.experimental.Deferred
 import kotlinx.coroutines.experimental.GlobalScope
 import kotlinx.coroutines.experimental.launch
@@ -10,19 +8,9 @@ import network.xyo.ble.devices.XYBluetoothDevice
 import network.xyo.ble.gatt.XYBluetoothResult
 import network.xyo.ble.gatt.asyncBle
 import network.xyo.core.XYBase.Companion.logInfo
-import java.math.BigInteger
 
 class OtaUpdate(var device: XY4BluetoothDevice, private val otaFile: OtaFile?) {
 
-    val MISO_GPIO = 0x05            // p0_5
-    val MOSI_GPIO = 0x06            // p0_6
-    val CS_GPIO = 0x07              // p0_7
-    val SCK_GPIO = 0x00             // p0_0
-    val END_SIGNAL = -0x2000000
-    val REBOOT_SIGNAL = -0x3000000
-    val MEMORY_TYPE_EXTERNAL_SPI = 0x13
-
-    // SUOTA
     private var imageBank: Int = 0
 
     private val listeners = HashMap<String, Listener>()
@@ -33,7 +21,6 @@ class OtaUpdate(var device: XY4BluetoothDevice, private val otaFile: OtaFile?) {
     private var retryCount = 0
     private var chunkCount = -1
     private var blockCounter = 0
-    private var nextStep = Step.MemDev
 
     //private var mtu = 23
 
@@ -68,16 +55,14 @@ class OtaUpdate(var device: XY4BluetoothDevice, private val otaFile: OtaFile?) {
         }
     }
 
-    private fun reset() {
+    fun reset() {
         retryCount = 0
-        nextStep = Step.MemDev
-
+        blockCounter = 0
+        chunkCount = -1
         lastBlock = false
         lastBlockSent = false
         lastBlockReady = false
         endSignalSent = false
-        blockCounter = 0
-        chunkCount = -1
     }
 
     private fun startUpdate() {
@@ -265,14 +250,18 @@ class OtaUpdate(var device: XY4BluetoothDevice, private val otaFile: OtaFile?) {
     }
 
 
-    enum class Step {
-        MemDev, GpioMap, PatchLen, WriteData
-    }
-
     companion object {
         private const val TAG = "OtaUpdate"
+
         //TODO - setBlock retry
-        private const val MAX_RETRY_COUNT = 3
+        const val MAX_RETRY_COUNT = 3
+        const val MISO_GPIO = 0x05            // p0_5
+        const val MOSI_GPIO = 0x06            // p0_6
+        const val CS_GPIO = 0x07              // p0_7
+        const val SCK_GPIO = 0x00             // p0_0
+        const val END_SIGNAL = -0x2000000
+        const val REBOOT_SIGNAL = -0x3000000
+        const val MEMORY_TYPE_EXTERNAL_SPI = 0x13
     }
 
     open class Listener {

@@ -1,50 +1,52 @@
-package com.dialog.suota.data
+package network.xyo.ble.firmware
 
 import android.content.Context
 import android.os.Environment
-import android.util.Log
 import network.xyo.core.XYBase
 import java.io.FileInputStream
 import java.io.IOException
 import java.io.InputStream
 import java.util.*
-import kotlin.experimental.and
 import kotlin.experimental.xor
 
 class OtaFile @Throws(IOException::class)
 private constructor(private val inputStream: InputStream?) {
+
+    private var bytes: ByteArray? = null
+    private var blocks: Array<Array<ByteArray>>? = null
+    private val bytesAvailable: Int = this.inputStream!!.available()
+
     var crc: Byte = 0
         private set
-    private var bytes: ByteArray? = null
-
-    private var blocks: Array<Array<ByteArray>>? = null
 
     var fileBlockSize = 0
         private set
-    private var fileChunkSize = 20
-    private val bytesAvailable: Int
+
+    var fileChunkSize = 20
+        private set
+
     var numberOfBlocks = -1
         private set
+
     var chunksPerBlockCount: Int = 0
         private set
     var totalChunkCount: Int = 0
         private set
-    private var type: Int = 0
 
     val numberOfBytes: Int
         get() = this.bytes!!.size
 
     init {
-        this.bytesAvailable = this.inputStream!!.available()
-
         this.bytes = ByteArray(this.bytesAvailable + 1)
         this.inputStream!!.read(this.bytes!!)
         this.crc = calculateCrc()
         this.bytes!![this.bytesAvailable] = this.crc
 
+        //Default block/chunk sizes for XY4 devices.
         setFileBlockSize(240, 20)
     }
 
+    // Set the file blockSize and ChunkSize if not using the default 240/20 values
     fun setFileBlockSize(fileBlockSize: Int, fileChunkSize: Int) {
         this.fileBlockSize = Math.max(fileBlockSize, fileChunkSize)
         this.fileChunkSize = fileChunkSize
@@ -53,15 +55,18 @@ private constructor(private val inputStream: InputStream?) {
         this.initBlocksSuota()
     }
 
+    // override arrayOfNulls to let us specify the size
     private inline fun <reified T> fileEmptyArray(size: Int): Array<T> =
             @Suppress("UNCHECKED_CAST")
             (arrayOfNulls<T>(size) as Array<T>)
 
-    //This one
+
+    //Chunk the OtaFile into correct block sizes.
     private fun initBlocksSuota() {
         totalChunkCount = 0
         blocks = fileEmptyArray(numberOfBlocks)
-        Log.d("OtaFile", "initBlocksSuota numberOfBlocks: $numberOfBlocks")
+
+        XYBase.logInfo("OtaFile", "initBlocksSuota numberOfBlocks: $numberOfBlocks")
 
         var byteOffset = 0
         // Loop through all the bytes and split them into pieces the size of the default chunk size
@@ -85,14 +90,13 @@ private constructor(private val inputStream: InputStream?) {
                     chunkSize = blockSize % fileChunkSize
                 }
 
-                Log.d("OtaFile", "total bytes: " + bytes!!.size + ", offset: " + byteOffset + ", block: " + i + ", chunk: " + (chunkNumber + 1) + ", blocksize: " + blockSize + ", chunksize: " + chunkSize)
+                //XYBase.logInfo("OtaFile", "total bytes: " + bytes!!.size + ", offset: " + byteOffset + ", block: " + i + ", chunk: " + (chunkNumber + 1) + ", blocksize: " + blockSize + ", chunksize: " + chunkSize)
                 val chunk = Arrays.copyOfRange(bytes!!, byteOffset, byteOffset + chunkSize)
                 blocks!![i][chunkNumber] = chunk
                 byteOffset += chunkSize
                 chunkNumber++
                 totalChunkCount++
                 j += fileChunkSize
-                Log.d("OtaFile", "fileChunkSize ---------------LAST CHUNK ON: $fileChunkSize -- j: $j")
             }
         }
     }
@@ -108,34 +112,37 @@ private constructor(private val inputStream: InputStream?) {
             } catch (e: IOException) {
                 e.printStackTrace()
             }
-
         }
     }
 
     @Throws(IOException::class)
     private fun calculateCrc(): Byte {
-        var crc_code: Byte = 0
+        var crcCode: Byte = 0
         for (i in 0 until this.bytesAvailable) {
             val byteValue = this.bytes!![i]
             val intVal = byteValue.toInt()
-            crc_code = crc_code xor intVal.toByte()
+            crcCode = crcCode xor intVal.toByte()
         }
-        Log.d("OtaFile", String.format("Fimware CRC: %#04x", crc_code and 0xff.toByte()))
-        return crc_code
+        //XYBase.logInfo("OtaFile", String.format("Fimware CRC: %#04x", crc_code and 0xff.toByte()))
+
+        return crcCode
     }
 
     companion object {
         private val filesDir = Environment.getExternalStorageDirectory().absolutePath + "/Xyo"
 
-        @Throws(IOException::class)
         fun getByFileName(filename: String): OtaFile {
             // Get the file and store it in fileStream
 
-            val `is` = FileInputStream("$filesDir/$filename")
-            return OtaFile(`is`)
+            val inputStream = FileInputStream("$filesDir/$filename")
+            return OtaFile(inputStream)
         }
 
-        fun createFileDirectories(c: Context): Boolean {
+        fun getByFileStream(stream: FileInputStream): OtaFile {
+            return OtaFile(stream)
+        }
+
+        fun createFileDirectory(): Boolean {
             val directoryName = filesDir
             val directory: java.io.File
             directory = java.io.File(directoryName)
