@@ -9,9 +9,8 @@ import network.xyo.ble.gatt.XYBluetoothResult
 import network.xyo.ble.gatt.asyncBle
 import network.xyo.core.XYBase.Companion.logInfo
 
+@Suppress("unused")
 class OtaUpdate(var device: XY4BluetoothDevice, private val otaFile: OtaFile?) {
-
-    private var imageBank: Int = 0
 
     private val listeners = HashMap<String, Listener>()
     private var lastBlock = false
@@ -22,8 +21,44 @@ class OtaUpdate(var device: XY4BluetoothDevice, private val otaFile: OtaFile?) {
     private var chunkCount = -1
     private var blockCounter = 0
 
+    private var _imageBank = 0
+    var imageBank: Int
+        get() = _imageBank
+        set(value) {
+            _imageBank = value
+        }
+
+    private var _miso_gpio = 0x05
+    var MISO_GPIO: Int
+        get() = _miso_gpio
+        set(value) {
+            _miso_gpio = value
+        }
+
+    private var _mosi_gpio = 0x06
+    var MOSI_GPIO: Int
+        get() = _mosi_gpio
+        set(value) {
+            _mosi_gpio = value
+        }
+
+    private var cs_gpio = 0x07
+    var CS_GPIO: Int
+        get() = cs_gpio
+        set(value) {
+            cs_gpio = value
+        }
+
+    private var _sck_gpio = 0x00
+    var SCK_GPIO: Int
+        get() = _sck_gpio
+        set(value) {
+            _sck_gpio = value
+        }
+
     //private var mtu = 23
 
+    //todo - NOT IMPLEMENTED
     private var _allowRetry = true
     var allowRetry: Boolean
         get() = _allowRetry
@@ -174,7 +209,7 @@ class OtaUpdate(var device: XY4BluetoothDevice, private val otaFile: OtaFile?) {
     //STEP 1
     private fun setMemDev(): Deferred<XYBluetoothResult<Int>> {
         return asyncBle {
-            val memType = MEMORY_TYPE_EXTERNAL_SPI shl 24 or imageBank
+            val memType = MEMORY_TYPE_EXTERNAL_SPI shl 24 or _imageBank
             logInfo(TAG, "setMemDev: " + String.format("%#010x", memType))
             val result = device.spotaService.SPOTA_MEM_DEV.set(memType).await()
 
@@ -185,7 +220,7 @@ class OtaUpdate(var device: XY4BluetoothDevice, private val otaFile: OtaFile?) {
     //STEP 2
     private fun setGpioMap(): Deferred<XYBluetoothResult<Int>> {
         return asyncBle {
-            val memInfo = MISO_GPIO shl 24 or (MOSI_GPIO shl 16) or (CS_GPIO shl 8) or SCK_GPIO
+            val memInfo = _miso_gpio shl 24 or (_mosi_gpio shl 16) or (cs_gpio shl 8) or _sck_gpio
             logInfo(TAG, "setGpioMap: " + String.format("%#010x", Integer.valueOf(memInfo)))
 
             val result = device.spotaService.SPOTA_GPIO_MAP.set(memInfo).await()
@@ -267,10 +302,6 @@ class OtaUpdate(var device: XY4BluetoothDevice, private val otaFile: OtaFile?) {
 
         //TODO - setBlock retry
         const val MAX_RETRY_COUNT = 3
-        const val MISO_GPIO = 0x05            // p0_5
-        const val MOSI_GPIO = 0x06            // p0_6
-        const val CS_GPIO = 0x07              // p0_7
-        const val SCK_GPIO = 0x00             // p0_0
         const val END_SIGNAL = -0x2000000
         const val REBOOT_SIGNAL = -0x3000000
         const val MEMORY_TYPE_EXTERNAL_SPI = 0x13

@@ -20,7 +20,7 @@ import unsigned.Ushort
 import java.nio.ByteBuffer
 import java.util.*
 
-
+@Suppress("unused")
 open class XY4BluetoothDevice(context: Context, scanResult: XYScanResult, hash: Int) : XYFinderBluetoothDevice(context, scanResult, hash) {
 
     val alertNotification = AlertNotificationService(this)

@@ -10,6 +10,7 @@ import network.xyo.core.XYBase
 import java.nio.ByteBuffer
 import java.util.*
 
+@Suppress("unused")
 open class XY2BluetoothDevice(context: Context, scanResult: XYScanResult, hash: Int) : XYFinderBluetoothDevice(context, scanResult, hash) {
 
     val batteryService = BatteryService(this)
