@@ -21,6 +21,10 @@ open class XYBluetoothReadCharacteristic (uuid : UUID) : XYBluetoothCharacterist
         return null
     }
 
+    fun clearResponders () {
+        responders.clear()
+    }
+
     fun waitForReadRequest (whatToRead : ByteArray?, deviceFilter : BluetoothDevice?) = async {
         val readValue = whatToRead ?: value
         value = readValue

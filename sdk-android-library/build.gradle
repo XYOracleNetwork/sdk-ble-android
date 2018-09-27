@@ -20,7 +20,9 @@ buildscript {
     }
 }
 
-
+repositories {
+    maven { url 'https://jitpack.io' }
+}
 
 android {
     compileSdkVersion 28
@@ -43,7 +45,7 @@ android {
 
     buildTypes {
         release {
-            debuggable false
+            debuggable true
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
@@ -63,7 +65,7 @@ dependencies {
     api "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:0.26.0"
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:0.26.0'
-    api 'com.github.kotlin-graphics:kotlin-unsigned:v2.1'
+    implementation 'com.github.kotlin-graphics:kotlin-unsigned:v2.1'
     implementation "androidx.annotation:annotation:$androidx_version"
 
     implementation 'com.github.XYOracleNetwork:sdk-core-android:develop-SNAPSHOT'

@@ -43,10 +43,12 @@ open class XYBluetoothAdvertiser(context: Context) : XYBluetoothBase(context){
             val startCode = suspendCoroutine<Int> { cont ->
                 addListener("startAdvertising", object : AdvertiseCallback() {
                     override fun onStartFailure(errorCode: Int) {
+                        removeListener("startAdvertising")
                         cont.resume(errorCode)
                     }
 
                     override fun onStartSuccess(settingsInEffect: AdvertiseSettings?) {
+                        removeListener("startAdvertising")
                         cont.resume(0)
                     }
                 })

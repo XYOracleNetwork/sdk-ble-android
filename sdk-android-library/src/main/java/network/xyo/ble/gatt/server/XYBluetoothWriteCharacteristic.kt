@@ -31,6 +31,10 @@ open class XYBluetoothWriteCharacteristic (uuid : UUID) : XYBluetoothCharacteris
         return null
     }
 
+    fun clearResponders () {
+        responders.clear()
+    }
+
     fun waitForWriteRequest (deviceFilter : BluetoothDevice?) = async {
         return@async suspendCoroutine<ByteArray?> { cont ->
             val responderKey = "waitForWriteRequest $deviceFilter"
