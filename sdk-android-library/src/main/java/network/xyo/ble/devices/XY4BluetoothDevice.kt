@@ -3,10 +3,10 @@ package network.xyo.ble.devices
 import android.bluetooth.BluetoothGatt
 import android.bluetooth.BluetoothGattCharacteristic
 import android.content.Context
+import com.dialog.suota.data.OtaFile
 import kotlinx.coroutines.experimental.Deferred
 import kotlinx.coroutines.experimental.GlobalScope
 import kotlinx.coroutines.experimental.launch
-import network.xyo.ble.firmware.OtaFile
 import network.xyo.ble.firmware.OtaUpdate
 import network.xyo.ble.gatt.XYBluetoothResult
 import network.xyo.ble.scanner.XYScanResult
@@ -113,16 +113,13 @@ open class XY4BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
         }
     }
 
-    override fun updateFirmware(stream: InputStream): Deferred<XYBluetoothResult<ByteArray>> {
-        //TODO - need to test
+     override fun updateFirmware(filename: String) { // : Deferred<XYBluetoothResult<ByteArray>> {
 
-        val otaFile = OtaFile.fromInputStream(stream)
+        val otaFile = OtaFile.getByFileName(filename)
         val updater = OtaUpdate(this, otaFile)
 
         updater.addListener("XY4BluetoothDevice", updateListener)
         updater.start()
-
-        return spotaService.SERV_STATUS.set(ByteArray(0))
     }
 
     private fun enableButtonNotifyIfConnected() {

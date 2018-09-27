@@ -68,6 +68,27 @@ open class XYFinderBluetoothDevice(context: Context, scanResult: XYScanResult, h
 
     internal open val prefix = "xy:finder"
 
+    val family: Family
+    get() {
+        return when( this@XYFinderBluetoothDevice) {
+            is XYMobileBluetoothDevice -> {
+                Family.Mobile
+            }
+            is XYGpsBluetoothDevice -> {
+                Family.Gps
+            }
+            is XY4BluetoothDevice -> {
+                Family.XY4
+            }
+            is XY3BluetoothDevice -> {
+                Family.XY3
+            }
+            else -> {
+                Family.Unknown
+            }
+        }
+    }
+
     //the distance is in meters, so these are what we subjectively think are the fuzzy proximity values
     val proximity: Proximity
         get() {
@@ -159,11 +180,11 @@ open class XYFinderBluetoothDevice(context: Context, scanResult: XYScanResult, h
         }
     }
 
-    open fun updateFirmware(stream: InputStream): Deferred<XYBluetoothResult<ByteArray>> {
-        logError(UnsupportedOperationException(), true)
-        return asyncBle {
-            return@asyncBle XYBluetoothResult<ByteArray>(XYBluetoothError("Not Implemented"))
-        }
+    open fun updateFirmware(filename: String) { //: Deferred<XYBluetoothResult<ByteArray>> {
+//        logError(UnsupportedOperationException(), true)
+//        return asyncBle {
+//            return@asyncBle XYBluetoothResult<ByteArray>(XYBluetoothError("Not Implemented"))
+//        }
     }
 
 

@@ -1,117 +1,145 @@
-package network.xyo.ble.firmware
+package com.dialog.suota.data
 
+import android.content.Context
 import android.os.Environment
+import android.util.Log
 import network.xyo.core.XYBase
-import network.xyo.core.XYBase.Companion.logInfo
-import java.io.File
 import java.io.FileInputStream
+import java.io.IOException
 import java.io.InputStream
+import java.util.*
+import kotlin.experimental.and
 import kotlin.experimental.xor
 
+class OtaFile @Throws(IOException::class)
+private constructor(private val inputStream: InputStream?) {
+    var crc: Byte = 0
+        private set
+    private var bytes: ByteArray? = null
 
-class OtaFile private constructor(private val inputStream: InputStream?) {
+    private var blocks: Array<Array<ByteArray>>? = null
 
-    private val crc: Byte
-    private val bytes: ByteArray
-    private val bytesAvailable: Int = inputStream!!.available()
-    private var blocks: Array<Array<ByteArray>?>? = null
-
-    init {
-        bytes = ByteArray(bytesAvailable + 1)
-        inputStream!!.read(bytes)
-        crc = getCrc()
-        bytes[bytesAvailable] = crc
-        hexStringToTwoByteArray()
-    }
-
+    var fileBlockSize = 0
+        private set
+    private var fileChunkSize = 20
+    private val bytesAvailable: Int
     var numberOfBlocks = -1
         private set
+    var chunksPerBlockCount: Int = 0
+        private set
+    var totalChunkCount: Int = 0
+        private set
+    private var type: Int = 0
 
     val numberOfBytes: Int
-        get() = bytes.size
+        get() = this.bytes!!.size
 
-    fun getBlock(index: Int): Array<ByteArray>? {
-        return blocks?.get(index)
+    init {
+        this.bytesAvailable = this.inputStream!!.available()
+
+        this.bytes = ByteArray(this.bytesAvailable + 1)
+        this.inputStream!!.read(this.bytes!!)
+        this.crc = calculateCrc()
+        this.bytes!![this.bytesAvailable] = this.crc
+
+        setFileBlockSize(240, 20)
     }
 
-    private fun getCrc(): Byte {
-        var crcCode: Byte = 0
-        for (i in 0 until bytesAvailable) {
-            val byteValue = bytes[i]
-            val intVal = byteValue.toInt()
-            crcCode = crcCode xor intVal.toByte()
-        }
-        logInfo(TAG, "\"Firmware CRC: $crcCode")
-        return crcCode
+    fun setFileBlockSize(fileBlockSize: Int, fileChunkSize: Int) {
+        this.fileBlockSize = Math.max(fileBlockSize, fileChunkSize)
+        this.fileChunkSize = fileChunkSize
+        this.chunksPerBlockCount = this.fileBlockSize / this.fileChunkSize + if (this.fileBlockSize % this.fileChunkSize != 0) 1 else 0
+        this.numberOfBlocks = bytes!!.size / this.fileBlockSize + if (bytes!!.size % this.fileBlockSize != 0) 1 else 0
+        this.initBlocksSuota()
     }
 
-    fun hexStringToTwoByteArray(): Array<ByteArray> {
-        val result = bytes
-        val resultLength = result.size
-        run {
-            var i = 0
-            while (i < resultLength-1) {
-                result[i shr 1] = ((if (result[i] < 0x3a) result[i] - 0x30 else result[i] - 0x37) * 16 + if (result[i + 1] < 0x3a) result[i + 1] - 0x30 else result[i + 1] - 0x37).toByte()
-                i += 2
+    private inline fun <reified T> fileEmptyArray(size: Int): Array<T> =
+            @Suppress("UNCHECKED_CAST")
+            (arrayOfNulls<T>(size) as Array<T>)
+
+    //This one
+    private fun initBlocksSuota() {
+        totalChunkCount = 0
+        blocks = fileEmptyArray(numberOfBlocks)
+        Log.d("OtaFile", "initBlocksSuota numberOfBlocks: $numberOfBlocks")
+
+        var byteOffset = 0
+        // Loop through all the bytes and split them into pieces the size of the default chunk size
+        for (i in 0 until numberOfBlocks) {
+            var blockSize = fileBlockSize
+            var numberOfChunksInBlock = chunksPerBlockCount
+            // Check if the last block needs to be smaller
+            if (byteOffset + fileBlockSize > bytes!!.size) {
+                blockSize = bytes!!.size % fileBlockSize
+                numberOfChunksInBlock = blockSize / fileChunkSize + if (blockSize % fileChunkSize != 0) 1 else 0
             }
-        }
+            var chunkNumber = 0
+            blocks!![i] = fileEmptyArray(numberOfChunksInBlock)
 
-        XYBase.logExtreme(TAG, "testOta-length of result: " + result.size / 2)
-        var slots = resultLength / 32
-        if (resultLength % 32 > 0) {
-            slots++
-        }
-        val firmwareByteArray = Array(slots) { ByteArray(20) }
-
-        for (i in 0 until slots) {
-            val addr = i * 16
-            firmwareByteArray[i][0] = addr.toByte()
-            firmwareByteArray[i][1] = addr.ushr(8).toByte()
-            firmwareByteArray[i][2] = addr.ushr(16).toByte()
-            firmwareByteArray[i][3] = addr.ushr(24).toByte()
-
-            for (j in 0..15) {
-                if (i * 16 + j < resultLength) {
-                    firmwareByteArray[i][j + 4] = result[i * 16 + j]
-                } else {
-                    firmwareByteArray[i][j + 4] = 0xff.toByte()
+            var j = 0
+            while (j < blockSize) {
+                // Default chunk size
+                var chunkSize = fileChunkSize
+                // Last chunk in block
+                if (j + fileChunkSize > blockSize) {
+                    chunkSize = blockSize % fileChunkSize
                 }
+
+                Log.d("OtaFile", "total bytes: " + bytes!!.size + ", offset: " + byteOffset + ", block: " + i + ", chunk: " + (chunkNumber + 1) + ", blocksize: " + blockSize + ", chunksize: " + chunkSize)
+                val chunk = Arrays.copyOfRange(bytes!!, byteOffset, byteOffset + chunkSize)
+                blocks!![i][chunkNumber] = chunk
+                byteOffset += chunkSize
+                chunkNumber++
+                totalChunkCount++
+                j += fileChunkSize
+                Log.d("OtaFile", "fileChunkSize ---------------LAST CHUNK ON: $fileChunkSize -- j: $j")
             }
         }
-        return firmwareByteArray
     }
 
+    fun getBlock(index: Int): Array<ByteArray> {
+        return blocks!![index]
+    }
 
-    private fun getXorValue(array: ByteArray): Byte {
-        var cooked = 0
-        for (i in array.indices) {
-            cooked = (cooked xor array[i].toInt())
+    fun close() {
+        if (this.inputStream != null) {
+            try {
+                this.inputStream.close()
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
+
         }
-        return cooked.toByte()
     }
 
+    @Throws(IOException::class)
+    private fun calculateCrc(): Byte {
+        var crc_code: Byte = 0
+        for (i in 0 until this.bytesAvailable) {
+            val byteValue = this.bytes!![i]
+            val intVal = byteValue.toInt()
+            crc_code = crc_code xor intVal.toByte()
+        }
+        Log.d("OtaFile", String.format("Fimware CRC: %#04x", crc_code and 0xff.toByte()))
+        return crc_code
+    }
 
     companion object {
-        private const val TAG = "OtaFile"
-        private val filesDir = Environment.getExternalStorageDirectory().absolutePath + "/xyo"
-        private const val chunkSize = 20
-        private const val patchLen = 128
+        private val filesDir = Environment.getExternalStorageDirectory().absolutePath + "/Xyo"
 
+        @Throws(IOException::class)
+        fun getByFileName(filename: String): OtaFile {
+            // Get the file and store it in fileStream
 
-        fun fromFile(file: File): OtaFile {
-            val inputStream = FileInputStream(file)
-            return OtaFile(inputStream)
+            val `is` = FileInputStream("$filesDir/$filename")
+            return OtaFile(`is`)
         }
 
-        fun fromLocalStorage(filename: String, location: String = filesDir): OtaFile {
-            val inputStream = FileInputStream("$location/$filename")
-            return OtaFile(inputStream)
+        fun createFileDirectories(c: Context): Boolean {
+            val directoryName = filesDir
+            val directory: java.io.File
+            directory = java.io.File(directoryName)
+            return directory.exists() || directory.mkdirs()
         }
-
-        fun fromInputStream(inputStream: InputStream?): OtaFile {
-            return OtaFile(inputStream)
-        }
-
     }
-
 }

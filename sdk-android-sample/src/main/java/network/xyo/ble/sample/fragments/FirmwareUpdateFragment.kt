@@ -7,11 +7,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import kotlinx.android.synthetic.main.fragment_firmware_update.*
-import kotlinx.coroutines.experimental.CommonPool
+import kotlinx.coroutines.experimental.GlobalScope
 import kotlinx.coroutines.experimental.launch
 import network.xyo.ble.devices.XY4BluetoothDevice
 import network.xyo.ble.sample.R
-import network.xyo.ui.ui
 import java.io.InputStream
 import java.net.URL
 
@@ -33,23 +32,26 @@ class FirmwareUpdateFragment : XYAppBaseFragment() {
 
         button_update.setOnClickListener {
             //if (!tv_file_name.text.isBlank()) {
-                performUpdate(tv_file_name.text.toString())
+            performUpdate(tv_file_name.text.toString())
             showToast("Update started...")
-          //  } else {
-             //   showToast("Select a file.")
-           // }
+            //  } else {
+            //   showToast("Select a file.")
+            // }
         }
     }
 
     private fun performUpdate(filename: String) {
-        launch(CommonPool) {
+        GlobalScope.launch {
             logInfo(TAG, "testFirmware start: $String")
 
-            val inputStream = resources.openRawResource(R.raw.xy4_585_1_test)
-            val result = (activity?.device as? XY4BluetoothDevice)?.updateFirmware(inputStream)?.await()
-            inputStream.close()
-            logInfo(TAG, "testFirmware result: $result")
-            ui { showToast(result.toString()) }
+           // val inputStream = resources.openRawResource(R.raw.debug_firmware_xy4)
+            // val fname = resources.getResourceEntryName(R.raw.debug_firmware_xy4)
+            //val inputStream = FileInputStream(fname)
+            //val result = (activity?.device as? XY4BluetoothDevice)?.updateFirmware(inputStream)?.await()
+            (activity?.device as? XY4BluetoothDevice)?.updateFirmware("debugFirmware_xy4.img")
+
+            // logInfo(TAG, "testFirmware result: $result")
+            // ui { showToast(result.toString()) }
         }
     }
 
