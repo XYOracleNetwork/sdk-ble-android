@@ -1,6 +1,7 @@
 package network.xyo.ble.sample.fragments
 
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -23,6 +24,20 @@ import network.xyo.ui.ui
 class FirmwareUpdateFragment : XYAppBaseFragment() {
 
     private var firmwareFileName: String? = null
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        val filesDirExists = context?.getSharedPreferences("settings", Context.MODE_PRIVATE)?.getBoolean("fileDirectoriesCreated", false) ?: false
+
+        if (!filesDirExists) {
+            if (OtaFile.createFileDirectory()) {
+                context?.getSharedPreferences("settings", Context.MODE_PRIVATE)?.edit()?.putBoolean("fileDirectoriesCreated", true)?.apply()
+            } else {
+                logInfo(TAG, "Failed to create files directory")
+            }
+        }
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {

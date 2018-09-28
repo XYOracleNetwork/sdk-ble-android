@@ -1,5 +1,6 @@
 package network.xyo.ble.sample.activities
 
+import android.Manifest
 import android.os.Bundle
 import android.view.View.GONE
 import android.view.View.VISIBLE
@@ -76,6 +77,10 @@ class XYOBleSampleActivity : XYOAppBaseActivity() {
         permissions.requestPermission(android.Manifest.permission.ACCESS_FINE_LOCATION,
                 "Location services are needed to connection and track your finders.",
                 XYPermissions.LOCATION_PERMISSIONS_REQ_CODE)
+
+
+        permissions.requestPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE, "Allow app to access your storage in order to load firmware files?", 0)
+
         adapter?.notifyDataSetChanged()
         checkStatus()
     }
