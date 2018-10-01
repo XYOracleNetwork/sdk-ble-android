@@ -14,6 +14,7 @@ import network.xyo.ble.scanner.XYScanResult
 import network.xyo.core.XYBase
 import java.nio.ByteBuffer
 import java.util.*
+import java.util.concurrent.ConcurrentHashMap
 
 open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, private val hash: Int) : XYBluetoothGattClient(context, device, false, null, null, null, null) {
 
@@ -215,7 +216,7 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, private
         val manufacturerToCreator = HashMap<Int, XYCreator>()
         val serviceToCreator = HashMap<UUID, XYCreator>()
 
-        private fun getDevicesFromManufacturers(context: Context, scanResult: XYScanResult, globalDevices: HashMap<Int, XYBluetoothDevice>, newDevices: HashMap<Int, XYBluetoothDevice>) {
+        private fun getDevicesFromManufacturers(context: Context, scanResult: XYScanResult, globalDevices: ConcurrentHashMap<Int, XYBluetoothDevice>, newDevices: HashMap<Int, XYBluetoothDevice>) {
             for ((manufacturerId, creator) in manufacturerToCreator) {
                 val bytes = scanResult.scanRecord?.getManufacturerSpecificData(manufacturerId)
                 if (bytes != null) {
@@ -224,7 +225,7 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, private
             }
         }
 
-        private fun getDevicesFromServices(context: Context, scanResult: XYScanResult, globalDevices: HashMap<Int, XYBluetoothDevice>, newDevices: HashMap<Int, XYBluetoothDevice>) {
+        private fun getDevicesFromServices(context: Context, scanResult: XYScanResult, globalDevices: ConcurrentHashMap<Int, XYBluetoothDevice>, newDevices: HashMap<Int, XYBluetoothDevice>) {
             for ((uuid, creator) in serviceToCreator) {
                 if (scanResult.scanRecord?.serviceUuids != null) {
                     if (scanResult.scanRecord?.serviceUuids?.contains(ParcelUuid(uuid)) == true) {
@@ -235,7 +236,7 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, private
         }
 
         internal val creator = object : XYCreator() {
-            override fun getDevicesFromScanResult(context: Context, scanResult: XYScanResult, globalDevices: HashMap<Int, XYBluetoothDevice>, foundDevices: HashMap<Int, XYBluetoothDevice>) {
+            override fun getDevicesFromScanResult(context: Context, scanResult: XYScanResult, globalDevices: ConcurrentHashMap<Int, XYBluetoothDevice>, foundDevices: HashMap<Int, XYBluetoothDevice>) {
 
                 getDevicesFromServices(context, scanResult, globalDevices, foundDevices)
                 getDevicesFromManufacturers(context, scanResult, globalDevices, foundDevices)

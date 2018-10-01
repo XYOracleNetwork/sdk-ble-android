@@ -9,6 +9,7 @@ import network.xyo.ble.devices.XYBluetoothDevice
 import network.xyo.ble.devices.XYMobileBluetoothDevice
 import network.xyo.ble.gatt.XYBluetoothBase
 import java.util.*
+import java.util.concurrent.ConcurrentHashMap
 
 abstract class XYFilteredSmartScan(context: Context) : XYBluetoothBase(context) {
 
@@ -46,7 +47,7 @@ abstract class XYFilteredSmartScan(context: Context) : XYBluetoothBase(context) 
 
     val hostDevice = XYMobileBluetoothDevice.create(context)
 
-    val devices = HashMap<Int, XYBluetoothDevice>()
+    val devices = ConcurrentHashMap<Int, XYBluetoothDevice>()
 
     init {
         devices[hostDevice.hashCode()] = hostDevice
@@ -84,7 +85,7 @@ abstract class XYFilteredSmartScan(context: Context) : XYBluetoothBase(context) 
         return null
     }
 
-    fun getDevicesFromScanResult(scanResult: XYScanResult, globalDevices: HashMap<Int, XYBluetoothDevice>, foundDevices: HashMap<Int, XYBluetoothDevice>) {
+    fun getDevicesFromScanResult(scanResult: XYScanResult, globalDevices: ConcurrentHashMap<Int, XYBluetoothDevice>, foundDevices: HashMap<Int, XYBluetoothDevice>) {
         //only add them if they do not already exist
         XYBluetoothDevice.creator.getDevicesFromScanResult(context, scanResult, globalDevices, foundDevices)
 

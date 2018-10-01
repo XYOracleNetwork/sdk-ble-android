@@ -3,10 +3,10 @@ package network.xyo.ble.devices
 import android.bluetooth.BluetoothGatt
 import android.bluetooth.BluetoothGattCharacteristic
 import android.content.Context
-import network.xyo.ble.firmware.OtaFile
 import kotlinx.coroutines.experimental.Deferred
 import kotlinx.coroutines.experimental.GlobalScope
 import kotlinx.coroutines.experimental.launch
+import network.xyo.ble.firmware.OtaFile
 import network.xyo.ble.firmware.OtaUpdate
 import network.xyo.ble.gatt.XYBluetoothResult
 import network.xyo.ble.scanner.XYScanResult
@@ -19,6 +19,7 @@ import network.xyo.core.XYBase
 import unsigned.Ushort
 import java.nio.ByteBuffer
 import java.util.*
+import java.util.concurrent.ConcurrentHashMap
 
 @Suppress("unused")
 open class XY4BluetoothDevice(context: Context, scanResult: XYScanResult, hash: Int) : XYFinderBluetoothDevice(context, scanResult, hash) {
@@ -102,7 +103,7 @@ open class XY4BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
         }
     }
 
-     override fun updateFirmware(filename: String, listener: OtaUpdate.Listener) { // : Deferred<XYBluetoothResult<ByteArray>> {
+    override fun updateFirmware(filename: String, listener: OtaUpdate.Listener) { // : Deferred<XYBluetoothResult<ByteArray>> {
 
         val otaFile = OtaFile.getByFileName(filename)
         val updater = OtaUpdate(this, otaFile)
@@ -206,7 +207,7 @@ open class XY4BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
         }
 
         internal val creator = object : XYCreator() {
-            override fun getDevicesFromScanResult(context: Context, scanResult: XYScanResult, globalDevices: HashMap<Int, XYBluetoothDevice>, foundDevices: HashMap<Int, XYBluetoothDevice>) {
+            override fun getDevicesFromScanResult(context: Context, scanResult: XYScanResult, globalDevices: ConcurrentHashMap<Int, XYBluetoothDevice>, foundDevices: HashMap<Int, XYBluetoothDevice>) {
                 val hash = hashFromScanResult(scanResult)
                 if (hash != null) {
                     foundDevices[hash] = globalDevices[hash] ?: XY4BluetoothDevice(context, scanResult, hash)
@@ -250,6 +251,7 @@ open class XY4BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
             val uuid = iBeaconUuidFromScanResult(scanResult)
             val major = majorFromScanResult(scanResult)
             val minor = minorFromScanResult(scanResult)
+
             return "$uuid:$major:$minor".hashCode()
         }
 

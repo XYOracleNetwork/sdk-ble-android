@@ -3,7 +3,6 @@ package network.xyo.ble.devices
 import android.bluetooth.BluetoothGatt
 import android.bluetooth.BluetoothGattCharacteristic
 import android.content.Context
-import kotlinx.coroutines.experimental.CoroutineStart
 import kotlinx.coroutines.experimental.Deferred
 import kotlinx.coroutines.experimental.GlobalScope
 import kotlinx.coroutines.experimental.launch
@@ -14,7 +13,7 @@ import network.xyo.ble.services.xy3.*
 import network.xyo.core.XYBase
 import java.nio.ByteBuffer
 import java.util.*
-import kotlin.coroutines.experimental.EmptyCoroutineContext
+import java.util.concurrent.ConcurrentHashMap
 
 open class XYGpsBluetoothDevice(context: Context, scanResult: XYScanResult, hash: Int) : XYFinderBluetoothDevice(context, scanResult, hash) {
 
@@ -97,7 +96,7 @@ open class XYGpsBluetoothDevice(context: Context, scanResult: XYScanResult, hash
         }
 
         internal val creator = object : XYCreator() {
-            override fun getDevicesFromScanResult(context: Context, scanResult: XYScanResult, globalDevices: HashMap<Int, XYBluetoothDevice>, foundDevices: HashMap<Int, XYBluetoothDevice>) {
+            override fun getDevicesFromScanResult(context: Context, scanResult: XYScanResult, globalDevices: ConcurrentHashMap<Int, XYBluetoothDevice>, foundDevices: HashMap<Int, XYBluetoothDevice>) {
                 val hash = hashFromScanResult(scanResult)
                 if (hash != null) {
                     foundDevices[hash] = globalDevices[hash] ?: XYGpsBluetoothDevice(context, scanResult, hash)
