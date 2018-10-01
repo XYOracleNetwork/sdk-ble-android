@@ -305,7 +305,7 @@ open class XYFinderBluetoothDevice(context: Context, scanResult: XYScanResult, h
             o1.compareTo(o2)
         }
 
-        fun sortedList(devices: HashMap<Int, XYBluetoothDevice>): List<XYFinderBluetoothDevice> {
+        fun sortedList(devices: ConcurrentHashMap<Int, XYBluetoothDevice>): List<XYFinderBluetoothDevice> {
             val result = ArrayList<XYFinderBluetoothDevice>()
             for ((_, device) in devices) {
                 val deviceToAdd = device as? XYFinderBluetoothDevice
