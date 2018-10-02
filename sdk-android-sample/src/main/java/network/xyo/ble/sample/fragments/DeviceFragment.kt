@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import kotlinx.android.synthetic.main.fragment_device.*
+import kotlinx.coroutines.experimental.GlobalScope
 import kotlinx.coroutines.experimental.launch
 import network.xyo.ble.devices.XY2BluetoothDevice
 import network.xyo.ble.devices.XY3BluetoothDevice
@@ -81,7 +82,7 @@ class DeviceFragment : XYAppBaseFragment() {
     }
 
     private fun getX4Values(device: XY4BluetoothDevice) {
-        launch {
+        GlobalScope.launch {
             var hasConnectionError = true
 
             val conn = device.connection {
@@ -93,32 +94,32 @@ class DeviceFragment : XYAppBaseFragment() {
 
                 device.deviceInformationService.modelNumberString.get().await().let { it ->
                     activity?.data?.modelNumberString = it.value ?: it.error?.message
-                    ?: "Error"
+                            ?: "Error"
                 }
 
                 device.deviceInformationService.serialNumberString.get().await().let { it ->
                     activity?.data?.serialNumberString = it.value ?: it.error?.message
-                    ?: "Error"
+                            ?: "Error"
                 }
 
                 device.deviceInformationService.firmwareRevisionString.get().await().let { it ->
                     activity?.data?.firmwareRevisionString = it.value ?: it.error?.message
-                    ?: "Error"
+                            ?: "Error"
                 }
 
                 device.deviceInformationService.hardwareRevisionString.get().await().let { it ->
                     activity?.data?.hardwareRevisionString = it.value ?: it.error?.message
-                    ?: "Error"
+                            ?: "Error"
                 }
 
                 device.deviceInformationService.softwareRevisionString.get().await().let { it ->
                     activity?.data?.softwareRevisionString = it.value ?: it.error?.message
-                    ?: "Error"
+                            ?: "Error"
                 }
 
                 device.deviceInformationService.manufacturerNameString.get().await().let { it ->
                     activity?.data?.manufacturerNameString = it.value ?: it.error?.message
-                    ?: "Error"
+                            ?: "Error"
                 }
 
                 device.deviceInformationService.ieeeRegulatoryCertificationDataList.get().await().let { it ->
@@ -140,7 +141,7 @@ class DeviceFragment : XYAppBaseFragment() {
 
 
     private fun getX3Values(device: XY3BluetoothDevice) {
-        launch {
+        GlobalScope.launch {
             var hasConnectionError = true
 
             val conn = device.connection {
@@ -202,7 +203,7 @@ class DeviceFragment : XYAppBaseFragment() {
     }
 
     private fun getX2Values(device: XY2BluetoothDevice) {
-        launch {
+        GlobalScope.launch {
             var hasConnectionError = true
 
             val conn = device.connection {

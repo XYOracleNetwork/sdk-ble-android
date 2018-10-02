@@ -19,7 +19,6 @@ import network.xyo.ble.devices.XYFinderBluetoothDevice
 import network.xyo.ble.sample.R
 import network.xyo.ble.sample.XYDeviceData
 import network.xyo.ble.sample.fragments.*
-import network.xyo.ble.sample.fragments.FirmwareUpdateFragment.Companion.FILE_REQUEST
 import network.xyo.ui.XYBaseFragment
 
 /**

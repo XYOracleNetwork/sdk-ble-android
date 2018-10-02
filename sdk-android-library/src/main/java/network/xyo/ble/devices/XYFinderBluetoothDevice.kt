@@ -1,15 +1,19 @@
 package network.xyo.ble.devices
 
 import android.content.Context
-import kotlinx.coroutines.experimental.*
+import kotlinx.coroutines.experimental.CoroutineStart
+import kotlinx.coroutines.experimental.Deferred
+import kotlinx.coroutines.experimental.GlobalScope
+import kotlinx.coroutines.experimental.launch
+import network.xyo.ble.firmware.OtaUpdate
 import network.xyo.ble.gatt.XYBluetoothError
 import network.xyo.ble.gatt.XYBluetoothResult
 import network.xyo.ble.gatt.asyncBle
 import network.xyo.ble.scanner.XYScanResult
 import network.xyo.core.XYBase
-import java.io.InputStream
 import java.nio.ByteBuffer
 import java.util.*
+import java.util.concurrent.ConcurrentHashMap
 import kotlin.coroutines.experimental.EmptyCoroutineContext
 
 open class XYFinderBluetoothDevice(context: Context, scanResult: XYScanResult, hash: Int) : XYIBeaconBluetoothDevice(context, scanResult, hash), Comparable<XYFinderBluetoothDevice> {
@@ -63,10 +67,31 @@ open class XYFinderBluetoothDevice(context: Context, scanResult: XYScanResult, h
 
     override val id: String
         get() {
-            return "$prefix:$uuid:${major.toInt()}.${minor.and(0xfff0).or(0x0004).toInt()}"
+            return "$prefix:$uuid.${major.toInt()}.${minor.and(0xfff0).or(0x0004).toInt()}"
         }
 
     internal open val prefix = "xy:finder"
+
+    val family: Family
+        get() {
+            return when (this@XYFinderBluetoothDevice) {
+                is XYMobileBluetoothDevice -> {
+                    Family.Mobile
+                }
+                is XYGpsBluetoothDevice -> {
+                    Family.Gps
+                }
+                is XY4BluetoothDevice -> {
+                    Family.XY4
+                }
+                is XY3BluetoothDevice -> {
+                    Family.XY3
+                }
+                else -> {
+                    Family.Unknown
+                }
+            }
+        }
 
     //the distance is in meters, so these are what we subjectively think are the fuzzy proximity values
     val proximity: Proximity
@@ -159,11 +184,11 @@ open class XYFinderBluetoothDevice(context: Context, scanResult: XYScanResult, h
         }
     }
 
-    open fun updateFirmware(stream: InputStream): Deferred<XYBluetoothResult<ByteArray>> {
-        logError(UnsupportedOperationException(), true)
-        return asyncBle {
-            return@asyncBle XYBluetoothResult<ByteArray>(XYBluetoothError("Not Implemented"))
-        }
+    open fun updateFirmware(filename: String, listener: OtaUpdate.Listener) { //: Deferred<XYBluetoothResult<ByteArray>> {
+//        logError(UnsupportedOperationException(), true)
+//        return asyncBle {
+//            return@asyncBle XYBluetoothResult<ByteArray>(XYBluetoothError("Not Implemented"))
+//        }
     }
 
 
@@ -239,7 +264,7 @@ open class XYFinderBluetoothDevice(context: Context, scanResult: XYScanResult, h
         private val uuidToCreator = HashMap<UUID, XYCreator>()
 
         internal val creator = object : XYCreator() {
-            override fun getDevicesFromScanResult(context: Context, scanResult: XYScanResult, globalDevices: HashMap<Int, XYBluetoothDevice>, foundDevices: HashMap<Int, XYBluetoothDevice>) {
+            override fun getDevicesFromScanResult(context: Context, scanResult: XYScanResult, globalDevices: ConcurrentHashMap<Int, XYBluetoothDevice>, foundDevices: HashMap<Int, XYBluetoothDevice>) {
 
                 val bytes = scanResult.scanRecord?.getManufacturerSpecificData(XYAppleBluetoothDevice.MANUFACTURER_ID)
                 if (bytes != null) {
@@ -280,7 +305,7 @@ open class XYFinderBluetoothDevice(context: Context, scanResult: XYScanResult, h
             o1.compareTo(o2)
         }
 
-        fun sortedList(devices: HashMap<Int, XYBluetoothDevice>): List<XYFinderBluetoothDevice> {
+        fun sortedList(devices: ConcurrentHashMap<Int, XYBluetoothDevice>): List<XYFinderBluetoothDevice> {
             val result = ArrayList<XYFinderBluetoothDevice>()
             for ((_, device) in devices) {
                 val deviceToAdd = device as? XYFinderBluetoothDevice

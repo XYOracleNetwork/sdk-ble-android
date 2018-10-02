@@ -14,7 +14,9 @@ import network.xyo.core.XYBase
 import unsigned.Ushort
 import java.nio.ByteBuffer
 import java.util.*
+import java.util.concurrent.ConcurrentHashMap
 
+@Suppress("unused")
 open class XY3BluetoothDevice(context: Context, scanResult: XYScanResult, hash: Int) : XYFinderBluetoothDevice(context, scanResult, hash) {
 
     val alertNotification = AlertNotificationService(this)
@@ -209,7 +211,7 @@ open class XY3BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
         }
 
         internal val creator = object : XYCreator() {
-            override fun getDevicesFromScanResult(context: Context, scanResult: XYScanResult, globalDevices: HashMap<Int, XYBluetoothDevice>, foundDevices: HashMap<Int, XYBluetoothDevice>) {
+            override fun getDevicesFromScanResult(context: Context, scanResult: XYScanResult, globalDevices: ConcurrentHashMap<Int, XYBluetoothDevice>, foundDevices: HashMap<Int, XYBluetoothDevice>) {
                 val hash = hashFromScanResult(scanResult)
                 if (hash != null) {
                     foundDevices[hash] = globalDevices[hash] ?: XY3BluetoothDevice(context, scanResult, hash)
