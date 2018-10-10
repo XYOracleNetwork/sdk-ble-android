@@ -188,8 +188,10 @@ class XYOFinderDeviceActivity : XYOAppBaseActivity() {
     }
 
     fun update() {
-        val frag = sectionsPagerAdapter.getFragmentByPosition(container.currentItem)
-        (frag as? InfoFragment)?.update()
+        if (window.decorView.isShown) {
+            val frag = sectionsPagerAdapter.getFragmentByPosition(container.currentItem)
+            (frag as? InfoFragment)?.update()
+        }
     }
 
     companion object {

@@ -87,9 +87,9 @@ class InfoFragment : XYAppBaseFragment(), View.OnClickListener {
             }
 
             if (activity?.device?.connectionState == XYBluetoothGatt.ConnectionState.Connected) {
-                button_connected.text = getString(R.string.disconnect)
+                button_connected?.text = getString(R.string.disconnect)
             } else {
-                button_connected.text = getString(R.string.btn_connect)
+                button_connected?.text = getString(R.string.btn_connect)
             }
 
         }
@@ -148,7 +148,7 @@ class InfoFragment : XYAppBaseFragment(), View.OnClickListener {
     private fun find() {
         logInfo("beepButton: got xyDevice")
         ui {
-            button_find.isEnabled = false
+            button_find?.isEnabled = false
         }
 
         GlobalScope.launch {
@@ -163,7 +163,7 @@ class InfoFragment : XYAppBaseFragment(), View.OnClickListener {
     private fun wake() {
         logInfo("stayAwakeButton: onClick")
         ui {
-            button_stay_awake.isEnabled = false
+            button_stay_awake?.isEnabled = false
         }
 
         GlobalScope.launch {
@@ -182,7 +182,7 @@ class InfoFragment : XYAppBaseFragment(), View.OnClickListener {
     private fun sleep() {
         logInfo("fallAsleepButton: onClick")
         ui {
-            button_fall_asleep.isEnabled = false
+            button_fall_asleep?.isEnabled = false
         }
 
         GlobalScope.launch {
@@ -201,7 +201,7 @@ class InfoFragment : XYAppBaseFragment(), View.OnClickListener {
     private fun lock() {
         logInfo("lockButton: onClick")
         ui {
-            button_lock.isEnabled = false
+            button_lock?.isEnabled = false
         }
 
         GlobalScope.launch {
@@ -223,7 +223,7 @@ class InfoFragment : XYAppBaseFragment(), View.OnClickListener {
     private fun unlock() {
         logInfo("unlockButton: onClick")
         ui {
-            button_unlock.isEnabled = false
+            button_unlock?.isEnabled = false
         }
 
         GlobalScope.launch {
@@ -253,11 +253,11 @@ class InfoFragment : XYAppBaseFragment(), View.OnClickListener {
                 ui {
                     this@InfoFragment.isVisible.let {
                         if (stayAwake.value != 0) {
-                            button_fall_asleep.isEnabled = true
-                            button_stay_awake.isEnabled = false
+                            button_fall_asleep?.isEnabled = true
+                            button_stay_awake?.isEnabled = false
                         } else {
-                            button_fall_asleep.isEnabled = false
-                            button_stay_awake.isEnabled = true
+                            button_fall_asleep?.isEnabled = false
+                            button_stay_awake?.isEnabled = true
                         }
                     }
                 }
