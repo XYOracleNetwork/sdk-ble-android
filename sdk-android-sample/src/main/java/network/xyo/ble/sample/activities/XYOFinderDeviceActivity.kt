@@ -20,6 +20,7 @@ import network.xyo.ble.sample.R
 import network.xyo.ble.sample.XYDeviceData
 import network.xyo.ble.sample.fragments.*
 import network.xyo.ui.XYBaseFragment
+import java.lang.Exception
 
 /**
  * Created by arietrouw on 12/28/17.
@@ -188,10 +189,10 @@ class XYOFinderDeviceActivity : XYOAppBaseActivity() {
     }
 
     fun update() {
-        if (window.decorView.isShown) {
+        try {
             val frag = sectionsPagerAdapter.getFragmentByPosition(container.currentItem)
             (frag as? InfoFragment)?.update()
-        }
+        } catch (ex: Exception){}
     }
 
     companion object {

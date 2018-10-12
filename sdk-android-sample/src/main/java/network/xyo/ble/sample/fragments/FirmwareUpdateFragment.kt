@@ -54,7 +54,7 @@ class FirmwareUpdateFragment : XYAppBaseFragment() {
 
         //setup file listview
         val fileListAdapter = ArrayAdapter<String>(context, android.R.layout.simple_list_item_1)
-        lv_files.adapter = fileListAdapter
+        lv_files?.adapter = fileListAdapter
 
         val fileList = OtaFile.list()
         if (fileList == null) {
@@ -83,11 +83,11 @@ class FirmwareUpdateFragment : XYAppBaseFragment() {
         override fun failed(device: XYBluetoothDevice, error: String) {
             logInfo("updateListener: failed: $error")
             ui {
-                tv_file_progress.text = "Update failed: $error"
+                tv_file_progress?.text = "Update failed: $error"
                 activity?.hideProgressSpinner()
-                button_update.isEnabled = true
-                lv_files.visibility = VISIBLE
-                tv_file_name.visibility = VISIBLE
+                button_update?.isEnabled = true
+                lv_files?.visibility = VISIBLE
+                tv_file_name?.visibility = VISIBLE
             }
         }
 
@@ -95,7 +95,7 @@ class FirmwareUpdateFragment : XYAppBaseFragment() {
             val txt = "sending chunk  $sent of $total"
             logInfo(txt)
             ui {
-                tv_file_progress.text = txt
+                tv_file_progress?.text = txt
             }
         }
     }
@@ -104,12 +104,12 @@ class FirmwareUpdateFragment : XYAppBaseFragment() {
         GlobalScope.launch {
             if (firmwareFileName != null) {
                 ui {
-                    lv_files.visibility = GONE
-                    tv_file_name.visibility = GONE
-                    tv_file_progress.visibility = VISIBLE
-                    button_update.isEnabled = false
+                    lv_files?.visibility = GONE
+                    tv_file_name?.visibility = GONE
+                    tv_file_progress?.visibility = VISIBLE
+                    button_update?.isEnabled = false
                     activity?.showProgressSpinner()
-                    tv_file_progress.text = getString(R.string.update_started)
+                    tv_file_progress?.text = getString(R.string.update_started)
                 }
 
                 logInfo(TAG, "testFirmware start: $String")
@@ -125,7 +125,7 @@ class FirmwareUpdateFragment : XYAppBaseFragment() {
         logInfo(TAG, "onFileSelected requestCode: $requestCode")
 
         data?.data.let { uri ->
-            tv_file_name.text = uri.toString()
+            tv_file_name?.text = uri.toString()
         }
 
     }
