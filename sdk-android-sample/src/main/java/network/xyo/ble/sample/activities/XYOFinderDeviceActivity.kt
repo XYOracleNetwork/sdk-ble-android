@@ -20,6 +20,7 @@ import network.xyo.ble.sample.R
 import network.xyo.ble.sample.XYDeviceData
 import network.xyo.ble.sample.fragments.*
 import network.xyo.ui.XYBaseFragment
+import network.xyo.xyfindit.fragments.core.BackFragmentListener
 import java.lang.Exception
 
 /**
@@ -174,6 +175,16 @@ class XYOFinderDeviceActivity : XYOAppBaseActivity() {
     override fun onResume() {
         super.onResume()
         addListener()
+    }
+
+    override fun onBackPressed() {
+        val activeFrag = sectionsPagerAdapter.getFragmentByPosition(container.currentItem)
+        if (activeFrag is BackFragmentListener && (activeFrag as BackFragmentListener).onBackPressed()) {
+            //Let the fragment handle the back button.
+        } else {
+            super.onBackPressed()
+        }
+        //(frag as? FirmwareUpdateFragment)?.update()
     }
 
     fun showProgressSpinner() {

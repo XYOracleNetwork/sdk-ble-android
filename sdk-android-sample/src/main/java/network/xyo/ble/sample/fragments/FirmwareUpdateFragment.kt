@@ -1,6 +1,7 @@
 package network.xyo.ble.sample.fragments
 
 
+import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -19,11 +20,13 @@ import network.xyo.ble.firmware.OtaFile
 import network.xyo.ble.firmware.OtaUpdate
 import network.xyo.ble.sample.R
 import network.xyo.ui.ui
+import network.xyo.xyfindit.fragments.core.BackFragmentListener
 
 
-class FirmwareUpdateFragment : XYAppBaseFragment() {
+class FirmwareUpdateFragment : XYAppBaseFragment(), BackFragmentListener {
 
     private var firmwareFileName: String? = null
+    private var updateInProgress: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,7 +44,7 @@ class FirmwareUpdateFragment : XYAppBaseFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        // Inflate the layout for this fragment
+
         return inflater.inflate(R.layout.fragment_firmware_update, container, false)
     }
 
@@ -70,9 +73,33 @@ class FirmwareUpdateFragment : XYAppBaseFragment() {
         }
     }
 
+    override fun onBackPressed(): Boolean {
+        return if (updateInProgress) {
+            //prompt user that update is in progress
+            promptCancelUpdate()
+            true
+
+        } else {
+            // update is not running - allow Activity to handle backPress
+            false
+        }
+
+    }
+
+    fun promptCancelUpdate() {
+        val alertDialog = AlertDialog.Builder(activity).create()
+        alertDialog.setTitle("Update in progress")
+        alertDialog.setMessage("Please wait for the update to complete.")
+        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK") {dialog, _ ->
+            dialog.dismiss()
+        }
+        alertDialog.show()
+    }
+
     private val updateListener = object : OtaUpdate.Listener() {
         override fun updated(device: XYBluetoothDevice) {
             logInfo("updateListener: updated")
+            updateInProgress = false
             ui {
                 activity?.hideProgressSpinner()
                 showToast("Update complete. Rebooting device...")
@@ -82,7 +109,9 @@ class FirmwareUpdateFragment : XYAppBaseFragment() {
 
         override fun failed(device: XYBluetoothDevice, error: String) {
             logInfo("updateListener: failed: $error")
+            updateInProgress = false
             ui {
+                showToast("Update failed: $error")
                 tv_file_progress?.text = "Update failed: $error"
                 activity?.hideProgressSpinner()
                 button_update?.isEnabled = true
@@ -103,6 +132,7 @@ class FirmwareUpdateFragment : XYAppBaseFragment() {
     private fun performUpdate() {
         GlobalScope.launch {
             if (firmwareFileName != null) {
+                updateInProgress = true
                 ui {
                     lv_files?.visibility = GONE
                     tv_file_name?.visibility = GONE
@@ -112,7 +142,7 @@ class FirmwareUpdateFragment : XYAppBaseFragment() {
                     tv_file_progress?.text = getString(R.string.update_started)
                 }
 
-                logInfo(TAG, "testFirmware start: $String")
+                logInfo(TAG, "performUpdate started: $String")
                 (activity?.device as? XY4BluetoothDevice)?.updateFirmware(firmwareFileName!!, updateListener)
             } else {
                 ui { showToast("Select a File first") }
