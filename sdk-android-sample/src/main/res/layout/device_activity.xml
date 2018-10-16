@@ -100,6 +100,23 @@
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
+    <LinearLayout
+        android:id="@+id/ll_device_disabled"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:background="@android:color/holo_red_light"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/bluetooth_disabled"
+            android:textColor="@android:color/white" />
+    </LinearLayout>
+
     <ProgressBar
         android:id="@+id/progress_spinner"
         style="?android:attr/progressBarStyleLarge"

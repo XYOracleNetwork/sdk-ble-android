@@ -1,6 +1,7 @@
 package network.xyo.ble.sample.activities
 
 import android.Manifest
+import android.app.AlertDialog
 import android.os.Bundle
 import android.view.View.GONE
 import android.view.View.VISIBLE
@@ -54,12 +55,26 @@ class XYOBleSampleActivity : XYOAppBaseActivity() {
             XYFilteredSmartScan.Status.Enabled -> {
             }
             XYFilteredSmartScan.Status.BluetoothDisabled -> {
-                showToast("Bluetooth Disabled")
+                onBluetoothDisabled()
                 progress_spinner_scanner.visibility = GONE
+                val alertDialog = AlertDialog.Builder(this).create()
+                alertDialog.setTitle("Bluetooth Disabled")
+                alertDialog.setMessage("Please enable Bluetooth to see a list of devices.")
+                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK") { dialog, _ ->
+                    dialog.dismiss()
+                }
+                alertDialog.show()
             }
             XYFilteredSmartScan.Status.BluetoothUnavailable -> {
-                showToast("Bluetooth Unavailable")
+                onBluetoothDisabled()
                 progress_spinner_scanner.visibility = GONE
+                val alertDialog = AlertDialog.Builder(this).create()
+                alertDialog.setTitle("Bluetooth Unavailable")
+                alertDialog.setMessage("It seems like your device may not support Bluetooth, or you are using an emulator")
+                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK") { dialog, _ ->
+                    dialog.dismiss()
+                }
+                alertDialog.show()
             }
             XYFilteredSmartScan.Status.LocationDisabled -> {
             }
@@ -82,7 +97,7 @@ class XYOBleSampleActivity : XYOAppBaseActivity() {
 
         permissions.requestPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE, "Allow app to access your storage in order to load firmware files?", 0)
 
-        ui {  adapter?.notifyDataSetChanged() }
+        ui { adapter?.notifyDataSetChanged() }
 
         checkStatus()
     }
@@ -90,6 +105,16 @@ class XYOBleSampleActivity : XYOAppBaseActivity() {
     override fun onPause() {
         super.onPause()
         disconnectListeners()
+    }
+
+    override fun onBluetoothEnabled() {
+        ll_disabled.visibility = GONE
+        scanner.start()
+    }
+
+    override fun onBluetoothDisabled() {
+        ll_disabled.visibility = VISIBLE
+        scanner.stop()
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
