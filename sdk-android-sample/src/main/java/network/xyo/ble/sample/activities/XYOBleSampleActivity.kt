@@ -12,6 +12,7 @@ import network.xyo.ble.sample.R
 import network.xyo.ble.sample.adapters.XYDeviceAdapter
 import network.xyo.ble.scanner.XYFilteredSmartScan
 import network.xyo.core.XYPermissions
+import network.xyo.ui.ui
 
 
 class XYOBleSampleActivity : XYOAppBaseActivity() {
@@ -33,7 +34,7 @@ class XYOBleSampleActivity : XYOAppBaseActivity() {
         XY4BluetoothDevice.addGlobalListener(tag, object : XY4BluetoothDevice.Listener() {
             override fun buttonSinglePressed(device: XYFinderBluetoothDevice) {
                 super.buttonSinglePressed(device)
-                showToast("XY4 Button Single Pressed")
+                showToast("XY4 Button Single Pressed: ${device.address}")
             }
 
             override fun buttonDoublePressed(device: XYFinderBluetoothDevice) {
@@ -81,7 +82,8 @@ class XYOBleSampleActivity : XYOAppBaseActivity() {
 
         permissions.requestPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE, "Allow app to access your storage in order to load firmware files?", 0)
 
-        adapter?.notifyDataSetChanged()
+        ui {  adapter?.notifyDataSetChanged() }
+
         checkStatus()
     }
 

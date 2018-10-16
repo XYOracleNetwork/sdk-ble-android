@@ -20,7 +20,7 @@ private constructor(private val inputStream: InputStream?) {
     var crc: Byte = 0
         private set
 
-    var fileBlockSize = 0
+    var fileBlockSize = 128
         private set
 
     var fileChunkSize = 20
@@ -44,10 +44,10 @@ private constructor(private val inputStream: InputStream?) {
         bytes!![bytesAvailable] = crc
 
         //Default block/chunk sizes for XY4 devices.
-        setFileBlockSize(240, 20)
+        setFileBlockSize(128, 20)
     }
 
-    // Set the file blockSize and ChunkSize if not using the default 240/20 values
+    // Set the file blockSize and ChunkSize if not using the default 128/20 values
     fun setFileBlockSize(blockSize: Int, chunkSize: Int) {
         fileBlockSize = Math.max(blockSize, chunkSize)
         fileChunkSize = chunkSize
