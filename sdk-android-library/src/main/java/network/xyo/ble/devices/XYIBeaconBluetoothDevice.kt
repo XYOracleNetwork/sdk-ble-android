@@ -7,6 +7,7 @@ import unsigned.Ubyte
 import unsigned.Ushort
 import java.nio.ByteBuffer
 import java.util.*
+import java.util.concurrent.ConcurrentHashMap
 
 open class XYIBeaconBluetoothDevice(context: Context, scanResult: XYScanResult?, hash: Int) : XYBluetoothDevice(context, scanResult?.device, hash) {
 
@@ -100,7 +101,7 @@ open class XYIBeaconBluetoothDevice(context: Context, scanResult: XYScanResult?,
         internal val uuidToCreator = HashMap<UUID, XYCreator>()
 
         internal val creator = object : XYCreator() {
-            override fun getDevicesFromScanResult(context: Context, scanResult: XYScanResult, globalDevices: HashMap<Int, XYBluetoothDevice>, foundDevices: HashMap<Int, XYBluetoothDevice>) {
+            override fun getDevicesFromScanResult(context: Context, scanResult: XYScanResult, globalDevices: ConcurrentHashMap<Int, XYBluetoothDevice>, foundDevices: HashMap<Int, XYBluetoothDevice>) {
                 for ((uuid, creator) in uuidToCreator) {
                     val bytes = scanResult.scanRecord?.getManufacturerSpecificData(XYAppleBluetoothDevice.MANUFACTURER_ID)
                     if (bytes != null) {

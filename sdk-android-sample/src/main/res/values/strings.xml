@@ -103,5 +103,8 @@
     <string name="select_file">Select File</string>
     <string name="firmware">OTA</string>
     <string name="do_update">Update</string>
+    <string name="select_a_file_below">Select a file below</string>
+    <string name="update_started">Update started</string>
+    <string name="bluetooth_disabled">Bluetooth Disabled</string>
 
 </resources>

@@ -17,11 +17,11 @@ import network.xyo.ble.services.standard.*
 import network.xyo.ble.services.xy4.PrimaryService
 import network.xyo.core.XYBase
 import unsigned.Ushort
-import java.io.InputStream
 import java.nio.ByteBuffer
 import java.util.*
+import java.util.concurrent.ConcurrentHashMap
 
-
+@Suppress("unused")
 open class XY4BluetoothDevice(context: Context, scanResult: XYScanResult, hash: Int) : XYFinderBluetoothDevice(context, scanResult, hash) {
 
     val alertNotification = AlertNotificationService(this)
@@ -103,26 +103,13 @@ open class XY4BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
         }
     }
 
-    private val updateListener = object : OtaUpdate.Listener() {
-        override fun updated(device: XYBluetoothDevice) {
-            logInfo("updateListener: updated")
-        }
+    override fun updateFirmware(filename: String, listener: OtaUpdate.Listener) { // : Deferred<XYBluetoothResult<ByteArray>> {
 
-        override fun failed(device: XYBluetoothDevice, error: String) {
-            logInfo("updateListener: failed: $error")
-        }
-    }
-
-    override fun updateFirmware(stream: InputStream): Deferred<XYBluetoothResult<ByteArray>> {
-        //TODO - need to test
-
-        val otaFile = OtaFile.fromInputStream(stream)
+        val otaFile = OtaFile.getByFileName(filename)
         val updater = OtaUpdate(this, otaFile)
 
-        updater.addListener("XY4BluetoothDevice", updateListener)
+        updater.addListener("XY4BluetoothDevice", listener)
         updater.start()
-
-        return spotaService.SERV_STATUS.set(ByteArray(0))
     }
 
     private fun enableButtonNotifyIfConnected() {
@@ -220,7 +207,7 @@ open class XY4BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
         }
 
         internal val creator = object : XYCreator() {
-            override fun getDevicesFromScanResult(context: Context, scanResult: XYScanResult, globalDevices: HashMap<Int, XYBluetoothDevice>, foundDevices: HashMap<Int, XYBluetoothDevice>) {
+            override fun getDevicesFromScanResult(context: Context, scanResult: XYScanResult, globalDevices: ConcurrentHashMap<Int, XYBluetoothDevice>, foundDevices: HashMap<Int, XYBluetoothDevice>) {
                 val hash = hashFromScanResult(scanResult)
                 if (hash != null) {
                     foundDevices[hash] = globalDevices[hash] ?: XY4BluetoothDevice(context, scanResult, hash)
@@ -264,6 +251,7 @@ open class XY4BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
             val uuid = iBeaconUuidFromScanResult(scanResult)
             val major = majorFromScanResult(scanResult)
             val minor = minorFromScanResult(scanResult)
+
             return "$uuid:$major:$minor".hashCode()
         }
 

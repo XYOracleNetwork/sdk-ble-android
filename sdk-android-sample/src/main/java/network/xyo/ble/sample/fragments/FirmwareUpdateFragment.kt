@@ -1,76 +1,153 @@
 package network.xyo.ble.sample.fragments
 
 
+import android.app.AlertDialog
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import kotlinx.android.synthetic.main.fragment_firmware_update.*
-import kotlinx.coroutines.experimental.CommonPool
+import kotlinx.coroutines.experimental.GlobalScope
 import kotlinx.coroutines.experimental.launch
 import network.xyo.ble.devices.XY4BluetoothDevice
+import network.xyo.ble.devices.XYBluetoothDevice
+import network.xyo.ble.firmware.OtaFile
+import network.xyo.ble.firmware.OtaUpdate
 import network.xyo.ble.sample.R
-import java.io.InputStream
-import java.net.URL
+import network.xyo.ui.ui
+import network.xyo.xyfindit.fragments.core.BackFragmentListener
 
 
-class FirmwareUpdateFragment : XYAppBaseFragment() {
+class FirmwareUpdateFragment : XYAppBaseFragment(), BackFragmentListener {
+
+    private var firmwareFileName: String? = null
+    private var updateInProgress: Boolean = false
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        val filesDirExists = context?.getSharedPreferences("settings", Context.MODE_PRIVATE)?.getBoolean("fileDirectoriesCreated", false) ?: false
+
+        if (!filesDirExists) {
+            if (OtaFile.createFileDirectory()) {
+                context?.getSharedPreferences("settings", Context.MODE_PRIVATE)?.edit()?.putBoolean("fileDirectoriesCreated", true)?.apply()
+            } else {
+                logInfo(TAG, "Failed to create files directory")
+            }
+        }
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        // Inflate the layout for this fragment
+
         return inflater.inflate(R.layout.fragment_firmware_update, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        button_select_file.setOnClickListener {
-            performFileSearch()
+        button_update.setOnClickListener {
+            performUpdate()
         }
 
-        button_update.setOnClickListener {
-            if (!tv_file_name.text.isBlank()) {
-                performUpdate(tv_file_name.text.toString())
-            } else {
-                showToast("Select a file.")
+        //setup file listview
+        val fileListAdapter = ArrayAdapter<String>(context, android.R.layout.simple_list_item_1)
+        lv_files?.adapter = fileListAdapter
+
+        val fileList = OtaFile.list()
+        if (fileList == null) {
+            showToast("No Firmware files found. Add files in device folder 'Xyo'")
+        } else {
+            for (file in fileList) {
+                fileListAdapter.add(file)
+            }
+
+            lv_files.setOnItemClickListener { _, _, i, _ ->
+                firmwareFileName = fileList[i]
             }
         }
     }
 
-    private fun performUpdate(filename: String) {
-        launch(CommonPool) {
-            logInfo(TAG, "testFirmware start: $String")
+    override fun onBackPressed(): Boolean {
+        return if (updateInProgress) {
+            //prompt user that update is in progress
+            promptCancelUpdate()
+            true
 
-            val stream = getRemoteFile(filename)
-            val result = stream?.let { (activity?.device as? XY4BluetoothDevice)?.updateFirmware(it)?.await() }
-            logInfo(TAG, "testFirmware result: $result")
-
-        }
-    }
-
-    fun getRemoteFile(location: String, useCache: Boolean = true): InputStream? {
-        val url: URL = if (useCache) {
-            URL(location)
         } else {
-            URL(location + "?t=" + Math.random())
+            // update is not running - allow Activity to handle backPress
+            false
         }
-        val inputStream = url.openStream()
-        val tmp = inputStream
-        inputStream.close()
 
-        return tmp
     }
 
-    fun performFileSearch() {
+    fun promptCancelUpdate() {
+        val alertDialog = AlertDialog.Builder(activity).create()
+        alertDialog.setTitle("Update in progress")
+        alertDialog.setMessage("Please wait for the update to complete.")
+        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK") {dialog, _ ->
+            dialog.dismiss()
+        }
+        alertDialog.show()
+    }
 
-        val intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
-        intent.addCategory(Intent.CATEGORY_OPENABLE)
+    private val updateListener = object : OtaUpdate.Listener() {
+        override fun updated(device: XYBluetoothDevice) {
+            logInfo("updateListener: updated")
+            updateInProgress = false
+            ui {
+                activity?.hideProgressSpinner()
+                showToast("Update complete. Rebooting device...")
+                activity?.onBackPressed()
+            }
+        }
 
-        intent.type = "*/*"
+        override fun failed(device: XYBluetoothDevice, error: String) {
+            logInfo("updateListener: failed: $error")
+            updateInProgress = false
+            ui {
+                showToast("Update failed: $error")
+                tv_file_progress?.text = "Update failed: $error"
+                activity?.hideProgressSpinner()
+                button_update?.isEnabled = true
+                lv_files?.visibility = VISIBLE
+                tv_file_name?.visibility = VISIBLE
+            }
+        }
 
-        startActivityForResult(intent, FILE_REQUEST)
+        override fun progress(sent: Int, total: Int) {
+            val txt = "sending chunk  $sent of $total"
+            logInfo(txt)
+            ui {
+                tv_file_progress?.text = txt
+            }
+        }
+    }
+
+    private fun performUpdate() {
+        GlobalScope.launch {
+            if (firmwareFileName != null) {
+                updateInProgress = true
+                ui {
+                    lv_files?.visibility = GONE
+                    tv_file_name?.visibility = GONE
+                    tv_file_progress?.visibility = VISIBLE
+                    button_update?.isEnabled = false
+                    activity?.showProgressSpinner()
+                    tv_file_progress?.text = getString(R.string.update_started)
+                }
+
+                logInfo(TAG, "performUpdate started: $String")
+                (activity?.device as? XY4BluetoothDevice)?.updateFirmware(firmwareFileName!!, updateListener)
+            } else {
+                ui { showToast("Select a File first") }
+            }
+        }
     }
 
     //Callback from XYOFinderDeviceActivity.onActivityResult
@@ -78,14 +155,13 @@ class FirmwareUpdateFragment : XYAppBaseFragment() {
         logInfo(TAG, "onFileSelected requestCode: $requestCode")
 
         data?.data.let { uri ->
-            tv_file_name.text = uri.toString()
+            tv_file_name?.text = uri.toString()
         }
 
     }
 
     companion object {
         private val TAG = FirmwareUpdateFragment::class.java.simpleName
-        const val FILE_REQUEST = 555
 
         fun newInstance() =
                 FirmwareUpdateFragment()

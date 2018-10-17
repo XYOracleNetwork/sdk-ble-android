@@ -16,7 +16,7 @@ androidExtensions {
 
 android {
     compileSdkVersion 28
-    buildToolsVersion '28.0.2'
+    buildToolsVersion '28.0.3'
     defaultConfig {
         applicationId "network.xyo.ble.sample"
         minSdkVersion 21
@@ -61,5 +61,5 @@ dependencies {
     implementation 'com.github.XYOracleNetwork:sdk-ui-android:master-SNAPSHOT'
     implementation project(':sdk-android-library')
 
-    implementation 'androidx.legacy:legacy-support-v4:1.0.0-alpha1'
+    implementation "androidx.legacy:legacy-support-v4:$androidx_version"
 }

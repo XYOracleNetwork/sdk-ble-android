@@ -19,8 +19,8 @@ import network.xyo.ble.devices.XYFinderBluetoothDevice
 import network.xyo.ble.sample.R
 import network.xyo.ble.sample.XYDeviceData
 import network.xyo.ble.sample.fragments.*
-import network.xyo.ble.sample.fragments.FirmwareUpdateFragment.Companion.FILE_REQUEST
 import network.xyo.ui.XYBaseFragment
+import network.xyo.xyfindit.fragments.core.BackFragmentListener
 
 /**
  * Created by arietrouw on 12/28/17.
@@ -47,7 +47,6 @@ class XYOFinderDeviceActivity : XYOAppBaseActivity() {
 
         data = XYDeviceData()
 
-
         sectionsPagerAdapter = SectionsPagerAdapter(supportFragmentManager)
 
         container.adapter = sectionsPagerAdapter
@@ -65,14 +64,19 @@ class XYOFinderDeviceActivity : XYOAppBaseActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         logInfo(TAG, "onActivityResult requestCode: $requestCode")
-        //when (requestCode) {
-           // FILE_REQUEST -> {
-                val frag = (supportFragmentManager.findFragmentById(R.id.container) as FirmwareUpdateFragment?)
-                frag?.onFileSelected(requestCode, resultCode, data)
-            //}
-       // }
 
+        val frag = (supportFragmentManager.findFragmentById(R.id.container) as FirmwareUpdateFragment?)
+        frag?.onFileSelected(requestCode, resultCode, data)
     }
+
+    override fun onBluetoothEnabled() {
+        ll_device_disabled.visibility = GONE
+    }
+
+    override fun onBluetoothDisabled() {
+        ll_device_disabled.visibility = VISIBLE
+    }
+
 
     private val xy3DeviceListener = object : XY3BluetoothDevice.Listener() {
         override fun entered(device: XYBluetoothDevice) {
@@ -177,6 +181,15 @@ class XYOFinderDeviceActivity : XYOAppBaseActivity() {
         addListener()
     }
 
+    override fun onBackPressed() {
+        val activeFrag = sectionsPagerAdapter.getFragmentByPosition(container.currentItem)
+        if (activeFrag is BackFragmentListener && (activeFrag as BackFragmentListener).onBackPressed()) {
+            //Let the fragment handle the back button.
+        } else {
+            super.onBackPressed()
+        }
+    }
+
     fun showProgressSpinner() {
         progress_spinner.visibility = VISIBLE
     }
@@ -190,8 +203,11 @@ class XYOFinderDeviceActivity : XYOAppBaseActivity() {
     }
 
     fun update() {
-        val frag = sectionsPagerAdapter.getFragmentByPosition(container.currentItem)
-        (frag as? InfoFragment)?.update()
+        try {
+            val frag = sectionsPagerAdapter.getFragmentByPosition(container.currentItem)
+            (frag as? InfoFragment)?.update()
+        } catch (ex: Exception) {
+        }
     }
 
     companion object {

@@ -8,8 +8,10 @@ import android.os.Handler
 import kotlinx.coroutines.experimental.*
 import network.xyo.ble.CallByVersion
 import network.xyo.ble.scanner.XYScanResult
+import java.lang.Exception
 import java.util.*
 import java.util.concurrent.TimeUnit
+import kotlin.coroutines.experimental.Continuation
 import kotlin.coroutines.experimental.suspendCoroutine
 
 //XYBluetoothGatt is a pure wrapper that does not add any functionality
@@ -435,7 +437,7 @@ open class XYBluetoothGatt protected constructor(
                                         error = XYBluetoothError("writeCharacteristic: onCharacteristicWrite failed: $status")
                                         removeGattListener(listenerName)
                                         resumed = true
-                                        cont.resume(null)
+                                        tryResume(cont)
                                     }
                                 }
                             }
@@ -444,11 +446,11 @@ open class XYBluetoothGatt protected constructor(
                         override fun onConnectionStateChange(gatt: BluetoothGatt?, status: Int, newState: Int) {
                             logInfo("onCharacteristicWrite")
                             super.onConnectionStateChange(gatt, status, newState)
-                            if (newState != BluetoothGatt.STATE_CONNECTED) {
+                            if (!resumed && newState != BluetoothGatt.STATE_CONNECTED) {
                                 error = XYBluetoothError("writeCharacteristic: connection dropped")
                                 removeGattListener(listenerName)
                                 resumed = true
-                                cont.resume(null)
+                                tryResume(cont) //BUG - already resumed
                             }
                         }
                     }
@@ -457,12 +459,12 @@ open class XYBluetoothGatt protected constructor(
                         error = XYBluetoothError("writeCharacteristic: gatt.writeCharacteristic failed to start")
                         removeGattListener(listenerName)
                         resumed = true
-                        cont.resume(null)
+                        tryResume(cont)
                     } else if (connectionState != ConnectionState.Connected) {
                         error = XYBluetoothError("writeCharacteristic: connection dropped 2")
                         removeGattListener(listenerName)
                         resumed = true
-                        cont.resume(null)
+                        tryResume(cont)
 
                     }
                 }
@@ -471,6 +473,16 @@ open class XYBluetoothGatt protected constructor(
             return@queueBle XYBluetoothResult(value, error)
         }
     }
+
+    //Fix for known coroutine bug - throws "already resumed"
+    private fun tryResume(cont: Continuation<ByteArray?>) {
+        try {
+            cont.resume(null)
+        } catch (ex: Exception) {
+        }
+
+    }
+
 
     protected fun setCharacteristicNotify(characteristicToWrite: BluetoothGattCharacteristic, notify: Boolean): XYBluetoothResult<Boolean> {
         logInfo("setCharacteristicNotify")
