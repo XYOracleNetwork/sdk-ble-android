@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:padding="10dp"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/characteristics_uuid_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Title"
+        android:text="characteristics_uuid_title" />
+
+    <TextView
+        android:id="@+id/characteristics_type"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="characteristics_type" />
+
+    <TextView
+        android:id="@+id/characteristics_permission"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="characteristics_permission" />
+
+    <TextView
+        android:id="@+id/characteristics_value_hex"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="characteristics_value_hex" />
+
+    <TextView
+        android:id="@+id/characteristics_value_utf8"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="characteristics_value_utf8" />
+
+    <Button
+        android:id="@+id/characteristic_button_update"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Update" />
+
+</LinearLayout>

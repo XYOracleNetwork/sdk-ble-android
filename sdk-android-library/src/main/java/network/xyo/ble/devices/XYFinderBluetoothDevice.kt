@@ -128,7 +128,7 @@ open class XYFinderBluetoothDevice(context: Context, scanResult: XYScanResult, h
 
     //signal the user to where it is, usually make it beep
     open fun find(): Deferred<XYBluetoothResult<Int>> {
-        logError(UnsupportedOperationException(), true)
+        logError(UnsupportedOperationException().toString(), true)
         return asyncBle {
             return@asyncBle XYBluetoothResult<Int>(XYBluetoothError("Not Implemented"))
         }
@@ -183,6 +183,7 @@ open class XYFinderBluetoothDevice(context: Context, scanResult: XYScanResult, h
             return@asyncBle XYBluetoothResult<Int>(XYBluetoothError("Not Implemented"))
         }
     }
+
 
     open fun updateFirmware(filename: String, listener: OtaUpdate.Listener) { //: Deferred<XYBluetoothResult<ByteArray>> {
 //        logError(UnsupportedOperationException(), true)

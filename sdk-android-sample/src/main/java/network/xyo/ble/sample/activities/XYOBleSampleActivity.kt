@@ -1,11 +1,15 @@
 package network.xyo.ble.sample.activities
 
+import android.content.Intent
+import android.os.Bundle
+import android.view.View
 import android.Manifest
 import android.app.AlertDialog
 import android.os.Bundle
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.widget.BaseAdapter
+import android.widget.Button
 import kotlinx.android.synthetic.main.activity_xyo_ble_sample.*
 import network.xyo.ble.devices.XY4BluetoothDevice
 import network.xyo.ble.devices.XYFinderBluetoothDevice
@@ -29,6 +33,13 @@ class XYOBleSampleActivity : XYOAppBaseActivity() {
 
         adapter = XYDeviceAdapter(this)
         listview!!.adapter = adapter
+
+        val launchServerButton = findViewById<Button>(R.id.launchServer)
+        launchServerButton.setOnClickListener(object : View.OnClickListener {
+            override fun onClick(p0: View?) {
+                startActivity(Intent(this@XYOBleSampleActivity, XYOServerActivity::class.java))
+            }
+        })
     }
 
     private fun connectListeners() {

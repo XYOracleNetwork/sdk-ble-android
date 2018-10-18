@@ -7,6 +7,14 @@
     android:layout_alignParentTop="true"
     android:orientation="vertical">
 
+    <Button
+        android:id="@+id/launchServer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentTop="true"
+        android:text="Server" />
+
     <include
         android:id="@+id/include_stats"
         layout="@layout/blestats_view"
