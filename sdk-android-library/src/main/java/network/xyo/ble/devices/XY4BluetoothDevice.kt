@@ -18,6 +18,7 @@ import network.xyo.ble.services.xy4.PrimaryService
 import network.xyo.core.XYBase
 import unsigned.Ushort
 import java.io.FileInputStream
+import java.io.InputStream
 import java.nio.ByteBuffer
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
@@ -104,8 +105,7 @@ open class XY4BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
         }
     }
 
-    override fun updateFirmware(filename: String, listener: OtaUpdate.Listener) { // : Deferred<XYBluetoothResult<ByteArray>> {
-
+    override fun updateFirmware(filename: String, listener: OtaUpdate.Listener) {
         val otaFile = OtaFile.getByFileName(filename)
         val updater = OtaUpdate(this, otaFile)
 
@@ -114,7 +114,7 @@ open class XY4BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
     }
 
 
-    override fun updateFirmware(stream: FileInputStream, listener: OtaUpdate.Listener) { // : Deferred<XYBluetoothResult<ByteArray>> {
+    override fun updateFirmware(stream: InputStream, listener: OtaUpdate.Listener) {
 
         val otaFile = OtaFile.getByFileStream(stream)
         val updater = OtaUpdate(this, otaFile)

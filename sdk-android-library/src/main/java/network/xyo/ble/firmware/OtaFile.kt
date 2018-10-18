@@ -139,7 +139,7 @@ private constructor(private val inputStream: InputStream?) {
             return OtaFile(inputStream)
         }
 
-        fun getByFileStream(stream: FileInputStream): OtaFile {
+        fun getByFileStream(stream: InputStream): OtaFile {
             return OtaFile(stream)
         }
 

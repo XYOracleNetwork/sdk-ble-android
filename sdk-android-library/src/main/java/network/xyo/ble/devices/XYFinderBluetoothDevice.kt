@@ -12,6 +12,7 @@ import network.xyo.ble.gatt.asyncBle
 import network.xyo.ble.scanner.XYScanResult
 import network.xyo.core.XYBase
 import java.io.FileInputStream
+import java.io.InputStream
 import java.nio.ByteBuffer
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
@@ -186,7 +187,7 @@ open class XYFinderBluetoothDevice(context: Context, scanResult: XYScanResult, h
     }
 
 
-    open fun updateFirmware(stream: FileInputStream, listener: OtaUpdate.Listener) {
+    open fun updateFirmware(stream: InputStream, listener: OtaUpdate.Listener) {
 
     }
 
