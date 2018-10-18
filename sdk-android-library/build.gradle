@@ -67,5 +67,7 @@ dependencies {
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:0.26.0'
     implementation 'com.github.kotlin-graphics:kotlin-unsigned:v2.1'
     implementation "androidx.annotation:annotation:$androidx_version"
-    implementation 'com.github.XYOracleNetwork:sdk-core-android:develop-SNAPSHOT'
+
+    implementation project(':xycore')
+    // implementation 'com.github.XYOracleNetwork:sdk-core-android:develop-SNAPSHOT'
 }
