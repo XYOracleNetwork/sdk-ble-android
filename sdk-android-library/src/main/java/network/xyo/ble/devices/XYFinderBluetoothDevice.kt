@@ -11,6 +11,7 @@ import network.xyo.ble.gatt.XYBluetoothResult
 import network.xyo.ble.gatt.asyncBle
 import network.xyo.ble.scanner.XYScanResult
 import network.xyo.core.XYBase
+import java.io.FileInputStream
 import java.nio.ByteBuffer
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
@@ -185,11 +186,12 @@ open class XYFinderBluetoothDevice(context: Context, scanResult: XYScanResult, h
     }
 
 
-    open fun updateFirmware(filename: String, listener: OtaUpdate.Listener) { //: Deferred<XYBluetoothResult<ByteArray>> {
-//        logError(UnsupportedOperationException(), true)
-//        return asyncBle {
-//            return@asyncBle XYBluetoothResult<ByteArray>(XYBluetoothError("Not Implemented"))
-//        }
+    open fun updateFirmware(stream: FileInputStream, listener: OtaUpdate.Listener) {
+
+    }
+
+    open fun updateFirmware(filename: String, listener: OtaUpdate.Listener) {
+
     }
 
 
