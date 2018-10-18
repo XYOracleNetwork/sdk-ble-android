@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.View
 import android.Manifest
 import android.app.AlertDialog
-import android.os.Bundle
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.widget.BaseAdapter
