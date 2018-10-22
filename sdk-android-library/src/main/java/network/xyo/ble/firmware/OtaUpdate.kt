@@ -153,7 +153,7 @@ class OtaUpdate(var device: XY4BluetoothDevice, private val otaFile: OtaFile?) {
                     if (!lastBlockReady && otaFile?.numberOfBytes?.rem(otaFile.fileBlockSize) != 0) {
                         logInfo(TAG, "startUpdate LAST BLOCK - SET PATCH LEN: $lastBlock")
                         val finalPatchResult = setPatchLength().await()
-                       // lastBlockSent = true
+
                         finalPatchResult.error?.let { error ->
                             hasError = true
                             failUpdate(error.message.toString())
@@ -281,7 +281,7 @@ class OtaUpdate(var device: XY4BluetoothDevice, private val otaFile: OtaFile?) {
                     lastBlockSent = true
                 }
 
-                if (blockCounter +1 == otaFile?.numberOfBlocks) {
+                if (blockCounter + 1 == otaFile?.numberOfBlocks) {
                     lastBlock = true
                 }
             }
