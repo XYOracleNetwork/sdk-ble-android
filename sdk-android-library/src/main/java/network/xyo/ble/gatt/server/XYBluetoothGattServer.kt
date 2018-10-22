@@ -279,35 +279,11 @@ open class XYBluetoothGattServer(context: Context) : XYBluetoothBase(context) {
             }
         }
 
-        override fun onMtuChanged(device: BluetoothDevice?, mtu: Int) {
-            super.onMtuChanged(device, mtu)
-
-            for ((_, listener) in listeners) {
-                listener.onMtuChanged(device, mtu)
-            }
-        }
-
         override fun onNotificationSent(device: BluetoothDevice?, status: Int) {
             super.onNotificationSent(device, status)
 
             for ((_, listener) in listeners) {
                 listener.onNotificationSent(device, status)
-            }
-        }
-
-        override fun onPhyRead(device: BluetoothDevice?, txPhy: Int, rxPhy: Int, status: Int) {
-            super.onPhyRead(device, txPhy, rxPhy, status)
-
-            for ((_, listener) in listeners) {
-                listener.onPhyRead(device, txPhy, rxPhy, status)
-            }
-        }
-
-        override fun onPhyUpdate(device: BluetoothDevice?, txPhy: Int, rxPhy: Int, status: Int) {
-            super.onPhyUpdate(device, txPhy, rxPhy, status)
-
-            for ((_, listener) in listeners) {
-                listener.onPhyUpdate(device, txPhy, rxPhy, status)
             }
         }
 
