@@ -52,7 +52,7 @@ class XYOFinderDeviceActivity : XYOAppBaseActivity() {
         container.adapter = sectionsPagerAdapter
 
         container.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tabs))
-        container.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tabs) as ViewPager.OnPageChangeListener)
+        tabs.addOnTabSelectedListener(TabLayout.ViewPagerOnTabSelectedListener(container))
 
     }
 
