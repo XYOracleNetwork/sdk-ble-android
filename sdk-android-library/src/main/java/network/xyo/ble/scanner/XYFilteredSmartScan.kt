@@ -3,8 +3,8 @@ package network.xyo.ble.scanner
 import android.bluetooth.le.ScanCallback
 import android.content.Context
 import android.location.LocationManager
-import kotlinx.coroutines.experimental.GlobalScope
-import kotlinx.coroutines.experimental.launch
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import network.xyo.ble.devices.XYBluetoothDevice
 import network.xyo.ble.devices.XYMobileBluetoothDevice
 import network.xyo.ble.gatt.XYBluetoothBase

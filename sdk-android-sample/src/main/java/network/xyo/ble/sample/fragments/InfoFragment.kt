@@ -8,10 +8,10 @@ import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
 import kotlinx.android.synthetic.main.fragment_info.*
-import kotlinx.coroutines.experimental.Deferred
-import kotlinx.coroutines.experimental.GlobalScope
-import kotlinx.coroutines.experimental.async
-import kotlinx.coroutines.experimental.launch
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 import network.xyo.ble.devices.*
 import network.xyo.ble.gatt.XYBluetoothGatt
 import network.xyo.ble.sample.R

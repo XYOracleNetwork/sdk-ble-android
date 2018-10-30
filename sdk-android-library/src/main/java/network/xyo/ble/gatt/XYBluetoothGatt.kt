@@ -5,14 +5,15 @@ import android.bluetooth.*
 import android.content.Context
 import android.os.Build
 import android.os.Handler
-import kotlinx.coroutines.experimental.*
+import kotlinx.coroutines.*
 import network.xyo.ble.CallByVersion
 import network.xyo.ble.scanner.XYScanResult
 import java.lang.Exception
 import java.util.*
 import java.util.concurrent.TimeUnit
-import kotlin.coroutines.experimental.Continuation
-import kotlin.coroutines.experimental.suspendCoroutine
+import kotlin.coroutines.Continuation
+import kotlin.coroutines.suspendCoroutine
+import kotlin.coroutines.resume
 
 //XYBluetoothGatt is a pure wrapper that does not add any functionality
 //other than the ability to call the BluetoothGatt functions using coroutines
@@ -915,6 +916,6 @@ open class XYBluetoothGatt protected constructor(
 
     companion object {
         //gap after last connection that we wait to close the connection
-        private const val CLEANUP_DELAY = 5_000
+        private const val CLEANUP_DELAY = 5_000L
     }
 }

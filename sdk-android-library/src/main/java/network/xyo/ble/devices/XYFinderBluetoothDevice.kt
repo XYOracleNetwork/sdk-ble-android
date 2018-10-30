@@ -1,10 +1,10 @@
 package network.xyo.ble.devices
 
 import android.content.Context
-import kotlinx.coroutines.experimental.CoroutineStart
-import kotlinx.coroutines.experimental.Deferred
-import kotlinx.coroutines.experimental.GlobalScope
-import kotlinx.coroutines.experimental.launch
+import kotlinx.coroutines.CoroutineStart
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import network.xyo.ble.firmware.OtaUpdate
 import network.xyo.ble.gatt.XYBluetoothError
 import network.xyo.ble.gatt.XYBluetoothResult
@@ -16,7 +16,7 @@ import java.io.InputStream
 import java.nio.ByteBuffer
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
-import kotlin.coroutines.experimental.EmptyCoroutineContext
+import kotlin.coroutines.EmptyCoroutineContext
 
 open class XYFinderBluetoothDevice(context: Context, scanResult: XYScanResult, hash: Int) : XYIBeaconBluetoothDevice(context, scanResult, hash), Comparable<XYFinderBluetoothDevice> {
 

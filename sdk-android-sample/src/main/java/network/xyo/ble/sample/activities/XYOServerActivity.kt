@@ -13,7 +13,7 @@ import androidx.fragment.app.FragmentPagerAdapter
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
 import kotlinx.android.synthetic.main.activicty_ble_server.*
-import kotlinx.coroutines.experimental.async
+import kotlinx.coroutines.async
 import network.xyo.ble.gatt.server.*
 import network.xyo.ble.sample.R
 import network.xyo.ble.sample.adapters.XYServiceListAdapter

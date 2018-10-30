@@ -1,10 +1,11 @@
 package network.xyo.ble.gatt.server
 
 import android.bluetooth.BluetoothDevice
-import kotlinx.coroutines.experimental.async
+import kotlinx.coroutines.async
 import java.util.*
 import kotlin.collections.HashMap
-import kotlin.coroutines.experimental.suspendCoroutine
+import kotlin.coroutines.suspendCoroutine
+import kotlin.coroutines.resume
 
 open class XYBluetoothReadCharacteristic (uuid : UUID) : XYBluetoothCharacteristic(uuid, PROPERTY_READ, PERMISSION_READ) {
     private val responders = HashMap<String, XYBluetoothReadCharacteristicResponder>()

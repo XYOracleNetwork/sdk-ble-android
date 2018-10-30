@@ -1,6 +1,6 @@
 package network.xyo.ble.firmware
 
-import kotlinx.coroutines.experimental.*
+import kotlinx.coroutines.*
 import network.xyo.ble.devices.XY4BluetoothDevice
 import network.xyo.ble.devices.XYBluetoothDevice
 import network.xyo.ble.gatt.XYBluetoothResult
