@@ -1,8 +1,8 @@
 package network.xyo.ble.gatt
 
-import kotlinx.coroutines.*
-import kotlin.coroutines.CoroutineContext
 
+import kotlinx.coroutines.experimental.*
+import kotlin.coroutines.experimental.CoroutineContext
 
 //causes *all* ble calls to be initiated in a single thread
 fun <T> asyncBle(
@@ -11,7 +11,7 @@ fun <T> asyncBle(
         onCompletion: CompletionHandler? = null,
         block: suspend CoroutineScope.() -> XYBluetoothResult<T>
 ): Deferred<XYBluetoothResult<T>> {
-    return GlobalScope.async(context, start, block)
+    return GlobalScope.async(context, start, onCompletion, block)
 }
 
 //forces items to complete in order - use this only for the base read/write calls to make sure they do
@@ -24,7 +24,7 @@ fun <T> queueBle(
         block: suspend CoroutineScope.() -> XYBluetoothResult<T>
 ): Deferred<XYBluetoothResult<T>> {
     return runBlocking {
-        val r =  GlobalScope.async(context, start, block).await()
+        val r = async(context, start, onCompletion, block).await()
         return@runBlocking async{
             return@async r
         }

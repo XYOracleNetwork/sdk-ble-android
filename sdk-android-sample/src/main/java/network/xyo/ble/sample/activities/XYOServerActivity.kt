@@ -13,8 +13,7 @@ import androidx.fragment.app.FragmentPagerAdapter
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
 import kotlinx.android.synthetic.main.activicty_ble_server.*
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
+import kotlinx.coroutines.experimental.async
 import network.xyo.ble.gatt.server.*
 import network.xyo.ble.sample.R
 import network.xyo.ble.sample.adapters.XYServiceListAdapter
@@ -50,7 +49,7 @@ class XYOServerActivity : XYOAppBaseActivity() {
         serverPagerContainer.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(server_tabs))
         serverPagerContainer.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(server_tabs) as ViewPager.OnPageChangeListener)
 
-        GlobalScope.async {
+        async {
             spinUpServer().await()
             val fragment = pagerAdapter.getFragmentByPosition(1) as RootServicesFragment
             fragment.addService(simpleService)
@@ -62,14 +61,14 @@ class XYOServerActivity : XYOAppBaseActivity() {
         bleServer?.stopServer()
     }
 
-    private fun createTestServer() = GlobalScope.async {
+    private fun createTestServer() = async {
         val server = XYBluetoothGattServer(applicationContext)
         server.startServer()
         bleServer = server
         server.addService(simpleService).await()
     }
 
-    private fun spinUpServer () = GlobalScope.async {
+    private fun spinUpServer () = async {
         simpleService.addCharacteristic(characteristicRead)
         simpleService.addCharacteristic(characteristicWrite)
 

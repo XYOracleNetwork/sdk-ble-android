@@ -3,8 +3,8 @@ package network.xyo.ble.scanner
 import android.bluetooth.le.ScanCallback
 import android.content.Context
 import android.location.LocationManager
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.experimental.GlobalScope
+import kotlinx.coroutines.experimental.launch
 import network.xyo.ble.devices.XYBluetoothDevice
 import network.xyo.ble.devices.XYMobileBluetoothDevice
 import network.xyo.ble.gatt.XYBluetoothBase
@@ -208,7 +208,7 @@ abstract class XYFilteredSmartScan(context: Context) : XYBluetoothBase(context) 
     }
 
     private fun reportEntered(device: XYBluetoothDevice) {
-        // logInfo("reportEntered")
+        logInfo("reportEntered")
         synchronized(listeners) {
             for ((_, listener) in listeners) {
                 GlobalScope.launch {
@@ -219,7 +219,7 @@ abstract class XYFilteredSmartScan(context: Context) : XYBluetoothBase(context) 
     }
 
     private fun reportExited(device: XYBluetoothDevice) {
-        // logInfo("reportExited")
+        logInfo("reportExited")
         synchronized(listeners) {
             for ((_, listener) in listeners) {
                 GlobalScope.launch {

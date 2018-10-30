@@ -63,7 +63,8 @@ dependencies {
     implementation project(':xyui')
 
     implementation 'com.github.kotlin-graphics:kotlin-unsigned:v2.1'
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.0.0"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:0.26.0"
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:0.26.0'
     // implementation 'com.github.XYOracleNetwork:sdk-core-android:develop-SNAPSHOT'
     // implementation 'com.github.XYOracleNetwork:sdk-ui-android:develop-SNAPSHOT'
     implementation project(':sdk-android-library')

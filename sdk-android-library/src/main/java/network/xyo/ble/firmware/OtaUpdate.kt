@@ -1,9 +1,8 @@
 package network.xyo.ble.firmware
 
-import kotlinx.coroutines.*
+import kotlinx.coroutines.experimental.*
 import network.xyo.ble.devices.XY4BluetoothDevice
 import network.xyo.ble.devices.XYBluetoothDevice
-import network.xyo.ble.gatt.XYBluetoothError
 import network.xyo.ble.gatt.XYBluetoothResult
 import network.xyo.ble.gatt.asyncBle
 import network.xyo.core.XYBase.Companion.logInfo
@@ -123,9 +122,9 @@ class OtaUpdate(var device: XY4BluetoothDevice, private val otaFile: OtaFile?) {
 
             //STEP 2 - GpioMap
             val gpioResult = setGpioMap().await()
-            gpioResult.error.let { error ->
+            gpioResult.error?.let { error ->
                 hasError = true
-                failUpdate(error?.message.toString())
+                failUpdate(error.message.toString())
                 updateJob?.cancelAndJoin()
                 logInfo(TAG, "startUpdate - GPIO ERROR: $error")
             }

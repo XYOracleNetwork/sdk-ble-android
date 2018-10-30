@@ -7,13 +7,12 @@ import android.bluetooth.le.AdvertiseSettings.*
 import android.bluetooth.le.BluetoothLeAdvertiser
 import android.content.Context
 import android.os.ParcelUuid
-import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.experimental.Deferred
 import network.xyo.ble.gatt.XYBluetoothBase
 import network.xyo.ble.gatt.XYBluetoothError
 import network.xyo.ble.gatt.XYBluetoothResult
 import network.xyo.ble.gatt.asyncBle
-import kotlin.coroutines.resume
-import kotlin.coroutines.suspendCoroutine
+import kotlin.coroutines.experimental.suspendCoroutine
 
 open class XYBluetoothAdvertiser(context: Context) : XYBluetoothBase(context){
     protected val listeners = HashMap<String, AdvertiseCallback>()

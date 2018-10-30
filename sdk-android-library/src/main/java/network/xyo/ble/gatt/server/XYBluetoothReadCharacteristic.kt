@@ -1,12 +1,10 @@
 package network.xyo.ble.gatt.server
 
 import android.bluetooth.BluetoothDevice
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
+import kotlinx.coroutines.experimental.async
 import java.util.*
 import kotlin.collections.HashMap
-import kotlin.coroutines.resume
-import kotlin.coroutines.suspendCoroutine
+import kotlin.coroutines.experimental.suspendCoroutine
 
 open class XYBluetoothReadCharacteristic (uuid : UUID) : XYBluetoothCharacteristic(uuid, PROPERTY_READ, PERMISSION_READ) {
     private val responders = HashMap<String, XYBluetoothReadCharacteristicResponder>()
@@ -27,7 +25,7 @@ open class XYBluetoothReadCharacteristic (uuid : UUID) : XYBluetoothCharacterist
         responders.clear()
     }
 
-    fun waitForReadRequest (whatToRead : ByteArray?, deviceFilter : BluetoothDevice?) = GlobalScope.async {
+    fun waitForReadRequest (whatToRead : ByteArray?, deviceFilter : BluetoothDevice?) = async {
         val readValue = whatToRead ?: value
         value = readValue
         val readRequest = suspendCoroutine<Any?> { cont ->
