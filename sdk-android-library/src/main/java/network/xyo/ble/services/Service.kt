@@ -1,10 +1,10 @@
 package network.xyo.ble.services
 
 import android.bluetooth.BluetoothGattCharacteristic
+import kotlinx.coroutines.Deferred
 import network.xyo.core.XYBase
 import network.xyo.ble.devices.XYBluetoothDevice
 import network.xyo.ble.gatt.XYBluetoothResult
-import kotlinx.coroutines.experimental.Deferred
 import java.util.*
 
 abstract class Service(val device: XYBluetoothDevice) : XYBase() {

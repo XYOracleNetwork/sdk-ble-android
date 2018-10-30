@@ -5,14 +5,15 @@ import android.bluetooth.*
 import android.content.Context
 import android.os.Build
 import android.os.Handler
-import kotlinx.coroutines.experimental.*
+import kotlinx.coroutines.*
 import network.xyo.ble.CallByVersion
 import network.xyo.ble.scanner.XYScanResult
 import java.lang.Exception
 import java.util.*
 import java.util.concurrent.TimeUnit
-import kotlin.coroutines.experimental.Continuation
-import kotlin.coroutines.experimental.suspendCoroutine
+import kotlin.coroutines.Continuation
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 
 //XYBluetoothGatt is a pure wrapper that does not add any functionality
 //other than the ability to call the BluetoothGatt functions using coroutines
@@ -205,9 +206,9 @@ open class XYBluetoothGatt protected constructor(
 
                         launch {
                             try {
-                                withTimeout(15, TimeUnit.SECONDS) {
+                                withTimeout(15_000.toLong()) {
                                     while (!resumed) {
-                                        delay(500)
+                                        delay(500.toLong())
                                         lastAccessTime = now //prevent cleanup for cleaningup before the timeout
                                         logInfo("connect: waiting...")
                                     }
@@ -290,7 +291,7 @@ open class XYBluetoothGatt protected constructor(
 
     protected fun close(): Deferred<XYBluetoothResult<Boolean>> {
         return asyncBle {
-            logInfo("close")
+            // logInfo("close")
             val gatt = gatt ?: return@asyncBle XYBluetoothResult(true)
             if (connectionState != ConnectionState.Disconnected) {
                 disconnect().await()
@@ -591,11 +592,13 @@ open class XYBluetoothGatt protected constructor(
                                         removeGattListener(listenerName)
                                         resumed = true
                                         cont.resume(characteristic)
+                                        coroutineContext.cancel()
                                     } else {
                                         error = XYBluetoothError("readCharacteristic: onCharacteristicRead failed: $status")
                                         removeGattListener(listenerName)
                                         resumed = true
                                         cont.resume(null)
+                                        coroutineContext.cancel()
                                     }
                                 }
                             }
@@ -609,6 +612,7 @@ open class XYBluetoothGatt protected constructor(
                                     removeGattListener(listenerName)
                                     resumed = true
                                     cont.resume(null)
+                                    coroutineContext.cancel()
                                 }
                             }
                         }
@@ -892,7 +896,7 @@ open class XYBluetoothGatt protected constructor(
                     //after the delay, that means a newer connection is now responsible for closing it
                     val localAccessTime = now
 
-                    delay(CLEANUP_DELAY)
+                    delay(CLEANUP_DELAY.toLong())
 
                     //this initiates a fake pulse
                     gatt?.readRemoteRssi()

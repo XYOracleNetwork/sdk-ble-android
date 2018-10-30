@@ -4,9 +4,9 @@ import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothGatt
 import android.content.Context
 import android.os.ParcelUuid
-import kotlinx.coroutines.experimental.GlobalScope
-import kotlinx.coroutines.experimental.delay
-import kotlinx.coroutines.experimental.launch
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import network.xyo.ble.ads.XYBleAd
 import network.xyo.ble.gatt.XYBluetoothGattClient
 import network.xyo.ble.scanner.XYScanRecord
@@ -77,7 +77,7 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, private
         GlobalScope.launch {
             while (checkingForExit) {
                 //logInfo("checkForExit: $id : $rssi : $now : $outOfRangeDelay : $lastAdTime : $lastAccessTime")
-                delay(outOfRangeDelay)
+                delay(outOfRangeDelay.toLong())
 
                 //check if something else has already marked it as exited
                 //this should only happen if another system (exit on connection drop for example)
@@ -102,7 +102,7 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, private
     }
 
     internal open fun onEnter() {
-        logInfo("onEnter: $address")
+        // logInfo("onEnter: $address")
         enterCount++
         lastAdTime = now
         synchronized(listeners) {
@@ -116,7 +116,7 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, private
     }
 
     internal open fun onExit() {
-        logInfo("onExit: $address")
+        // logInfo("onExit: $address")
         exitCount++
         synchronized(listeners) {
             for ((_, listener) in listeners) {

@@ -6,12 +6,9 @@ import android.content.Context
 import android.os.Handler
 import android.os.Looper
 
-import kotlinx.coroutines.experimental.newFixedThreadPoolContext
+import kotlinx.coroutines.newFixedThreadPoolContext
 import network.xyo.core.XYBase
-import kotlin.coroutines.experimental.AbstractCoroutineContextElement
-import kotlin.coroutines.experimental.Continuation
-import kotlin.coroutines.experimental.ContinuationInterceptor
-import kotlin.coroutines.experimental.CoroutineContext
+import kotlin.coroutines.*
 
 open class XYBluetoothBase(context: Context) : XYBase() {
 
@@ -52,15 +49,15 @@ open class XYBluetoothBase(context: Context) : XYBase() {
         }
 
         private class AndroidContinuation<T>(val cont: Continuation<T>) : Continuation<T> by cont {
-            override fun resume(value: T) {
-                if (Looper.myLooper() == Looper.getMainLooper()) cont.resume(value)
-                else Handler(Looper.getMainLooper()).post { cont.resume(value) }
+
+            override fun resumeWith(result: Result<T>) {
+                if (Looper.myLooper() == Looper.getMainLooper()) cont.resume(result.getOrThrow())
+                else Handler(Looper.getMainLooper()).post { cont.resume(result.getOrThrow()) }
             }
 
-            override fun resumeWithException(exception: Throwable) {
-                if (Looper.myLooper() == Looper.getMainLooper()) cont.resumeWithException(exception)
-                else Handler(Looper.getMainLooper()).post { cont.resumeWithException(exception) }
-            }
+            override val context: CoroutineContext
+                get() = cont.context
+
         }
 
     }
