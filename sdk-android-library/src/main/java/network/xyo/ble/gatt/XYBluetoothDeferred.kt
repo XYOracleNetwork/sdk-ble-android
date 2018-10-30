@@ -8,10 +8,9 @@ import kotlin.coroutines.CoroutineContext
 fun <T> asyncBle(
         context: CoroutineContext = XYBluetoothBase.BluetoothThread,
         start: CoroutineStart = CoroutineStart.DEFAULT,
-        onCompletion: CompletionHandler? = null,
         block: suspend CoroutineScope.() -> XYBluetoothResult<T>
 ): Deferred<XYBluetoothResult<T>> {
-    return GlobalScope.async(context, start, onCompletion, block)
+    return GlobalScope.async(context, start, block)
 }
 
 //forces items to complete in order - use this only for the base read/write calls to make sure they do
@@ -20,11 +19,10 @@ fun <T> asyncBle(
 fun <T> queueBle(
         context: CoroutineContext = XYBluetoothBase.BluetoothQueue,
         start: CoroutineStart = CoroutineStart.DEFAULT,
-        onCompletion: CompletionHandler? = null,
         block: suspend CoroutineScope.() -> XYBluetoothResult<T>
 ): Deferred<XYBluetoothResult<T>> {
     return runBlocking {
-        val r = async(context, start, onCompletion, block).await()
+        val r = async(context, start, block).await()
         return@runBlocking async{
             return@async r
         }

@@ -206,7 +206,7 @@ open class XYBluetoothGatt protected constructor(
 
                         launch {
                             try {
-                                withTimeout(15, TimeUnit.SECONDS) {
+                                withTimeout(15000) {
                                     while (!resumed) {
                                         delay(500)
                                         lastAccessTime = now //prevent cleanup for cleaningup before the timeout

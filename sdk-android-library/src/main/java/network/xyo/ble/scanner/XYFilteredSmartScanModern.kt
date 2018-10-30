@@ -6,7 +6,6 @@ import android.bluetooth.le.ScanFilter
 import android.bluetooth.le.ScanResult
 import android.bluetooth.le.ScanSettings
 import android.content.Context
-import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import network.xyo.core.guard
@@ -72,7 +71,7 @@ class XYFilteredSmartScanModern(context: Context) : XYFilteredSmartScan(context)
     override fun stop() {
         logInfo("stop")
         super.stop()
-        GlobalScope.launch(BluetoothThread, CoroutineStart.DEFAULT, null, {
+        GlobalScope.launch {
             val bluetoothAdapter = this@XYFilteredSmartScanModern.bluetoothAdapter
 
             if (bluetoothAdapter == null) {
@@ -87,6 +86,6 @@ class XYFilteredSmartScanModern(context: Context) : XYFilteredSmartScan(context)
             }
 
             scanner.stopScan(callback)
-        })
+        }
     }
 }
