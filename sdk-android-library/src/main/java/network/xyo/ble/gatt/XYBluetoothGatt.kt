@@ -8,12 +8,10 @@ import android.os.Handler
 import kotlinx.coroutines.*
 import network.xyo.ble.CallByVersion
 import network.xyo.ble.scanner.XYScanResult
-import java.lang.Exception
 import java.util.*
-import java.util.concurrent.TimeUnit
 import kotlin.coroutines.Continuation
-import kotlin.coroutines.suspendCoroutine
 import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 
 //XYBluetoothGatt is a pure wrapper that does not add any functionality
 //other than the ability to call the BluetoothGatt functions using coroutines
@@ -99,6 +97,33 @@ open class XYBluetoothGatt protected constructor(
     }
 
     internal open fun onConnectionStateChange(newState: Int) {
+
+    }
+
+    fun refreshGatt(): Deferred<XYBluetoothResult<Boolean>> {
+        logInfo("refreshGatt")
+        return asyncBle {
+            var result = false
+            var error: XYBluetoothError? = null
+
+            val gatt = this@XYBluetoothGatt.gatt
+            if (gatt == null) {
+                error = XYBluetoothError("connect: No Gatt")
+            } else {
+                try {
+                    val localMethod = BluetoothGatt::class.java.getMethod("refresh")
+                    logInfo("refreshGatt found method $localMethod")
+                    result = (localMethod.invoke(gatt) as Boolean)
+                } catch (ex: Exception) {
+                    //null receiver
+                    error = XYBluetoothError("refreshGatt: Failed to refresh gatt")
+                    logInfo("refreshGatt catch $ex")
+                    //method not found
+                }
+            }
+            return@asyncBle XYBluetoothResult(result, error)
+        }
+
 
     }
 
