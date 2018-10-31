@@ -16,13 +16,11 @@ class XYCharacteristicAdapter(services : Array<BluetoothGattCharacteristic>) : R
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.uuid.text = list[position].uuid.toString()
-        holder.button.setOnClickListener(object : View.OnClickListener {
-            override fun onClick(p0: View?) {
-                for ((_, listener) in listeners) {
-                    listener.onClick(list[position])
-                }
+        holder.button.setOnClickListener {
+            for ((_, listener) in listeners) {
+                listener.onClick(list[position])
             }
-        })
+        }
     }
 
     fun addListener(key : String, listener : XYCharacteristicAdapterListener) {

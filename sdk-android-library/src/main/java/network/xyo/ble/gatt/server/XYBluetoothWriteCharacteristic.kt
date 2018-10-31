@@ -1,11 +1,12 @@
 package network.xyo.ble.gatt.server
 
 import android.bluetooth.BluetoothDevice
-import kotlinx.coroutines.experimental.GlobalScope
-import kotlinx.coroutines.experimental.async
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
 import java.util.*
 import kotlin.collections.HashMap
-import kotlin.coroutines.experimental.suspendCoroutine
+import kotlin.coroutines.suspendCoroutine
+import kotlin.coroutines.resume
 
 open class XYBluetoothWriteCharacteristic(uuid: UUID) : XYBluetoothCharacteristic(uuid, PROPERTY_WRITE, PERMISSION_WRITE) {
     private val responders = HashMap<String, XYBluetoothWriteCharacteristicResponder>()

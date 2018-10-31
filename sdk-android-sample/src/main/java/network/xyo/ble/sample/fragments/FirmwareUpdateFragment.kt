@@ -12,8 +12,8 @@ import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import kotlinx.android.synthetic.main.fragment_firmware_update.*
-import kotlinx.coroutines.experimental.GlobalScope
-import kotlinx.coroutines.experimental.launch
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import network.xyo.ble.devices.XY4BluetoothDevice
 import network.xyo.ble.devices.XYBluetoothDevice
 import network.xyo.ble.firmware.OtaFile
@@ -90,7 +90,7 @@ class FirmwareUpdateFragment : XYAppBaseFragment(), BackFragmentListener {
         val alertDialog = AlertDialog.Builder(activity).create()
         alertDialog.setTitle("Update in progress")
         alertDialog.setMessage("Please wait for the update to complete.")
-        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK") {dialog, _ ->
+        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK") {dialog, _ ->
             dialog.dismiss()
         }
         alertDialog.show()
@@ -110,9 +110,14 @@ class FirmwareUpdateFragment : XYAppBaseFragment(), BackFragmentListener {
         override fun failed(device: XYBluetoothDevice, error: String) {
             logInfo("updateListener: failed: $error")
             updateInProgress = false
+            val gattError = error.contains("133")
+
             ui {
                 showToast("Update failed: $error")
-                tv_file_progress?.text = "Update failed: $error"
+                if (gattError) {
+                    promptRefreshAdapter()
+                }
+
                 activity?.hideProgressSpinner()
                 button_update?.isEnabled = true
                 lv_files?.visibility = VISIBLE
@@ -126,6 +131,40 @@ class FirmwareUpdateFragment : XYAppBaseFragment(), BackFragmentListener {
             ui {
                 tv_file_progress?.text = txt
             }
+        }
+    }
+
+    private fun promptRefreshAdapter() {
+        val alertDialog = AlertDialog.Builder(activity).create()
+        alertDialog.setTitle("BLE Adapter Error")
+        alertDialog.setMessage("Your BLE adapter may be in a bad state. Would you like to reset your BLE and try again?")
+        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Yes") {dialog, _ ->
+            dialog.dismiss()
+            refreshAdapter()
+        }
+        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "No, cancel update") {dialog, _ ->
+            dialog.dismiss()
+            refreshAdapter()
+        }
+        alertDialog.show()
+    }
+
+    private fun refreshAdapter() {
+        activity?.showProgressSpinner()
+        GlobalScope.launch {
+            val device: XYBluetoothDevice? = activity?.device
+            //need to connect before refreshing
+            device?.connectGatt()?.await()
+            val result = device?.refreshGatt()?.await()
+            ui { activity?.hideProgressSpinner() }
+            if (result?.value as Boolean) {
+                ui { showToast("BLE adapter was reset, performing update") }
+                performUpdate()
+            } else {
+                ui { showToast("Failed to refresh BLE adapter") }
+            }
+            activity?.showToast(result.toString())
+
         }
     }
 

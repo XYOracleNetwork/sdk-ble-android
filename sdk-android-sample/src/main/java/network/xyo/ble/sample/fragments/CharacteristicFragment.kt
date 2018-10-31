@@ -21,11 +21,7 @@ class CharacteristicFragment(private val characteristic: BluetoothGattCharacteri
         super.onViewCreated(view, savedInstanceState)
         update(view)
 
-        view.characteristic_button_update.setOnClickListener(object : View.OnClickListener {
-            override fun onClick(p0: View?) {
-                update(view)
-            }
-        })
+        view.characteristic_button_update.setOnClickListener { update(view) }
     }
 
     private fun update (view: View) {

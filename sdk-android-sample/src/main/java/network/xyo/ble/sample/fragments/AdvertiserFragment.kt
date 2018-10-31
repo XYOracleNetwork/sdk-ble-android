@@ -21,20 +21,18 @@ class AdvertiserFragment(private val advertiser: XYBluetoothAdvertiser) : XYBase
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val updateButton = view.update
-        updateButton.setOnClickListener(object : View.OnClickListener {
-            override fun onClick(p0: View?) {
-                updateAdvertisingMode(view)
-                updateAdvertisingPower(view)
-                updateConnectible(view)
-                updateTimeout(view)
-                updateIncludeDeviceName(view)
-                updateIncludeTxPowerLevel(view)
-                updatePrimaryServiceUuid(view)
-                updatePrimaryServiceData(view)
-                updateManufactureId(view)
-                updateManufactureData(view)
-            }
-        })
+        updateButton.setOnClickListener {
+            updateAdvertisingMode(view)
+            updateAdvertisingPower(view)
+            updateConnectible(view)
+            updateTimeout(view)
+            updateIncludeDeviceName(view)
+            updateIncludeTxPowerLevel(view)
+            updatePrimaryServiceUuid(view)
+            updatePrimaryServiceData(view)
+            updateManufactureId(view)
+            updateManufactureData(view)
+        }
     }
 
     private fun updateAdvertisingMode (view: View) {

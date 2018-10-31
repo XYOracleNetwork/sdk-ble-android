@@ -4,9 +4,9 @@ import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothGatt
 import android.content.Context
 import android.os.ParcelUuid
-import kotlinx.coroutines.experimental.GlobalScope
-import kotlinx.coroutines.experimental.delay
-import kotlinx.coroutines.experimental.launch
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import network.xyo.ble.ads.XYBleAd
 import network.xyo.ble.gatt.XYBluetoothGattClient
 import network.xyo.ble.scanner.XYScanRecord
@@ -210,7 +210,7 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, private
 
         //the period of time to wait for marking something as out of range
         //if we have not gotten any ads or been connected to it
-        const val OUTOFRANGE_DELAY = 10000
+        const val OUTOFRANGE_DELAY = 10000L
 
         internal var canCreate = false
         val manufacturerToCreator = HashMap<Int, XYCreator>()

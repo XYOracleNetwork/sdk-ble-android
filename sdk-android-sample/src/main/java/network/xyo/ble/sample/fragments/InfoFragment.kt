@@ -7,11 +7,12 @@ import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
+import kotlinx.android.synthetic.main.fragment_generic_access.*
 import kotlinx.android.synthetic.main.fragment_info.*
-import kotlinx.coroutines.experimental.Deferred
-import kotlinx.coroutines.experimental.GlobalScope
-import kotlinx.coroutines.experimental.async
-import kotlinx.coroutines.experimental.launch
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 import network.xyo.ble.devices.*
 import network.xyo.ble.gatt.XYBluetoothGatt
 import network.xyo.ble.sample.R
@@ -121,9 +122,23 @@ class InfoFragment : XYAppBaseFragment(), View.OnClickListener {
             R.id.button_disable_notify -> {
                 enableButtonNotify(false)
             }
+            R.id.button_startTest -> {
+                testRefreshGatt()
+            }
         }
     }
 
+    private fun testRefreshGatt() {
+        GlobalScope.launch {
+            val device: XYBluetoothDevice? = activity?.device
+            val connection = device?.connectGatt()?.await()
+            val result = device?.refreshGatt()?.await()
+            activity?.showToast(result.toString())
+
+        }
+        //val v = activity?.device.connect()
+        // activity?.scanner?.refreshGatt()
+    }
 
     private fun toggleConnection() {
         val device: XYBluetoothDevice? = activity?.device

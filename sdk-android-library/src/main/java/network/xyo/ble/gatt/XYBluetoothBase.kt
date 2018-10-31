@@ -5,13 +5,12 @@ import android.bluetooth.BluetoothManager
 import android.content.Context
 import android.os.Handler
 import android.os.Looper
-
-import kotlinx.coroutines.experimental.newFixedThreadPoolContext
+import kotlinx.coroutines.newFixedThreadPoolContext
 import network.xyo.core.XYBase
-import kotlin.coroutines.experimental.AbstractCoroutineContextElement
-import kotlin.coroutines.experimental.Continuation
-import kotlin.coroutines.experimental.ContinuationInterceptor
-import kotlin.coroutines.experimental.CoroutineContext
+import kotlin.coroutines.AbstractCoroutineContextElement
+import kotlin.coroutines.Continuation
+import kotlin.coroutines.ContinuationInterceptor
+import kotlin.coroutines.CoroutineContext
 
 open class XYBluetoothBase(context: Context) : XYBase() {
 
@@ -36,7 +35,7 @@ open class XYBluetoothBase(context: Context) : XYBase() {
 
     companion object {
         //this is the thread that all calls should happen on for gatt calls.
-        val BluetoothThread : CoroutineContext
+        val BluetoothThread: CoroutineContext
         val BluetoothQueue = newFixedThreadPoolContext(1, "BluetoothQueue")
 
         init {
@@ -52,14 +51,9 @@ open class XYBluetoothBase(context: Context) : XYBase() {
         }
 
         private class AndroidContinuation<T>(val cont: Continuation<T>) : Continuation<T> by cont {
-            override fun resume(value: T) {
-                if (Looper.myLooper() == Looper.getMainLooper()) cont.resume(value)
-                else Handler(Looper.getMainLooper()).post { cont.resume(value) }
-            }
-
-            override fun resumeWithException(exception: Throwable) {
-                if (Looper.myLooper() == Looper.getMainLooper()) cont.resumeWithException(exception)
-                else Handler(Looper.getMainLooper()).post { cont.resumeWithException(exception) }
+            override fun resumeWith(result: Result<T>) {
+                if (Looper.myLooper() == Looper.getMainLooper()) cont.resumeWith(result)
+                else Handler(Looper.getMainLooper()).post { cont.resumeWith(result) }
             }
         }
 

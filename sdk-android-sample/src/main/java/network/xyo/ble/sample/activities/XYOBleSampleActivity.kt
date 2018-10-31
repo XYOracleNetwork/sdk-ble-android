@@ -34,11 +34,7 @@ class XYOBleSampleActivity : XYOAppBaseActivity() {
         listview!!.adapter = adapter
 
         val launchServerButton = findViewById<Button>(R.id.launchServer)
-        launchServerButton.setOnClickListener(object : View.OnClickListener {
-            override fun onClick(p0: View?) {
-                startActivity(Intent(this@XYOBleSampleActivity, XYOServerActivity::class.java))
-            }
-        })
+        launchServerButton.setOnClickListener { startActivity(Intent(this@XYOBleSampleActivity, XYOServerActivity::class.java)) }
     }
 
     private fun connectListeners() {
