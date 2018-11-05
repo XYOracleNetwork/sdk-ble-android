@@ -36,9 +36,7 @@ open class XYBluetoothGatt protected constructor(
 
     var rssi: Int? = null
 
-    open class XYBluetoothGattCallback : BluetoothGattCallback() {
-
-    }
+    open class XYBluetoothGattCallback : BluetoothGattCallback()
 
     enum class ConnectionState(val state: Int) {
         Unknown(-1),
@@ -608,6 +606,7 @@ open class XYBluetoothGatt protected constructor(
                 value = suspendCoroutine { cont ->
                     var resumed = false
                     val listener = object : XYBluetoothGattCallback() {
+
                         override fun onCharacteristicRead(gatt: BluetoothGatt?, characteristic: BluetoothGattCharacteristic?, status: Int) {
                             super.onCharacteristicRead(gatt, characteristic, status)
                             if (!resumed) {
@@ -663,7 +662,7 @@ open class XYBluetoothGatt protected constructor(
     //make a safe session to interact with the device
     //if null is passed back, the sdk was unable to create the safe session
     fun <T> connectionWithResult(closure: suspend () -> XYBluetoothResult<T>): Deferred<XYBluetoothResult<T>> {
-        val deferred = asyncBle<T> {
+        return asyncBle {
             logInfo("connection")
             var value: T? = null
             var error: XYBluetoothError? = null
@@ -685,7 +684,6 @@ open class XYBluetoothGatt protected constructor(
             references--
             return@asyncBle XYBluetoothResult(value, error)
         }
-        return deferred
     }
 
     fun connection(closure: suspend () -> Unit): Deferred<XYBluetoothResult<Unit>> {

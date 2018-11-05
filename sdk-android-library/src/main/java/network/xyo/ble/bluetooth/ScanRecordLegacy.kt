@@ -158,7 +158,7 @@ class ScanRecordLegacy private constructor(@param:Nullable @field:Nullable
                         val serviceDataUuid = BluetoothUuid.parseUuidFrom(
                                 serviceDataUuidBytes)
                         val serviceDataArray = extractBytes(scanRecord,
-                                currentPos + serviceUuidLength, dataLength.toInt() - serviceUuidLength)
+                                currentPos + serviceUuidLength, dataLength - serviceUuidLength)
                         serviceData[serviceDataUuid] = serviceDataArray
                     }
                     DATA_TYPE_MANUFACTURER_SPECIFIC_DATA -> {

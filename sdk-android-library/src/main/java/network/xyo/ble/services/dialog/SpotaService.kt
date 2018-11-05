@@ -9,7 +9,7 @@ class SpotaService(device: XYBluetoothDevice) : Service(device) {
 
     override val serviceUuid: UUID
         get() {
-            return Companion.uuid
+            return uuid
         }
 
     val SPOTA_MEM_DEV = IntegerCharacteristic(this, Characteristics.MEM_DEV.uuid, BluetoothGattCharacteristic.FORMAT_UINT32)     //32

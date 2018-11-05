@@ -183,7 +183,6 @@ open class XYFinderBluetoothDevice(context: Context, scanResult: XYScanResult, h
         }
     }
 
-
     open fun updateFirmware(stream: InputStream, listener: OtaUpdate.Listener) {
 
     }
@@ -191,7 +190,6 @@ open class XYFinderBluetoothDevice(context: Context, scanResult: XYScanResult, h
     open fun updateFirmware(filename: String, listener: OtaUpdate.Listener) {
 
     }
-
 
     open val distance: Double?
         get() {

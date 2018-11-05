@@ -9,8 +9,7 @@ import java.util.concurrent.ConcurrentHashMap
 
 open class XYAppleBluetoothDevice(context: Context, device: BluetoothDevice, hash: Int) : XYBluetoothDevice(context, device, hash) {
 
-    open class Listener : XYBluetoothDevice.Listener() {
-    }
+    open class Listener : XYBluetoothDevice.Listener()
 
     companion object : XYBase() {
 

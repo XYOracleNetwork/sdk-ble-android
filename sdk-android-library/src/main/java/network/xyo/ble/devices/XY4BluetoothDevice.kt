@@ -17,7 +17,6 @@ import network.xyo.ble.services.standard.*
 import network.xyo.ble.services.xy4.PrimaryService
 import network.xyo.core.XYBase
 import unsigned.Ushort
-import java.io.FileInputStream
 import java.io.InputStream
 import java.nio.ByteBuffer
 import java.util.*

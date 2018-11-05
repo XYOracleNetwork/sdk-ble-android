@@ -34,8 +34,7 @@ open class XY2BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
 
     override val prefix = "xy:ibeacon"
 
-    open class Listener : XYFinderBluetoothDevice.Listener() {
-    }
+    open class Listener : XYFinderBluetoothDevice.Listener()
 
     companion object : XYBase() {
 
