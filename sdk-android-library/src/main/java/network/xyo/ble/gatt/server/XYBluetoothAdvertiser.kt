@@ -65,47 +65,79 @@ open class XYBluetoothAdvertiser(context: Context) : XYBluetoothBase(context){
         bleAdvertiser?.stopAdvertising(primaryCallback)
     }
 
-    fun changeManufacturerData (newManufacturerData : ByteArray?) = asyncBle {
+    fun changeManufacturerData (newManufacturerData : ByteArray?, restart: Boolean) = asyncBle {
         manufacturerData = newManufacturerData
-        return@asyncBle restart().await()
+
+        if (restart) {
+            return@asyncBle restart().await()
+        }
+        return@asyncBle XYBluetoothResult(0, null)
     }
 
-    fun changeManufacturerId (newManufacturerId : Int?) = asyncBle {
+    fun changeManufacturerId (newManufacturerId : Int?, restart: Boolean) = asyncBle {
         manufacturerId = newManufacturerId
-        return@asyncBle restart().await()
+
+        if (restart) {
+            return@asyncBle restart().await()
+        }
+        return@asyncBle XYBluetoothResult(0, null)
     }
 
-    fun changePrimaryServiceData (newPrimaryServiceData: ByteArray?) = asyncBle {
+    fun changePrimaryServiceData (newPrimaryServiceData: ByteArray?, restart: Boolean) = asyncBle {
         primaryServiceData = newPrimaryServiceData
-        return@asyncBle restart().await()
+
+        if (restart) {
+            return@asyncBle restart().await()
+        }
+        return@asyncBle XYBluetoothResult(0, null)
     }
 
-    fun chnagePrimaryService (newPrimaryService : ParcelUuid?) = asyncBle {
+    fun chnagePrimaryService (newPrimaryService : ParcelUuid?, restart: Boolean) = asyncBle {
         primaryService = newPrimaryService
-        return@asyncBle restart().await()
+
+        if (restart) {
+            return@asyncBle restart().await()
+        }
+        return@asyncBle XYBluetoothResult(0, null)
     }
 
-    fun changeIncludeTxPowerLevel (newIncludeTxPowerLevel : Boolean?) = asyncBle {
+    fun changeIncludeTxPowerLevel (newIncludeTxPowerLevel : Boolean?, restart: Boolean) = asyncBle {
         includeTxPowerLevel = newIncludeTxPowerLevel
-        return@asyncBle restart().await()
+
+        if (restart) {
+            return@asyncBle restart().await()
+        }
+        return@asyncBle XYBluetoothResult(0, null)
     }
 
-    fun changeIncludeDeviceName (newIncludeDeviceName : Boolean?) = asyncBle {
+    fun changeIncludeDeviceName (newIncludeDeviceName : Boolean?, restart: Boolean) = asyncBle {
         includeDeviceName = newIncludeDeviceName
-        return@asyncBle restart().await()
+
+        if (restart) {
+            return@asyncBle restart().await()
+        }
+        return@asyncBle XYBluetoothResult(0, null)
     }
 
-    fun changeContactable (newConnectible : Boolean?) = asyncBle {
+    fun changeContactable (newConnectible : Boolean?, restart : Boolean) = asyncBle {
         connectible = newConnectible
-        return@asyncBle restart().await()
+
+        if (restart) {
+            return@asyncBle restart().await()
+        }
+        return@asyncBle XYBluetoothResult(0, null)
     }
 
-    fun changeTimeout (newTimeout : Int?) = asyncBle {
+    fun changeTimeout (newTimeout : Int?, restart : Boolean) = asyncBle {
         timeout = newTimeout
-        return@asyncBle restart().await()
+
+        if (restart) {
+            return@asyncBle restart().await()
+        }
+        return@asyncBle XYBluetoothResult(0, null)
     }
 
-    fun changeAdvertisingMode (newAdvertisingMode : Int?) = asyncBle {
+    fun changeAdvertisingMode (newAdvertisingMode : Int?, restart: Boolean) = asyncBle {
         if (newAdvertisingMode != null) {
             if (!(newAdvertisingMode == ADVERTISE_MODE_BALANCED
                     || newAdvertisingMode == ADVERTISE_MODE_LOW_LATENCY
@@ -114,10 +146,14 @@ open class XYBluetoothAdvertiser(context: Context) : XYBluetoothBase(context){
             }
         }
         advertisingMode = newAdvertisingMode
-        return@asyncBle restart().await()
+
+        if (restart) {
+            return@asyncBle restart().await()
+        }
+        return@asyncBle XYBluetoothResult(0, null)
     }
 
-    fun changeAdvertisingTxLevel (newAdvertisingTxLevel : Int?) = asyncBle {
+    fun changeAdvertisingTxLevel (newAdvertisingTxLevel : Int?, restart: Boolean) = asyncBle {
         if (newAdvertisingTxLevel != null) {
             if (!(newAdvertisingTxLevel == ADVERTISE_TX_POWER_HIGH
                     || newAdvertisingTxLevel == ADVERTISE_TX_POWER_LOW
@@ -127,7 +163,11 @@ open class XYBluetoothAdvertiser(context: Context) : XYBluetoothBase(context){
             }
         }
         advertisingTxLever = newAdvertisingTxLevel
-        return@asyncBle restart().await()
+
+        if (restart) {
+            return@asyncBle restart().await()
+        }
+        return@asyncBle XYBluetoothResult(0, null)
     }
 
     private fun restart () : Deferred<XYBluetoothResult<Int>> {
