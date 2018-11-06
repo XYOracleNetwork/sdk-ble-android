@@ -11,7 +11,6 @@ import network.xyo.ble.scanner.XYScanResult
 import java.util.*
 import kotlin.coroutines.Continuation
 import kotlin.coroutines.resume
-import kotlin.coroutines.suspendCoroutine
 
 //XYBluetoothGatt is a pure wrapper that does not add any functionality
 //other than the ability to call the BluetoothGatt functions using coroutines
@@ -175,9 +174,9 @@ open class XYBluetoothGatt protected constructor(
                 error = XYBluetoothError("connect: No Gatt")
             } else {
                 val listenerName = "connect$nowNano"
-                value = suspendCoroutine { cont ->
+                value = suspendCancellableCoroutine { cont ->
                     var resumed = false
-                    logInfo("connect: suspendCoroutine")
+                    logInfo("connect: suspendCancellableCoroutine")
                     val listener = object : XYBluetoothGattCallback() {
                         override fun onConnectionStateChange(gatt: BluetoothGatt?, status: Int, newState: Int) {
                             super.onConnectionStateChange(gatt, status, newState)
@@ -262,7 +261,7 @@ open class XYBluetoothGatt protected constructor(
                     ?: return@asyncBle XYBluetoothResult(true, XYBluetoothError("Already Disconnected"))
 
             val listenerName = "asyncDisconnect$nowNano"
-            val value = suspendCoroutine<Boolean> { cont ->
+            val value = suspendCancellableCoroutine<Boolean> { cont ->
                 val listener = object : XYBluetoothGattCallback() {
                     var resumed = false
                     override fun onConnectionStateChange(gatt: BluetoothGatt?, status: Int, newState: Int) {
@@ -408,7 +407,7 @@ open class XYBluetoothGatt protected constructor(
             if (gatt == null) {
                 error = XYBluetoothError("findCharacteristic: No Gatt")
             } else {
-                value = suspendCoroutine { cont ->
+                value = suspendCancellableCoroutine { cont ->
                     if (gatt.services?.size == 0) {
                         error = XYBluetoothError("Services Not Discovered Yet")
                         cont.resume(null)
@@ -445,7 +444,7 @@ open class XYBluetoothGatt protected constructor(
             } else {
                 val listenerName = "writeCharacteristic$nowNano"
                 var resumed = false
-                value = suspendCoroutine { cont ->
+                value = suspendCancellableCoroutine { cont ->
                     val listener = object : XYBluetoothGattCallback() {
                         override fun onCharacteristicWrite(gatt: BluetoothGatt?, characteristic: BluetoothGattCharacteristic?, status: Int) {
                             logInfo("onCharacteristicWrite: $status")
@@ -536,7 +535,7 @@ open class XYBluetoothGatt protected constructor(
                 error = XYBluetoothError("writeDescriptor: No Gatt")
             } else {
                 val listenerName = "writeDescriptor$nowNano"
-                value = suspendCoroutine { cont ->
+                value = suspendCancellableCoroutine { cont ->
                     var resumed = false
                     val listener = object : XYBluetoothGattCallback() {
                         override fun onDescriptorWrite(gatt: BluetoothGatt?, descriptor: BluetoothGattDescriptor?, status: Int) {
@@ -603,7 +602,7 @@ open class XYBluetoothGatt protected constructor(
                 error = XYBluetoothError("readCharacteristic: No Gatt")
             } else {
                 val listenerName = "readCharacteristic$nowNano"
-                value = suspendCoroutine { cont ->
+                value = suspendCancellableCoroutine { cont ->
                     var resumed = false
                     val listener = object : XYBluetoothGattCallback() {
 
