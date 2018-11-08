@@ -122,7 +122,8 @@ open class XYIBeaconBluetoothDevice(context: Context, scanResult: XYScanResult?,
 
         fun hashFromScanResult(scanResult: XYScanResult): Int? {
             val data = scanResult.scanRecord?.getManufacturerSpecificData(XYAppleBluetoothDevice.MANUFACTURER_ID)
-            if (data != null) {
+            println("hashFromScanResult IBeacon scan result size: ${data?.size}")
+            if (data != null && data.size > 22) {
 
                 //mask the minor
                 data[21] = data[21].toInt().and(0xfff0).toByte()
