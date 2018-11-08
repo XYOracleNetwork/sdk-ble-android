@@ -1,7 +1,6 @@
 package network.xyo.ble.sample.adapters
 
 import android.bluetooth.BluetoothGattCharacteristic
-import android.bluetooth.BluetoothGattService
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup

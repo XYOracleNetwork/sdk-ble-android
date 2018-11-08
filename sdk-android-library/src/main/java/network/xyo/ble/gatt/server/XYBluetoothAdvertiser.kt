@@ -92,7 +92,7 @@ open class XYBluetoothAdvertiser(context: Context) : XYBluetoothBase(context){
         return@asyncBle XYBluetoothResult(0, null)
     }
 
-    fun chnagePrimaryService (newPrimaryService : ParcelUuid?, restart: Boolean) = asyncBle {
+    fun changePrimaryService (newPrimaryService : ParcelUuid?, restart: Boolean) = asyncBle {
         primaryService = newPrimaryService
 
         if (restart) {

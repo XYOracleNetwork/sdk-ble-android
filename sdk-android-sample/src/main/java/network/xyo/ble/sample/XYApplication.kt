@@ -1,21 +1,12 @@
 package network.xyo.ble.sample
 
 import android.app.Application
-import android.bluetooth.BluetoothDevice
-import android.bluetooth.BluetoothGattService
-import android.bluetooth.le.AdvertiseSettings.ADVERTISE_TX_POWER_HIGH
 import android.os.Build
-import android.util.Log
-import kotlinx.coroutines.async
 import network.xyo.ble.devices.*
-import network.xyo.ble.gatt.server.*
 import network.xyo.ble.scanner.XYFilteredSmartScan
 import network.xyo.ble.scanner.XYFilteredSmartScanLegacy
 import network.xyo.ble.scanner.XYFilteredSmartScanModern
 import network.xyo.core.XYBase
-import java.nio.ByteBuffer
-import java.nio.charset.Charset
-import java.util.*
 
 class XYApplication : Application() {
     private var _scanner: XYFilteredSmartScan? = null

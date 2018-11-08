@@ -9,16 +9,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
-import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.fragment_service.view.*
-import kotlinx.android.synthetic.main.fragment_services.view.*
-import network.xyo.ble.gatt.server.XYBluetoothService
 import network.xyo.ble.sample.R
 import network.xyo.ble.sample.adapters.XYCharacteristicAdapter
-import network.xyo.ble.sample.adapters.XYServiceListAdapter
 import network.xyo.ui.XYBaseFragment
-import network.xyo.ui.ui
 
 class ServiceFragment(private val service : BluetoothGattService) : XYBaseFragment() {
     private val characteristicList = XYCharacteristicAdapter(service.characteristics.toTypedArray())

@@ -38,7 +38,7 @@ class AdvertiserFragment(private val advertiser: XYBluetoothAdvertiser) : XYBase
 
     private fun updateAdvertisingMode (view: View) {
         val radioButtonGroup = view.advertising_mode_selector
-        val radioButtonID = radioButtonGroup.getCheckedRadioButtonId()
+        val radioButtonID = radioButtonGroup.checkedRadioButtonId
         val radioButton = radioButtonGroup.findViewById<RadioButton>(radioButtonID)
         val idx = radioButtonGroup.indexOfChild(radioButton)
 
@@ -52,7 +52,7 @@ class AdvertiserFragment(private val advertiser: XYBluetoothAdvertiser) : XYBase
 
     private fun updateAdvertisingPower (view: View) {
         val radioButtonGroup = view.advertising_power_selector
-        val radioButtonID = radioButtonGroup.getCheckedRadioButtonId()
+        val radioButtonID = radioButtonGroup.checkedRadioButtonId
         val radioButton = radioButtonGroup.findViewById<RadioButton>(radioButtonID)
         val idx = radioButtonGroup.indexOfChild(radioButton)
 
@@ -67,7 +67,7 @@ class AdvertiserFragment(private val advertiser: XYBluetoothAdvertiser) : XYBase
 
     private fun updateConnectible (view: View) {
         val radioButtonGroup = view.connectable_selector
-        val radioButtonID = radioButtonGroup.getCheckedRadioButtonId()
+        val radioButtonID = radioButtonGroup.checkedRadioButtonId
         val radioButton = radioButtonGroup.findViewById<RadioButton>(radioButtonID)
         val idx = radioButtonGroup.indexOfChild(radioButton)
 
@@ -102,7 +102,7 @@ class AdvertiserFragment(private val advertiser: XYBluetoothAdvertiser) : XYBase
 
     private fun updateIncludeTxPowerLevel (view: View) {
         val radioButtonGroup = view.include_tx_power_level_selector
-        val radioButtonID = radioButtonGroup.getCheckedRadioButtonId()
+        val radioButtonID = radioButtonGroup.checkedRadioButtonId
         val radioButton = radioButtonGroup.findViewById<RadioButton>(radioButtonID)
         val idx = radioButtonGroup.indexOfChild(radioButton)
 
@@ -116,9 +116,9 @@ class AdvertiserFragment(private val advertiser: XYBluetoothAdvertiser) : XYBase
     private fun updatePrimaryServiceUuid(view: View) {
         try {
             val uuid = ParcelUuid(UUID.fromString(view.primary_service_input.toString()))
-            advertiser.chnagePrimaryService(uuid, false)
+            advertiser.changePrimaryService(uuid, false)
         } catch (e : IllegalArgumentException) {
-            advertiser.chnagePrimaryService(null, false)
+            advertiser.changePrimaryService(null, false)
         }
     }
 

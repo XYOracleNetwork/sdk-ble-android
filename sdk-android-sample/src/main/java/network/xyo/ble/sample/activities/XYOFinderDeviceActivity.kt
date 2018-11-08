@@ -9,7 +9,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
-import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
 import kotlinx.android.synthetic.main.device_activity.*
 import network.xyo.ble.devices.XY3BluetoothDevice
@@ -20,7 +19,7 @@ import network.xyo.ble.sample.R
 import network.xyo.ble.sample.XYDeviceData
 import network.xyo.ble.sample.fragments.*
 import network.xyo.ui.XYBaseFragment
-import network.xyo.xyfindit.fragments.core.BackFragmentListener
+import network.xyo.ble.sample.fragments.core.BackFragmentListener
 
 /**
  * Created by arietrouw on 12/28/17.

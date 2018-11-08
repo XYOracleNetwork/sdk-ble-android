@@ -1,4 +1,4 @@
-package network.xyo.xyfindit.fragments.core
+package network.xyo.ble.sample.fragments.core
 
 interface BackFragmentListener {
 

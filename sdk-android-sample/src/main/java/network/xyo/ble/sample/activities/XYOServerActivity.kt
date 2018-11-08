@@ -1,7 +1,6 @@
 package network.xyo.ble.sample.activities
 
 import android.bluetooth.BluetoothDevice
-import android.bluetooth.BluetoothGattServerCallback
 import android.bluetooth.BluetoothGattService
 import android.os.Bundle
 import android.util.Log
@@ -17,8 +16,8 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import network.xyo.ble.gatt.server.*
 import network.xyo.ble.sample.R
-import network.xyo.ble.sample.adapters.XYServiceListAdapter
-import network.xyo.ble.sample.fragments.*
+import network.xyo.ble.sample.fragments.AdvertiserFragment
+import network.xyo.ble.sample.fragments.RootServicesFragment
 import network.xyo.ui.XYBaseFragment
 import java.nio.ByteBuffer
 import java.nio.charset.Charset

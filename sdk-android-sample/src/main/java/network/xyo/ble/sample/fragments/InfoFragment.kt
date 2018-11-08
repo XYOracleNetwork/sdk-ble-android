@@ -7,7 +7,6 @@ import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
-import kotlinx.android.synthetic.main.fragment_generic_access.*
 import kotlinx.android.synthetic.main.fragment_info.*
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.GlobalScope

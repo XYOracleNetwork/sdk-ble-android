@@ -20,7 +20,7 @@ import network.xyo.ble.firmware.OtaFile
 import network.xyo.ble.firmware.OtaUpdate
 import network.xyo.ble.sample.R
 import network.xyo.ui.ui
-import network.xyo.xyfindit.fragments.core.BackFragmentListener
+import network.xyo.ble.sample.fragments.core.BackFragmentListener
 
 
 class FirmwareUpdateFragment : XYAppBaseFragment(), BackFragmentListener {

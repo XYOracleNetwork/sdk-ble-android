@@ -5,6 +5,7 @@ import network.xyo.ble.devices.XYBluetoothDevice
 import network.xyo.ble.services.Service
 import java.util.*
 
+@Suppress("unused")
 class SpotaService(device: XYBluetoothDevice) : Service(device) {
 
     override val serviceUuid: UUID
