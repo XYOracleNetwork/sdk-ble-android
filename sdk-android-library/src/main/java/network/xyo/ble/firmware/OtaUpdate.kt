@@ -77,6 +77,8 @@ class OtaUpdate(var device: XY4BluetoothDevice, private val otaFile: OtaFile?) {
     fun cancel() {
         GlobalScope.launch {
             updateJob?.cancelAndJoin()
+            reset()
+            listeners.clear()
         }
 
     }
@@ -296,6 +298,7 @@ class OtaUpdate(var device: XY4BluetoothDevice, private val otaFile: OtaFile?) {
         logInfo(TAG, "sendEndSignal...")
         return asyncBle {
             val result = device.spotaService.SPOTA_MEM_DEV.set(END_SIGNAL).await()
+            logInfo(TAG, "sendEndSignal result: $result")
             endSignalSent = true
             return@asyncBle XYBluetoothResult(result.value, result.error)
         }

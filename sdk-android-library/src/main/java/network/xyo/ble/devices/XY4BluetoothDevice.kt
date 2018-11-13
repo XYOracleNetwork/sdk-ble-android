@@ -42,6 +42,8 @@ open class XY4BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
 
     private var lastButtonPressTime = 0L
 
+    private var updater: OtaUpdate? = null
+
     private val buttonListener = object : XYBluetoothGattCallback() {
         override fun onCharacteristicChanged(gatt: BluetoothGatt?, characteristic: BluetoothGattCharacteristic?) {
             logInfo("onCharacteristicChanged")
@@ -112,14 +114,17 @@ open class XY4BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
         updater.start()
     }
 
-
     override fun updateFirmware(stream: InputStream, listener: OtaUpdate.Listener) {
 
         val otaFile = OtaFile.getByFileStream(stream)
-        val updater = OtaUpdate(this, otaFile)
+        updater = OtaUpdate(this, otaFile)
 
-        updater.addListener("XY4BluetoothDevice", listener)
-        updater.start()
+        updater?.addListener("XY4BluetoothDevice", listener)
+        updater?.start()
+    }
+
+    override fun cancelUpdateFirmware() {
+        updater?.cancel()
     }
 
     private fun enableButtonNotifyIfConnected() {

@@ -191,6 +191,10 @@ open class XYFinderBluetoothDevice(context: Context, scanResult: XYScanResult, h
 
     }
 
+    open fun cancelUpdateFirmware() {
+
+    }
+
     open val distance: Double?
         get() {
             val rssi = rssi ?: return null
