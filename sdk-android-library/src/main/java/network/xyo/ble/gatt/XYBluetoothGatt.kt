@@ -77,13 +77,13 @@ open class XYBluetoothGatt protected constructor(
 
     private val gattListeners = HashMap<String, XYBluetoothGattCallback>()
 
-    internal fun addGattListener(key: String, listener: XYBluetoothGattCallback) {
+    protected fun addGattListener(key: String, listener: XYBluetoothGattCallback) {
         synchronized(gattListeners) {
             gattListeners[key] = listener
         }
     }
 
-    internal fun removeGattListener(key: String) {
+    protected fun removeGattListener(key: String) {
         synchronized(gattListeners) {
             gattListeners.remove(key)
         }
@@ -95,6 +95,32 @@ open class XYBluetoothGatt protected constructor(
 
     internal open fun onConnectionStateChange(newState: Int) {
 
+    }
+
+    fun waitForNotification (characteristicToWaitFor: UUID): Deferred<XYBluetoothResult<Any?>> = asyncBle {
+        logInfo("waitForNotification")
+        return@asyncBle suspendCancellableCoroutine<XYBluetoothResult<Any?>> { cont ->
+            val listenerName = "waitForNotification$nowNano"
+            val listener = object : XYBluetoothGattCallback() {
+                override fun onCharacteristicChanged(gatt: BluetoothGatt?, characteristic: BluetoothGattCharacteristic?) {
+                    super.onCharacteristicChanged(gatt, characteristic)
+                    if (characteristicToWaitFor == characteristic?.uuid) {
+                        removeGattListener(listenerName)
+                        cont.tryResumeSilent<XYBluetoothResult<Any?>>(XYBluetoothResult(null, null))
+                    }
+                }
+
+                override fun onConnectionStateChange(gatt: BluetoothGatt?, status: Int, newState: Int) {
+                    super.onConnectionStateChange(gatt, status, newState)
+                    if (newState != BluetoothGatt.STATE_CONNECTED) {
+                        removeGattListener(listenerName)
+                        cont.tryResumeSilent<XYBluetoothResult<Any?>>(XYBluetoothResult(null, XYBluetoothError("Device disconnected!")))
+                    }
+                }
+            }
+
+            addGattListener(listenerName, listener)
+        }
     }
 
     fun refreshGatt(): Deferred<XYBluetoothResult<Boolean>> {
