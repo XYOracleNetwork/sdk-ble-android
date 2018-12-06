@@ -9,7 +9,8 @@ import java.nio.ByteBuffer
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 
-open class XYIBeaconBluetoothDevice(context: Context, scanResult: XYScanResult?, hash: Int) : XYBluetoothDevice(context, scanResult?.device, hash) {
+open class XYIBeaconBluetoothDevice(context: Context, scanResult: XYScanResult?, hash: Int) :
+    XYBluetoothDevice(context, scanResult?.device, hash) {
 
     protected val _uuid: UUID
     open val uuid: UUID
@@ -89,10 +90,15 @@ open class XYIBeaconBluetoothDevice(context: Context, scanResult: XYScanResult?,
                 val buffer = ByteBuffer.wrap(bytes)
                 buffer.position(2) //skip the type and size
 
-                //get uuid
-                val high = buffer.long
-                val low = buffer.long
-                UUID(high, low)
+                try {
+                    //get uuid
+                    val high = buffer.long
+                    val low = buffer.long
+                    UUID(high, low)
+                } catch (exception: Exception) {
+                    // can throw a BufferUnderflowException if the beacon sends an invalid value for UUID.
+                    null
+                }
             } else {
                 null
             }
@@ -101,9 +107,15 @@ open class XYIBeaconBluetoothDevice(context: Context, scanResult: XYScanResult?,
         internal val uuidToCreator = HashMap<UUID, XYCreator>()
 
         internal val creator = object : XYCreator() {
-            override fun getDevicesFromScanResult(context: Context, scanResult: XYScanResult, globalDevices: ConcurrentHashMap<Int, XYBluetoothDevice>, foundDevices: HashMap<Int, XYBluetoothDevice>) {
+            override fun getDevicesFromScanResult(
+                context: Context,
+                scanResult: XYScanResult,
+                globalDevices: ConcurrentHashMap<Int, XYBluetoothDevice>,
+                foundDevices: HashMap<Int, XYBluetoothDevice>
+            ) {
                 for ((uuid, creator) in uuidToCreator) {
-                    val bytes = scanResult.scanRecord?.getManufacturerSpecificData(XYAppleBluetoothDevice.MANUFACTURER_ID)
+                    val bytes =
+                        scanResult.scanRecord?.getManufacturerSpecificData(XYAppleBluetoothDevice.MANUFACTURER_ID)
                     if (bytes != null) {
                         if (uuid == iBeaconUuidFromScanResult(scanResult)) {
                             creator.getDevicesFromScanResult(context, scanResult, globalDevices, foundDevices)
