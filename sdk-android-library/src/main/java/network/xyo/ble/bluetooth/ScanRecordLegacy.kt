@@ -3,11 +3,10 @@ package network.xyo.ble.bluetooth
 import android.os.ParcelUuid
 import android.util.ArrayMap
 import android.util.SparseArray
-
-import java.util.ArrayList
-
-import androidx.annotation.*
+import androidx.annotation.NonNull
+import androidx.annotation.Nullable
 import unsigned.Ubyte
+import java.util.*
 
 // This is a copy of ScanRecord from Android Marshmallow+ to be used with Android versions earlier than Marshmallow
 
@@ -141,7 +140,8 @@ class ScanRecordLegacy private constructor(@param:Nullable @field:Nullable
                 when (fieldType) {
                     DATA_TYPE_FLAGS -> advertiseFlag = Ubyte(scanRecord[currentPos])
                     DATA_TYPE_SERVICE_UUIDS_16_BIT_PARTIAL, DATA_TYPE_SERVICE_UUIDS_16_BIT_COMPLETE -> parseServiceUuid(scanRecord, currentPos,
-                            dataLength, BluetoothUuid.UUID_BYTES_16_BIT, serviceUuids ?: ArrayList())
+                            dataLength, BluetoothUuid.UUID_BYTES_16_BIT, serviceUuids
+                            ?: ArrayList())
                     DATA_TYPE_SERVICE_UUIDS_32_BIT_PARTIAL, DATA_TYPE_SERVICE_UUIDS_32_BIT_COMPLETE -> parseServiceUuid(scanRecord, currentPos, dataLength,
                             BluetoothUuid.UUID_BYTES_32_BIT, serviceUuids ?: ArrayList())
                     DATA_TYPE_SERVICE_UUIDS_128_BIT_PARTIAL, DATA_TYPE_SERVICE_UUIDS_128_BIT_COMPLETE -> parseServiceUuid(scanRecord, currentPos, dataLength,
@@ -178,7 +178,8 @@ class ScanRecordLegacy private constructor(@param:Nullable @field:Nullable
             if (serviceUuids!!.isEmpty()) {
                 serviceUuids = null
             }
-            return ScanRecordLegacy(serviceUuids?.toList() ?: ArrayList(), manufacturerData, serviceData,
+            return ScanRecordLegacy(serviceUuids?.toList()
+                    ?: ArrayList(), manufacturerData, serviceData,
                     advertiseFlag.toInt(), txPowerLevel, localName ?: "", scanRecord)
         }
 

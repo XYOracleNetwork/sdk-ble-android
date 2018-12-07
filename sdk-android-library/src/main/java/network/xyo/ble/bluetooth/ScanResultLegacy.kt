@@ -61,7 +61,7 @@ class ScanResultLegacy : Parcelable {
     override fun writeToParcel(@NonNull dest: Parcel, flags: Int) {
         if (device != null) {
             dest.writeInt(1)
-            device!!.writeToParcel(dest, flags)
+            device?.writeToParcel(dest, flags)
         } else {
             dest.writeInt(0)
         }
@@ -75,15 +75,15 @@ class ScanResultLegacy : Parcelable {
         dest.writeLong(timestampNanos)
     }
 
-    private fun readFromParcel(@NonNull `in`: Parcel) {
-        if (`in`.readInt() == 1) {
-            device = BluetoothDevice.CREATOR.createFromParcel(`in`)
+    private fun readFromParcel(@NonNull parcel: Parcel) {
+        if (parcel.readInt() == 1) {
+            device = BluetoothDevice.CREATOR.createFromParcel(parcel)
         }
-        if (`in`.readInt() == 1) {
-            scanRecord = ScanRecordLegacy.parseFromBytes(`in`.createByteArray())
+        if (parcel.readInt() == 1) {
+            scanRecord = ScanRecordLegacy.parseFromBytes(parcel.createByteArray())
         }
-        rssi = `in`.readInt()
-        timestampNanos = `in`.readLong()
+        rssi = parcel.readInt()
+        timestampNanos = parcel.readLong()
     }
 
     override fun describeContents(): Int {
