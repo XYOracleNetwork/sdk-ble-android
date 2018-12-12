@@ -42,10 +42,10 @@ open class XYBluetoothService (uuid: UUID, serviceType : Int) : BluetoothGattSer
         return null
     }
 
-    open fun onBluetoothCharacteristicReadRequest (characteristic: BluetoothGattCharacteristic, device: BluetoothDevice?) : ByteArray? {
+    open fun onBluetoothCharacteristicReadRequest (characteristic: BluetoothGattCharacteristic, device: BluetoothDevice?, offset : Int) : XYBluetoothGattServer.XYReadRequest? {
         val characteristicHandler = characteristics[characteristic.uuid]
         if (characteristicHandler is XYBluetoothReadCharacteristic) {
-            return characteristicHandler.onReadRequest(device)
+            return characteristicHandler.onReadRequest(device, offset)
         }
         return null
     }

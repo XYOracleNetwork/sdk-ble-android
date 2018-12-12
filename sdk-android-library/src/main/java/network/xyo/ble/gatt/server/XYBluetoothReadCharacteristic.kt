@@ -11,12 +11,12 @@ import kotlin.coroutines.suspendCoroutine
 open class XYBluetoothReadCharacteristic(uuid: UUID) : XYBluetoothCharacteristic(uuid, PROPERTY_READ, PERMISSION_READ) {
     private val responders = HashMap<String, XYBluetoothReadCharacteristicResponder>()
 
-    open fun onReadRequest(device: BluetoothDevice?): ByteArray? {
+    open fun onReadRequest(device: BluetoothDevice?, offset: Int): XYBluetoothGattServer.XYReadRequest? {
         for ((_, responder) in responders) {
-            val response = responder.onReadRequest(device)
+            val response = responder.onReadRequest(device, offset)
 
             if (response != null) {
-                value = response
+                value = response.byteArray
                 return response
             }
         }
@@ -33,11 +33,11 @@ open class XYBluetoothReadCharacteristic(uuid: UUID) : XYBluetoothCharacteristic
         val readRequest = suspendCoroutine<Any?> { cont ->
             val responderKey = "waitForReadRequest $readValue $deviceFilter"
             addResponder(responderKey, object : XYBluetoothReadCharacteristicResponder {
-                override fun onReadRequest(device: BluetoothDevice?): ByteArray? {
+                override fun onReadRequest(device: BluetoothDevice?, offset: Int): XYBluetoothGattServer.XYReadRequest? {
                     if (device?.address == deviceFilter?.address || deviceFilter == null) {
                         removeResponder(responderKey)
                         cont.resume(null)
-                        return readValue
+                        return XYBluetoothGattServer.XYReadRequest(readValue, 0)
                     }
                     return null
                 }
@@ -54,6 +54,6 @@ open class XYBluetoothReadCharacteristic(uuid: UUID) : XYBluetoothCharacteristic
     }
 
     interface XYBluetoothReadCharacteristicResponder {
-        fun onReadRequest(device: BluetoothDevice?): ByteArray?
+        fun onReadRequest(device: BluetoothDevice?, offset : Int): XYBluetoothGattServer.XYReadRequest?
     }
 }
