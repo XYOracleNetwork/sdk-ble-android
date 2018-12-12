@@ -59,7 +59,8 @@ dependencies {
     implementation "com.google.android.material:material:$androidx_version"
     implementation "androidx.coordinatorlayout:coordinatorlayout:$androidx_version"
     // Optional, if you use support library fragments:
-    implementation project(':xycore')
+    implementation 'com.github.XYOracleNetwork:sdk-core-android:develop-SNAPSHOT'
+    // implementation project(':xycore')
     implementation project(':xyui')
 
     implementation 'com.github.kotlin-graphics:kotlin-unsigned:v2.1'
