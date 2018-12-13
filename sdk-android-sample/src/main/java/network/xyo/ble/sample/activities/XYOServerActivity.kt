@@ -74,7 +74,7 @@ class XYOServerActivity : XYOAppBaseActivity() {
 
 
         createTestServer().await()
-        characteristicRead.addResponder("countResponder", countResponder)
+        characteristicRead.addReadResponder("countResponder", countResponder)
         characteristicWrite.addResponder("log Responder",logResponder)
         return@async
     }

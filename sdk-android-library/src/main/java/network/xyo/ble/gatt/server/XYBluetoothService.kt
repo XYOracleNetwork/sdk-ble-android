@@ -22,7 +22,7 @@ open class XYBluetoothService (uuid: UUID, serviceType : Int) : BluetoothGattSer
         characteristics[characteristic.uuid] = characteristic
 
         if (characteristic is XYBluetoothCharacteristic) {
-            characteristic.addListiner(this.toString(), object : XYBluetoothCharacteristic.XYBluetoothCharacteristicListener {
+            characteristic.addListener(this.toString(), object : XYBluetoothCharacteristic.XYBluetoothCharacteristicListener {
                 override fun onChange() {
                     for ((_, listener) in listeners) {
                         listener.onCharacteristicChange(characteristic)
@@ -36,7 +36,7 @@ open class XYBluetoothService (uuid: UUID, serviceType : Int) : BluetoothGattSer
 
     open fun onBluetoothCharacteristicWrite (characteristic: BluetoothGattCharacteristic, device: BluetoothDevice?, value : ByteArray?) : Boolean? {
         val characteristicHandler = characteristics[characteristic.uuid]
-        if (characteristicHandler is XYBluetoothWriteCharacteristic) {
+        if (characteristicHandler is XYBluetoothCharacteristic) {
             return characteristicHandler.onWriteRequest(value, device)
         }
         return null
@@ -44,7 +44,7 @@ open class XYBluetoothService (uuid: UUID, serviceType : Int) : BluetoothGattSer
 
     open fun onBluetoothCharacteristicReadRequest (characteristic: BluetoothGattCharacteristic, device: BluetoothDevice?, offset : Int) : XYBluetoothGattServer.XYReadRequest? {
         val characteristicHandler = characteristics[characteristic.uuid]
-        if (characteristicHandler is XYBluetoothReadCharacteristic) {
+        if (characteristicHandler is XYBluetoothCharacteristic) {
             return characteristicHandler.onReadRequest(device, offset)
         }
         return null
