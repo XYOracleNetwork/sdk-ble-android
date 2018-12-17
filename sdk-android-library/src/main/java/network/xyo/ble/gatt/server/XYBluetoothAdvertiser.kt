@@ -7,7 +7,6 @@ import android.bluetooth.le.AdvertiseSettings.*
 import android.bluetooth.le.BluetoothLeAdvertiser
 import android.content.Context
 import android.os.ParcelUuid
-import android.util.Log
 import kotlinx.coroutines.Deferred
 import network.xyo.ble.gatt.XYBluetoothBase
 import network.xyo.ble.gatt.XYBluetoothError
