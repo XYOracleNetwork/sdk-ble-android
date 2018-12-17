@@ -30,7 +30,8 @@
             android:id="@+id/tabs"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:tabMode="scrollable">
+            app:tabMode="scrollable"
+            app:tabTextColor="@color/xy_text_light">
 
             <com.google.android.material.tabs.TabItem
                 android:id="@+id/tabGeneral"
@@ -85,6 +86,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/tx" />
+
             <com.google.android.material.tabs.TabItem
                 android:id="@+id/tabFw"
                 android:layout_width="wrap_content"
