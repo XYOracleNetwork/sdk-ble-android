@@ -28,7 +28,8 @@ android:theme="@style/XYTheme">
         android:id="@+id/server_tabs"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:tabMode="scrollable">
+        app:tabMode="scrollable"
+        app:tabTextColor="@color/xy_text_light">
 
         <com.google.android.material.tabs.TabItem
             android:id="@+id/tab_advertiser"
