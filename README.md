@@ -4,7 +4,7 @@
 
 # XY/XYO Bluetooth SDK (sdk-ble-android)
 
-[![BCH compliance](https://bettercodehub.com/edge/badge/XYOracleNetwork/sdk-ble-android?branch=master)](https://bettercodehub.com/)
+[![BCH compliance](https://bettercodehub.com/edge/badge/XYOracleNetwork/sdk-ble-android?branch=master)](https://bettercodehub.com/) <a href="https://codeclimate.com/github/XYOracleNetwork/sdk-ble-android/maintainability"><img src="https://api.codeclimate.com/v1/badges/da919183c3fe8a4fdbe3/maintainability" /></a>
 
 | Branches        | Status           |
 | ------------- |:-------------:|
