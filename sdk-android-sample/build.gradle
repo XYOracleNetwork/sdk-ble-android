@@ -8,6 +8,24 @@ androidExtensions {
     experimental = true
 }
 
+
+/**
+ * If set to true, will build with local versions of the dependencies.
+ */
+def buildWithLocalProjects = false
+
+ext {
+    if (!project.hasProperty('local')) {
+        local = buildWithLocalProjects
+    }
+}
+
+subprojects {
+    ext {
+        local=this.ext.local
+    }
+}
+
 android {
     compileSdkVersion 28
     buildToolsVersion '28.0.3'
@@ -53,13 +71,17 @@ dependencies {
     implementation "com.google.android.material:material:$androidx_version"
     implementation "androidx.coordinatorlayout:coordinatorlayout:$androidx_version"
 
-    implementation project(':xycore')
-    implementation project(':xyui')
-
+    if (local) {
+        implementation project(':xycore')
+        implementation project(':xyui')
+    } else {
+        implementation 'com.github.XYOracleNetwork:sdk-core-android:0763fe7c4b'
+        implementation 'com.github.XYOracleNetwork:sdk-ui-android:e9b2506a35'
+    }
+    
     implementation 'com.github.kotlin-graphics:kotlin-unsigned:v2.1'
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.0.0"
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.0.0'
     implementation project(':sdk-android-library')
-
     implementation "androidx.legacy:legacy-support-v4:$androidx_version"
 }
