@@ -6,6 +6,11 @@
 
 [![BCH compliance](https://bettercodehub.com/edge/badge/XYOracleNetwork/sdk-ble-android?branch=master)](https://bettercodehub.com/)
 
+| Branches        | Status           |
+| ------------- |:-------------:|
+| Master      | [![](https://circleci.com/gh/XYOracleNetwork/sdk-ble-android.svg?style=shield)](https://circleci.com/gh/XYOracleNetwork/sdk-ble-android) |
+| Develop      | [![](https://circleci.com/gh/XYOracleNetwork/sdk-ble-android/tree/develop.svg?style=shield)](https://circleci.com/gh/XYOracleNetwork/sdk-ble-android/tree/develop)      |
+
 A robust Bluetooth solution for Android. This BLE SDK was written from ground-up, in Kotlin,
  to help developers with the agonizing issues with Android the BLE stack.
 Not only will this SDK make XYO apps better, but bring XYO functionality to existing apps.  In adition to generalized BLE support, the SDK also has specific support for XY spacific hardware.
