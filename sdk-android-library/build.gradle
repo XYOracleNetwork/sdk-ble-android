@@ -5,7 +5,6 @@ apply plugin: 'com.github.dcendents.android-maven'
 group='com.github.XYOracleNetwork'
 
 
-
 /**
  * If set to true, will build with local versions of the dependencies.
  */
