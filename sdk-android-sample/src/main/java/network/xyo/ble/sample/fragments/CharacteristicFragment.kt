@@ -11,7 +11,9 @@ import network.xyo.ble.sample.R
 import network.xyo.ui.XYBaseFragment
 import java.nio.charset.Charset
 
-class CharacteristicFragment(private val characteristic: BluetoothGattCharacteristic) : XYBaseFragment() {
+abstract class CharacteristicFragment : XYBaseFragment() {
+    abstract val characteristic: BluetoothGattCharacteristic
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_characteristic, container, false)
     }
@@ -70,7 +72,9 @@ class CharacteristicFragment(private val characteristic: BluetoothGattCharacteri
 
     companion object {
         fun newInstance(characteristic: BluetoothGattCharacteristic): CharacteristicFragment {
-            return CharacteristicFragment(characteristic)
+            return object : CharacteristicFragment() {
+                override val characteristic: BluetoothGattCharacteristic = characteristic
+            }
         }
 
         fun bytesToString(bytes: ByteArray): String {

@@ -13,7 +13,9 @@ import network.xyo.ble.sample.R
 import network.xyo.ui.XYBaseFragment
 import java.util.*
 
-class AdvertiserFragment(private val advertiser: XYBluetoothAdvertiser) : XYBaseFragment() {
+abstract class AdvertiserFragment : XYBaseFragment() {
+    abstract val advertiser: XYBluetoothAdvertiser
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_advertiser, container, false)
     }
@@ -143,7 +145,9 @@ class AdvertiserFragment(private val advertiser: XYBluetoothAdvertiser) : XYBase
 
     companion object {
         fun newInstance (advertiser: XYBluetoothAdvertiser) : AdvertiserFragment {
-            return AdvertiserFragment(advertiser)
+            return object : AdvertiserFragment() {
+                override val advertiser: XYBluetoothAdvertiser = advertiser
+            }
         }
     }
 }

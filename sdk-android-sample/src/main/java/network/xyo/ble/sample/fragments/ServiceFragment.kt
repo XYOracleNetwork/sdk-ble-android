@@ -39,7 +39,7 @@ class ServiceFragment(private val service : BluetoothGattService) : XYBaseFragme
         characteristicList.addListener(this.toString(), object : XYCharacteristicAdapter.Companion.XYCharacteristicAdapterListener {
             override fun onClick(service: BluetoothGattCharacteristic) {
                 val transition = fragmentManager?.beginTransaction()
-                val serviceFragment = CharacteristicFragment(service)
+                val serviceFragment = CharacteristicFragment.newInstance(service)
                 transition?.replace(R.id.root_frame_services, serviceFragment)
                 transition?.addToBackStack(null)
                 transition?.commit()
