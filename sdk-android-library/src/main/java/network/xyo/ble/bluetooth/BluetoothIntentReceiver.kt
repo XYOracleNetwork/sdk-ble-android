@@ -7,6 +7,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.util.Log
 import network.xyo.core.XYBase
+import network.xyo.core.XYBase.Companion.logInfo
 
 class BluetoothIntentReceiver : BroadcastReceiver() {
     private val listeners = HashMap<String, BluetoothIntentReceiverListener>()
@@ -88,81 +89,81 @@ class BluetoothIntentReceiver : BroadcastReceiver() {
 
         }
 
-        private fun extraRssi(intent: Intent?) {
-            Log.v("WIN", intent?.data.toString())
-        }
-
-        private fun extraPairingKey(intent: Intent?) {
+        open fun extraRssi(intent: Intent?) {
 
         }
 
-        private fun extraPairingVagrant(intent: Intent?) {
+        open fun extraPairingKey(intent: Intent?) {
+
+        }
+
+        open fun extraPairingVagrant(intent: Intent?) {
 
         }
     }
 
     private fun actionAclConnected (intent: Intent?) {
-        XYBase.logInfo(this.toString(), "actionAclConnected")
+        logInfo(TAG, "actionAclConnected")
     }
 
     private fun actionAclDisconnected (intent: Intent?) {
-        XYBase.logInfo(this.toString(), "actionAclDisconnected")
+        XYBase.logInfo(TAG, "actionAclDisconnected")
     }
 
     private fun actionAclDisconnectRequested(intent: Intent?) {
-        XYBase.logInfo(this.toString(), "actionAclDisconnectRequested")
+        XYBase.logInfo(TAG, "actionAclDisconnectRequested")
     }
 
     private fun actionBondStateChanged(intent: Intent?) {
-        XYBase.logInfo(this.toString(), "actionBondStateChanged")
+        XYBase.logInfo(TAG, "actionBondStateChanged")
     }
 
     private fun actionClassChanged (intent: Intent?) {
-        XYBase.logInfo(this.toString(), "actionClassChanged")
+        XYBase.logInfo(TAG, "actionClassChanged")
     }
 
     private fun actionFound (intent: Intent?) {
-        XYBase.logInfo(this.toString(), "actionFound")
+        XYBase.logInfo(TAG, "actionFound")
     }
 
     private fun actionNameChanged (intent: Intent?) {
-        XYBase.logInfo(this.toString(), "actionNameChanged")
+        XYBase.logInfo(TAG, "actionNameChanged")
     }
 
     private fun actionPairingRequest (intent: Intent?) {
-        XYBase.logInfo(this.toString(), "actionPairingRequest")
+        XYBase.logInfo(TAG, "actionPairingRequest")
     }
 
     private fun actionUuid(intent: Intent?) {
-        XYBase.logInfo(this.toString(), "actionUuid")
+        XYBase.logInfo(TAG, "actionUuid")
     }
 
     private fun extraBondState (intent: Intent?) {
-        XYBase.logInfo(this.toString(), "extraBondState")
+        XYBase.logInfo(TAG, "extraBondState")
     }
 
     private fun extraClass (intent: Intent?) {
-        XYBase.logInfo(this.toString(), "extraClass")
+        XYBase.logInfo(TAG, "extraClass")
     }
 
     private fun extraDevice (intent: Intent?) {
-        XYBase.logInfo(this.toString(), "extraDevice")
+        XYBase.logInfo(TAG, "extraDevice")
     }
 
     private fun extraName (intent: Intent?) {
-        XYBase.logInfo(this.toString(), "extraName")
+        XYBase.logInfo(TAG, "extraName")
     }
 
     private fun extraRssi (intent: Intent?) {
-        XYBase.logInfo(this.toString(), "extraRssi")
+        XYBase.logInfo(TAG, "extraRssi")
     }
 
     private fun extraPairingKey (intent: Intent?) {
-        XYBase.logInfo(this.toString(), "extraPairingKey")
+        XYBase.logInfo(TAG, "extraPairingKey")
     }
 
     private fun extraPairingVagrant (intent: Intent?) {
-        XYBase.logInfo(this.toString(), "extraPairingVagrant")
+        XYBase.logInfo(TAG, "extraPairingVagrant")
     }
 
 
@@ -189,5 +190,7 @@ class BluetoothIntentReceiver : BroadcastReceiver() {
                 addAction(BluetoothDevice.EXTRA_UUID)
             }
         }
+
+        const val TAG = "BluetoothIntentReceiver"
     }
 }
