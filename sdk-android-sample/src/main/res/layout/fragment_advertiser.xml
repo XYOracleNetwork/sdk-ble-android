@@ -16,7 +16,48 @@
             android:orientation="vertical"
             android:padding="10dp">
 
-            <TextView
+            <network.xyo.ui.views.XYEditText
+                    android:id="@+id/primary_service_input"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:hint="@string/primary_service_title"
+                    android:inputType="text" />
+
+            <network.xyo.ui.views.XYEditText
+                    android:id="@+id/primary_service_data_input"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:hint="@string/primary_service_data_title"
+                    android:inputType="text" />
+
+            <network.xyo.ui.views.XYEditText
+                    android:id="@+id/manufacturer_id_input"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:ems="10"
+                    android:hint="@string/manufacturer_id_title"
+                    android:inputType="number" />
+
+            <network.xyo.ui.views.XYEditText
+                    android:id="@+id/manufacturer_data_input"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:hint="@string/manufacturer_data_title"
+                    android:inputType="text" />
+
+            <network.xyo.ui.views.XYEditText
+                    android:id="@+id/timeout_input"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:hint="@string/timeout_title"
+                    android:inputType="number" />
+
+            <network.xyo.ui.views.XYTextView
                 android:id="@+id/advertising_mode_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -58,7 +99,7 @@
                     android:text="@string/none" />
             </RadioGroup>
 
-            <TextView
+            <network.xyo.ui.views.XYTextView
                 android:id="@+id/advertising_power_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -107,7 +148,7 @@
                     android:text="@string/none" />
             </RadioGroup>
 
-            <TextView
+            <network.xyo.ui.views.XYTextView
                 android:id="@+id/connectable_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -143,23 +184,7 @@
 
             </RadioGroup>
 
-            <TextView
-                android:id="@+id/timeout_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/timeout_title"
-                android:paddingTop="10dp"
-                android:textAppearance="@style/TextAppearance.AppCompat.Large" />
-
-            <EditText
-                android:id="@+id/timeout_input"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:ems="10"
-                android:inputType="number" />
-
-            <TextView
+            <network.xyo.ui.views.XYTextView
                 android:id="@+id/include_device_name_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -194,7 +219,7 @@
                     android:text="@string/none" />
             </RadioGroup>
 
-            <TextView
+            <network.xyo.ui.views.XYTextView
                 android:id="@+id/include_tx_power_level_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -229,68 +254,7 @@
                     android:text="@string/none" />
             </RadioGroup>
 
-            <TextView
-                android:id="@+id/primary_service_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/primary_service_title"
-                android:paddingTop="10dp"
-                android:textAppearance="@style/TextAppearance.AppCompat.Large" />
-
-            <EditText
-                android:id="@+id/primary_service_input"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:inputType="text" />
-
-            <TextView
-                android:id="@+id/primary_service_data_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/primary_service_data_title"
-                android:paddingTop="10dp"
-                android:textAppearance="@style/TextAppearance.AppCompat.Large" />
-
-            <EditText
-                android:id="@+id/primary_service_data_input"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:inputType="text" />
-
-            <TextView
-                android:id="@+id/manufacturer_id_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/manufacturer_id_title"
-                android:paddingTop="10dp"
-                android:textAppearance="@style/TextAppearance.AppCompat.Large" />
-
-            <EditText
-                android:id="@+id/manufacturer_id_input"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:ems="10"
-                android:inputType="number" />
-
-            <TextView
-                android:id="@+id/manufacturer_data_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/manufacturer_data_title"
-                android:paddingTop="10dp"
-                android:textAppearance="@style/TextAppearance.AppCompat.Large" />
-
-            <EditText
-                android:id="@+id/manufacturer_data_input"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:inputType="text" />
-
-            <Button
+            <network.xyo.ui.views.XYButton
                 android:id="@+id/update"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
