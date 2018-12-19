@@ -7,13 +7,15 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.fragment_services.view.*
 import network.xyo.ble.sample.R
 import network.xyo.ble.sample.adapters.XYServiceListAdapter
 import network.xyo.ui.XYBaseFragment
 import network.xyo.ui.ui
 
-class ServicesFragment(services : Array<BluetoothGattService>?) : XYBaseFragment() {
+class ServicesFragment : XYBaseFragment() {
+    var services : Array<BluetoothGattService>? = null
     private val serviceList = XYServiceListAdapter(services ?: arrayOf())
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -24,7 +26,7 @@ class ServicesFragment(services : Array<BluetoothGattService>?) : XYBaseFragment
         super.onViewCreated(view, savedInstanceState)
         val recyclerView = view.service_list
 
-        val manager = LinearLayoutManager(activity?.applicationContext, LinearLayout.VERTICAL, false)
+        val manager = LinearLayoutManager(activity?.applicationContext, RecyclerView.VERTICAL, false)
         manager.reverseLayout = true
         manager.stackFromEnd = true
         recyclerView.layoutManager = manager
@@ -50,7 +52,9 @@ class ServicesFragment(services : Array<BluetoothGattService>?) : XYBaseFragment
 
     companion object {
         fun newInstance (services : Array<BluetoothGattService>?) : ServicesFragment {
-            return ServicesFragment(services)
+            val frag = ServicesFragment()
+            frag.services = services
+            return frag
         }
     }
 }
