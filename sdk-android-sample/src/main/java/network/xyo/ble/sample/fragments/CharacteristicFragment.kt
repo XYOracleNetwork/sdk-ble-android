@@ -11,8 +11,8 @@ import network.xyo.ble.sample.R
 import network.xyo.ui.XYBaseFragment
 import java.nio.charset.Charset
 
-abstract class CharacteristicFragment : XYBaseFragment() {
-    abstract val characteristic: BluetoothGattCharacteristic
+class CharacteristicFragment : XYBaseFragment() {
+    var characteristic : BluetoothGattCharacteristic? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_characteristic, container, false)
@@ -26,7 +26,7 @@ abstract class CharacteristicFragment : XYBaseFragment() {
     }
 
     private fun update (view: View) {
-        view.characteristics_uuid_title.text = characteristic.uuid.toString()
+        view.characteristics_uuid_title.text = characteristic?.uuid.toString()
         view.characteristics_type.text = getCharacteristicType()
         view.characteristics_permission.text = getCharacteristicPermissions()
         view.characteristics_value_hex.text = getCharacteristicValueHex()
@@ -34,12 +34,12 @@ abstract class CharacteristicFragment : XYBaseFragment() {
     }
 
     private fun getCharacteristicValueHex() : String {
-        return "Hex Value: ${bytesToString(characteristic.value ?: byteArrayOf())}"
+        return "Hex Value: ${bytesToString(characteristic?.value ?: byteArrayOf())}"
     }
 
     private fun getCharacteristicValueUtf8() : String {
         val string = "UTF8 Value: "
-        val value = characteristic.value
+        val value = characteristic?.value
         if (value != null) {
             return string + value.toString(Charset.defaultCharset())
         }
@@ -50,7 +50,7 @@ abstract class CharacteristicFragment : XYBaseFragment() {
         var string = "Properties: "
 
         for (property in XYBluetoothCharacteristic.Companion.Properties.values()) {
-            if (characteristic.properties and property.value == property.value) {
+            if (characteristic?.properties?.and(property.value) == property.value) {
                 string += "$property "
             }
         }
@@ -62,7 +62,7 @@ abstract class CharacteristicFragment : XYBaseFragment() {
         var string = "Permissions: "
 
         for (property in XYBluetoothCharacteristic.Companion.Permissions.values()) {
-            if (characteristic.properties and property.value == property.value) {
+            if (characteristic?.properties?.and(property.value) == property.value) {
                 string += "$property "
             }
         }
@@ -72,9 +72,9 @@ abstract class CharacteristicFragment : XYBaseFragment() {
 
     companion object {
         fun newInstance(characteristic: BluetoothGattCharacteristic): CharacteristicFragment {
-            return object : CharacteristicFragment() {
-                override val characteristic: BluetoothGattCharacteristic = characteristic
-            }
+            val frag = CharacteristicFragment()
+            frag.characteristic = characteristic
+            return frag
         }
 
         fun bytesToString(bytes: ByteArray): String {

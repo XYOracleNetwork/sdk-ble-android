@@ -15,8 +15,10 @@ import network.xyo.ble.sample.R
 import network.xyo.ble.sample.adapters.XYCharacteristicAdapter
 import network.xyo.ui.XYBaseFragment
 
-class ServiceFragment(private val service : BluetoothGattService) : XYBaseFragment() {
-    private val characteristicList = XYCharacteristicAdapter(service.characteristics.toTypedArray())
+class ServiceFragment : XYBaseFragment() {
+    private var service : BluetoothGattService? = null
+
+    private val characteristicList = XYCharacteristicAdapter(service?.characteristics?.toTypedArray() ?: arrayOf())
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_service, container, false)
@@ -24,7 +26,7 @@ class ServiceFragment(private val service : BluetoothGattService) : XYBaseFragme
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        view.service_uuid_title.text = service.uuid.toString()
+        view.service_uuid_title.text = service?.uuid.toString()
         view.service_type.text = getServiceType()
 
         val recyclerView = view.characteristic_list
@@ -48,7 +50,7 @@ class ServiceFragment(private val service : BluetoothGattService) : XYBaseFragme
     }
 
     private fun getServiceType () : String {
-        when (service.type) {
+        when (service?.type) {
             SERVICE_TYPE_PRIMARY -> return "SERVICE_TYPE_PRIMARY"
             SERVICE_TYPE_SECONDARY -> return "SERVICE_TYPE_SECONDARY"
         }
@@ -57,7 +59,9 @@ class ServiceFragment(private val service : BluetoothGattService) : XYBaseFragme
 
     companion object {
         fun newInstance (service : BluetoothGattService) : ServiceFragment {
-            return ServiceFragment(service)
+            val frag = ServiceFragment()
+            frag.service = service
+            return frag
         }
     }
 }

@@ -8,7 +8,8 @@ import android.view.ViewGroup
 import network.xyo.ble.sample.R
 import network.xyo.ui.XYBaseFragment
 
-class RootServicesFragment(private val startingServices : Array<BluetoothGattService>?) : XYBaseFragment() {
+class RootServicesFragment : XYBaseFragment() {
+    private var startingServices : Array<BluetoothGattService>? = null
     private var servicesFragment: ServicesFragment? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -26,7 +27,9 @@ class RootServicesFragment(private val startingServices : Array<BluetoothGattSer
 
     companion object {
         fun newInstance (startingServices : Array<BluetoothGattService>?) : RootServicesFragment {
-            return RootServicesFragment(startingServices)
+            val frag = RootServicesFragment()
+            frag.startingServices = startingServices
+            return frag
         }
     }
 }

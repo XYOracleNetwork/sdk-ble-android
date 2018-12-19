@@ -14,6 +14,7 @@ import com.google.android.material.tabs.TabLayout
 import kotlinx.android.synthetic.main.activicty_ble_server.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 import network.xyo.ble.gatt.server.*
 import network.xyo.ble.sample.R
 import network.xyo.ble.sample.fragments.AdvertiserFragment
@@ -24,8 +25,8 @@ import java.nio.charset.Charset
 import java.util.*
 
 class XYOServerActivity : XYOAppBaseActivity() {
-    private var bleServer : XYBluetoothGattServer? = null
-    private var bleAdvertiser : XYBluetoothAdvertiser? = null
+    var bleServer : XYBluetoothGattServer? = null
+    var bleAdvertiser : XYBluetoothAdvertiser? = null
     private val simpleService = XYBluetoothService(UUID.fromString("3079ca44-ae64-4797-b4e5-a31e3304c481"), BluetoothGattService.SERVICE_TYPE_PRIMARY)
     private val characteristicRead = XYBluetoothReadCharacteristic(UUID.fromString("01ef8f90-e99f-48ae-87bb-f683b93c692f"))
     private val characteristicWrite = XYBluetoothWriteCharacteristic(UUID.fromString("02ef8f90-e99f-48ae-87bb-f683b93c692f"))
@@ -49,7 +50,8 @@ class XYOServerActivity : XYOAppBaseActivity() {
         serverPagerContainer.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(server_tabs))
         serverPagerContainer.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(server_tabs) as ViewPager.OnPageChangeListener)
 
-        GlobalScope.async {
+        GlobalScope.launch {
+            bleAdvertiser = XYBluetoothAdvertiser(applicationContext)
             spinUpServer().await()
             val fragment = pagerAdapter.getFragmentByPosition(1) as RootServicesFragment
             fragment.addService(simpleService)
@@ -108,7 +110,7 @@ class XYOServerActivity : XYOAppBaseActivity() {
         override fun getItem(position: Int): Fragment {
             println(bleServer?.getServices()?.size)
             when (position) {
-                0 -> return AdvertiserFragment.newInstance(XYBluetoothAdvertiser(applicationContext))
+                0 -> return AdvertiserFragment.newInstance()
                 1 -> return RootServicesFragment.newInstance(bleServer?.getServices())
             }
 
