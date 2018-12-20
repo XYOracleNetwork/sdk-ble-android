@@ -15,6 +15,7 @@ import java.nio.ByteBuffer
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 
+@Suppress("unused")
 open class XYGpsBluetoothDevice(context: Context, scanResult: XYScanResult, hash: Int) : XYFinderBluetoothDevice(context, scanResult, hash) {
 
     val alertNotification = AlertNotificationService(this)
@@ -33,16 +34,20 @@ open class XYGpsBluetoothDevice(context: Context, scanResult: XYScanResult, hash
     val extendedControlService = ExtendedControlService(this)
     val sensorService = SensorService(this)
 
-    init {
-        addGattListener("xy3", object : XYBluetoothGattCallback() {
-            override fun onCharacteristicChanged(gatt: BluetoothGatt?, characteristic: BluetoothGattCharacteristic?) {
-                logInfo("onCharacteristicChanged")
-                super.onCharacteristicChanged(gatt, characteristic)
-                if (characteristic?.uuid == controlService.button.uuid) {
-                    reportButtonPressed(characteristic.getIntValue(BluetoothGattCharacteristic.FORMAT_UINT8, 0))
-                }
+    private val buttonListener = object: XYBluetoothGattCallback() {
+        override fun onCharacteristicChanged(gatt: BluetoothGatt?, characteristic: BluetoothGattCharacteristic?) {
+            super.onCharacteristicChanged(gatt, characteristic)
+
+            super.onCharacteristicChanged(gatt, characteristic)
+            if (characteristic?.uuid == controlService.button.uuid) {
+                //reportButtonPressed(characteristic.getIntValue(BluetoothGattCharacteristic.FORMAT_UINT8, 0))
+                reportButtonPressed(buttonPressFromInt(characteristic.getIntValue(BluetoothGattCharacteristic.FORMAT_UINT8, 0)))
             }
-        })
+        }
+    }
+
+    init {
+        addGattListener(tag, buttonListener)
     }
 
     override val prefix = "xy:gps"
@@ -52,38 +57,37 @@ open class XYGpsBluetoothDevice(context: Context, scanResult: XYScanResult, hash
         return controlService.buzzerSelect.set(1)
     }
 
-    fun reportButtonPressed(state: Int) {
-        logInfo("reportButtonPressed")
-        synchronized(listeners) {
-            for (listener in listeners) {
-                val xy3Listener = listener as? Listener
-                if (xy3Listener != null) {
-                    GlobalScope.launch {
-                        xy3Listener.buttonSinglePressed(this@XYGpsBluetoothDevice)
-                    }
-                }
-            }
-        }
+    override fun reportButtonPressed(state: ButtonPress) {
+        super.reportButtonPressed(state)
+        XYGpsBluetoothDevice.reportGlobalButtonPressed(this, state)
     }
+
+//    fun reportButtonPressed(state: Int) {
+//        logInfo("reportButtonPressed")
+//        synchronized(listeners) {
+//            for (listener in listeners) {
+//                val xy3Listener = listener as? Listener
+//                if (xy3Listener != null) {
+//                    GlobalScope.launch {
+//                        xy3Listener.buttonSinglePressed(this@XYGpsBluetoothDevice)
+//                    }
+//                }
+//            }
+//        }
+//    }
 
     open class Listener : XYFinderBluetoothDevice.Listener()
 
     companion object : XYBase() {
 
-        val FAMILY_UUID: UUID = UUID.fromString("9474f7c6-47a4-11e6-beb8-9e71128cae77")
-
+        private val FAMILY_UUID: UUID = UUID.fromString("9474f7c6-47a4-11e6-beb8-9e71128cae77")
         val DEFAULT_LOCK_CODE = byteArrayOf(0x2f.toByte(), 0xbe.toByte(), 0xa2.toByte(), 0x07.toByte(), 0x52.toByte(), 0xfe.toByte(), 0xbf.toByte(), 0x31.toByte(), 0x1d.toByte(), 0xac.toByte(), 0x5d.toByte(), 0xfa.toByte(), 0x7d.toByte(), 0x77.toByte(), 0x76.toByte(), 0x80.toByte())
+
+        protected val globalListeners = HashMap<String, Listener>()
 
         enum class StayAwake(val state: Int) {
             Off(0),
             On(1)
-        }
-
-        enum class ButtonPress(val state: Int) {
-            None(0),
-            Single(1),
-            Double(2),
-            Long(3)
         }
 
         fun enable(enable: Boolean) {
@@ -92,6 +96,45 @@ open class XYGpsBluetoothDevice(context: Context, scanResult: XYScanResult, hash
                 addCreator(FAMILY_UUID, creator)
             } else {
                 removeCreator(FAMILY_UUID)
+            }
+        }
+
+        fun addGlobalListener(key: String, listener: Listener) {
+            GlobalScope.launch {
+                synchronized(globalListeners) {
+                    globalListeners.put(key, listener)
+                }
+            }
+        }
+
+        fun removeGlobalListener(key: String) {
+            GlobalScope.launch {
+                synchronized(globalListeners) {
+                    globalListeners.remove(key)
+                }
+            }
+        }
+
+        fun reportGlobalButtonPressed(device: XYGpsBluetoothDevice, state: ButtonPress) {
+            logInfo("reportButtonPressed (Global)")
+            GlobalScope.launch {
+                synchronized(globalListeners) {
+                    for (listener in globalListeners) {
+                        val xyFinderListener = listener.value as? XYFinderBluetoothDevice.Listener
+                        if (xyFinderListener != null) {
+                            logInfo("reportButtonPressed: $xyFinderListener")
+                            GlobalScope.launch {
+                                when (state) {
+                                    ButtonPress.Single -> xyFinderListener.buttonSinglePressed(device)
+                                    ButtonPress.Double -> xyFinderListener.buttonDoublePressed(device)
+                                    ButtonPress.Long -> xyFinderListener.buttonLongPressed(device)
+                                    else -> {
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
 

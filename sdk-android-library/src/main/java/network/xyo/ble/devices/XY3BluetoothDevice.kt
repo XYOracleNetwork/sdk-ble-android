@@ -42,7 +42,7 @@ open class XY3BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
         On(1)
     }
 
-    internal val buttonListener = object : XYBluetoothGattCallback() {
+    private val buttonListener = object : XYBluetoothGattCallback() {
         override fun onCharacteristicChanged(gatt: BluetoothGatt?, characteristic: BluetoothGattCharacteristic?) {
             logInfo("onCharacteristicChanged")
             super.onCharacteristicChanged(gatt, characteristic)
