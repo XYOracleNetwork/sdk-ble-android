@@ -7,6 +7,7 @@ import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
+import android.widget.CompoundButton
 import kotlinx.android.synthetic.main.fragment_info.*
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.GlobalScope
@@ -18,7 +19,7 @@ import network.xyo.ble.sample.R
 import network.xyo.ui.ui
 
 
-class InfoFragment : XYAppBaseFragment(), View.OnClickListener {
+class InfoFragment : XYAppBaseFragment(), View.OnClickListener, CompoundButton.OnCheckedChangeListener {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -30,13 +31,15 @@ class InfoFragment : XYAppBaseFragment(), View.OnClickListener {
         super.onViewCreated(view, savedInstanceState)
 
         button_startTest.setOnClickListener(this)
-        button_connected.setOnClickListener(this)
+        button_connect.setOnClickListener(this)
+        button_disconnect.setOnClickListener(this)
         button_find.setOnClickListener(this)
         button_stay_awake.setOnClickListener(this)
         button_fall_asleep.setOnClickListener(this)
         button_lock.setOnClickListener(this)
         button_unlock.setOnClickListener(this)
         button_enable_notify.setOnClickListener(this)
+        button_stayConnected.setOnCheckedChangeListener(this)
 
         when (activity?.device) {
             is XY4BluetoothDevice -> {
@@ -81,24 +84,44 @@ class InfoFragment : XYAppBaseFragment(), View.OnClickListener {
                     text_minor.text = String.format(getString(R.string.hex_placeholder), iBeaconDevice.minor.toInt().toString(16))
                 }
 
-                test_pulse_count.text = activity?.device?.detectCount.toString()
+                text_pulse_count.text = activity?.device?.detectCount.toString()
                 text_enter_count.text = activity?.device?.enterCount.toString()
                 text_exit_count.text = activity?.device?.exitCount.toString()
+                text_avg_gap_size.text = activity?.device?.averageDetectGap.toString()
+                text_last_gap_size.text = activity?.device?.lastDetectGap.toString()
+                text_max_gap_size.text = activity?.device?.maxDetectTime.toString()
             }
 
             if (activity?.device?.connectionState == XYBluetoothGatt.ConnectionState.Connected) {
-                button_connected?.text = getString(R.string.disconnect)
+                button_connect?.visibility = GONE
+                button_disconnect?.visibility = VISIBLE
             } else {
-                button_connected?.text = getString(R.string.btn_connect)
+                button_connect?.visibility = VISIBLE
+                button_disconnect?.visibility = GONE
             }
 
         }
     }
 
+    override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
+        when (buttonView?.id) {
+            R.id.button_stayConnected -> {
+                val device: XYBluetoothDevice? = activity?.device
+                GlobalScope.launch {
+                    device?.setStayConnected(isChecked)?.await()
+                    updateUI()
+                }
+            }
+        }
+    }
+
     override fun onClick(view: View?) {
         when (view?.id) {
-            R.id.button_connected -> {
-                toggleConnection()
+            R.id.button_connect -> {
+                connect()
+            }
+            R.id.button_disconnect -> {
+                disconnect()
             }
             R.id.button_find -> {
                 find()
@@ -139,24 +162,28 @@ class InfoFragment : XYAppBaseFragment(), View.OnClickListener {
         // activity?.scanner?.refreshGatt()
     }
 
-    private fun toggleConnection() {
+    private fun connect() {
         val device: XYBluetoothDevice? = activity?.device
-        if (device?.connectionState == XYBluetoothGatt.ConnectionState.Connected) {
-            device.disconnect()
-            updateUI()
-        } else {
-            //
-            // ui { activity?.showProgressSpinner() }
-            GlobalScope.launch {
-                val connection = device?.connectGatt()?.await()
-                val error = connection?.error
-                if (!error?.message.isNullOrEmpty()) {
-                    activity?.showToast(error?.message.toString())
-                }
-                updateUI()
+        GlobalScope.launch {
+            val result = device?.connect()?.await()
+            val error = result?.error
+            if (error?.message.isNullOrEmpty()) {
+                activity?.showToast(error?.message.toString())
             }
+            updateUI()
         }
+    }
 
+    private fun disconnect() {
+        val device: XYBluetoothDevice? = activity?.device
+        GlobalScope.launch {
+            val result = device?.disconnect()?.await()
+            val error = result?.error
+            if (error?.message.isNullOrEmpty()) {
+                activity?.showToast(error?.message.toString())
+            }
+            updateUI()
+        }
     }
 
     private fun find() {

@@ -34,12 +34,28 @@
                     android:text="@string/btn_start_test"
                     android:visibility="gone" />
 
+                <Switch
+                    android:id="@+id/button_stayConnected"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:text="@string/btn_stay_connected" />
+
                 <network.xyo.ui.views.XYButton
-                    android:id="@+id/button_connected"
+                    android:id="@+id/button_connect"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
-                    android:text="@string/disconnect" />
+                    android:text="@string/btn_connect" />
+
+                <network.xyo.ui.views.XYButton
+                    android:id="@+id/button_disconnect"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:text="@string/btn_disconnect"
+                    android:visibility="gone"
+                    />
             </RelativeLayout>
 
             <LinearLayout
@@ -139,7 +155,67 @@
                     android:textColor="@color/black" />
 
                 <TextView
-                    android:id="@+id/test_pulse_count"
+                    android:id="@+id/text_pulse_count"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:text="99" />
+            </LinearLayout>
+
+            <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/layout_margin_normal"
+            android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/avgGapLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/avg_gap"
+                    android:textColor="@color/black" />
+
+                <TextView
+                    android:id="@+id/text_avg_gap_size"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:text="99" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/layout_margin_normal"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/lastGapLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/last_gap"
+                    android:textColor="@color/black" />
+
+                <TextView
+                    android:id="@+id/text_last_gap_size"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:text="99" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/layout_margin_normal"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/maxGapLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/max_gap"
+                    android:textColor="@color/black" />
+
+                <TextView
+                    android:id="@+id/text_max_gap_size"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     tools:text="99" />

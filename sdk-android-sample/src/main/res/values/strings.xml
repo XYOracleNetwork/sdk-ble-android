@@ -31,12 +31,14 @@
     <string name="view_characteristic">View</string>
 
     <string name="btn_start_test">Start Test</string>
+    <string name="btn_stay_connected">Stay Connected</string>
     <string name="btn_find">Find</string>
     <string name="btn_stay_awake">Stay Awake</string>
     <string name="btn_fall_asleep">Fall Asleep</string>
     <string name="btn_lock">Lock</string>
     <string name="btn_unlock">Unlock</string>
     <string name="btn_connect">Connect</string>
+    <string name="btn_disconnect">Disconnect</string>
     <string name="btn_enable_notify">Enable Notify</string>
     <string name="btn_disable_notify">Disable Notify</string>
     <string name="disconnect">Disconnect</string>
@@ -56,6 +58,9 @@
     <string name="minor">Minor:\u0020</string>
     <string name="rssi">RSSI:\u0020</string>
     <string name="pulses">Pulses:\u0020</string>
+    <string name="avg_gap">Avg. Gap:\u0020</string>
+    <string name="last_gap">Last Gap:\u0020</string>
+    <string name="max_gap">Max Gap:\u0020</string>
     <string name="enter">Enter:\u0020</string>
     <string name="exit">Exit:\u0020</string>
     <string name="lock">Lock:\u0020</string>

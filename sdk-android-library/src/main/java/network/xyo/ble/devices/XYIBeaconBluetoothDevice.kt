@@ -1,10 +1,12 @@
 package network.xyo.ble.devices
 
 import android.content.Context
+import network.xyo.ble.gatt.XYBluetoothError
 import network.xyo.ble.scanner.XYScanResult
 import network.xyo.core.XYBase
 import unsigned.Ubyte
 import unsigned.Ushort
+import java.nio.BufferUnderflowException
 import java.nio.ByteBuffer
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
@@ -30,8 +32,8 @@ open class XYIBeaconBluetoothDevice(context: Context, scanResult: XYScanResult?,
             return _minor
         }
 
-    protected val _power: Ubyte
-    open val power: Ubyte
+    protected val _power: Byte
+    open val power: Byte
         get() {
             return _power
         }
@@ -54,12 +56,12 @@ open class XYIBeaconBluetoothDevice(context: Context, scanResult: XYScanResult?,
 
             _major = Ushort(buffer.short)
             _minor = Ushort(buffer.short)
-            _power = Ubyte(buffer.get())
+            _power = buffer.get()
         } else {
             _uuid = UUID(0, 0)
             _major = Ushort(0)
             _minor = Ushort(0)
-            _power = Ubyte(0)
+            _power = 0
         }
     }
 
@@ -95,9 +97,10 @@ open class XYIBeaconBluetoothDevice(context: Context, scanResult: XYScanResult?,
                     val high = buffer.long
                     val low = buffer.long
                     UUID(high, low)
-                } catch (exception: Exception) {
+                } catch (ex: BufferUnderflowException) {
                     // can throw a BufferUnderflowException if the beacon sends an invalid value for UUID.
-                    null
+                    logError("refreshGatt catch $ex", true)
+                    return null
                 }
             } else {
                 null

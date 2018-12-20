@@ -13,6 +13,7 @@ import network.xyo.ble.scanner.XYScanRecord
 import network.xyo.ble.scanner.XYScanResult
 import network.xyo.core.XYBase
 import java.nio.ByteBuffer
+import java.time.LocalDateTime
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 
@@ -29,9 +30,14 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, private
     var detectCount = 0
     var enterCount = 0
     var exitCount = 0
+    var averageDetectGap = 0L
+    var lastDetectGap = 0L
+    var firstDetectTime = 0L
+    var lastDetectTime = 0L
+    var maxDetectTime = 0L
 
     //set this to true if the device should report that it is out of
-    //range right after discconnect.  Generally used for devices
+    //range right after disconnect.  Generally used for devices
     //with rotating MAC addresses
     var exitAfterDisconnect = false
 
@@ -130,13 +136,27 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, private
 
     override fun onDetect(scanResult: XYScanResult?) {
         detectCount++
-        lastAdTime = now
+        if (lastDetectTime == 0L) {
+            lastDetectTime = now
+        }
+        if (firstDetectTime == 0L) {
+            firstDetectTime = now
+        }
+        lastDetectGap = now - lastDetectTime
+        if (lastDetectGap > maxDetectTime) {
+            maxDetectTime = lastDetectGap
+        }
+        averageDetectGap = (lastDetectTime - firstDetectTime) / detectCount
+        lastDetectTime = now
         synchronized(listeners) {
             for ((_, listener) in listeners) {
                 GlobalScope.launch {
                     listener.detected(this@XYBluetoothDevice)
                 }
             }
+        }
+        if (_stayConnected && connectionState == ConnectionState.Disconnected) {
+            connect()
         }
     }
 

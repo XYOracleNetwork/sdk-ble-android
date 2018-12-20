@@ -106,19 +106,19 @@ open class XYFinderBluetoothDevice(context: Context, scanResult: XYScanResult, h
                 return Proximity.Touching
             }
 
-            if (distance < 2) {
+            if (distance < 15) {
                 return Proximity.VeryNear
             }
 
-            if (distance < 6) {
+            if (distance < 30) {
                 return Proximity.Near
             }
 
-            if (distance < 12) {
+            if (distance < 60) {
                 return Proximity.Medium
             }
 
-            if (distance < 24) {
+            if (distance < 120) {
                 return Proximity.Far
             }
 
@@ -198,9 +198,16 @@ open class XYFinderBluetoothDevice(context: Context, scanResult: XYScanResult, h
     open val distance: Double?
         get() {
             val rssi = rssi ?: return null
-            val a = (power - rssi).toDouble()
-            val b = a / (10.0f * 2.0f)
-            return Math.pow(10.0, b)
+            var dist = 0.0
+            val ratio: Double = rssi*1.0/power;
+            if (ratio < 1.0) {
+                dist = Math.pow(ratio, 10.0);
+            }
+            else {
+                dist =  (0.89976)*Math.pow(ratio,7.7095) + 0.111;
+            }
+            //logInfo("Distance: ${power}, ${rssi}, ${dist}")
+            return dist
         }
 
     internal open fun reportButtonPressed(state: ButtonPress) {
