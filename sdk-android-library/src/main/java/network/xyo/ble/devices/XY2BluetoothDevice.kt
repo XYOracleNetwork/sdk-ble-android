@@ -29,7 +29,7 @@ open class XY2BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
 
     override fun find(): Deferred<XYBluetoothResult<Int>> {
         logInfo("find")
-        return controlService.buzzerSelect.set(1)
+        return controlService.buzzerSelect.set(2)
     }
 
     override val prefix = "xy:ibeacon"
