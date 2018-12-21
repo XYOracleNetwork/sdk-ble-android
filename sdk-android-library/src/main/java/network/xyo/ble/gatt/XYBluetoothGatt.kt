@@ -148,6 +148,7 @@ open class XYBluetoothGatt protected constructor(
             if (device == null) {
                 error = XYBluetoothError("connectGatt: No Device")
             } else {
+
                 var gatt = this@XYBluetoothGatt.gatt
 
                 if (callback != null) {

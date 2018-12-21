@@ -5,8 +5,9 @@ import android.bluetooth.BluetoothManager
 import android.content.Context
 import android.os.Handler
 import android.os.Looper
-import kotlinx.coroutines.newFixedThreadPoolContext
+import kotlinx.coroutines.asCoroutineDispatcher
 import network.xyo.core.XYBase
+import java.util.concurrent.Executors
 import kotlin.coroutines.AbstractCoroutineContextElement
 import kotlin.coroutines.Continuation
 import kotlin.coroutines.ContinuationInterceptor
@@ -36,11 +37,11 @@ open class XYBluetoothBase(context: Context) : XYBase() {
     companion object {
         //this is the thread that all calls should happen on for gatt calls.
         val BluetoothThread: CoroutineContext
-        val BluetoothQueue = newFixedThreadPoolContext(1, "BluetoothQueue")
+        val BluetoothQueue = Executors.newSingleThreadExecutor().asCoroutineDispatcher()
 
         init {
-            BluetoothThread = if (android.os.Build.VERSION.SDK_INT < 20) {
-                newFixedThreadPoolContext(1, "BluetoothThread")
+            BluetoothThread = if (android.os.Build.VERSION.SDK_INT > 20) {
+                Executors.newSingleThreadExecutor().asCoroutineDispatcher()
             } else {
                 //if the device is before 20, use the UI thread for the BLE calls
                 object : AbstractCoroutineContextElement(ContinuationInterceptor), ContinuationInterceptor {
