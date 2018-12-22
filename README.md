@@ -221,6 +221,7 @@ myAwesomeReadCharacteristic.waitForReadRequest(byteArrayOf(0x13, 0x37), null).aw
 val writeValue = myAwesomeWriteCharacteristic.waitForWriteRequest(null).await()
 ```
 
+IMPORTANT:
 
 ```kotlin
 //make sure you stop the scanner when no longer needed
@@ -236,3 +237,9 @@ scanner.stop()
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
+
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
+
+## Credits
+
+<p align="center">Made with  ❤️  by [<b>XY - The Persistent Company</b>] (https://xy.company)</p>
