@@ -2,22 +2,39 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
+apply plugin: 'com.github.dcendents.android-maven'
 
-kotlin {
-    experimental {
-        coroutines 'enable'
+androidExtensions {
+    experimental = true
+}
+
+
+/**
+ * If set to true, will build with local versions of the dependencies.
+ */
+def buildWithLocalProjects = false
+
+ext {
+    if (!project.hasProperty('local')) {
+        local = buildWithLocalProjects
+    }
+}
+
+subprojects {
+    ext {
+        local=this.ext.local
     }
 }
 
 android {
-    compileSdkVersion 27
-    buildToolsVersion '27.0.3'
+    compileSdkVersion 28
+    buildToolsVersion '28.0.3'
     defaultConfig {
         applicationId "network.xyo.ble.sample"
-        minSdkVersion 19
-        targetSdkVersion 27
+        minSdkVersion 21
+        targetSdkVersion 28
         versionCode 1
-        versionName "v1.0"
+        versionName "1.0.1"
 
     }
     buildTypes {
@@ -41,15 +58,30 @@ buildscript {
     dependencies {
         classpath "com.android.tools.build:gradle:$android_plugin_version"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath 'com.github.dcendents:android-maven-gradle-plugin:2.1'
     }
+}
+
+repositories {
+    maven { url 'https://jitpack.io' }
 }
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation 'com.android.support:design:27.1.1'
-    implementation 'com.android.support:support-v4:27.1.1'
+    implementation "com.google.android.material:material:$androidx_version"
+    implementation "androidx.coordinatorlayout:coordinatorlayout:$androidx_version"
 
-    implementation 'com.github.XYOracleNetwork:sdk-core-android:v1.0'
-    implementation 'com.github.XYOracleNetwork:sdk-ui-android:v1.0'
+    if (local) {
+        implementation project(':xycore')
+        implementation project(':xyui')
+    } else {
+        implementation 'com.github.XYOracleNetwork:sdk-core-android:0763fe7c4b'
+        implementation 'com.github.XYOracleNetwork:sdk-ui-android:e9b2506a35'
+    }
+    
+    implementation 'com.github.kotlin-graphics:kotlin-unsigned:v2.1'
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.0.0"
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.0.0'
     implementation project(':sdk-android-library')
+    implementation "androidx.legacy:legacy-support-v4:$androidx_version"
 }

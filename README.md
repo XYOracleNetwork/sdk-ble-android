@@ -168,6 +168,60 @@ fun connectXY4Device(device: XY4BluetoothDevice) {
 }
 ```
 
+Basic callback server use
+```kotlin
+val myAwesomeReadCharacteristic = XYBluetoothReadCharacteristic(UUID.fromString("01ef8f90-e99f-48ae-87bb-f683b93c692f"))
+val myAwesomeWriteCharacteristic = XYBluetoothWriteCharacteristic(UUID.fromString("01ef8f90-e99f-48ae-87bb-f683b93c692f"))
+
+/**
+ * Will send "Carter is cool" on every read
+ */
+myAwesomeReadCharacteristic.addResponder("myResponder", object : XYBluetoothReadCharacteristic.XYBluetoothReadCharacteristicResponder {
+    override fun onReadRequest(device: BluetoothDevice?): ByteArray? {
+        return "Carter is cool".toByteArray()
+    }
+})
+
+myAwesomeWriteCharacteristic.addResponder("myResponder", object : XYBluetoothWriteCharacteristic.XYBluetoothWriteCharacteristicResponder {
+    override fun onWriteRequest(value: ByteArray, device: BluetoothDevice?): Boolean? {
+        if (value.size == 10) {
+            return true
+        }
+        return false
+    }
+})
+
+val myAwesomeService = XYBluetoothService(UUID.fromString("3079ca44-ae64-4797-b4e5-a31e3304c481"), BluetoothGattService.SERVICE_TYPE_PRIMARY)
+myAwesomeService.addCharacteristic(myAwesomeReadCharacteristic)
+myAwesomeService.addCharacteristic(myAwesomeWriteCharacteristic)
+
+val server = XYBluetoothGattServer(applicationContext)
+server.addService(myAwesomeService).await()
+server.startServer()
+```
+
+
+Basic await server use
+```kotlin
+val myAwesomeReadCharacteristic = XYBluetoothReadCharacteristic(UUID.fromString("01ef8f90-e99f-48ae-87bb-f683b93c692f"))
+val myAwesomeWriteCharacteristic = XYBluetoothWriteCharacteristic(UUID.fromString("01ef8f90-e99f-48ae-87bb-f683b93c692f"))
+
+val myAwesomeService = XYBluetoothService(UUID.fromString("3079ca44-ae64-4797-b4e5-a31e3304c481"), BluetoothGattService.SERVICE_TYPE_PRIMARY)
+myAwesomeService.addCharacteristic(myAwesomeReadCharacteristic)
+myAwesomeService.addCharacteristic(myAwesomeWriteCharacteristic)
+
+val server = XYBluetoothGattServer(applicationContext)
+server.addService(myAwesomeService).await()
+server.startServer()
+
+/**
+ * Will send "0x1337" on next read
+ */
+myAwesomeReadCharacteristic.waitForReadRequest(byteArrayOf(0x13, 0x37), null).await()
+val writeValue = myAwesomeWriteCharacteristic.waitForWriteRequest(null).await()
+```
+
+=======
 IMPORTANT:
 
 ```kotlin
@@ -184,7 +238,10 @@ scanner.stop()
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
+=======
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
 
 ## Credits
 
 <p align="center">Made with  ❤️  by [<b>XY - The Persistent Company</b>] (https://xy.company)</p>
+

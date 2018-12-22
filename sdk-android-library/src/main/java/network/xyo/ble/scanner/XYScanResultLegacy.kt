@@ -27,7 +27,7 @@ class XYScanResultLegacy(private val scanResult: ScanResultLegacy): XYScanResult
             return null
         }
 
-    override val device : BluetoothDevice
+    override val device : BluetoothDevice?
         get() {
             return scanResult.device
         }

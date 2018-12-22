@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:theme="@style/XYTheme">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="6dp"
+        android:layout_marginEnd="12dp"
+        android:layout_marginBottom="6dp"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingEnd="20dp">
+
+            <network.xyo.ui.views.XYButton
+                android:id="@+id/button_update"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:text="@string/do_update" />
+
+            <TextView
+                android:id="@+id/tv_file_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_centerHorizontal="false"
+                android:layout_centerVertical="true"
+                android:text="@string/select_a_file_below"
+                android:textColor="@color/black" />
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/layout_margin_normal"
+            android:orientation="horizontal">
+
+            <ListView
+                android:id="@+id/lv_files"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:listSelector="@color/xy_ui_palette_dark_25"
+                android:visibility="visible" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_file_progress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:textColor="@color/black"
+        android:visibility="visible" />
+
+</RelativeLayout>

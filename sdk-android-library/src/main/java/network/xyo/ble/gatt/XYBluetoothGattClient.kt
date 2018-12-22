@@ -5,7 +5,7 @@ import android.bluetooth.BluetoothGattCharacteristic
 import android.bluetooth.BluetoothGattDescriptor
 import android.content.Context
 import android.os.Handler
-import kotlinx.coroutines.experimental.Deferred
+import kotlinx.coroutines.Deferred
 import java.util.*
 
 open class XYBluetoothGattClient protected constructor(
@@ -296,7 +296,7 @@ open class XYBluetoothGattClient protected constructor(
             val characteristicToWrite = findResult.value
             if (findResult.error == null) {
                 if (characteristicToWrite != null) {
-                    characteristicToWrite.setValue(bytes)
+                    characteristicToWrite.value = bytes
                     val writeResult = writeCharacteristic(characteristicToWrite).await()
                     value = writeResult.value
                     error = writeResult.error

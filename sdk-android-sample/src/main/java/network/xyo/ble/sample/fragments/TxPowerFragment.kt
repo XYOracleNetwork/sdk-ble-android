@@ -6,7 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import kotlinx.android.synthetic.main.fragment_tx_power.*
-import kotlinx.coroutines.experimental.launch
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import network.xyo.ble.devices.XY2BluetoothDevice
 import network.xyo.ble.devices.XY3BluetoothDevice
 import network.xyo.ble.devices.XY4BluetoothDevice
@@ -78,7 +79,7 @@ class TxPowerFragment : XYAppBaseFragment() {
     }
 
     private fun getX4Values(device: XY4BluetoothDevice) {
-        launch {
+        GlobalScope.launch {
             var hasConnectionError = true
 
             val conn = device.connection {
@@ -97,7 +98,7 @@ class TxPowerFragment : XYAppBaseFragment() {
     }
 
     private fun getX3Values(device: XY3BluetoothDevice) {
-        launch {
+        GlobalScope.launch {
             var hasConnectionError = true
 
             val conn = device.connection {

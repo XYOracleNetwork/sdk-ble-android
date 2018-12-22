@@ -4,16 +4,18 @@ import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothGatt
 import android.content.Context
 import android.os.ParcelUuid
-import kotlinx.coroutines.experimental.CommonPool
-import kotlinx.coroutines.experimental.delay
-import kotlinx.coroutines.experimental.launch
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import network.xyo.ble.ads.XYBleAd
 import network.xyo.ble.gatt.XYBluetoothGattClient
 import network.xyo.ble.scanner.XYScanRecord
 import network.xyo.ble.scanner.XYScanResult
 import network.xyo.core.XYBase
 import java.nio.ByteBuffer
+import java.time.LocalDateTime
 import java.util.*
+import java.util.concurrent.ConcurrentHashMap
 
 open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, private val hash: Int) : XYBluetoothGattClient(context, device, false, null, null, null, null) {
 
@@ -28,9 +30,14 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, private
     var detectCount = 0
     var enterCount = 0
     var exitCount = 0
+    var averageDetectGap = 0L
+    var lastDetectGap = 0L
+    var firstDetectTime = 0L
+    var lastDetectTime = 0L
+    var maxDetectTime = 0L
 
     //set this to true if the device should report that it is out of
-    //range right after discconnect.  Generally used for devices
+    //range right after disconnect.  Generally used for devices
     //with rotating MAC addresses
     var exitAfterDisconnect = false
 
@@ -73,7 +80,7 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, private
             return
         }
         checkingForExit = true
-        launch(CommonPool) {
+        GlobalScope.launch {
             while (checkingForExit) {
                 //logInfo("checkForExit: $id : $rssi : $now : $outOfRangeDelay : $lastAdTime : $lastAccessTime")
                 delay(outOfRangeDelay)
@@ -89,7 +96,7 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, private
                         //make it thread safe
                         val localNotifyExit = notifyExit
                         if (localNotifyExit != null) {
-                            launch(CommonPool) {
+                            GlobalScope.launch {
                                 localNotifyExit(this@XYBluetoothDevice)
                             }
                         }
@@ -106,7 +113,7 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, private
         lastAdTime = now
         synchronized(listeners) {
             for ((_, listener) in listeners) {
-                launch(CommonPool) {
+                GlobalScope.launch {
                     listener.entered(this@XYBluetoothDevice)
                 }
             }
@@ -119,7 +126,7 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, private
         exitCount++
         synchronized(listeners) {
             for ((_, listener) in listeners) {
-                launch(CommonPool) {
+                GlobalScope.launch {
                     listener.exited(this@XYBluetoothDevice)
                 }
             }
@@ -129,13 +136,27 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, private
 
     override fun onDetect(scanResult: XYScanResult?) {
         detectCount++
-        lastAdTime = now
+        if (lastDetectTime == 0L) {
+            lastDetectTime = now
+        }
+        if (firstDetectTime == 0L) {
+            firstDetectTime = now
+        }
+        lastDetectGap = now - lastDetectTime
+        if (lastDetectGap > maxDetectTime) {
+            maxDetectTime = lastDetectGap
+        }
+        averageDetectGap = (lastDetectTime - firstDetectTime) / detectCount
+        lastDetectTime = now
         synchronized(listeners) {
             for ((_, listener) in listeners) {
-                launch(CommonPool) {
+                GlobalScope.launch {
                     listener.detected(this@XYBluetoothDevice)
                 }
             }
+        }
+        if (_stayConnected && connectionState == ConnectionState.Disconnected) {
+            connect()
         }
     }
 
@@ -143,7 +164,7 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, private
         logInfo("onConnectionStateChange: $id : $newState: $listeners.size")
         synchronized(listeners) {
             for ((tag, listener) in listeners) {
-                launch(CommonPool) {
+                GlobalScope.launch {
                     logInfo("connectionStateChanged: $tag : $newState")
                     listener.connectionStateChanged(this@XYBluetoothDevice, newState)
                     if (newState == BluetoothGatt.STATE_CONNECTED) {
@@ -154,14 +175,14 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, private
         }
         //if a connection drop means we should mark it as out of range, then lets do it!
         if (exitAfterDisconnect) {
-            launch(CommonPool) {
+            GlobalScope.launch {
                 rssi = null
                 onExit()
 
                 //make it thread safe
                 val localNotifyExit = notifyExit
                 if (localNotifyExit != null) {
-                    launch(CommonPool) {
+                    GlobalScope.launch {
                         localNotifyExit(this@XYBluetoothDevice)
                     }
                 }
@@ -171,7 +192,7 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, private
 
     fun addListener(key: String, listener: Listener) {
         logInfo("addListener:$key:$listener")
-        launch(CommonPool) {
+        GlobalScope.launch {
             synchronized(listeners) {
                 listeners.put(key, listener)
             }
@@ -180,7 +201,7 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, private
 
     fun removeListener(key: String) {
         logInfo("removeListener:$key")
-        launch(CommonPool) {
+        GlobalScope.launch {
             synchronized(listeners) {
                 listeners.remove(key)
             }
@@ -209,13 +230,13 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, private
 
         //the period of time to wait for marking something as out of range
         //if we have not gotten any ads or been connected to it
-        const val OUTOFRANGE_DELAY = 10000
+        const val OUTOFRANGE_DELAY = 10000L
 
         internal var canCreate = false
         val manufacturerToCreator = HashMap<Int, XYCreator>()
         val serviceToCreator = HashMap<UUID, XYCreator>()
 
-        private fun getDevicesFromManufacturers(context: Context, scanResult: XYScanResult, globalDevices: HashMap<Int, XYBluetoothDevice>, newDevices: HashMap<Int, XYBluetoothDevice>) {
+        private fun getDevicesFromManufacturers(context: Context, scanResult: XYScanResult, globalDevices: ConcurrentHashMap<Int, XYBluetoothDevice>, newDevices: HashMap<Int, XYBluetoothDevice>) {
             for ((manufacturerId, creator) in manufacturerToCreator) {
                 val bytes = scanResult.scanRecord?.getManufacturerSpecificData(manufacturerId)
                 if (bytes != null) {
@@ -224,7 +245,7 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, private
             }
         }
 
-        private fun getDevicesFromServices(context: Context, scanResult: XYScanResult, globalDevices: HashMap<Int, XYBluetoothDevice>, newDevices: HashMap<Int, XYBluetoothDevice>) {
+        private fun getDevicesFromServices(context: Context, scanResult: XYScanResult, globalDevices: ConcurrentHashMap<Int, XYBluetoothDevice>, newDevices: HashMap<Int, XYBluetoothDevice>) {
             for ((uuid, creator) in serviceToCreator) {
                 if (scanResult.scanRecord?.serviceUuids != null) {
                     if (scanResult.scanRecord?.serviceUuids?.contains(ParcelUuid(uuid)) == true) {
@@ -235,7 +256,7 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, private
         }
 
         internal val creator = object : XYCreator() {
-            override fun getDevicesFromScanResult(context: Context, scanResult: XYScanResult, globalDevices: HashMap<Int, XYBluetoothDevice>, foundDevices: HashMap<Int, XYBluetoothDevice>) {
+            override fun getDevicesFromScanResult(context: Context, scanResult: XYScanResult, globalDevices: ConcurrentHashMap<Int, XYBluetoothDevice>, foundDevices: HashMap<Int, XYBluetoothDevice>) {
 
                 getDevicesFromServices(context, scanResult, globalDevices, foundDevices)
                 getDevicesFromManufacturers(context, scanResult, globalDevices, foundDevices)

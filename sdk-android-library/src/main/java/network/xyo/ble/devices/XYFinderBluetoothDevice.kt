@@ -1,16 +1,19 @@
 package network.xyo.ble.devices
 
 import android.content.Context
-import kotlinx.coroutines.experimental.CommonPool
-import kotlinx.coroutines.experimental.Deferred
-import kotlinx.coroutines.experimental.launch
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import network.xyo.ble.firmware.OtaUpdate
 import network.xyo.ble.gatt.XYBluetoothError
 import network.xyo.ble.gatt.XYBluetoothResult
 import network.xyo.ble.gatt.asyncBle
 import network.xyo.ble.scanner.XYScanResult
 import network.xyo.core.XYBase
+import java.io.InputStream
 import java.nio.ByteBuffer
 import java.util.*
+import java.util.concurrent.ConcurrentHashMap
 
 open class XYFinderBluetoothDevice(context: Context, scanResult: XYScanResult, hash: Int) : XYIBeaconBluetoothDevice(context, scanResult, hash), Comparable<XYFinderBluetoothDevice> {
 
@@ -37,7 +40,7 @@ open class XYFinderBluetoothDevice(context: Context, scanResult: XYScanResult, h
         Touching
     }
 
-    enum class ButtonPress(val state:Int) {
+    enum class ButtonPress(val state: Int) {
         None(0),
         Single(1),
         Double(2),
@@ -54,19 +57,40 @@ open class XYFinderBluetoothDevice(context: Context, scanResult: XYScanResult, h
             return -1
         }
         return when {
-            d2== null -> 1
+            d2 == null -> 1
             d1 == d2 -> 0
             d1 > d2 -> 1
             else -> -1
         }
     }
 
-    override val id : String
+    override val id: String
         get() {
-            return "$prefix:$uuid:${major.toInt()}.${minor.and(0xfff0).or(0x0004).toInt()}"
+            return "$prefix:$uuid.${major.toInt()}.${minor.and(0xfff0).or(0x0004).toInt()}"
         }
 
     internal open val prefix = "xy:finder"
+
+    val family: Family
+        get() {
+            return when (this@XYFinderBluetoothDevice) {
+                is XYMobileBluetoothDevice -> {
+                    Family.Mobile
+                }
+                is XYGpsBluetoothDevice -> {
+                    Family.Gps
+                }
+                is XY4BluetoothDevice -> {
+                    Family.XY4
+                }
+                is XY3BluetoothDevice -> {
+                    Family.XY3
+                }
+                else -> {
+                    Family.Unknown
+                }
+            }
+        }
 
     //the distance is in meters, so these are what we subjectively think are the fuzzy proximity values
     val proximity: Proximity
@@ -82,19 +106,19 @@ open class XYFinderBluetoothDevice(context: Context, scanResult: XYScanResult, h
                 return Proximity.Touching
             }
 
-            if (distance < 2) {
+            if (distance < 15) {
                 return Proximity.VeryNear
             }
 
-            if (distance < 6) {
+            if (distance < 30) {
                 return Proximity.Near
             }
 
-            if (distance < 12) {
+            if (distance < 60) {
                 return Proximity.Medium
             }
 
-            if (distance < 24) {
+            if (distance < 120) {
                 return Proximity.Far
             }
 
@@ -102,80 +126,99 @@ open class XYFinderBluetoothDevice(context: Context, scanResult: XYScanResult, h
         }
 
     //signal the user to where it is, usually make it beep
-    open fun find() : Deferred<XYBluetoothResult<Int>> {
-        logException(UnsupportedOperationException(), true)
+    open fun find(): Deferred<XYBluetoothResult<Int>> {
+        logError(UnsupportedOperationException().toString(), true)
         return asyncBle {
             return@asyncBle XYBluetoothResult<Int>(XYBluetoothError("Not Implemented"))
         }
     }
 
     //turn off finding, if supported
-    open fun stopFind() : Deferred<XYBluetoothResult<Int>> {
-        logException(UnsupportedOperationException(), true)
+    open fun stopFind(): Deferred<XYBluetoothResult<Int>> {
+        logError(UnsupportedOperationException(), true)
         return asyncBle {
             return@asyncBle XYBluetoothResult<Int>(XYBluetoothError("Not Implemented"))
         }
     }
 
-    open fun lock() : Deferred<XYBluetoothResult<ByteArray>> {
-        logException(UnsupportedOperationException(), true)
+    open fun lock(): Deferred<XYBluetoothResult<ByteArray>> {
+        logError(UnsupportedOperationException(), true)
         return asyncBle {
             return@asyncBle XYBluetoothResult<ByteArray>(XYBluetoothError("Not Implemented"))
         }
     }
 
-    open fun unlock() : Deferred<XYBluetoothResult<ByteArray>> {
-        logException(UnsupportedOperationException(), true)
+    open fun unlock(): Deferred<XYBluetoothResult<ByteArray>> {
+        logError(UnsupportedOperationException(), true)
         return asyncBle {
             return@asyncBle XYBluetoothResult<ByteArray>(XYBluetoothError("Not Implemented"))
         }
     }
 
-    open fun stayAwake() : Deferred<XYBluetoothResult<Int>> {
-        logException(UnsupportedOperationException(), true)
+    open fun stayAwake(): Deferred<XYBluetoothResult<Int>> {
+        logError(UnsupportedOperationException(), true)
         return asyncBle {
             return@asyncBle XYBluetoothResult<Int>(XYBluetoothError("Not Implemented"))
         }
     }
 
-    open fun fallAsleep() : Deferred<XYBluetoothResult<Int>> {
-        logException(UnsupportedOperationException(), true)
+    open fun fallAsleep(): Deferred<XYBluetoothResult<Int>> {
+        logError(UnsupportedOperationException(), true)
         return asyncBle {
             return@asyncBle XYBluetoothResult<Int>(XYBluetoothError("Not Implemented"))
         }
     }
 
-    open fun restart() : Deferred<XYBluetoothResult<Int>> {
-        logException(UnsupportedOperationException(), true)
+    open fun restart(): Deferred<XYBluetoothResult<Int>> {
+        logError(UnsupportedOperationException(), true)
         return asyncBle {
             return@asyncBle XYBluetoothResult<Int>(XYBluetoothError("Not Implemented"))
         }
     }
 
-    open fun batteryLevel() : Deferred<XYBluetoothResult<Int>> {
-        logException(UnsupportedOperationException(), true)
+    open fun batteryLevel(): Deferred<XYBluetoothResult<Int>> {
+        logError(UnsupportedOperationException(), true)
         return asyncBle {
             return@asyncBle XYBluetoothResult<Int>(XYBluetoothError("Not Implemented"))
         }
     }
 
-    open val distance : Double?
+    open fun updateFirmware(stream: InputStream, listener: OtaUpdate.Listener) {
+
+    }
+
+    open fun updateFirmware(filename: String, listener: OtaUpdate.Listener) {
+
+    }
+
+    open fun cancelUpdateFirmware() {
+
+    }
+
+    open val distance: Double?
         get() {
             val rssi = rssi ?: return null
-            val a = (power - rssi).toDouble()
-            val b = a / (10.0f * 2.0f)
-            return Math.pow(10.0, b)
+            var dist = 0.0
+            val ratio: Double = rssi*1.0/power;
+            if (ratio < 1.0) {
+                dist = Math.pow(ratio, 10.0);
+            }
+            else {
+                dist =  (0.89976)*Math.pow(ratio,7.7095) + 0.111;
+            }
+            //logInfo("Distance: ${power}, ${rssi}, ${dist}")
+            return dist
         }
 
     internal open fun reportButtonPressed(state: ButtonPress) {
         logInfo("reportButtonPressed")
-        launch(CommonPool) {
+        GlobalScope.launch {
             synchronized(listeners) {
                 for (listener in listeners) {
                     val xyFinderListener = listener.value as? Listener
                     if (xyFinderListener != null) {
                         logInfo("reportButtonPressed: $xyFinderListener")
-                        launch(CommonPool) {
+                        GlobalScope.launch {
                             when (state) {
                                 ButtonPress.Single -> xyFinderListener.buttonSinglePressed(this@XYFinderBluetoothDevice)
                                 ButtonPress.Double -> xyFinderListener.buttonDoublePressed(this@XYFinderBluetoothDevice)
@@ -231,7 +274,7 @@ open class XYFinderBluetoothDevice(context: Context, scanResult: XYScanResult, h
         private val uuidToCreator = HashMap<UUID, XYCreator>()
 
         internal val creator = object : XYCreator() {
-            override fun getDevicesFromScanResult(context: Context, scanResult: XYScanResult, globalDevices: HashMap<Int, XYBluetoothDevice>, foundDevices: HashMap<Int, XYBluetoothDevice>) {
+            override fun getDevicesFromScanResult(context: Context, scanResult: XYScanResult, globalDevices: ConcurrentHashMap<Int, XYBluetoothDevice>, foundDevices: HashMap<Int, XYBluetoothDevice>) {
 
                 val bytes = scanResult.scanRecord?.getManufacturerSpecificData(XYAppleBluetoothDevice.MANUFACTURER_ID)
                 if (bytes != null) {
@@ -244,7 +287,7 @@ open class XYFinderBluetoothDevice(context: Context, scanResult: XYScanResult, h
                     val uuidFromScan = UUID(high, low)
 
                     for ((uuid, creator) in uuidToCreator) {
-                        if (uuid.equals(uuidFromScan)) {
+                        if (uuid == uuidFromScan) {
                             creator.getDevicesFromScanResult(context, scanResult, globalDevices, foundDevices)
                             return
                         }
@@ -272,7 +315,7 @@ open class XYFinderBluetoothDevice(context: Context, scanResult: XYScanResult, h
             o1.compareTo(o2)
         }
 
-        fun sortedList(devices: HashMap<Int, XYBluetoothDevice>) : List<XYFinderBluetoothDevice> {
+        fun sortedList(devices: ConcurrentHashMap<Int, XYBluetoothDevice>): List<XYFinderBluetoothDevice> {
             val result = ArrayList<XYFinderBluetoothDevice>()
             for ((_, device) in devices) {
                 val deviceToAdd = device as? XYFinderBluetoothDevice

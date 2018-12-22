@@ -1,14 +1,15 @@
 package network.xyo.ble.sample.activities
 
+import android.content.Intent
 import android.os.Bundle
-import android.support.design.widget.TabLayout
-import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentManager
-import android.support.v4.app.FragmentPagerAdapter
 import android.util.SparseArray
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentPagerAdapter
+import com.google.android.material.tabs.TabLayout
 import kotlinx.android.synthetic.main.device_activity.*
 import network.xyo.ble.devices.XY3BluetoothDevice
 import network.xyo.ble.devices.XY4BluetoothDevice
@@ -18,7 +19,8 @@ import network.xyo.ble.sample.R
 import network.xyo.ble.sample.XYDeviceData
 import network.xyo.ble.sample.fragments.*
 import network.xyo.ui.XYBaseFragment
-
+import network.xyo.ble.sample.fragments.core.BackFragmentListener
+import network.xyo.ui.ui
 
 /**
  * Created by arietrouw on 12/28/17.
@@ -45,18 +47,36 @@ class XYOFinderDeviceActivity : XYOAppBaseActivity() {
 
         data = XYDeviceData()
 
-
         sectionsPagerAdapter = SectionsPagerAdapter(supportFragmentManager)
+
         container.adapter = sectionsPagerAdapter
 
         container.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tabs))
         tabs.addOnTabSelectedListener(TabLayout.ViewPagerOnTabSelectedListener(container))
+
     }
 
     override fun onStop() {
         super.onStop()
         device!!.removeListener(TAG)
     }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        logInfo(TAG, "onActivityResult requestCode: $requestCode")
+
+        val frag = (supportFragmentManager.findFragmentById(R.id.container) as FirmwareUpdateFragment?)
+        frag?.onFileSelected(requestCode, resultCode, data)
+    }
+
+    override fun onBluetoothEnabled() {
+        ll_device_disabled.visibility = GONE
+    }
+
+    override fun onBluetoothDisabled() {
+        ll_device_disabled.visibility = VISIBLE
+    }
+
 
     private val xy3DeviceListener = object : XY3BluetoothDevice.Listener() {
         override fun entered(device: XYBluetoothDevice) {
@@ -70,7 +90,7 @@ class XYOFinderDeviceActivity : XYOAppBaseActivity() {
         }
 
         override fun detected(device: XYBluetoothDevice) {
-
+            update()
         }
 
         override fun connectionStateChanged(device: XYBluetoothDevice, newState: Int) {
@@ -161,6 +181,15 @@ class XYOFinderDeviceActivity : XYOAppBaseActivity() {
         addListener()
     }
 
+    override fun onBackPressed() {
+        val activeFrag = sectionsPagerAdapter.getFragmentByPosition(container.currentItem)
+        if (activeFrag is BackFragmentListener && (activeFrag as BackFragmentListener).onBackPressed()) {
+            //Let the fragment handle the back button.
+        } else {
+            super.onBackPressed()
+        }
+    }
+
     fun showProgressSpinner() {
         progress_spinner.visibility = VISIBLE
     }
@@ -174,8 +203,10 @@ class XYOFinderDeviceActivity : XYOAppBaseActivity() {
     }
 
     fun update() {
-        val frag = sectionsPagerAdapter.getFragmentByPosition(container.currentItem)
-        (frag as? InfoFragment)?.update()
+        ui {
+            val frag = sectionsPagerAdapter.getFragmentByPosition(container.currentItem)
+            (frag as? InfoFragment)?.update()
+        }
     }
 
     companion object {
@@ -185,7 +216,7 @@ class XYOFinderDeviceActivity : XYOAppBaseActivity() {
 
 
     inner class SectionsPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
-        private val size = 9
+        private val size = 10
         private var fragments: SparseArray<XYBaseFragment> = SparseArray(size)
 
         override fun getItem(position: Int): Fragment {
@@ -218,6 +249,9 @@ class XYOFinderDeviceActivity : XYOAppBaseActivity() {
                 }
                 8 -> {
                     frag = TxPowerFragment.newInstance()
+                }
+                9 -> {
+                    frag = FirmwareUpdateFragment.newInstance()
                 }
                 else -> frag = InfoFragment.newInstance()
             }

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:padding="10dp"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/service_uuid_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
+        android:text="@string/service_uuid" />
+
+    <TextView
+        android:id="@+id/service_type"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Service Type" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Title"
+        android:text="Characteristics" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/characteristic_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
+    </androidx.recyclerview.widget.RecyclerView>
+
+</LinearLayout>

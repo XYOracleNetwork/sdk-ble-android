@@ -23,7 +23,6 @@ class XYApplication : Application() {
         }
 
     override fun onCreate() {
-        XYBase.logInfo("XYApplication", "onCreate")
         super.onCreate()
 
         XYAppleBluetoothDevice.enable(true)
@@ -33,6 +32,7 @@ class XYApplication : Application() {
         XY3BluetoothDevice.enable(true)
         XY2BluetoothDevice.enable(true)
         XYGpsBluetoothDevice.enable(true)
+
         scanner.start()
     }
 
@@ -41,5 +41,4 @@ class XYApplication : Application() {
         scanner.stop()
         super.onTerminate()
     }
-
 }

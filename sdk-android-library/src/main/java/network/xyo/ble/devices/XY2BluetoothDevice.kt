@@ -1,7 +1,7 @@
 package network.xyo.ble.devices
 
 import android.content.Context
-import kotlinx.coroutines.experimental.Deferred
+import kotlinx.coroutines.Deferred
 import network.xyo.ble.gatt.XYBluetoothResult
 import network.xyo.ble.scanner.XYScanResult
 import network.xyo.ble.services.standard.*
@@ -9,7 +9,9 @@ import network.xyo.ble.services.xy3.*
 import network.xyo.core.XYBase
 import java.nio.ByteBuffer
 import java.util.*
+import java.util.concurrent.ConcurrentHashMap
 
+@Suppress("unused")
 open class XY2BluetoothDevice(context: Context, scanResult: XYScanResult, hash: Int) : XYFinderBluetoothDevice(context, scanResult, hash) {
 
     val batteryService = BatteryService(this)
@@ -27,13 +29,12 @@ open class XY2BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
 
     override fun find(): Deferred<XYBluetoothResult<Int>> {
         logInfo("find")
-        return controlService.buzzerSelect.set(1)
+        return controlService.buzzerSelect.set(2)
     }
 
     override val prefix = "xy:ibeacon"
 
-    open class Listener : XYFinderBluetoothDevice.Listener() {
-    }
+    open class Listener : XYFinderBluetoothDevice.Listener()
 
     companion object : XYBase() {
 
@@ -56,7 +57,7 @@ open class XY2BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
         }
 
         internal val creator = object : XYCreator() {
-            override fun getDevicesFromScanResult(context: Context, scanResult: XYScanResult, globalDevices: HashMap<Int, XYBluetoothDevice>, foundDevices: HashMap<Int, XYBluetoothDevice>) {
+            override fun getDevicesFromScanResult(context: Context, scanResult: XYScanResult, globalDevices: ConcurrentHashMap<Int, XYBluetoothDevice>, foundDevices: HashMap<Int, XYBluetoothDevice>) {
                 val hash = hashFromScanResult(scanResult)
                 if (hash != null) {
                     foundDevices[hash] = globalDevices[hash] ?: XY2BluetoothDevice(context, scanResult, hash)

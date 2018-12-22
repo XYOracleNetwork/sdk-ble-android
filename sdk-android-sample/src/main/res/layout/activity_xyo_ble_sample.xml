@@ -7,6 +7,14 @@
     android:layout_alignParentTop="true"
     android:orientation="vertical">
 
+    <Button
+        android:id="@+id/launchServer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentTop="true"
+        android:text="Server" />
+
     <include
         android:id="@+id/include_stats"
         layout="@layout/blestats_view"
@@ -18,9 +26,26 @@
         android:id="@+id/listview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_above="@+id/ll_disabled"
         android:layout_below="@+id/include_stats"
         tools:listitem="@layout/device_item" />
 
+    <LinearLayout
+        android:id="@+id/ll_disabled"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@android:color/holo_red_light"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/bluetooth_disabled"
+            android:textColor="@android:color/white" />
+    </LinearLayout>
     <ProgressBar
         android:id="@+id/progress_spinner_scanner"
         style="?android:attr/progressBarStyleLarge"

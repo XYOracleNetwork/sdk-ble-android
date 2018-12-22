@@ -1,14 +1,18 @@
 package network.xyo.ble.devices
 
 import android.content.Context
+import network.xyo.ble.gatt.XYBluetoothError
 import network.xyo.ble.scanner.XYScanResult
 import network.xyo.core.XYBase
 import unsigned.Ubyte
 import unsigned.Ushort
+import java.nio.BufferUnderflowException
 import java.nio.ByteBuffer
 import java.util.*
+import java.util.concurrent.ConcurrentHashMap
 
-open class XYIBeaconBluetoothDevice(context: Context, scanResult: XYScanResult?, hash: Int) : XYBluetoothDevice(context, scanResult?.device, hash) {
+open class XYIBeaconBluetoothDevice(context: Context, scanResult: XYScanResult?, hash: Int) :
+    XYBluetoothDevice(context, scanResult?.device, hash) {
 
     protected val _uuid: UUID
     open val uuid: UUID
@@ -28,8 +32,8 @@ open class XYIBeaconBluetoothDevice(context: Context, scanResult: XYScanResult?,
             return _minor
         }
 
-    protected val _power: Ubyte
-    open val power: Ubyte
+    protected val _power: Byte
+    open val power: Byte
         get() {
             return _power
         }
@@ -52,12 +56,12 @@ open class XYIBeaconBluetoothDevice(context: Context, scanResult: XYScanResult?,
 
             _major = Ushort(buffer.short)
             _minor = Ushort(buffer.short)
-            _power = Ubyte(buffer.get())
+            _power = buffer.get()
         } else {
             _uuid = UUID(0, 0)
             _major = Ushort(0)
             _minor = Ushort(0)
-            _power = Ubyte(0)
+            _power = 0
         }
     }
 
@@ -88,10 +92,16 @@ open class XYIBeaconBluetoothDevice(context: Context, scanResult: XYScanResult?,
                 val buffer = ByteBuffer.wrap(bytes)
                 buffer.position(2) //skip the type and size
 
-                //get uuid
-                val high = buffer.long
-                val low = buffer.long
-                UUID(high, low)
+                try {
+                    //get uuid
+                    val high = buffer.long
+                    val low = buffer.long
+                    UUID(high, low)
+                } catch (ex: BufferUnderflowException) {
+                    // can throw a BufferUnderflowException if the beacon sends an invalid value for UUID.
+                    logError("refreshGatt catch $ex", true)
+                    return null
+                }
             } else {
                 null
             }
@@ -100,11 +110,17 @@ open class XYIBeaconBluetoothDevice(context: Context, scanResult: XYScanResult?,
         internal val uuidToCreator = HashMap<UUID, XYCreator>()
 
         internal val creator = object : XYCreator() {
-            override fun getDevicesFromScanResult(context: Context, scanResult: XYScanResult, globalDevices: HashMap<Int, XYBluetoothDevice>, foundDevices: HashMap<Int, XYBluetoothDevice>) {
+            override fun getDevicesFromScanResult(
+                context: Context,
+                scanResult: XYScanResult,
+                globalDevices: ConcurrentHashMap<Int, XYBluetoothDevice>,
+                foundDevices: HashMap<Int, XYBluetoothDevice>
+            ) {
                 for ((uuid, creator) in uuidToCreator) {
-                    val bytes = scanResult.scanRecord?.getManufacturerSpecificData(XYAppleBluetoothDevice.MANUFACTURER_ID)
+                    val bytes =
+                        scanResult.scanRecord?.getManufacturerSpecificData(XYAppleBluetoothDevice.MANUFACTURER_ID)
                     if (bytes != null) {
-                        if (uuid.equals(iBeaconUuidFromScanResult(scanResult))) {
+                        if (uuid == iBeaconUuidFromScanResult(scanResult)) {
                             creator.getDevicesFromScanResult(context, scanResult, globalDevices, foundDevices)
                             return
                         }
@@ -121,7 +137,7 @@ open class XYIBeaconBluetoothDevice(context: Context, scanResult: XYScanResult?,
 
         fun hashFromScanResult(scanResult: XYScanResult): Int? {
             val data = scanResult.scanRecord?.getManufacturerSpecificData(XYAppleBluetoothDevice.MANUFACTURER_ID)
-            if (data != null) {
+            if (data != null && data.size > 22) {
 
                 //mask the minor
                 data[21] = data[21].toInt().and(0xfff0).toByte()

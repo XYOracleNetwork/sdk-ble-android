@@ -22,6 +22,6 @@ class XYBluetoothResult<T> {
 
 
     override fun toString(): String {
-        return "XYBluetoothResult: V: ${value}, E: ${error?.message ?: error ?: "None"}"
+        return "XYBluetoothResult: V: $value, E: ${error?.message ?: error ?: ""}"
     }
 }
