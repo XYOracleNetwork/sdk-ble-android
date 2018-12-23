@@ -1,6 +1,7 @@
 package network.xyo.ble.scanner
 
 import android.annotation.TargetApi
+import android.bluetooth.BluetoothAdapter
 import android.bluetooth.le.ScanCallback
 import android.bluetooth.le.ScanFilter
 import android.bluetooth.le.ScanResult
@@ -8,33 +9,42 @@ import android.bluetooth.le.ScanSettings
 import android.content.Context
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import network.xyo.ble.gatt.XYBluetoothResult
+import network.xyo.ble.gatt.asyncBle
 import network.xyo.core.guard
 import java.util.*
 
 @TargetApi(21)
 class XYFilteredSmartScanModern(context: Context) : XYFilteredSmartScan(context) {
-    override fun start() {
+    override suspend fun start(): Boolean {
         logInfo("start")
         super.start()
 
-        GlobalScope.launch(BluetoothThread) {
+        val result = asyncBle {
 
             val bluetoothAdapter = bluetoothManager?.adapter
 
             bluetoothAdapter.guard {
                 logInfo("Bluetooth Disabled")
-                return@launch
+                return@asyncBle XYBluetoothResult(false)
             }
 
             val scanner = bluetoothAdapter?.bluetoothLeScanner
             if (scanner == null) {
                 logInfo("startScan:Failed to get Bluetooth Scanner. Disabled?")
-                return@launch
+                return@asyncBle XYBluetoothResult(false)
             } else {
                 val filters = ArrayList<ScanFilter>()
                 scanner.startScan(filters, getSettings(), callback)
             }
+
+            return@asyncBle XYBluetoothResult(true)
+        }.await()
+
+        if (result.error != null) {
+            return false
         }
+        return result.value!!
     }
 
     val callback = object : ScanCallback() {
@@ -52,6 +62,7 @@ class XYFilteredSmartScanModern(context: Context) : XYFilteredSmartScan(context)
         override fun onScanFailed(errorCode: Int) {
             super.onScanFailed(errorCode)
             logError("onScanFailed: ${codeToScanFailed(errorCode)}", false)
+            restartBluetooth()
         }
 
         override fun onScanResult(callbackType: Int, result: ScanResult?) {
@@ -68,24 +79,31 @@ class XYFilteredSmartScanModern(context: Context) : XYFilteredSmartScan(context)
         return ScanSettings.Builder().setScanMode(android.bluetooth.le.ScanSettings.SCAN_MODE_LOW_LATENCY).build()
     }
 
-    override fun stop() {
+    override suspend fun stop(): Boolean {
         logInfo("stop")
         super.stop()
-        GlobalScope.launch {
+        val result = asyncBle {
             val bluetoothAdapter = this@XYFilteredSmartScanModern.bluetoothAdapter
 
             if (bluetoothAdapter == null) {
                 logInfo("stop: Bluetooth Disabled")
-                return@launch
+                return@asyncBle XYBluetoothResult(false)
             }
 
             val scanner = bluetoothAdapter.bluetoothLeScanner
             if (scanner == null) {
                 logInfo("stop:Failed to get Bluetooth Scanner. Disabled?")
-                return@launch
+                return@asyncBle XYBluetoothResult(false)
             }
 
             scanner.stopScan(callback)
+            return@asyncBle XYBluetoothResult(true)
+        }.await()
+
+        if (result.error != null) {
+            return false
         }
+        return result.value!!
+
     }
 }

@@ -1,7 +1,11 @@
 package network.xyo.ble.scanner
 
+import android.bluetooth.BluetoothAdapter
 import android.bluetooth.le.ScanCallback
+import android.content.BroadcastReceiver
 import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.location.LocationManager
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -51,6 +55,28 @@ abstract class XYFilteredSmartScan(context: Context) : XYBluetoothBase(context) 
 
     init {
         devices[hostDevice.hashCode()] = hostDevice
+
+        val filter = IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED)
+
+        val bluetoothAdapterReceiver = object: BroadcastReceiver() {
+            override fun onReceive(context: Context?, intent: Intent?) {
+                val action = intent?.getAction()
+                logInfo("onReceive: ${action}")
+                when (action) {
+                    BluetoothAdapter.ACTION_STATE_CHANGED -> {
+                        if (intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, -1) == BluetoothAdapter.STATE_OFF) {
+                            if (restartingBluetooth)
+                            {
+                                restartingBluetooth = false
+                                BluetoothAdapter.getDefaultAdapter().enable()
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        context.applicationContext.registerReceiver(bluetoothAdapterReceiver, filter)
     }
 
     val status: Status
@@ -144,15 +170,24 @@ abstract class XYFilteredSmartScan(context: Context) : XYBluetoothBase(context) 
             _background = background
         }
 
-    open fun start() {
+    open suspend fun start(): Boolean {
         logInfo("start")
         startTime = now
+        return true
     }
 
-    open fun stop() {
+    open suspend fun stop(): Boolean {
         logInfo("stop")
         startTime = 0
         scanResultCount = 0
+        return true
+    }
+
+    private var restartingBluetooth = false
+    protected fun restartBluetooth() {
+        logInfo(">>>>> restartBluetooth: Restarting Bluetooth Adapter <<<<<")
+        restartingBluetooth = true
+        BluetoothAdapter.getDefaultAdapter().disable()
     }
 
     fun addListener(key: String, listener: Listener) {
