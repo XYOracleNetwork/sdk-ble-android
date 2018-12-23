@@ -61,8 +61,10 @@ class XYFilteredSmartScanModern(context: Context) : XYFilteredSmartScan(context)
 
         override fun onScanFailed(errorCode: Int) {
             super.onScanFailed(errorCode)
-            logError("onScanFailed: ${codeToScanFailed(errorCode)}", false)
-            restartBluetooth()
+            logError("onScanFailed: ${errorCode}, ${codeToScanFailed(errorCode)}", false)
+            if (ScanCallback.SCAN_FAILED_APPLICATION_REGISTRATION_FAILED == errorCode) {
+                restartBluetooth()
+            }
         }
 
         override fun onScanResult(callbackType: Int, result: ScanResult?) {
