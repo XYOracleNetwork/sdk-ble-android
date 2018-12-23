@@ -20,6 +20,7 @@ open class XYMobileBluetoothDevice(context: Context, scanResult: XYScanResult, h
                 Settings.Secure.ANDROID_ID).hashCode())
         _major = Ushort(uniqueId.and(Uint(0xffff0000)).shr(16).toInt())
         _minor = Ushort(uniqueId.and(0xffff).toInt())
+        _name = "Mobile Device"
 
         var address = device?.address
         if (address == null) {
