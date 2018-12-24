@@ -9,6 +9,7 @@ import android.content.IntentFilter
 import android.location.LocationManager
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import network.xyo.ble.devices.XY4BluetoothDevice
 import network.xyo.ble.devices.XYBluetoothDevice
 import network.xyo.ble.devices.XYMobileBluetoothDevice
 import network.xyo.ble.gatt.XYBluetoothBase
@@ -73,6 +74,7 @@ abstract class XYFilteredSmartScan(context: Context) : XYBluetoothBase(context) 
                                 BluetoothAdapter.getDefaultAdapter().enable()
                             }
                         }
+                        reportStatusChanged()
                     }
                 }
             }
@@ -128,10 +130,20 @@ abstract class XYFilteredSmartScan(context: Context) : XYBluetoothBase(context) 
         return locationManager?.isProviderEnabled(LocationManager.GPS_PROVIDER) ?: false
     }
 
+    private fun reportStatusChanged() {
+        GlobalScope.launch {
+            synchronized(listeners) {
+                for (listener in listeners) {
+                    listener.value.statusChanged(status)
+                }
+            }
+        }
+    }
+
     private val listeners = HashMap<String, Listener>()
 
     open class Listener : XYBluetoothDevice.Listener() {
-        open fun statusChanged(status: BluetoothStatus) {
+        open fun statusChanged(status: Status) {
 
         }
     }
