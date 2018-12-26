@@ -54,6 +54,13 @@ android {
         versionName "1.0"
     }
 
+    lintOptions {
+        htmlReport true
+        htmlOutput file("lint-report.html")
+        abortOnError true
+        warningsAsErrors true
+    }
+
     sourceSets {
         main {
             assets {
@@ -76,20 +83,24 @@ android {
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
+        kotlinOptions {
+            allWarningsAsErrors = true
+        }
     }
 }
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     api "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion"
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion"
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutinesVersion"
-    implementation 'com.github.kotlin-graphics:kotlin-unsigned:v2.1'
-    implementation "androidx.annotation:annotation:$androidxVersion"
+    api "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion"
+    api "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutinesVersion"
+    api "androidx.annotation:annotation:$androidxVersion"
 
     if (local) {
         implementation project(':xycore')
     } else {
         implementation 'com.github.XYOracleNetwork:sdk-core-android:0763fe7c4b'
     }
+
+    implementation 'com.github.kotlin-graphics:kotlin-unsigned:v2.1'
 }

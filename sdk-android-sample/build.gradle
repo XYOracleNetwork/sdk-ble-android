@@ -37,6 +37,7 @@ android {
         versionName "1.0.1"
 
     }
+
     buildTypes {
         release {
             minifyEnabled false
@@ -44,9 +45,19 @@ android {
         }
     }
 
+    lintOptions {
+        htmlReport true
+        htmlOutput file("lint-report.html")
+        abortOnError true
+        warningsAsErrors true
+    }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
+        kotlinOptions {
+            allWarningsAsErrors = true
+        }
     }
 }
 
@@ -78,10 +89,11 @@ dependencies {
         implementation 'com.github.XYOracleNetwork:sdk-core-android:0763fe7c4b'
         implementation 'com.github.XYOracleNetwork:sdk-ui-android:e9b2506a35'
     }
-    
-    implementation 'com.github.kotlin-graphics:kotlin-unsigned:v2.1'
+
     api "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion"
     api "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutinesVersion"
     implementation project(':sdk-android-library')
-    implementation "androidx.legacy:legacy-support-v4:$androidxVersion"
+    api "androidx.legacy:legacy-support-v4:$androidxVersion"
+
+    implementation 'com.github.kotlin-graphics:kotlin-unsigned:v2.1'
 }
