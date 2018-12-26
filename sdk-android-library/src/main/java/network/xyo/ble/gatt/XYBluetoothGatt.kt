@@ -505,11 +505,14 @@ open class XYBluetoothGatt protected constructor(
      * from Docs: **This is unstable API and it is subject to change.**
      * https://github.com/Kotlin/kotlinx.coroutines/blob/master/common/kotlinx-coroutines-core-common/src/AbstractContinuation.kt
      */
-    private inline fun <T> Continuation<T>.tryResumeSilent(value: T) {
+    private fun <T> Continuation<T>.tryResumeSilent(value: T) {
         try {
             resume(value)
         } catch (ex: CancellationException) {
             // This function throws [CancellationException] if the coroutine is cancelled or completed while suspended.
+            // It seems that the proper fix for this is to actually cancel it if it is cancelled and actually throw and error
+            // if it is resumed twice
+            logError(ex, true)
         }
     }
 

@@ -27,12 +27,12 @@ subprojects {
 }
 
 android {
-    compileSdkVersion 28
-    buildToolsVersion '28.0.3'
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
     defaultConfig {
         applicationId "network.xyo.ble.sample"
-        minSdkVersion 21
-        targetSdkVersion 28
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0.1"
 
@@ -56,9 +56,9 @@ buildscript {
         google()
     }
     dependencies {
-        classpath "com.android.tools.build:gradle:$android_plugin_version"
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        classpath 'com.github.dcendents:android-maven-gradle-plugin:2.1'
+        classpath "com.android.tools.build:gradle:$androidPluginVersion"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
+        classpath "com.github.dcendents:android-maven-gradle-plugin:$gradleVersion"
     }
 }
 
@@ -68,8 +68,8 @@ repositories {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation "com.google.android.material:material:$androidx_version"
-    implementation "androidx.coordinatorlayout:coordinatorlayout:$androidx_version"
+    api "com.google.android.material:material:$androidxVersion"
+    api "androidx.coordinatorlayout:coordinatorlayout:$androidxVersion"
 
     if (local) {
         implementation project(':xycore')
@@ -80,8 +80,8 @@ dependencies {
     }
     
     implementation 'com.github.kotlin-graphics:kotlin-unsigned:v2.1'
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.0.0"
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.0.0'
+    api "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion"
+    api "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutinesVersion"
     implementation project(':sdk-android-library')
-    implementation "androidx.legacy:legacy-support-v4:$androidx_version"
+    implementation "androidx.legacy:legacy-support-v4:$androidxVersion"
 }

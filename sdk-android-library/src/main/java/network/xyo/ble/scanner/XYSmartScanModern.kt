@@ -1,21 +1,18 @@
 package network.xyo.ble.scanner
 
 import android.annotation.TargetApi
-import android.bluetooth.BluetoothAdapter
 import android.bluetooth.le.ScanCallback
 import android.bluetooth.le.ScanFilter
 import android.bluetooth.le.ScanResult
 import android.bluetooth.le.ScanSettings
 import android.content.Context
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import network.xyo.ble.gatt.XYBluetoothResult
 import network.xyo.ble.gatt.asyncBle
 import network.xyo.core.guard
 import java.util.*
 
 @TargetApi(21)
-class XYFilteredSmartScanModern(context: Context) : XYFilteredSmartScan(context) {
+class XYSmartScanModern(context: Context) : XYSmartScan(context) {
     override suspend fun start(): Boolean {
         logInfo("start")
         super.start()
@@ -47,7 +44,7 @@ class XYFilteredSmartScanModern(context: Context) : XYFilteredSmartScan(context)
         return result.value!!
     }
 
-    val callback = object : ScanCallback() {
+    private val callback = object : ScanCallback() {
         override fun onBatchScanResults(results: MutableList<ScanResult>?) {
             super.onBatchScanResults(results)
             //logInfo("onBatchScanResults: $results")
@@ -85,7 +82,7 @@ class XYFilteredSmartScanModern(context: Context) : XYFilteredSmartScan(context)
         logInfo("stop")
         super.stop()
         val result = asyncBle {
-            val bluetoothAdapter = this@XYFilteredSmartScanModern.bluetoothAdapter
+            val bluetoothAdapter = this@XYSmartScanModern.bluetoothAdapter
 
             if (bluetoothAdapter == null) {
                 logInfo("stop: Bluetooth Disabled")

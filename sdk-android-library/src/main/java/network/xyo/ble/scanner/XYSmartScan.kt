@@ -16,7 +16,7 @@ import network.xyo.ble.gatt.XYBluetoothBase
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 
-abstract class XYFilteredSmartScan(context: Context) : XYBluetoothBase(context) {
+abstract class XYSmartScan(context: Context) : XYBluetoothBase(context) {
 
     var startTime = 0L
     var scanResultCount = 0

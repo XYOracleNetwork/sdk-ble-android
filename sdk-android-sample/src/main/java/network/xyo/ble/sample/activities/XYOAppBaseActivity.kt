@@ -7,7 +7,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
 import network.xyo.ble.sample.XYApplication
-import network.xyo.ble.scanner.XYFilteredSmartScan
+import network.xyo.ble.scanner.XYSmartScan
 import network.xyo.ui.XYBaseActivity
 
 
@@ -28,7 +28,7 @@ abstract class XYOAppBaseActivity : XYBaseActivity() {
         unregisterReceiver(mReceiver)
     }
 
-    val scanner: XYFilteredSmartScan
+    val scanner: XYSmartScan
         get() {
             return (this.applicationContext as XYApplication).scanner
         }

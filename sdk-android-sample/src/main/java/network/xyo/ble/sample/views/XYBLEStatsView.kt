@@ -6,7 +6,7 @@ import android.widget.LinearLayout
 import kotlinx.android.synthetic.main.blestats_view.view.*
 import network.xyo.ble.devices.XYBluetoothDevice
 import network.xyo.ble.sample.XYApplication
-import network.xyo.ble.scanner.XYFilteredSmartScan
+import network.xyo.ble.scanner.XYSmartScan
 import network.xyo.core.XYBase
 
 /**
@@ -15,9 +15,9 @@ import network.xyo.core.XYBase
 
 class XYBLEStatsView(context: Context, attrs: AttributeSet) : LinearLayout(context, attrs) {
 
-    private val scanner : XYFilteredSmartScan
+    private val scanner : XYSmartScan
 
-    private val smartScanListener = object : XYFilteredSmartScan.Listener() {
+    private val smartScanListener = object : XYSmartScan.Listener() {
         override fun entered(device: XYBluetoothDevice) {
             update()
         }
@@ -34,7 +34,7 @@ class XYBLEStatsView(context: Context, attrs: AttributeSet) : LinearLayout(conte
             XYBase.logInfo(TAG, "connectionStateChanged")
         }
 
-        override fun statusChanged(status: XYFilteredSmartScan.BluetoothStatus) {
+        override fun statusChanged(status: XYSmartScan.Status) {
             TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
         }
     }

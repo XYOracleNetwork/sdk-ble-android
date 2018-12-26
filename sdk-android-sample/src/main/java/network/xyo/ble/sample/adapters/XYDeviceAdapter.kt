@@ -11,7 +11,7 @@ import network.xyo.ble.devices.XYFinderBluetoothDevice
 import network.xyo.ble.sample.R
 import network.xyo.ble.sample.XYApplication
 import network.xyo.ble.sample.views.XYDeviceItemView
-import network.xyo.ble.scanner.XYFilteredSmartScan
+import network.xyo.ble.scanner.XYSmartScan
 import network.xyo.ui.ui
 import java.util.*
 
@@ -19,12 +19,12 @@ class XYDeviceAdapter(private val activity: Activity) : BaseAdapter() {
     private var devices: List<XYFinderBluetoothDevice>
     private var lastSort = System.currentTimeMillis()
 
-    private val scanner: XYFilteredSmartScan
+    private val scanner: XYSmartScan
         get() {
             return (activity.applicationContext as XYApplication).scanner
         }
 
-    private val smartScannerListener = object : XYFilteredSmartScan.Listener() {
+    private val smartScannerListener = object : XYSmartScan.Listener() {
         override fun entered(device: XYBluetoothDevice) {
             refreshDevices()
         }

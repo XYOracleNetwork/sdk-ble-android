@@ -15,7 +15,7 @@ import network.xyo.ble.devices.XY4BluetoothDevice
 import network.xyo.ble.devices.XYFinderBluetoothDevice
 import network.xyo.ble.sample.R
 import network.xyo.ble.sample.adapters.XYDeviceAdapter
-import network.xyo.ble.scanner.XYFilteredSmartScan
+import network.xyo.ble.scanner.XYSmartScan
 import network.xyo.core.XYPermissions
 import network.xyo.ui.ui
 
@@ -59,9 +59,9 @@ class XYOBleSampleActivity : XYOAppBaseActivity() {
 
     private fun checkStatus() {
         when (scanner.status) {
-            XYFilteredSmartScan.Status.Enabled -> {
+            XYSmartScan.Status.Enabled -> {
             }
-            XYFilteredSmartScan.Status.BluetoothDisabled -> {
+            XYSmartScan.Status.BluetoothDisabled -> {
                 onBluetoothDisabled()
                 progress_spinner_scanner.visibility = GONE
                 val alertDialog = AlertDialog.Builder(this).create()
@@ -72,7 +72,7 @@ class XYOBleSampleActivity : XYOAppBaseActivity() {
                 }
                 alertDialog.show()
             }
-            XYFilteredSmartScan.Status.BluetoothUnavailable -> {
+            XYSmartScan.Status.BluetoothUnavailable -> {
                 onBluetoothDisabled()
                 progress_spinner_scanner.visibility = GONE
                 val alertDialog = AlertDialog.Builder(this).create()
@@ -83,7 +83,7 @@ class XYOBleSampleActivity : XYOAppBaseActivity() {
                 }
                 alertDialog.show()
             }
-            XYFilteredSmartScan.Status.LocationDisabled -> {
+            XYSmartScan.Status.LocationDisabled -> {
             }
         }
     }

@@ -198,15 +198,14 @@ open class XYFinderBluetoothDevice(context: Context, scanResult: XYScanResult, h
     open val distance: Double?
         get() {
             val rssi = rssi ?: return null
-            var dist = 0.0
-            val ratio: Double = rssi*1.0/power;
-            if (ratio < 1.0) {
-                dist = Math.pow(ratio, 10.0);
+            val dist: Double
+            val ratio: Double = rssi*1.0/power
+            dist = if (ratio < 1.0) {
+                Math.pow(ratio, 10.0)
             }
             else {
-                dist =  (0.89976)*Math.pow(ratio,7.7095) + 0.111;
+                (0.89976)*Math.pow(ratio,7.7095) + 0.111
             }
-            //logInfo("Distance: ${power}, ${rssi}, ${dist}")
             return dist
         }
 
