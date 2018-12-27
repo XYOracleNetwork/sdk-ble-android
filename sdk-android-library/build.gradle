@@ -34,8 +34,6 @@ android {
     compileSdkVersion rootProject.ext.compileSdkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion
 
-    publishNonDefault true
-
     defaultConfig {
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
@@ -94,9 +92,9 @@ dependencies {
     api "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion"
     api "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion"
     api "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutinesVersion"
-    api "androidx.annotation:annotation:$androidxVersion"
+    api "androidx.annotation:annotation:1.0.1"
 
-    localImplementation files('../sdk-core-android/core-android-library')
+    localImplementation project(':xycore')
     jitpackApi 'com.github.XYOracleNetwork:sdk-core-android:v1.0.1'
 
     implementation 'com.github.kotlin-graphics:kotlin-unsigned:v2.1'
