@@ -4,13 +4,12 @@
 
 # XY/XYO Bluetooth SDK (sdk-ble-android)
 
-[![BCH compliance](https://bettercodehub.com/edge/badge/XYOracleNetwork/sdk-ble-android?branch=master)](https://bettercodehub.com/) <a href="https://codeclimate.com/github/XYOracleNetwork/sdk-ble-android/maintainability"><img src="https://api.codeclimate.com/v1/badges/da919183c3fe8a4fdbe3/maintainability" /></a> [![](https://jitpack.io/v/XYOracleNetwork/sdk-ble-android.svg)](https://jitpack.io/#XYOracleNetwork/sdk-ble-android)
-
+[![](https://jitpack.io/v/XYOracleNetwork/sdk-ble-android.svg)](https://jitpack.io/#XYOracleNetwork/sdk-ble-android) [![Maintainability](https://api.codeclimate.com/v1/badges/da919183c3fe8a4fdbe3/maintainability)](https://codeclimate.com/github/XYOracleNetwork/sdk-ble-android/maintainability)
 
 | Branches        | Status           |
 | ------------- |:-------------:|
-| Master      | [![](https://circleci.com/gh/XYOracleNetwork/sdk-ble-android.svg?style=shield)](https://circleci.com/gh/XYOracleNetwork/sdk-ble-android) |
-| Develop      | [![](https://circleci.com/gh/XYOracleNetwork/sdk-ble-android/tree/develop.svg?style=shield)](https://circleci.com/gh/XYOracleNetwork/sdk-ble-android/tree/develop)      |
+| Master      | [![Build Status](https://travis-ci.com/XYOracleNetwork/sdk-ble-android.svg?branch=master)](https://travis-ci.com/XYOracleNetwork/sdk-ble-android) |
+| Develop      | [![Build Status](https://travis-ci.com/XYOracleNetwork/sdk-ble-android.svg?branch=develop)](https://travis-ci.com/XYOracleNetwork/sdk-ble-android)      |
 
 A robust Bluetooth solution for Android. This BLE SDK was written from ground-up, in Kotlin,
  to help developers with the agonizing issues with Android the BLE stack.
