@@ -7,7 +7,6 @@ import network.xyo.ble.gatt.XYBluetoothResult
 import network.xyo.ble.gatt.asyncBle
 import network.xyo.core.XYBase.Companion.logInfo
 
-@Suppress("unused")
 class OtaUpdate(var device: XY4BluetoothDevice, private val otaFile: OtaFile?) {
 
     private val listeners = HashMap<String, Listener>()

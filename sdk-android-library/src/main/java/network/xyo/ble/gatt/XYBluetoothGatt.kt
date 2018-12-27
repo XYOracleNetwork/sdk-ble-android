@@ -837,7 +837,6 @@ open class XYBluetoothGatt protected constructor(
             synchronized(gattListeners) {
                 for ((_, listener) in gattListeners) {
                     GlobalScope.launch {
-                        @Suppress()
                         listener.onMtuChanged(gatt, mtu, status)
                     }
                 }
@@ -850,7 +849,6 @@ open class XYBluetoothGatt protected constructor(
             synchronized(gattListeners) {
                 for ((_, listener) in gattListeners) {
                     GlobalScope.launch {
-                        @Suppress()
                         listener.onPhyRead(gatt, txPhy, rxPhy, status)
                     }
                 }
@@ -864,7 +862,6 @@ open class XYBluetoothGatt protected constructor(
             synchronized(gattListeners) {
                 for ((_, listener) in gattListeners) {
                     GlobalScope.launch {
-                        @Suppress()
                         listener.onPhyUpdate(gatt, txPhy, rxPhy, status)
                     }
                 }
