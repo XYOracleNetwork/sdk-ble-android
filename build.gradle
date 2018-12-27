@@ -12,7 +12,7 @@ buildscript {
         androidxVersion = '1.0.0'
         androidxAppcompatVersion = '1.0.2'
         coroutinesVersion = '1.0.1'
-        gradleVersion = '2.1'
+        mavenVersion = '2.1'
         androidToolsVersion = '26.2.1'
     }
 
@@ -23,6 +23,7 @@ buildscript {
     dependencies {
         classpath "com.android.tools.build:gradle:$androidPluginVersion"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
+        classpath "com.github.dcendents:android-maven-gradle-plugin:$mavenVersion"
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files

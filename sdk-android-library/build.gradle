@@ -4,23 +4,6 @@ apply plugin: 'kotlin-kapt'
 apply plugin: 'com.github.dcendents.android-maven'
 group = 'com.github.XYOracleNetwork'
 
-/**
- * If set to true, will build with local versions of the dependencies.
- */
-def buildWithLocalProjects = true
-
-ext {
-    if (!project.hasProperty('local')) {
-        local = buildWithLocalProjects
-    }
-}
-
-subprojects {
-    ext {
-        local = this.ext.local
-    }
-}
-
 buildscript {
     repositories {
         mavenCentral()
@@ -33,7 +16,7 @@ buildscript {
     dependencies {
         classpath "com.android.tools.build:gradle:$androidPluginVersion"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
-        classpath "com.github.dcendents:android-maven-gradle-plugin:$gradleVersion"
+        classpath "com.github.dcendents:android-maven-gradle-plugin:$mavenVersion"
     }
 }
 
@@ -42,9 +25,16 @@ repositories {
     maven { url 'https://jitpack.io' }
 }
 
+configurations {
+    localImplementation
+    jitpackApi
+}
+
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion
+
+    publishNonDefault true
 
     defaultConfig {
         minSdkVersion rootProject.ext.minSdkVersion
@@ -66,6 +56,16 @@ android {
             assets {
                 srcDir 'assets'
             }
+        }
+    }
+
+    flavorDimensions "xylibs"
+    productFlavors {
+        local {
+            dimension "xylibs"
+        }
+        jitpack {
+            dimension "xylibs"
         }
     }
 
@@ -96,11 +96,8 @@ dependencies {
     api "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutinesVersion"
     api "androidx.annotation:annotation:$androidxVersion"
 
-    if (local) {
-        implementation project(':xycore')
-    } else {
-        implementation 'com.github.XYOracleNetwork:sdk-core-android:0763fe7c4b'
-    }
+    localImplementation files('../sdk-core-android/core-android-library')
+    jitpackApi 'com.github.XYOracleNetwork:sdk-core-android:v1.0.1'
 
     implementation 'com.github.kotlin-graphics:kotlin-unsigned:v2.1'
 }
