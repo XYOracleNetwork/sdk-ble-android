@@ -10,7 +10,6 @@ buildscript {
         mavenLocal()
         jcenter()
         google()
-        maven { url 'https://jitpack.io' }
     }
 
     dependencies {
@@ -22,6 +21,7 @@ buildscript {
 
 
 repositories {
+    mavenCentral()
     maven { url 'https://jitpack.io' }
 }
 
@@ -33,6 +33,14 @@ configurations {
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+        kotlinOptions {
+            allWarningsAsErrors = true
+        }
+    }
 
     defaultConfig {
         minSdkVersion rootProject.ext.minSdkVersion
@@ -75,13 +83,6 @@ android {
         debug {
             minifyEnabled false
             debuggable true
-        }
-    }
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-        kotlinOptions {
-            allWarningsAsErrors = true
         }
     }
 }
