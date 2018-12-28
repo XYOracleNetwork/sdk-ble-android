@@ -42,6 +42,8 @@ android {
         versionName "1.0"
     }
 
+    defaultPublishConfig "jitpackRelease"
+
     lintOptions {
         htmlReport true
         htmlOutput file("lint-report.html")
