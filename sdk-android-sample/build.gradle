@@ -11,10 +11,10 @@ android {
         applicationId "network.xyo.ble.sample"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
-        versionName "1.0.1"
 
     }
+
+    defaultPublishConfig "jitpackRelease"
 
     flavorDimensions "xylibs"
     productFlavors {
@@ -76,7 +76,7 @@ dependencies {
     api "androidx.coordinatorlayout:coordinatorlayout:1.0.0"
 
     localImplementation project(':xycore')
-    jitpackApi 'com.github.XYOracleNetwork:sdk-core-android:v1.0.1'
+    jitpackApi 'com.github.XYOracleNetwork:sdk-core-android:1.0.3'
 
     localImplementation project(':xyui')
     jitpackApi 'com.github.XYOracleNetwork:sdk-ui-android:1.0.2'
