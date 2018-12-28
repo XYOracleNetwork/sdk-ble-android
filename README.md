@@ -43,7 +43,7 @@ allprojects {
 
 ```gradle
 dependencies {
-    implementation 'com.github.XYOracleNetwork:sdk-ble-android:master-SNAPSHOT'
+    implementation 'com.github.XYOracleNetwork:sdk-ble-android:1.0.2'
 }
 ```
 
