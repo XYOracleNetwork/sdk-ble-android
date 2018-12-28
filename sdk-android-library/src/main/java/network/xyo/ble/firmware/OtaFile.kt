@@ -9,7 +9,6 @@ import java.io.InputStream
 import java.util.*
 import kotlin.experimental.xor
 
-@Suppress("unused")
 class OtaFile @Throws(IOException::class)
 private constructor(private val inputStream: InputStream?) {
 

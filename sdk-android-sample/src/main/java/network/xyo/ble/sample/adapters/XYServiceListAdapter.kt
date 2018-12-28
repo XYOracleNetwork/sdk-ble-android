@@ -26,7 +26,7 @@ class XYServiceListAdapter(services : Array<BluetoothGattService>) : RecyclerVie
         listeners[key] = listener
     }
 
-    fun removeListener(key: String, listener : XYServiceListAdapterListener) {
+    fun removeListener(key: String) {
         listeners.remove(key)
     }
 

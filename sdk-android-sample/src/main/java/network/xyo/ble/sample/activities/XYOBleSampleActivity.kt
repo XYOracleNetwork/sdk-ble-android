@@ -9,11 +9,13 @@ import android.view.View.VISIBLE
 import android.widget.BaseAdapter
 import android.widget.Button
 import kotlinx.android.synthetic.main.activity_xyo_ble_sample.*
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
 import network.xyo.ble.devices.XY4BluetoothDevice
 import network.xyo.ble.devices.XYFinderBluetoothDevice
 import network.xyo.ble.sample.R
 import network.xyo.ble.sample.adapters.XYDeviceAdapter
-import network.xyo.ble.scanner.XYFilteredSmartScan
+import network.xyo.ble.scanner.XYSmartScan
 import network.xyo.core.XYPermissions
 import network.xyo.ui.ui
 
@@ -57,9 +59,9 @@ class XYOBleSampleActivity : XYOAppBaseActivity() {
 
     private fun checkStatus() {
         when (scanner.status) {
-            XYFilteredSmartScan.Status.Enabled -> {
+            XYSmartScan.Status.Enabled -> {
             }
-            XYFilteredSmartScan.Status.BluetoothDisabled -> {
+            XYSmartScan.Status.BluetoothDisabled -> {
                 onBluetoothDisabled()
                 progress_spinner_scanner.visibility = GONE
                 val alertDialog = AlertDialog.Builder(this).create()
@@ -70,7 +72,7 @@ class XYOBleSampleActivity : XYOAppBaseActivity() {
                 }
                 alertDialog.show()
             }
-            XYFilteredSmartScan.Status.BluetoothUnavailable -> {
+            XYSmartScan.Status.BluetoothUnavailable -> {
                 onBluetoothDisabled()
                 progress_spinner_scanner.visibility = GONE
                 val alertDialog = AlertDialog.Builder(this).create()
@@ -81,7 +83,7 @@ class XYOBleSampleActivity : XYOAppBaseActivity() {
                 }
                 alertDialog.show()
             }
-            XYFilteredSmartScan.Status.LocationDisabled -> {
+            XYSmartScan.Status.LocationDisabled -> {
             }
         }
     }
@@ -114,17 +116,23 @@ class XYOBleSampleActivity : XYOAppBaseActivity() {
 
     override fun onBluetoothEnabled() {
         ll_disabled.visibility = GONE
-        scanner.start()
+        GlobalScope.async {
+            scanner.start()
+        }
     }
 
     override fun onBluetoothDisabled() {
         ll_disabled.visibility = VISIBLE
-        scanner.stop()
+        GlobalScope.async {
+            scanner.stop()
+        }
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
-        scanner.start()
+        GlobalScope.async {
+            scanner.start()
+        }
     }
 }

@@ -4,13 +4,12 @@
 
 # XY/XYO Bluetooth SDK (sdk-ble-android)
 
-[![BCH compliance](https://bettercodehub.com/edge/badge/XYOracleNetwork/sdk-ble-android?branch=master)](https://bettercodehub.com/) <a href="https://codeclimate.com/github/XYOracleNetwork/sdk-ble-android/maintainability"><img src="https://api.codeclimate.com/v1/badges/da919183c3fe8a4fdbe3/maintainability" /></a> [![](https://jitpack.io/v/XYOracleNetwork/sdk-ble-android.svg)](https://jitpack.io/#XYOracleNetwork/sdk-ble-android)
-
+[![](https://jitpack.io/v/XYOracleNetwork/sdk-ble-android.svg)](https://jitpack.io/#XYOracleNetwork/sdk-ble-android) [![Maintainability](https://api.codeclimate.com/v1/badges/da919183c3fe8a4fdbe3/maintainability)](https://codeclimate.com/github/XYOracleNetwork/sdk-ble-android/maintainability)
 
 | Branches        | Status           |
 | ------------- |:-------------:|
-| Master      | [![](https://circleci.com/gh/XYOracleNetwork/sdk-ble-android.svg?style=shield)](https://circleci.com/gh/XYOracleNetwork/sdk-ble-android) |
-| Develop      | [![](https://circleci.com/gh/XYOracleNetwork/sdk-ble-android/tree/develop.svg?style=shield)](https://circleci.com/gh/XYOracleNetwork/sdk-ble-android/tree/develop)      |
+| Master      | [![Build Status](https://travis-ci.com/XYOracleNetwork/sdk-ble-android.svg?branch=master)](https://travis-ci.com/XYOracleNetwork/sdk-ble-android) |
+| Develop      | [![Build Status](https://travis-ci.com/XYOracleNetwork/sdk-ble-android.svg?branch=develop)](https://travis-ci.com/XYOracleNetwork/sdk-ble-android)      |
 
 A robust Bluetooth solution for Android. This BLE SDK was written from ground-up, in Kotlin,
  to help developers with the agonizing issues with Android the BLE stack.
@@ -221,7 +220,6 @@ myAwesomeReadCharacteristic.waitForReadRequest(byteArrayOf(0x13, 0x37), null).aw
 val writeValue = myAwesomeWriteCharacteristic.waitForWriteRequest(null).await()
 ```
 
-=======
 IMPORTANT:
 
 ```kotlin
@@ -238,10 +236,9 @@ scanner.stop()
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
-=======
+
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
 
 ## Credits
 
 <p align="center">Made with  ❤️  by [<b>XY - The Persistent Company</b>] (https://xy.company)</p>
-

@@ -146,7 +146,7 @@ class DeviceFragment : XYAppBaseFragment() {
 
             val conn = device.connection {
                 hasConnectionError = false
-                var er: String? = "Error"
+                var er: String?
 
                 device.deviceInformationService.systemId.get().await().let { it ->
                     it.error?.message.let { er = it }
@@ -208,7 +208,7 @@ class DeviceFragment : XYAppBaseFragment() {
 
             val conn = device.connection {
                 hasConnectionError = false
-                var er: String? = "Error"
+                var er: String?
 
                 device.deviceInformationService.systemId.get().await().let { it ->
                     it.error?.message.let { er = it }

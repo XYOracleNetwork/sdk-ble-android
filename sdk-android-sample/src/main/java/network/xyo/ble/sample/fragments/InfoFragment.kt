@@ -154,12 +154,14 @@ class InfoFragment : XYAppBaseFragment(), View.OnClickListener, CompoundButton.O
         GlobalScope.launch {
             val device: XYBluetoothDevice? = activity?.device
             val connection = device?.connectGatt()?.await()
+            if (connection?.error != null) {
+                activity?.showToast("Connection failed")
+                return@launch
+            }
             val result = device?.refreshGatt()?.await()
             activity?.showToast(result.toString())
 
         }
-        //val v = activity?.device.connect()
-        // activity?.scanner?.refreshGatt()
     }
 
     private fun connect() {

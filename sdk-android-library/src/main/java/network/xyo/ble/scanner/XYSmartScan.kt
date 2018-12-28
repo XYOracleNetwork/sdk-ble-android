@@ -1,17 +1,22 @@
 package network.xyo.ble.scanner
 
+import android.bluetooth.BluetoothAdapter
 import android.bluetooth.le.ScanCallback
+import android.content.BroadcastReceiver
 import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.location.LocationManager
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import network.xyo.ble.devices.XY4BluetoothDevice
 import network.xyo.ble.devices.XYBluetoothDevice
 import network.xyo.ble.devices.XYMobileBluetoothDevice
 import network.xyo.ble.gatt.XYBluetoothBase
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 
-abstract class XYFilteredSmartScan(context: Context) : XYBluetoothBase(context) {
+abstract class XYSmartScan(context: Context) : XYBluetoothBase(context) {
 
     var startTime = 0L
     var scanResultCount = 0
@@ -51,6 +56,31 @@ abstract class XYFilteredSmartScan(context: Context) : XYBluetoothBase(context) 
 
     init {
         devices[hostDevice.hashCode()] = hostDevice
+
+        val filter = IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED)
+
+        val bluetoothAdapterReceiver = object: BroadcastReceiver() {
+            override fun onReceive(context: Context?, intent: Intent?) {
+                val action = intent?.getAction()
+                logInfo("onReceive: Action=${action}")
+                when (action) {
+                    BluetoothAdapter.ACTION_STATE_CHANGED -> {
+                        val state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, -1)
+                        logInfo("onReceive: State= ${state}")
+                        if (intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, -1) == BluetoothAdapter.STATE_OFF) {
+                            if (restartingBluetooth)
+                            {
+                                restartingBluetooth = false
+                                BluetoothAdapter.getDefaultAdapter().enable()
+                            }
+                        }
+                        reportStatusChanged()
+                    }
+                }
+            }
+        }
+
+        context.applicationContext.registerReceiver(bluetoothAdapterReceiver, filter)
     }
 
     val status: Status
@@ -100,10 +130,20 @@ abstract class XYFilteredSmartScan(context: Context) : XYBluetoothBase(context) 
         return locationManager?.isProviderEnabled(LocationManager.GPS_PROVIDER) ?: false
     }
 
+    private fun reportStatusChanged() {
+        GlobalScope.launch {
+            synchronized(listeners) {
+                for (listener in listeners) {
+                    listener.value.statusChanged(status)
+                }
+            }
+        }
+    }
+
     private val listeners = HashMap<String, Listener>()
 
     open class Listener : XYBluetoothDevice.Listener() {
-        open fun statusChanged(status: BluetoothStatus) {
+        open fun statusChanged(status: Status) {
 
         }
     }
@@ -144,15 +184,24 @@ abstract class XYFilteredSmartScan(context: Context) : XYBluetoothBase(context) 
             _background = background
         }
 
-    open fun start() {
+    open suspend fun start(): Boolean {
         logInfo("start")
         startTime = now
+        return true
     }
 
-    open fun stop() {
+    open suspend fun stop(): Boolean {
         logInfo("stop")
         startTime = 0
         scanResultCount = 0
+        return true
+    }
+
+    private var restartingBluetooth = false
+    protected fun restartBluetooth() {
+        logInfo(">>>>> restartBluetooth: Restarting Bluetooth Adapter <<<<<")
+        restartingBluetooth = true
+        BluetoothAdapter.getDefaultAdapter().disable()
     }
 
     fun addListener(key: String, listener: Listener) {

@@ -26,7 +26,7 @@ class XYCharacteristicAdapter(services : Array<BluetoothGattCharacteristic>) : R
         listeners[key] = listener
     }
 
-    fun removeListener(key: String, listener : XYCharacteristicAdapterListener) {
+    fun removeListener(key: String) {
         listeners.remove(key)
     }
 

@@ -56,19 +56,22 @@ class FirmwareUpdateFragment : XYAppBaseFragment(), BackFragmentListener {
         }
 
         //setup file listview
-        val fileListAdapter = ArrayAdapter<String>(context, android.R.layout.simple_list_item_1)
-        lv_files?.adapter = fileListAdapter
+        val context = context
+        if (context != null) {
+            val fileListAdapter = ArrayAdapter<String>(context, android.R.layout.simple_list_item_1)
+            lv_files?.adapter = fileListAdapter
 
-        val fileList = OtaFile.list()
-        if (fileList == null) {
-            showToast("No Firmware files found. Add files in device folder 'Xyo'")
-        } else {
-            for (file in fileList) {
-                fileListAdapter.add(file)
-            }
+            val fileList = OtaFile.list()
+            if (fileList == null) {
+                showToast("No Firmware files found. Add files in device folder 'Xyo'")
+            } else {
+                for (file in fileList) {
+                    fileListAdapter.add(file)
+                }
 
-            lv_files.setOnItemClickListener { _, _, i, _ ->
-                firmwareFileName = fileList[i]
+                lv_files.setOnItemClickListener { _, _, i, _ ->
+                    firmwareFileName = fileList[i]
+                }
             }
         }
     }
@@ -190,6 +193,8 @@ class FirmwareUpdateFragment : XYAppBaseFragment(), BackFragmentListener {
     }
 
     //Callback from XYOFinderDeviceActivity.onActivityResult
+    // TODO - Why are we making this dependency? [AT] --
+    @Suppress("UNUSED_PARAMETER")
     fun onFileSelected(requestCode: Int, resultCode: Int, data: Intent?) {
         logInfo(TAG, "onFileSelected requestCode: $requestCode")
 
