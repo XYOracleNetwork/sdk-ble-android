@@ -27,7 +27,7 @@ open class XY2BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
     val sensorService = SensorService(this)
 
     override fun find(): Deferred<XYBluetoothResult<Int>> {
-        logInfo("find")
+        log.info("find")
         return controlService.buzzerSelect.set(2)
     }
 

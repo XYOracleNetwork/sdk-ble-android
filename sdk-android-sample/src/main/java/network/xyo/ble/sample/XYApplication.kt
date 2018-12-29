@@ -41,10 +41,12 @@ class XYApplication : Application() {
     }
 
     override fun onTerminate() {
-        XYBase.logInfo("XYApplication", "onTerminate")
+        log.info("onTerminate")
         GlobalScope.async {
             scanner.stop()
         }
         super.onTerminate()
     }
+
+    companion object: XYBase()
 }

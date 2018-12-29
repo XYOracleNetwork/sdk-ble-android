@@ -73,7 +73,7 @@ abstract class Service(val device: XYBluetoothDevice) : XYBase() {
 
     private fun writeInt(characteristic: UUID, value: Int, formatType: Int = BluetoothGattCharacteristic.FORMAT_UINT8, offset:Int = 0): Deferred<XYBluetoothResult<Int>> {
         return device.connectionWithResult {
-            logInfo("writeInt: connection")
+            log.info("writeInt: connection")
             return@connectionWithResult device.findAndWriteCharacteristic(
                     serviceUuid,
                     characteristic,

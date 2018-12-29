@@ -2,6 +2,7 @@ package network.xyo.ble.sample.fragments
 
 import android.content.Context
 import network.xyo.ble.sample.activities.XYOFinderDeviceActivity
+import network.xyo.core.XYBase
 import network.xyo.ui.XYBaseFragment
 import network.xyo.ui.ui
 
@@ -15,7 +16,7 @@ abstract class XYAppBaseFragment : XYBaseFragment() {
         if (context is XYOFinderDeviceActivity) {
             activity = context
         } else {
-            logError(TAG, "context is not instance of XYOFinderDeviceActivity!", true)
+            log.error("context is not instance of XYOFinderDeviceActivity!", true)
         }
     }
 
@@ -37,7 +38,5 @@ abstract class XYAppBaseFragment : XYBaseFragment() {
         }
     }
 
-    companion object {
-        private val TAG = XYAppBaseFragment::class.java.simpleName
-    }
+    companion object: XYBase()
 }

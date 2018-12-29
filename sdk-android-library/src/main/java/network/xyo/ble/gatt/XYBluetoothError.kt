@@ -1,12 +1,10 @@
 package network.xyo.ble.gatt
-
 import network.xyo.core.XYBase
-
 
 open class XYBluetoothError(message: String) : Error(message) {
 
     init {
-        XYBase.logError(tag, message, false)
+        log.error(message, false)
     }
 
     val tag: String
@@ -18,4 +16,6 @@ open class XYBluetoothError(message: String) : Error(message) {
     override fun toString(): String {
         return "$tag: ${super.toString()}"
     }
+
+    companion object: XYBase()
 }

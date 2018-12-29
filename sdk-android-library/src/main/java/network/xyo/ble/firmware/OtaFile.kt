@@ -9,8 +9,7 @@ import java.io.InputStream
 import java.util.*
 import kotlin.experimental.xor
 
-class OtaFile @Throws(IOException::class)
-private constructor(private val inputStream: InputStream?) {
+class OtaFile(private val inputStream: InputStream?): XYBase() {
 
     private var bytes: ByteArray? = null
     private var blocks: Array<Array<ByteArray>>? = null
@@ -66,7 +65,7 @@ private constructor(private val inputStream: InputStream?) {
         totalChunkCount = 0
         blocks = fileEmptyArray(numberOfBlocks)
 
-        XYBase.logInfo("OtaFile", "initBlocksSuota numberOfBlocks: $numberOfBlocks")
+        log.info("OtaFile", "initBlocksSuota numberOfBlocks: $numberOfBlocks")
 
         var byteOffset = 0
         // Loop through all the bytes and split them into pieces the size of the default chunk size
@@ -90,7 +89,7 @@ private constructor(private val inputStream: InputStream?) {
                     chunkSize = blockSize.rem(fileChunkSize)
                 }
 
-                //XYBase.logInfo("OtaFile", "total bytes: " + bytes!!.size + ", offset: " + byteOffset + ", block: " + i + ", chunk: " + (chunkNumber + 1) + ", blockSize: " + blockSize + ", chunkSize: " + chunkSize)
+                //XYBase.log.info("OtaFile", "total bytes: " + bytes!!.size + ", offset: " + byteOffset + ", block: " + i + ", chunk: " + (chunkNumber + 1) + ", blockSize: " + blockSize + ", chunkSize: " + chunkSize)
                 val chunk = Arrays.copyOfRange(bytes!!, byteOffset, byteOffset + chunkSize)
                 blocks!![i][chunkNumber] = chunk
                 byteOffset += chunkSize
@@ -123,7 +122,7 @@ private constructor(private val inputStream: InputStream?) {
             val intVal = byteValue.toInt()
             crcCode = crcCode xor intVal.toByte()
         }
-        //XYBase.logInfo("OtaFile", String.format("Firmware CRC: %#04x", crc_code and 0xff.toByte()))
+        //XYBase.log.info("OtaFile", String.format("Firmware CRC: %#04x", crc_code and 0xff.toByte()))
 
         return crcCode
     }

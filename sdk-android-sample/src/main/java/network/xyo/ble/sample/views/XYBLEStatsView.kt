@@ -31,7 +31,7 @@ class XYBLEStatsView(context: Context, attrs: AttributeSet) : LinearLayout(conte
         }
 
         override fun connectionStateChanged(device: XYBluetoothDevice, newState: Int) {
-            XYBase.logInfo(TAG, "connectionStateChanged")
+            log.info("connectionStateChanged")
         }
 
         override fun statusChanged(status: XYSmartScan.Status) {
@@ -41,7 +41,7 @@ class XYBLEStatsView(context: Context, attrs: AttributeSet) : LinearLayout(conte
 
     init {
         scanner = (context.applicationContext as XYApplication).scanner
-        scanner.addListener(TAG, smartScanListener)
+        scanner.addListener("XYBLEStatsView", smartScanListener)
     }
 
     fun update() {
@@ -53,7 +53,5 @@ class XYBLEStatsView(context: Context, attrs: AttributeSet) : LinearLayout(conte
         }
     }
 
-    companion object {
-        private val TAG = XYBLEStatsView::class.java.simpleName
-    }
+    companion object: XYBase()
 }
