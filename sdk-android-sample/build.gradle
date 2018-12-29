@@ -74,6 +74,7 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     api "com.google.android.material:material:1.0.0"
     api "androidx.coordinatorlayout:coordinatorlayout:1.0.0"
+    api "com.nabinbhandari.android:permissions:3.8"
 
     localImplementation project(':xycore')
     jitpackApi 'com.github.XYOracleNetwork:sdk-core-android:1.0.3'

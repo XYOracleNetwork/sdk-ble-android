@@ -28,6 +28,6 @@ class CallByVersion : XYBase() {
                 return
             }
         }
-        logError("No Call for OS Version Found", true)
+        log.error("No Call for OS Version Found", true)
     }
 }

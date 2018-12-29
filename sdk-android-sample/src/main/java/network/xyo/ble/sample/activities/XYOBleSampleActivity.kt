@@ -16,15 +16,16 @@ import network.xyo.ble.devices.XYFinderBluetoothDevice
 import network.xyo.ble.sample.R
 import network.xyo.ble.sample.adapters.XYDeviceAdapter
 import network.xyo.ble.scanner.XYSmartScan
-import network.xyo.core.XYPermissions
 import network.xyo.ui.ui
+import com.nabinbhandari.android.permissions.PermissionHandler
+import com.nabinbhandari.android.permissions.Permissions
 
 
 class XYOBleSampleActivity : XYOAppBaseActivity() {
     private var adapter: BaseAdapter? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        logInfo("onCreate")
+        log.info("onCreate")
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.activity_xyo_ble_sample)
@@ -93,16 +94,29 @@ class XYOBleSampleActivity : XYOAppBaseActivity() {
     }
 
     override fun onResume() {
-        logInfo("onResume")
+        log.info("onResume")
         super.onResume()
         connectListeners()
-        val permissions = XYPermissions(this)
-        permissions.requestPermission(android.Manifest.permission.ACCESS_FINE_LOCATION,
+
+        Permissions.check(
+            this,
+            Manifest.permission.ACCESS_FINE_LOCATION,
                 "Location services are needed to connection and track your finders.",
-                XYPermissions.LOCATION_PERMISSIONS_REQ_CODE)
+            object : PermissionHandler() {
+                override fun onGranted() {
+                }
+            }
+        )
 
-
-        permissions.requestPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE, "Allow app to access your storage in order to load firmware files?", 0)
+        Permissions.check(
+                this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                "Allow app to access your storage in order to load firmware files?",
+                object : PermissionHandler() {
+                    override fun onGranted() {
+                    }
+                }
+        )
 
         ui { adapter?.notifyDataSetChanged() }
 

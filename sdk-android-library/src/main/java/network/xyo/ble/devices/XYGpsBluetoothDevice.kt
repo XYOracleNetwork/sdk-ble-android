@@ -52,7 +52,7 @@ open class XYGpsBluetoothDevice(context: Context, scanResult: XYScanResult, hash
     override val prefix = "xy:gps"
 
     override fun find(): Deferred<XYBluetoothResult<Int>> {
-        logInfo("find")
+        log.info("find")
         return controlService.buzzerSelect.set(1)
     }
 
@@ -62,7 +62,7 @@ open class XYGpsBluetoothDevice(context: Context, scanResult: XYScanResult, hash
     }
 
 //    fun reportButtonPressed(state: Int) {
-//        logInfo("reportButtonPressed")
+//        log.info("reportButtonPressed")
 //        synchronized(listeners) {
 //            for (listener in listeners) {
 //                val xy3Listener = listener as? Listener
@@ -115,13 +115,13 @@ open class XYGpsBluetoothDevice(context: Context, scanResult: XYScanResult, hash
         }
 
         fun reportGlobalButtonPressed(device: XYGpsBluetoothDevice, state: ButtonPress) {
-            logInfo("reportButtonPressed (Global)")
+            log.info("reportButtonPressed (Global)")
             GlobalScope.launch {
                 synchronized(globalListeners) {
                     for (listener in globalListeners) {
                         val xyFinderListener = listener.value as? XYFinderBluetoothDevice.Listener
                         if (xyFinderListener != null) {
-                            logInfo("reportButtonPressed: $xyFinderListener")
+                            log.info("reportButtonPressed: $xyFinderListener")
                             GlobalScope.launch {
                                 when (state) {
                                     ButtonPress.Single -> xyFinderListener.buttonSinglePressed(device)

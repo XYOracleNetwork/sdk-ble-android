@@ -37,7 +37,7 @@ class XYOFinderDeviceActivity : XYOAppBaseActivity() {
         super.onCreate(savedInstanceState)
 
         val deviceHash = intent.getIntExtra(EXTRA_DEVICEHASH, 0)
-        logInfo("onCreate: $deviceHash")
+        log.info("onCreate: $deviceHash")
         device = scanner.devices[deviceHash]
         if (device == null) {
             showToast("Failed to Find Device")
@@ -63,7 +63,7 @@ class XYOFinderDeviceActivity : XYOAppBaseActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        logInfo(TAG, "onActivityResult requestCode: $requestCode")
+        log.info(TAG, "onActivityResult requestCode: $requestCode")
 
         val frag = (supportFragmentManager.findFragmentById(R.id.container) as FirmwareUpdateFragment?)
         frag?.onFileSelected(requestCode, resultCode, data)
@@ -94,7 +94,7 @@ class XYOFinderDeviceActivity : XYOAppBaseActivity() {
         }
 
         override fun connectionStateChanged(device: XYBluetoothDevice, newState: Int) {
-            logInfo("connectionStateChanged: $newState")
+            log.info("connectionStateChanged: $newState")
             update()
             if (newState == 2) {
                 showToast("Connected")
@@ -132,7 +132,7 @@ class XYOFinderDeviceActivity : XYOAppBaseActivity() {
         }
 
         override fun connectionStateChanged(device: XYBluetoothDevice, newState: Int) {
-            logInfo("connectionStateChanged: $newState")
+            log.info("connectionStateChanged: $newState")
             update()
             if (newState == 2) {
                 showToast("Connected")
@@ -155,13 +155,13 @@ class XYOFinderDeviceActivity : XYOAppBaseActivity() {
     }
 
     private fun addListener() {
-        logInfo("addListener: $device")
+        log.info("addListener: $device")
         (device as? XY4BluetoothDevice)?.addListener(TAG, xy4DeviceListener)
         (device as? XY3BluetoothDevice)?.addListener(TAG, xy3DeviceListener)
     }
 
     private fun removeListener() {
-        logInfo("removeListener: $device")
+        log.info("removeListener: $device")
         (device as? XY4BluetoothDevice)?.removeListener(TAG)
         (device as? XY3BluetoothDevice)?.removeListener(TAG)
     }

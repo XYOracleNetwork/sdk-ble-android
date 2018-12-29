@@ -14,7 +14,7 @@ import java.util.*
 @TargetApi(21)
 class XYSmartScanModern(context: Context) : XYSmartScan(context) {
     override suspend fun start(): Boolean {
-        logInfo("start")
+        log.info("start")
         super.start()
 
         val result = asyncBle {
@@ -22,13 +22,13 @@ class XYSmartScanModern(context: Context) : XYSmartScan(context) {
             val bluetoothAdapter = bluetoothManager?.adapter
 
             bluetoothAdapter.guard {
-                logInfo("Bluetooth Disabled")
+                log.info("Bluetooth Disabled")
                 return@asyncBle XYBluetoothResult(false)
             }
 
             val scanner = bluetoothAdapter?.bluetoothLeScanner
             if (scanner == null) {
-                logInfo("startScan:Failed to get Bluetooth Scanner. Disabled?")
+                log.info("startScan:Failed to get Bluetooth Scanner. Disabled?")
                 return@asyncBle XYBluetoothResult(false)
             } else {
                 val filters = ArrayList<ScanFilter>()
@@ -47,7 +47,7 @@ class XYSmartScanModern(context: Context) : XYSmartScan(context) {
     private val callback = object : ScanCallback() {
         override fun onBatchScanResults(results: MutableList<ScanResult>?) {
             super.onBatchScanResults(results)
-            //logInfo("onBatchScanResults: $results")
+            //log.info("onBatchScanResults: $results")
             results.guard { return }
             val xyResults = ArrayList<XYScanResult>()
             for (result in results!!) {
@@ -58,7 +58,7 @@ class XYSmartScanModern(context: Context) : XYSmartScan(context) {
 
         override fun onScanFailed(errorCode: Int) {
             super.onScanFailed(errorCode)
-            logError("onScanFailed: ${errorCode}, ${codeToScanFailed(errorCode)}", false)
+            log.error("onScanFailed: ${errorCode}, ${codeToScanFailed(errorCode)}", false)
             if (ScanCallback.SCAN_FAILED_APPLICATION_REGISTRATION_FAILED == errorCode) {
                 restartBluetooth()
             }
@@ -66,7 +66,7 @@ class XYSmartScanModern(context: Context) : XYSmartScan(context) {
 
         override fun onScanResult(callbackType: Int, result: ScanResult?) {
             super.onScanResult(callbackType, result)
-            //logInfo("onBatchScanResults: $result")
+            //log.info("onBatchScanResults: $result")
             result.guard { return }
             val xyResults = ArrayList<XYScanResult>()
             xyResults.add(XYScanResultModern(result!!))
@@ -79,19 +79,19 @@ class XYSmartScanModern(context: Context) : XYSmartScan(context) {
     }
 
     override suspend fun stop(): Boolean {
-        logInfo("stop")
+        log.info("stop")
         super.stop()
         val result = asyncBle {
             val bluetoothAdapter = this@XYSmartScanModern.bluetoothAdapter
 
             if (bluetoothAdapter == null) {
-                logInfo("stop: Bluetooth Disabled")
+                log.info("stop: Bluetooth Disabled")
                 return@asyncBle XYBluetoothResult(false)
             }
 
             val scanner = bluetoothAdapter.bluetoothLeScanner
             if (scanner == null) {
-                logInfo("stop:Failed to get Bluetooth Scanner. Disabled?")
+                log.info("stop:Failed to get Bluetooth Scanner. Disabled?")
                 return@asyncBle XYBluetoothResult(false)
             }
 

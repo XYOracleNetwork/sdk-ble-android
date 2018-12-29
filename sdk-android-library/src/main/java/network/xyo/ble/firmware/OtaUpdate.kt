@@ -5,9 +5,9 @@ import network.xyo.ble.devices.XY4BluetoothDevice
 import network.xyo.ble.devices.XYBluetoothDevice
 import network.xyo.ble.gatt.XYBluetoothResult
 import network.xyo.ble.gatt.asyncBle
-import network.xyo.core.XYBase.Companion.logInfo
+import network.xyo.core.XYBase
 
-class OtaUpdate(var device: XY4BluetoothDevice, private val otaFile: OtaFile?) {
+class OtaUpdate(var device: XY4BluetoothDevice, private val otaFile: OtaFile?): XYBase() {
 
     private val listeners = HashMap<String, Listener>()
     private var updateJob: Job? = null
@@ -118,7 +118,7 @@ class OtaUpdate(var device: XY4BluetoothDevice, private val otaFile: OtaFile?) {
                 hasError = true
                 failUpdate(error.message.toString())
                 updateJob?.cancelAndJoin()
-                logInfo(TAG, "startUpdate - MemDev ERROR: $error")
+                log.info( "startUpdate - MemDev ERROR: $error")
             }
 
             //STEP 2 - GpioMap
@@ -127,7 +127,7 @@ class OtaUpdate(var device: XY4BluetoothDevice, private val otaFile: OtaFile?) {
                 hasError = true
                 failUpdate(error.message.toString())
                 updateJob?.cancelAndJoin()
-                logInfo(TAG, "startUpdate - GPIO ERROR: $error")
+                log.info( "startUpdate - GPIO ERROR: $error")
             }
 
             //STEP 3 - Set patch length for the first and last block
@@ -136,7 +136,7 @@ class OtaUpdate(var device: XY4BluetoothDevice, private val otaFile: OtaFile?) {
                 hasError = true
                 failUpdate(error.message.toString())
                 updateJob?.cancelAndJoin()
-                logInfo(TAG, "startUpdate - patch ERROR: $error")
+                log.info( "startUpdate - patch ERROR: $error")
             }
 
             //STEP 4 - send blocks
@@ -147,26 +147,26 @@ class OtaUpdate(var device: XY4BluetoothDevice, private val otaFile: OtaFile?) {
                     hasError = true
                     failUpdate(error.message.toString())
                     updateJob?.cancelAndJoin()
-                    logInfo(TAG, "startUpdate - sendBlock ERROR: $error")
+                    log.info( "startUpdate - sendBlock ERROR: $error")
                 }
 
                 if (lastBlock) {
                     if (!lastBlockReady && otaFile?.numberOfBytes?.rem(otaFile.fileBlockSize) != 0) {
-                        logInfo(TAG, "startUpdate LAST BLOCK - SET PATCH LEN: $lastBlock")
+                        log.info( "startUpdate LAST BLOCK - SET PATCH LEN: $lastBlock")
                         val finalPatchResult = setPatchLength().await()
 
                         finalPatchResult.error?.let { error ->
                             hasError = true
                             failUpdate(error.message.toString())
                             updateJob?.cancelAndJoin()
-                            logInfo(TAG, "startUpdate - finalPatchResult ERROR: $error")
+                            log.info( "startUpdate - finalPatchResult ERROR: $error")
                         }
                     }
                 }
 
             }
 
-            logInfo(TAG, "startUpdate done sending blocks")
+            log.info( "startUpdate done sending blocks")
 
             //SEND END SIGNAL
             val endResult = sendEndSignal().await()
@@ -174,13 +174,13 @@ class OtaUpdate(var device: XY4BluetoothDevice, private val otaFile: OtaFile?) {
                 hasError = true
                 failUpdate(error.message.toString())
                 updateJob?.cancelAndJoin()
-                logInfo(TAG, "startUpdate - endSignal Result ERROR: $error")
+                log.info( "startUpdate - endSignal Result ERROR: $error")
             }
 
             //REBOOT
             val reboot = sendReboot().await()
             reboot.error?.let { error ->
-                logInfo(TAG, "startUpdate - reboot ERROR: $error")
+                log.info( "startUpdate - reboot ERROR: $error")
             }
 
             passUpdate()
@@ -222,7 +222,7 @@ class OtaUpdate(var device: XY4BluetoothDevice, private val otaFile: OtaFile?) {
     private fun setMemDev(): Deferred<XYBluetoothResult<Int>> {
         return asyncBle {
             val memType = MEMORY_TYPE_EXTERNAL_SPI shl 24 or _imageBank
-            logInfo(TAG, "setMemDev: " + String.format("%#010x", memType))
+            log.info( "setMemDev: " + String.format("%#010x", memType))
             val result = device.spotaService.SPOTA_MEM_DEV.set(memType).await()
 
             return@asyncBle XYBluetoothResult(result.value, result.error)
@@ -249,7 +249,7 @@ class OtaUpdate(var device: XY4BluetoothDevice, private val otaFile: OtaFile?) {
                 lastBlockReady = true
             }
 
-            logInfo(TAG, "setPatchLength blockSize: $blockSize - ${String.format("%#06x", blockSize)}")
+            log.info( "setPatchLength blockSize: $blockSize - ${String.format("%#06x", blockSize)}")
 
             val result = device.spotaService.SPOTA_PATCH_LEN.set(blockSize!!).await()
 
@@ -270,12 +270,12 @@ class OtaUpdate(var device: XY4BluetoothDevice, private val otaFile: OtaFile?) {
 
             val chunk = block[i]
             val msg = "Sending block " + (blockCounter + 1) + ", chunk " + (i + 1) + " of " + block.size + ", size " + chunk.size
-            logInfo(TAG, msg)
+            log.info( msg)
 
 
 
             if (lastChunk) {
-                logInfo(TAG, "sendBlock... lastChunk")
+                log.info( "sendBlock... lastChunk")
                 if (!lastBlock) {
                     blockCounter++
                 } else {
@@ -294,10 +294,10 @@ class OtaUpdate(var device: XY4BluetoothDevice, private val otaFile: OtaFile?) {
 
 
     private fun sendEndSignal(): Deferred<XYBluetoothResult<Int>> {
-        logInfo(TAG, "sendEndSignal...")
+        log.info( "sendEndSignal...")
         return asyncBle {
             val result = device.spotaService.SPOTA_MEM_DEV.set(END_SIGNAL).await()
-            logInfo(TAG, "sendEndSignal result: $result")
+            log.info( "sendEndSignal result: $result")
             endSignalSent = true
             return@asyncBle XYBluetoothResult(result.value, result.error)
         }
@@ -305,7 +305,7 @@ class OtaUpdate(var device: XY4BluetoothDevice, private val otaFile: OtaFile?) {
 
     //DONE
     private fun sendReboot(): Deferred<XYBluetoothResult<Int>> {
-        logInfo(TAG, "sendReboot...")
+        log.info( "sendReboot...")
         return asyncBle {
             val result = device.spotaService.SPOTA_MEM_DEV.set(REBOOT_SIGNAL).await()
             return@asyncBle XYBluetoothResult(result.value, result.error)

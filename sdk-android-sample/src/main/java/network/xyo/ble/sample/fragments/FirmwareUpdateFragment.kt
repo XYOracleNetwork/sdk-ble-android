@@ -21,6 +21,7 @@ import network.xyo.ble.firmware.OtaUpdate
 import network.xyo.ble.sample.R
 import network.xyo.ui.ui
 import network.xyo.ble.sample.fragments.core.BackFragmentListener
+import network.xyo.core.XYBase
 
 
 class FirmwareUpdateFragment : XYAppBaseFragment(), BackFragmentListener {
@@ -37,7 +38,7 @@ class FirmwareUpdateFragment : XYAppBaseFragment(), BackFragmentListener {
             if (OtaFile.createFileDirectory()) {
                 context?.getSharedPreferences("settings", Context.MODE_PRIVATE)?.edit()?.putBoolean("fileDirectoriesCreated", true)?.apply()
             } else {
-                logInfo(TAG, "Failed to create files directory")
+                log.info("Failed to create files directory")
             }
         }
     }
@@ -101,7 +102,7 @@ class FirmwareUpdateFragment : XYAppBaseFragment(), BackFragmentListener {
 
     private val updateListener = object : OtaUpdate.Listener() {
         override fun updated(device: XYBluetoothDevice) {
-            logInfo("updateListener: updated")
+            log.info("updateListener: updated")
             updateInProgress = false
             ui {
                 activity?.hideProgressSpinner()
@@ -111,7 +112,7 @@ class FirmwareUpdateFragment : XYAppBaseFragment(), BackFragmentListener {
         }
 
         override fun failed(device: XYBluetoothDevice, error: String) {
-            logInfo("updateListener: failed: $error")
+            log.info("updateListener: failed: $error")
             updateInProgress = false
             val gattError = error.contains("133")
 
@@ -130,7 +131,7 @@ class FirmwareUpdateFragment : XYAppBaseFragment(), BackFragmentListener {
 
         override fun progress(sent: Int, total: Int) {
             val txt = "sending chunk  $sent of $total"
-            logInfo(txt)
+            log.info(txt)
             ui {
                 tv_file_progress?.text = txt
             }
@@ -184,7 +185,7 @@ class FirmwareUpdateFragment : XYAppBaseFragment(), BackFragmentListener {
                     tv_file_progress?.text = getString(R.string.update_started)
                 }
 
-                logInfo(TAG, "performUpdate started: $String")
+                log.info("performUpdate started: $String")
                 (activity?.device as? XY4BluetoothDevice)?.updateFirmware(firmwareFileName!!, updateListener)
             } else {
                 ui { showToast("Select a File first") }
@@ -196,7 +197,7 @@ class FirmwareUpdateFragment : XYAppBaseFragment(), BackFragmentListener {
     // TODO - Why are we making this dependency? [AT] --
     @Suppress("UNUSED_PARAMETER")
     fun onFileSelected(requestCode: Int, resultCode: Int, data: Intent?) {
-        logInfo(TAG, "onFileSelected requestCode: $requestCode")
+        log.info( "onFileSelected requestCode: $requestCode")
 
         data?.data.let { uri ->
             tv_file_name?.text = uri.toString()
@@ -204,10 +205,7 @@ class FirmwareUpdateFragment : XYAppBaseFragment(), BackFragmentListener {
 
     }
 
-    companion object {
-        private val TAG = FirmwareUpdateFragment::class.java.simpleName
-
-        fun newInstance() =
-                FirmwareUpdateFragment()
+    companion object: XYBase() {
+        fun newInstance() = FirmwareUpdateFragment()
     }
 }

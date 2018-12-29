@@ -99,7 +99,7 @@ open class XYIBeaconBluetoothDevice(context: Context, scanResult: XYScanResult?,
                     UUID(high, low)
                 } catch (ex: BufferUnderflowException) {
                     // can throw a BufferUnderflowException if the beacon sends an invalid value for UUID.
-                    logError("refreshGatt catch $ex", true)
+                    log.error("refreshGatt catch $ex", true)
                     return null
                 }
             } else {

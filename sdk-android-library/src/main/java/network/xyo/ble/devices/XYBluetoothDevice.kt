@@ -82,7 +82,7 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, private
         checkingForExit = true
         GlobalScope.launch {
             while (checkingForExit) {
-                //logInfo("checkForExit: $id : $rssi : $now : $outOfRangeDelay : $lastAdTime : $lastAccessTime")
+                //log.info("checkForExit: $id : $rssi : $now : $outOfRangeDelay : $lastAdTime : $lastAccessTime")
                 delay(outOfRangeDelay)
 
                 //check if something else has already marked it as exited
@@ -108,7 +108,7 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, private
     }
 
     internal open fun onEnter() {
-        logInfo("onEnter: $address")
+        log.info("onEnter: $address")
         enterCount++
         lastAdTime = now
         synchronized(listeners) {
@@ -122,7 +122,7 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, private
     }
 
     internal open fun onExit() {
-        logInfo("onExit: $address")
+        log.info("onExit: $address")
         exitCount++
         synchronized(listeners) {
             for ((_, listener) in listeners) {
@@ -161,11 +161,11 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, private
     }
 
     override fun onConnectionStateChange(newState: Int) {
-        logInfo("onConnectionStateChange: $id : $newState: $listeners.size")
+        log.info("onConnectionStateChange: $id : $newState: $listeners.size")
         synchronized(listeners) {
             for ((tag, listener) in listeners) {
                 GlobalScope.launch {
-                    logInfo("connectionStateChanged: $tag : $newState")
+                    log.info("connectionStateChanged: $tag : $newState")
                     listener.connectionStateChanged(this@XYBluetoothDevice, newState)
                     if (newState == BluetoothGatt.STATE_CONNECTED) {
                         lastAccessTime = now
@@ -191,7 +191,7 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, private
     }
 
     fun addListener(key: String, listener: Listener) {
-        logInfo("addListener:$key:$listener")
+        log.info("addListener:$key:$listener")
         GlobalScope.launch {
             synchronized(listeners) {
                 listeners.put(key, listener)
@@ -200,7 +200,7 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, private
     }
 
     fun removeListener(key: String) {
-        logInfo("removeListener:$key")
+        log.info("removeListener:$key")
         GlobalScope.launch {
             synchronized(listeners) {
                 listeners.remove(key)

@@ -80,7 +80,7 @@ class XYDeviceItemView(context: Context, attrs: AttributeSet) : RelativeLayout(c
         }
 
         override fun connectionStateChanged(device: XYBluetoothDevice, newState: Int) {
-            XYBase.logInfo(TAG,"connectionStateChanged")
+            log.info(TAG,"connectionStateChanged")
         }
 
         override fun buttonSinglePressed(device: XYFinderBluetoothDevice) {
@@ -93,7 +93,7 @@ class XYDeviceItemView(context: Context, attrs: AttributeSet) : RelativeLayout(c
         if (device != null) {
             device.removeListener(TAG)
         } else {
-            XYBase.logError(TAG, "Setting NULL device")
+            log.error("Setting NULL device")
         }
 
         this.device = device
@@ -102,7 +102,7 @@ class XYDeviceItemView(context: Context, attrs: AttributeSet) : RelativeLayout(c
         update()
     }
 
-    companion object {
+    companion object : XYBase() {
         private val TAG = XYDeviceItemView::class.java.simpleName
     }
 }

@@ -127,7 +127,7 @@ open class XYFinderBluetoothDevice(context: Context, scanResult: XYScanResult, h
 
     //signal the user to where it is, usually make it beep
     open fun find(): Deferred<XYBluetoothResult<Int>> {
-        logError(UnsupportedOperationException().toString(), true)
+        log.error(UnsupportedOperationException().toString(), true)
         return asyncBle {
             return@asyncBle XYBluetoothResult<Int>(XYBluetoothError("Not Implemented"))
         }
@@ -135,49 +135,49 @@ open class XYFinderBluetoothDevice(context: Context, scanResult: XYScanResult, h
 
     //turn off finding, if supported
     open fun stopFind(): Deferred<XYBluetoothResult<Int>> {
-        logError(UnsupportedOperationException(), true)
+        log.error(UnsupportedOperationException(), true)
         return asyncBle {
             return@asyncBle XYBluetoothResult<Int>(XYBluetoothError("Not Implemented"))
         }
     }
 
     open fun lock(): Deferred<XYBluetoothResult<ByteArray>> {
-        logError(UnsupportedOperationException(), true)
+        log.error(UnsupportedOperationException(), true)
         return asyncBle {
             return@asyncBle XYBluetoothResult<ByteArray>(XYBluetoothError("Not Implemented"))
         }
     }
 
     open fun unlock(): Deferred<XYBluetoothResult<ByteArray>> {
-        logError(UnsupportedOperationException(), true)
+        log.error(UnsupportedOperationException(), true)
         return asyncBle {
             return@asyncBle XYBluetoothResult<ByteArray>(XYBluetoothError("Not Implemented"))
         }
     }
 
     open fun stayAwake(): Deferred<XYBluetoothResult<Int>> {
-        logError(UnsupportedOperationException(), true)
+        log.error(UnsupportedOperationException(), true)
         return asyncBle {
             return@asyncBle XYBluetoothResult<Int>(XYBluetoothError("Not Implemented"))
         }
     }
 
     open fun fallAsleep(): Deferred<XYBluetoothResult<Int>> {
-        logError(UnsupportedOperationException(), true)
+        log.error(UnsupportedOperationException(), true)
         return asyncBle {
             return@asyncBle XYBluetoothResult<Int>(XYBluetoothError("Not Implemented"))
         }
     }
 
     open fun restart(): Deferred<XYBluetoothResult<Int>> {
-        logError(UnsupportedOperationException(), true)
+        log.error(UnsupportedOperationException(), true)
         return asyncBle {
             return@asyncBle XYBluetoothResult<Int>(XYBluetoothError("Not Implemented"))
         }
     }
 
     open fun batteryLevel(): Deferred<XYBluetoothResult<Int>> {
-        logError(UnsupportedOperationException(), true)
+        log.error(UnsupportedOperationException(), true)
         return asyncBle {
             return@asyncBle XYBluetoothResult<Int>(XYBluetoothError("Not Implemented"))
         }
@@ -210,13 +210,13 @@ open class XYFinderBluetoothDevice(context: Context, scanResult: XYScanResult, h
         }
 
     internal open fun reportButtonPressed(state: ButtonPress) {
-        logInfo("reportButtonPressed")
+        log.info("reportButtonPressed")
         GlobalScope.launch {
             synchronized(listeners) {
                 for (listener in listeners) {
                     val xyFinderListener = listener.value as? Listener
                     if (xyFinderListener != null) {
-                        logInfo("reportButtonPressed: $xyFinderListener")
+                        log.info("reportButtonPressed: $xyFinderListener")
                         GlobalScope.launch {
                             when (state) {
                                 ButtonPress.Single -> xyFinderListener.buttonSinglePressed(this@XYFinderBluetoothDevice)

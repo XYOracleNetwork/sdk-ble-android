@@ -22,11 +22,11 @@ class XYScanResultManual (
         get() = _timestampNanos
 
     override fun describeContents(): Int {
-        logError("describeContents: Not Implemented", true)
+        log.error("describeContents: Not Implemented", true)
         return 0
     }
 
     override fun writeToParcel(dest: Parcel, flags: Int) {
-        logError("writeToParcel: Not Implemented", true)
+        log.error("writeToParcel: Not Implemented", true)
     }
 }

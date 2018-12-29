@@ -45,7 +45,7 @@ open class XY4BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
 
     private val buttonListener = object : XYBluetoothGattCallback() {
         override fun onCharacteristicChanged(gatt: BluetoothGatt?, characteristic: BluetoothGattCharacteristic?) {
-            logInfo("onCharacteristicChanged")
+            log.info("onCharacteristicChanged")
             super.onCharacteristicChanged(gatt, characteristic)
             if (characteristic?.uuid == primary.buttonState.uuid) {
                 reportButtonPressed(buttonPressFromInt(characteristic.getIntValue(BluetoothGattCharacteristic.FORMAT_UINT8, 0)))
@@ -62,32 +62,32 @@ open class XY4BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
     override val prefix = "xy:ibeacon"
 
     override fun find(): Deferred<XYBluetoothResult<Int>> {
-        logInfo("find")
+        log.info("find")
         return primary.buzzer.set(11)
     }
 
     override fun lock(): Deferred<XYBluetoothResult<ByteArray>> {
-        logInfo("lock")
+        log.info("lock")
         return primary.lock.set(DefaultLockCode)
     }
 
     override fun unlock(): Deferred<XYBluetoothResult<ByteArray>> {
-        logInfo("unlock")
+        log.info("unlock")
         return primary.unlock.set(DefaultLockCode)
     }
 
     override fun stayAwake(): Deferred<XYBluetoothResult<Int>> {
-        logInfo("stayAwake")
+        log.info("stayAwake")
         return primary.stayAwake.set(1)
     }
 
     override fun fallAsleep(): Deferred<XYBluetoothResult<Int>> {
-        logInfo("fallAsleep")
+        log.info("fallAsleep")
         return primary.stayAwake.set(0)
     }
 
     override fun batteryLevel(): Deferred<XYBluetoothResult<Int>> {
-        logInfo("batteryLevel")
+        log.info("batteryLevel")
         return batteryService.level.get()
     }
 
@@ -95,9 +95,9 @@ open class XY4BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
         super.onDetect(scanResult)
         if (scanResult != null) {
             if (pressFromScanResult(scanResult)) {
-                logInfo("onDetect: pressFromScanResult: true")
+                log.info("onDetect: pressFromScanResult: true")
                 if (now - lastButtonPressTime > BUTTON_ADVERTISEMENT_LENGTH) {
-                    logInfo("onDetect: pressFromScanResult: first")
+                    log.info("onDetect: pressFromScanResult: first")
                     reportButtonPressed(ButtonPress.Single)
                     lastButtonPressTime = now
                 }
@@ -128,15 +128,15 @@ open class XY4BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
 
     private fun enableButtonNotifyIfConnected() {
 
-        logInfo("enableButtonNotifyIfConnected")
+        log.info("enableButtonNotifyIfConnected")
         if (connectionState == ConnectionState.Connected) {
-            logInfo("enableButtonNotifyIfConnected: Connected")
+            log.info("enableButtonNotifyIfConnected: Connected")
             primary.buttonState.enableNotify(true)
         }
     }
 
     override fun onConnectionStateChange(newState: Int) {
-        logInfo("onConnectionStateChange")
+        log.info("onConnectionStateChange")
         super.onConnectionStateChange(newState)
         enableButtonNotifyIfConnected()
     }
@@ -198,13 +198,13 @@ open class XY4BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
         }
 
         fun reportGlobalButtonPressed(device: XY4BluetoothDevice, state: ButtonPress) {
-            logInfo("reportButtonPressed (Global)")
+            log.info("reportButtonPressed (Global)")
             GlobalScope.launch {
                 synchronized(globalListeners) {
                     for (listener in globalListeners) {
                         val xyFinderListener = listener.value as? XYFinderBluetoothDevice.Listener
                         if (xyFinderListener != null) {
-                            logInfo("reportButtonPressed: $xyFinderListener")
+                            log.info("reportButtonPressed: $xyFinderListener")
                             GlobalScope.launch {
                                 when (state) {
                                     ButtonPress.Single -> xyFinderListener.buttonSinglePressed(device)
