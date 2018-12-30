@@ -77,7 +77,7 @@ dependencies {
     api "com.nabinbhandari.android:permissions:3.8"
 
     localImplementation project(':xycore')
-    jitpackApi 'com.github.XYOracleNetwork:sdk-core-android:1.1.0'
+    jitpackApi 'com.github.XYOracleNetwork:sdk-core-android:1.1.1'
 
     localImplementation project(':xyui')
     jitpackApi 'com.github.XYOracleNetwork:sdk-ui-android:1.1.1'
