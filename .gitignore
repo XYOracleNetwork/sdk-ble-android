@@ -41,3 +41,7 @@ captures/
 
 .idea
 .DS_Store
+sdk-android-library/.project
+sdk-android-library/.settings
+.project
+.settings
