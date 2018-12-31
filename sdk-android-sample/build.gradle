@@ -76,10 +76,10 @@ dependencies {
     api "androidx.coordinatorlayout:coordinatorlayout:1.0.0"
     api "com.nabinbhandari.android:permissions:3.8"
 
-    localImplementation project(':sdk-core-android')
+    localImplementation project(':core-android-library')
     jitpackApi 'com.github.XYOracleNetwork:sdk-core-android:1.1.1'
 
-    localImplementation project(':xyui')
+    localImplementation project(':ui-android-library')
     jitpackApi 'com.github.XYOracleNetwork:sdk-ui-android:1.1.1'
 
     api "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion"
