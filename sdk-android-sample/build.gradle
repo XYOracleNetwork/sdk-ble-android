@@ -76,7 +76,7 @@ dependencies {
     api "androidx.coordinatorlayout:coordinatorlayout:1.0.0"
     api "com.nabinbhandari.android:permissions:3.8"
 
-    localImplementation project(':xycore')
+    localImplementation project(':sdk-core-android')
     jitpackApi 'com.github.XYOracleNetwork:sdk-core-android:1.1.1'
 
     localImplementation project(':xyui')

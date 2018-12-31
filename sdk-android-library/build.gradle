@@ -35,8 +35,6 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
         kotlinOptions {
             allWarningsAsErrors = true
         }
@@ -94,7 +92,7 @@ dependencies {
     api "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutinesVersion"
     api "androidx.annotation:annotation:1.0.1"
 
-    localImplementation project(':xycore')
+    localImplementation project(':sdk-core-android')
     jitpackApi 'com.github.XYOracleNetwork:sdk-core-android:1.1.1'
 
     implementation 'com.github.kotlin-graphics:kotlin-unsigned:v2.1'

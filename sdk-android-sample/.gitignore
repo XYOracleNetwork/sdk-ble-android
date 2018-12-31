@@ -1,1 +1,13 @@
-/build
+.gradle
+local.properties
+.idea
+*.iml
+build
+captures
+proguardTools
+.DS_Store
+.DS_Store?
+*.apk
+google-services.json
+.settings
+.project
