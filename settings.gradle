@@ -1,5 +1,5 @@
-include ':sdk-android-sample'
-include ':sdk-android-library'
+include ':ble-android-sample'
+include ':ble-android-library'
 
 include ':core-android-library'
 project(':core-android-library').projectDir = new File(settingsDir, '../sdk-core-android/core-android-library')
