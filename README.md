@@ -49,7 +49,7 @@ dependencies {
 
 ## Using the SDK
 
-A full Working example is included in the project. Look at the sdk-android-sample folder for more information.
+A full Working example is included in the project. Look at the ble-android-sample folder for more information.
 
 Configure and create an instance of the scanner:
 
