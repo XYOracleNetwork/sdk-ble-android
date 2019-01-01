@@ -82,10 +82,10 @@ dependencies {
     api "com.nabinbhandari.android:permissions:3.8"
 
     localImplementation project(':core-android-library')
-    jitpackApi 'com.github.XYOracleNetwork:sdk-core-android:1.1.1'
+    jitpackApi 'com.github.XYOracleNetwork:sdk-core-android:1.2.0'
 
     localImplementation project(':ui-android-library')
-    jitpackApi 'com.github.XYOracleNetwork:sdk-ui-android:1.1.1'
+    jitpackApi 'com.github.XYOracleNetwork:sdk-ui-android:1.2.0'
 
     api "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion"
     api "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutinesVersion"

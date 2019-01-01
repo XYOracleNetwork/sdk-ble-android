@@ -95,7 +95,7 @@ dependencies {
     api "androidx.annotation:annotation:1.0.1"
 
     localImplementation project(':core-android-library')
-    jitpackApi 'com.github.XYOracleNetwork:sdk-core-android:1.1.1'
+    jitpackApi 'com.github.XYOracleNetwork:sdk-core-android:1.2.0'
 
     implementation 'com.github.kotlin-graphics:kotlin-unsigned:v2.1'
 }
