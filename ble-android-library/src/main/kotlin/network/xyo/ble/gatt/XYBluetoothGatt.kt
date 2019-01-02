@@ -804,21 +804,10 @@ open class XYBluetoothGatt protected constructor(
         }
     }
 
-    fun ByteArray.toHexString(): String {
-        val builder = StringBuilder()
-        val it = this.iterator()
-        builder.append("0x")
-        while (it.hasNext()) {
-            builder.append(String.format("%02X", it.next()))
-        }
-
-        return builder.toString()
-    }
-
     private val centralCallback = object : XYBluetoothGattCallback() {
         override fun onCharacteristicChanged(gatt: BluetoothGatt?, characteristic: BluetoothGattCharacteristic?) {
             super.onCharacteristicChanged(gatt, characteristic)
-            log.info("onCharacteristicChanged: $characteristic ${characteristic?.value?.toHexString()}")
+            log.info("onCharacteristicChanged: $characteristic")
 
             val characteristicValue = characteristic?.value
 
@@ -912,9 +901,11 @@ open class XYBluetoothGatt protected constructor(
             }
         }
 
+        @TargetApi(26)
         override fun onPhyRead(gatt: BluetoothGatt?, txPhy: Int, rxPhy: Int, status: Int) {
             super.onPhyRead(gatt, txPhy, rxPhy, status)
             log.info("onPhyRead: $txPhy : $rxPhy : $status")
+
             synchronized(gattListeners) {
                 for ((_, listener) in gattListeners) {
                     GlobalScope.launch {
