@@ -137,6 +137,8 @@ open class XYIBeaconBluetoothDevice(context: Context, scanResult: XYScanResult?,
 
         fun hashFromScanResult(scanResult: XYScanResult): Int? {
             val data = scanResult.scanRecord?.getManufacturerSpecificData(XYAppleBluetoothDevice.MANUFACTURER_ID)
+
+            // check size before reading advertisement
             if (data != null && data.size > 22) {
 
                 //mask the minor

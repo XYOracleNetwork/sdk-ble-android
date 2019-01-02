@@ -112,4 +112,6 @@
     <string name="update_started">Update started</string>
     <string name="bluetooth_disabled">Bluetooth Disabled</string>
 
+    <string name="server">Server</string>
+
 </resources>
