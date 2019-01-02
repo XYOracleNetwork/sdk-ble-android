@@ -1,8 +1,8 @@
-include ':sdk-android-sample'
-include ':sdk-android-library'
+include ':ble-android-sample'
+include ':ble-android-library'
 
-include ':xycore'
-project(':xycore').projectDir = new File(settingsDir, '../sdk-core-android/core-android-library')
+include ':core-android-library'
+project(':core-android-library').projectDir = new File(settingsDir, '../sdk-core-android/core-android-library')
 
-include ':xyui'
-project(':xyui').projectDir = new File(settingsDir, '../sdk-ui-android/ui-android-library')
+include ':ui-android-library'
+project(':ui-android-library').projectDir = new File(settingsDir, '../sdk-ui-android/ui-android-library')

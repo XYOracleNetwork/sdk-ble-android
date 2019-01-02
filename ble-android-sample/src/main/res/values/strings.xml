@@ -1,0 +1,117 @@
+<resources>
+    <string name="app_name">XYO BLE Sample</string>
+
+    <string name="advertiser">Advertiser</string>
+
+    <string name="advertising_mode_title">Advertising Mode</string>
+    <string name="advertising_mode_selector_1">ADVERTISE_MODE_LOW_LATENCY</string>
+    <string name="advertising_mode_selector_2">ADVERTISE_MODE_BALANCED</string>
+    <string name="advertising_mode_selector_3">ADVERTISE_MODE_LOW_POWER</string>
+    <string name="none">NONE</string>
+    <string name="advertising_power_title">Advertising Power</string>
+    <string name="advertising_power_selector_1">ADVERTISE_TX_POWER_HIGH</string>
+    <string name="advertising_power_selector_2">ADVERTISE_TX_POWER_MEDIUM</string>
+    <string name="advertising_power_selector_3">ADVERTISE_TX_POWER_LOW</string>
+    <string name="advertising_power_selector_4">ADVERTISE_TX_POWER_ULTRA_LOW</string>
+    <string name="connectable_title">Connectable</string>
+    <string name="_true">TRUE</string>
+    <string name="_false">FALSE</string>
+    <string name="timeout_title">Timeout</string>
+    <string name="include_device_name_title">Include Device Name</string>
+    <string name="include_tx_power_level_title">Include TxPower Level</string>
+    <string name="primary_service_title">Primary Service UUID</string>
+    <string name="primary_service_data_title">Primary Service Data</string>
+    <string name="manufacturer_id_title">Manufacturer Id</string>
+    <string name="manufacturer_data_title">Manufacturer Data</string>
+    <string name="update">Update</string>
+    <string name="services">Services</string>
+    <string name="service_uuid">Service UUID</string>
+    <string name="view_service">View</string>
+    <string name="characteristic_uuid">Characteristic UUID</string>
+    <string name="view_characteristic">View</string>
+
+    <string name="btn_start_test">Start Test</string>
+    <string name="btn_stay_connected">Stay Connected</string>
+    <string name="btn_find">Find</string>
+    <string name="btn_stay_awake">Stay Awake</string>
+    <string name="btn_fall_asleep">Fall Asleep</string>
+    <string name="btn_lock">Lock</string>
+    <string name="btn_unlock">Unlock</string>
+    <string name="btn_connect">Connect</string>
+    <string name="btn_disconnect">Disconnect</string>
+    <string name="btn_enable_notify">Enable Notify</string>
+    <string name="btn_disable_notify">Disable Notify</string>
+    <string name="disconnect">Disconnect</string>
+
+    <string name="info">Info</string>
+    <string name="alert">Alert</string>
+    <string name="battery">Battery</string>
+    <string name="time">Time</string>
+    <string name="device">Device</string>
+    <string name="gap">GAP</string>
+    <string name="gatt">GATT</string>
+    <string name="linkloss">linkLoss</string>
+    <string name="tx">Tx</string>
+
+    <string name="family">Family:\u0020</string>
+    <string name="major">Major:\u0020</string>
+    <string name="minor">Minor:\u0020</string>
+    <string name="rssi">RSSI:\u0020</string>
+    <string name="pulses">Pulses:\u0020</string>
+    <string name="avg_gap">Avg. Gap:\u0020</string>
+    <string name="last_gap">Last Gap:\u0020</string>
+    <string name="max_gap">Max Gap:\u0020</string>
+    <string name="enter">Enter:\u0020</string>
+    <string name="exit">Exit:\u0020</string>
+    <string name="lock">Lock:\u0020</string>
+    <string name="name">Name:\u0020</string>
+    <string name="connected">Connected:\u0020</string>
+    <string name="address">Address:\u0020</string>
+    <string name="uuid">UUID:\u0020</string>
+    <string name="uptime">Uptime:\u0020</string>
+    <string name="pulses_second">Pulses/Second:\u0020</string>
+    <string name="devices">Devices:\u0020</string>
+    <string name="refresh">Refresh</string>
+    <string name="not_available">Not Available</string>
+    <string name="control_point">controlPoint:\u0020</string>
+    <string name="unread_alert_status">unreadAlertStatus:\u0020</string>
+    <string name="new_alert">newAlert:\u0020</string>
+    <string name="supported_new_alert_category">supportedNewAlertCategory:\u0020</string>
+    <string name="supported_unread_alert_category">supportedUnreadAlertCategory:\u0020</string>
+    <string name="tx_power_level">TX Power Level:\u0020</string>
+
+    <string name="battery_level">Battery Level:\u0020</string>
+    <string name="current_time">currentTime:\u0020</string>
+    <string name="local_time_information">localTimeInformation:\u0020</string>
+    <string name="reference_time_information">referenceTimeInformation:\u0020</string>
+    <string name="system_id">System Id:\u0020</string>
+    <string name="model_number">Model Number:\u0020</string>
+    <string name="serial">Serial#:\u0020</string>
+    <string name="firmware_revision">Firmware Revision:\u0020</string>
+    <string name="hardware_revision">Hardware Revision:\u0020</string>
+    <string name="software_revision">Software Revision:\u0020</string>
+    <string name="mfg_name">Mfg Name:\u0020</string>
+    <string name="ieee_cert">IEEE Cert:\u0020</string>
+    <string name="pnp_id">PnP Id:\u0020</string>
+    <string name="device_name">deviceName:\u0020</string>
+    <string name="appearance">appearance:\u0020</string>
+    <string name="privacy_flag">privacyFlag:\u0020</string>
+    <string name="reconnection_address">reconnectionAddress:\u0020</string>
+    <string name="peripheral_preferred_connection_parameters">peripheralPreferredConnectionParameters:\u0020</string>
+    <string name="service_changed">Service Changed:\u0020</string>
+    <string name="alert_level">Alert Level:\u0020</string>
+    <string name="not_supported">not supported</string>
+    <string name="hex_placeholder">0x%s</string>
+    <string name="unknown_device">unknown device</string>
+    <string name="not_supported_x2">Not supported by XY2BluetoothDevice</string>
+
+    <string name="select_file">Select File</string>
+    <string name="firmware">OTA</string>
+    <string name="do_update">Update</string>
+    <string name="select_a_file_below">Select a file below</string>
+    <string name="update_started">Update started</string>
+    <string name="bluetooth_disabled">Bluetooth Disabled</string>
+
+    <string name="server">Server</string>
+
+</resources>

@@ -1,0 +1,96 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'com.github.dcendents.android-maven'
+
+android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
+    defaultConfig {
+        applicationId "network.xyo.ble.sample"
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+
+    }
+
+    defaultPublishConfig "jitpackRelease"
+
+    flavorDimensions "xylibs"
+    productFlavors {
+        local {
+            dimension "xylibs"
+        }
+        jitpack {
+            dimension "xylibs"
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    lintOptions {
+        htmlReport true
+        htmlOutput file("lint-report.html")
+        abortOnError true
+        warningsAsErrors true
+    }
+
+    compileOptions {
+        kotlinOptions {
+            allWarningsAsErrors = true
+        }
+    }
+
+    sourceSets {
+        main {
+            java {
+                srcDirs += 'src/main/kotlin'
+            }
+        }
+    }
+}
+
+buildscript {
+    repositories {
+        jcenter()
+        google()
+    }
+    dependencies {
+        classpath "com.android.tools.build:gradle:3.2.1"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
+        classpath "com.github.dcendents:android-maven-gradle-plugin:$mavenVersion"
+    }
+}
+
+repositories {
+    maven { url 'https://jitpack.io' }
+}
+
+configurations {
+    localImplementation
+    jitpackApi
+}
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    api "com.google.android.material:material:1.0.0"
+    api "androidx.coordinatorlayout:coordinatorlayout:1.0.0"
+    api "com.nabinbhandari.android:permissions:3.8"
+
+    localImplementation project(':core-android-library')
+    jitpackApi 'com.github.XYOracleNetwork:sdk-core-android:1.2.0'
+
+    localImplementation project(':ui-android-library')
+    jitpackApi 'com.github.XYOracleNetwork:sdk-ui-android:1.2.0'
+
+    api "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion"
+    api "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutinesVersion"
+    implementation project(':ble-android-library')
+    api "androidx.legacy:legacy-support-v4:1.0.0"
+
+    implementation 'com.github.kotlin-graphics:kotlin-unsigned:v2.1'
+}

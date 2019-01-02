@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:theme="@style/XYTheme"
+    tools:context="network.xyo.ble.sample.activities.XYOFinderDeviceActivity">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="8dp">
+
+        <include
+            android:id="@+id/toolbar"
+            layout="@layout/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+
+            app:layout_constraintBottom_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tabs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:tabMode="scrollable"
+            app:tabTextColor="@color/xy_text_light">
+
+            <com.google.android.material.tabs.TabItem
+                android:id="@+id/tabGeneral"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/info" />
+
+            <com.google.android.material.tabs.TabItem
+                android:id="@+id/tabAlert"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/alert" />
+
+            <com.google.android.material.tabs.TabItem
+                android:id="@+id/tabBattery"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/battery" />
+
+            <com.google.android.material.tabs.TabItem
+                android:id="@+id/tabTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/time" />
+
+            <com.google.android.material.tabs.TabItem
+                android:id="@+id/tabInfo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/device" />
+
+            <com.google.android.material.tabs.TabItem
+                android:id="@+id/tabGap"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/gap" />
+
+            <com.google.android.material.tabs.TabItem
+                android:id="@+id/tabGatt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/gatt" />
+
+            <com.google.android.material.tabs.TabItem
+                android:id="@+id/tabLinkLoss"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/linkloss" />
+
+            <com.google.android.material.tabs.TabItem
+                android:id="@+id/tabTx"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/tx" />
+
+            <com.google.android.material.tabs.TabItem
+                android:id="@+id/tabFw"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/firmware" />
+
+        </com.google.android.material.tabs.TabLayout>
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+    <LinearLayout
+        android:id="@+id/ll_device_disabled"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:background="@android:color/holo_red_light"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/bluetooth_disabled"
+            android:textColor="@android:color/white" />
+    </LinearLayout>
+
+    <ProgressBar
+        android:id="@+id/progress_spinner"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_gravity="center"
+        android:background="@android:color/transparent"
+        android:visibility="gone" />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
