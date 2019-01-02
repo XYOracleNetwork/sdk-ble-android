@@ -56,16 +56,6 @@ class XYOServerActivity : XYOAppBaseActivity() {
 
     val services = arrayOf<BluetoothGattService>(simpleService)
 
-
-
-    override fun onBluetoothDisabled() {
-
-    }
-
-    override fun onBluetoothEnabled() {
-
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activicty_ble_server)
