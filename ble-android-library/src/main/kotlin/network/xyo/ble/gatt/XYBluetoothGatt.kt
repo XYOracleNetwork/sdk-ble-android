@@ -843,6 +843,7 @@ open class XYBluetoothGatt protected constructor(
             }
         }
 
+        @TargetApi(Build.VERSION_CODES.O)
         override fun onPhyRead(gatt: BluetoothGatt?, txPhy: Int, rxPhy: Int, status: Int) {
             super.onPhyRead(gatt, txPhy, rxPhy, status)
             log.info("onPhyRead: $txPhy : $rxPhy : $status")
@@ -855,7 +856,7 @@ open class XYBluetoothGatt protected constructor(
             }
         }
 
-        @TargetApi(26)
+        @TargetApi(Build.VERSION_CODES.O)
         override fun onPhyUpdate(gatt: BluetoothGatt?, txPhy: Int, rxPhy: Int, status: Int) {
             super.onPhyUpdate(gatt, txPhy, rxPhy, status)
             log.info("onPhyUpdate: $txPhy : $rxPhy : $status")
