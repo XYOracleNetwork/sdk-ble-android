@@ -11,6 +11,14 @@ import network.xyo.core.XYBase
 class BluetoothIntentReceiver : BroadcastReceiver() {
     private val listeners = HashMap<String, BluetoothIntentReceiverListener>()
 
+    fun addListener (listener: BluetoothIntentReceiverListener, key : String) {
+        listeners[key] = listener
+    }
+
+    fun removeListener (key: String) {
+        listeners.remove(key)
+    }
+
     override fun onReceive(context: Context?, intent: Intent?) {
         if (intent == null) return
 
@@ -102,67 +110,131 @@ class BluetoothIntentReceiver : BroadcastReceiver() {
     }
 
     private fun actionAclConnected (intent: Intent?) {
-        log.info(TAG, "actionAclConnected $intent")
+        log.info("actionAclConnected $intent")
+
+        for ((_, listener) in listeners) {
+            listener.actionAclConnected(intent)
+        }
     }
 
     private fun actionAclDisconnected (intent: Intent?) {
-        log.info(TAG, "actionAclDisconnected $intent")
+        log.info("actionAclDisconnected $intent")
+
+        for ((_, listener) in listeners) {
+            listener.actionAclDisconnected(intent)
+        }
     }
 
     private fun actionAclDisconnectRequested(intent: Intent?) {
-        log.info(TAG, "actionAclDisconnectRequested $intent")
+        log.info("actionAclDisconnectRequested $intent")
+
+        for ((_, listener) in listeners) {
+            listener.actionAclDisconnectRequested(intent)
+        }
     }
 
     private fun actionBondStateChanged(intent: Intent?) {
-        log.info(TAG, "actionBondStateChanged $intent")
+        log.info("actionBondStateChanged $intent")
+
+        for ((_, listener) in listeners) {
+            listener.actionBondStateChanged(intent)
+        }
     }
 
     private fun actionClassChanged (intent: Intent?) {
-        log.info(TAG, "actionClassChanged $intent")
+        log.info("actionClassChanged $intent")
+
+        for ((_, listener) in listeners) {
+            listener.actionClassChanged(intent)
+        }
     }
 
     private fun actionFound (intent: Intent?) {
-        log.info(TAG, "actionFound $intent")
+        log.info("actionFound $intent")
+
+        for ((_, listener) in listeners) {
+            listener.actionFound(intent)
+        }
     }
 
     private fun actionNameChanged (intent: Intent?) {
-        log.info(TAG, "actionNameChanged $intent")
+        log.info("actionNameChanged $intent")
+
+        for ((_, listener) in listeners) {
+            listener.actionNameChanged(intent)
+        }
     }
 
     private fun actionPairingRequest (intent: Intent?) {
-        log.info(TAG, "actionPairingRequest $intent")
+        log.info("actionPairingRequest $intent")
+
+        for ((_, listener) in listeners) {
+            listener.actionPairingRequest(intent)
+        }
     }
 
     private fun actionUuid(intent: Intent?) {
-        log.info(TAG, "actionUuid $intent")
+        log.info("actionUuid $intent")
+
+        for ((_, listener) in listeners) {
+            listener.actionUuid(intent)
+        }
     }
 
     private fun extraBondState (intent: Intent?) {
-        log.info(TAG, "extraBondState $intent")
+        log.info("extraBondState $intent")
+
+        for ((_, listener) in listeners) {
+            listener.extraBondState(intent)
+        }
     }
 
     private fun extraClass (intent: Intent?) {
-        log.info(TAG, "extraClass $intent")
+        log.info("extraClass $intent")
+
+        for ((_, listener) in listeners) {
+            listener.extraClass(intent)
+        }
     }
 
     private fun extraDevice (intent: Intent?) {
-        log.info(TAG, "extraDevice $intent")
+        log.info("extraDevice $intent")
+
+        for ((_, listener) in listeners) {
+            listener.extraDevice(intent)
+        }
     }
 
     private fun extraName (intent: Intent?) {
-        log.info(TAG, "extraName $intent")
+        log.info("extraName $intent")
+
+        for ((_, listener) in listeners) {
+            listener.extraName(intent)
+        }
     }
 
     private fun extraRssi (intent: Intent?) {
-        log.info(TAG, "extraRssi $intent")
+        log.info("extraRssi $intent")
+
+        for ((_, listener) in listeners) {
+            listener.extraRssi(intent)
+        }
     }
 
     private fun extraPairingKey (intent: Intent?) {
-        log.info(TAG, "extraPairingKey $intent")
+        log.info("extraPairingKey $intent")
+
+        for ((_, listener) in listeners) {
+            listener.extraPairingKey(intent)
+        }
     }
 
     private fun extraPairingVagrant (intent: Intent?) {
-        log.info(TAG, "extraPairingVagrant $intent")
+        log.info("extraPairingVagrant $intent")
+
+        for ((_, listener) in listeners) {
+            listener.extraPairingVagrant(intent)
+        }
     }
 
 
@@ -189,7 +261,5 @@ class BluetoothIntentReceiver : BroadcastReceiver() {
                 addAction(BluetoothDevice.EXTRA_UUID)
             }
         }
-
-        const val TAG = "BluetoothIntentReceiver"
     }
 }
