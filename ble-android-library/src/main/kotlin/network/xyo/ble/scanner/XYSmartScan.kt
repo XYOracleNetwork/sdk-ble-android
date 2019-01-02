@@ -61,8 +61,8 @@ abstract class XYSmartScan(context: Context) : XYBluetoothBase(context) {
 
         val bluetoothAdapterReceiver = object: BroadcastReceiver() {
             override fun onReceive(context: Context?, intent: Intent?) {
-                val action = intent?.getAction()
-                log.info("onReceive: Action=${action}")
+                val action = intent?.action
+                log.info("onReceive: Action=$action")
                 when (action) {
                     BluetoothAdapter.ACTION_STATE_CHANGED -> {
                         val state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, -1)
