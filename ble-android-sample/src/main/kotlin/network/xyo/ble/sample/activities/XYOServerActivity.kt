@@ -16,6 +16,7 @@ import kotlinx.android.synthetic.main.activicty_ble_server.*
 import kotlinx.android.synthetic.main.device_activity.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import network.xyo.ble.bluetooth.BluetoothIntentReceiver
 import network.xyo.ble.gatt.server.*
@@ -53,6 +54,8 @@ class XYOServerActivity : XYOAppBaseActivity() {
             BluetoothGattCharacteristic.PERMISSION_WRITE
     )
 
+    val services = arrayOf<BluetoothGattService>(simpleService)
+
 
 
     override fun onBluetoothDisabled() {
@@ -75,15 +78,14 @@ class XYOServerActivity : XYOAppBaseActivity() {
         serverPagerContainer.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(server_tabs))
         serverPagerContainer.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(server_tabs) as ViewPager.OnPageChangeListener)
         server_tabs.addOnTabSelectedListener(TabLayout.ViewPagerOnTabSelectedListener(server_pager_container))
-
-        GlobalScope.launch {
-            bleAdvertiser = XYBluetoothAdvertiser(applicationContext)
-            spinUpServer().await()
-            val fragment = tabAdapter.getFragmentByPosition(1) as RootServicesFragment
-            fragment.addService(simpleService)
-        }
+        bleAdvertiser = XYBluetoothAdvertiser(applicationContext)
 
         registerReceiver(bluetoothIntentReceiver, BluetoothIntentReceiver.bluetoothDeviceIntentFilter)
+
+
+        GlobalScope.launch {
+            spinUpServer().await()
+        }
     }
 
     override fun onDestroy() {
@@ -96,18 +98,15 @@ class XYOServerActivity : XYOAppBaseActivity() {
         val server = XYBluetoothGattServer(applicationContext)
         server.startServer()
         bleServer = server
-        server.addService(simpleService).await()
+        return@async server.addService(simpleService).await()
     }
 
     private fun spinUpServer () = GlobalScope.async {
         simpleService.addCharacteristic(characteristicRead)
         simpleService.addCharacteristic(characteristicWrite)
-
-
-        createTestServer().await()
         characteristicRead.addReadResponder("countResponder", countResponder)
         characteristicWrite.addWriteResponder("log Responder",logResponder)
-        return@async
+        return@async createTestServer().await()
     }
 
     /**
@@ -132,14 +131,6 @@ class XYOServerActivity : XYOAppBaseActivity() {
         }
     }
 
-    fun update() {
-        try {
-            val frag = pagerAdapter.getFragmentByPosition(container.currentItem)
-            (frag as? InfoFragment)?.update()
-        } catch (ex: Exception) {
-        }
-    }
-
     inner class SectionsPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
         private val size = 2
         private val fragments: SparseArray<XYBaseFragment> = SparseArray(size)
@@ -147,10 +138,10 @@ class XYOServerActivity : XYOAppBaseActivity() {
         override fun getItem(position: Int): Fragment {
             when (position) {
                 0 -> return AdvertiserFragment.newInstance()
-                1 -> return RootServicesFragment.newInstance(bleServer?.getServices())
+                1 -> return RootServicesFragment.newInstance(services)
             }
 
-            return RootServicesFragment.newInstance(bleServer?.getServices())
+            throw Exception("Position out of index!")
         }
 
         override fun getCount(): Int {
@@ -163,7 +154,7 @@ class XYOServerActivity : XYOAppBaseActivity() {
             return fragment
         }
 
-        fun getFragmentByPosition(position: Int): XYBaseFragment {
+        fun getFragmentByPosition(position: Int): XYBaseFragment? {
             return fragments.get(position)
         }
     }

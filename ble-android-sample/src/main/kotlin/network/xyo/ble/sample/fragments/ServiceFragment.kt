@@ -18,7 +18,6 @@ import network.xyo.ui.XYBaseFragment
 class ServiceFragment : XYBaseFragment() {
     private var service : BluetoothGattService? = null
 
-    private val characteristicList = XYCharacteristicAdapter(service?.characteristics?.toTypedArray() ?: arrayOf())
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_service, container, false)
@@ -30,7 +29,7 @@ class ServiceFragment : XYBaseFragment() {
         view.service_type.text = getServiceType()
 
         val recyclerView = view.characteristic_list
-
+        val characteristicList =  XYCharacteristicAdapter(service?.characteristics?.toTypedArray() ?: arrayOf())
         val manager = LinearLayoutManager(activity?.applicationContext, LinearLayout.VERTICAL, false)
         manager.reverseLayout = true
         manager.stackFromEnd = true

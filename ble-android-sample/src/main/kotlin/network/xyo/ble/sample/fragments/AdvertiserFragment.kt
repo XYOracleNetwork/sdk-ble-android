@@ -18,7 +18,8 @@ import network.xyo.ui.ui
 import java.util.*
 
 class AdvertiserFragment : XYBaseFragment() {
-    val advertiser: XYBluetoothAdvertiser? = (activity as XYOServerActivity).bleAdvertiser
+    val advertiser: XYBluetoothAdvertiser?
+        get () = (activity as? XYOServerActivity)?.bleAdvertiser
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_advertiser, container, false)
