@@ -49,7 +49,7 @@ open class XY4BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
             logInfo("onCharacteristicChanged")
             super.onCharacteristicChanged(gatt, characteristic)
             if (characteristic?.uuid == primary.buttonState.uuid) {
-                reportButtonPressed(buttonPressFromInt(characteristic.getIntValue(BluetoothGattCharacteristic.FORMAT_UINT8, 0)))
+                (buttonPressFromInt(characteristic.getIntValue(BluetoothGattCharacteristic.FORMAT_UINT8, 0)))
                 enableButtonNotifyIfConnected()
             }
         }

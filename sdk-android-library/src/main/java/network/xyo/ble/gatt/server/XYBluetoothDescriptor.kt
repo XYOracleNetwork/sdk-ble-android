@@ -1,58 +1,18 @@
 package network.xyo.ble.gatt.server
 
 import android.bluetooth.BluetoothDevice
-import android.bluetooth.BluetoothGattCharacteristic
+import android.bluetooth.BluetoothGattDescriptor
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import network.xyo.ble.gatt.server.responders.XYBluetoothReadResponder
 import network.xyo.ble.gatt.server.responders.XYBluetoothWriteResponder
 import java.util.*
-import kotlin.collections.HashMap
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
-open class XYBluetoothCharacteristic(uuid: UUID, properties : Int, permissions : Int) : BluetoothGattCharacteristic(uuid, properties, permissions) {
-    private val listeners = HashMap<String, XYBluetoothCharacteristicListener>()
+open class XYBluetoothDescriptor(uuid: UUID, permissions: Int) : BluetoothGattDescriptor(uuid, permissions) {
     private val readResponders = HashMap<String, XYBluetoothReadResponder>()
     private val writeResponders = HashMap<String, XYBluetoothWriteResponder>()
-
-    interface XYBluetoothCharacteristicListener {
-        fun onChange()
-    }
-
-    override fun setValue(value: ByteArray?): Boolean {
-        onChange()
-        return super.setValue(value)
-    }
-
-    override fun setValue(value: String?): Boolean {
-        onChange()
-        return super.setValue(value)
-    }
-
-    override fun setValue(value: Int, formatType: Int, offset: Int): Boolean {
-        onChange()
-        return super.setValue(value, formatType, offset)
-    }
-
-    override fun setValue(mantissa: Int, exponent: Int, formatType: Int, offset: Int): Boolean {
-        onChange()
-        return super.setValue(mantissa, exponent, formatType, offset)
-    }
-
-    protected fun onChange () {
-        for ((_, listener) in listeners) {
-            listener.onChange()
-        }
-    }
-
-    fun addListener(key : String, listener: XYBluetoothCharacteristicListener) {
-        listeners[key] = listener
-    }
-
-    fun removeListiner (key: String) {
-        listeners.remove(key)
-    }
 
     open fun onReadRequest(device: BluetoothDevice?, offset: Int): XYBluetoothGattServer.XYReadRequest? {
         for ((_, responder) in readResponders) {
@@ -145,28 +105,5 @@ open class XYBluetoothCharacteristic(uuid: UUID, properties : Int, permissions :
 
     fun removeReadResponder(key: String) {
         readResponders.remove(key)
-    }
-
-    companion object {
-        enum class Properties constructor(val value: Int) {
-            PROPERTY_BROADCAST(BluetoothGattCharacteristic.PROPERTY_BROADCAST),
-            PROPERTY_INDICATE(BluetoothGattCharacteristic.PROPERTY_INDICATE),
-            PROPERTY_NOTIFY(BluetoothGattCharacteristic.PROPERTY_NOTIFY),
-            PROPERTY_READ(BluetoothGattCharacteristic.PROPERTY_READ),
-            PROPERTY_SIGNED_WRITE(BluetoothGattCharacteristic.PROPERTY_SIGNED_WRITE),
-            PROPERTY_WRITE(BluetoothGattCharacteristic.PROPERTY_WRITE),
-            PROPERTY_WRITE_NO_RESPONSE(BluetoothGattCharacteristic.PROPERTY_WRITE_NO_RESPONSE)
-        }
-
-        enum class Permissions constructor(val value: Int) {
-            PERMISSION_WRITE(BluetoothGattCharacteristic.PERMISSION_WRITE),
-            PERMISSION_READ_ENCRYPTED(BluetoothGattCharacteristic.PERMISSION_READ_ENCRYPTED),
-            PERMISSION_READ_ENCRYPTED_MITM(BluetoothGattCharacteristic.PERMISSION_READ_ENCRYPTED_MITM),
-            PERMISSION_WRITE_ENCRYPTED(BluetoothGattCharacteristic.PERMISSION_WRITE_ENCRYPTED),
-            PERMISSION_READ(BluetoothGattCharacteristic.PERMISSION_READ),
-            PERMISSION_WRITE_ENCRYPTED_MITM(BluetoothGattCharacteristic.PERMISSION_WRITE_ENCRYPTED_MITM),
-            PERMISSION_WRITE_SIGNED(BluetoothGattCharacteristic.PERMISSION_WRITE_SIGNED),
-            PERMISSION_WRITE_SIGNED_MITM(BluetoothGattCharacteristic.PERMISSION_WRITE_SIGNED_MITM)
-        }
     }
 }

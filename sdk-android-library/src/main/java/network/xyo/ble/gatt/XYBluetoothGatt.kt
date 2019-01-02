@@ -8,6 +8,7 @@ import android.os.Handler
 import kotlinx.coroutines.*
 import network.xyo.ble.CallByVersion
 import network.xyo.ble.scanner.XYScanResult
+import java.lang.StringBuilder
 import java.util.*
 import kotlin.coroutines.Continuation
 import kotlin.coroutines.resume
@@ -35,7 +36,9 @@ open class XYBluetoothGatt protected constructor(
 
     var rssi: Int? = null
 
-    open class XYBluetoothGattCallback : BluetoothGattCallback()
+    open class XYBluetoothGattCallback : BluetoothGattCallback() {
+        open fun onCharacteristicChangedValue (gatt : BluetoothGatt?, characteristicToRead: BluetoothGattCharacteristic?, value : ByteArray?) {}
+    }
 
     enum class ConnectionState(val state: Int) {
         Unknown(-1),
@@ -95,6 +98,29 @@ open class XYBluetoothGatt protected constructor(
 
     internal open fun onConnectionStateChange(newState: Int) {
 
+    }
+
+    fun requestMtu (mtu : Int) : Deferred<XYBluetoothResult<Int>> = asyncBle {
+        return@asyncBle suspendCancellableCoroutine<XYBluetoothResult<Int>> { cont ->
+            val key = "$mtu requestMtu $nowNano"
+
+            addGattListener(key, object : XYBluetoothGattCallback() {
+                override fun onMtuChanged(gatt: BluetoothGatt?, mtu: Int, status: Int) {
+                    super.onMtuChanged(gatt, mtu, status)
+
+                    removeGattListener(key)
+
+                    if (status == BluetoothGatt.GATT_SUCCESS) {
+                        cont.resume(XYBluetoothResult(mtu, null))
+                        return
+                    }
+
+                    cont.resume(XYBluetoothResult(mtu, XYBluetoothError(status.toString())))
+                }
+            })
+
+            gatt?.requestMtu(mtu)
+        }
     }
 
     fun waitForNotification (characteristicToWaitFor: UUID): Deferred<XYBluetoothResult<Any?>> = asyncBle {
@@ -771,15 +797,30 @@ open class XYBluetoothGatt protected constructor(
         }
     }
 
+    fun ByteArray.toHexString(): String {
+        val builder = StringBuilder()
+        val it = this.iterator()
+        builder.append("0x")
+        while (it.hasNext()) {
+            builder.append(String.format("%02X", it.next()))
+        }
+
+        return builder.toString()
+    }
+
     private val centralCallback = object : XYBluetoothGattCallback() {
         override fun onCharacteristicChanged(gatt: BluetoothGatt?, characteristic: BluetoothGattCharacteristic?) {
             super.onCharacteristicChanged(gatt, characteristic)
-            logInfo("onCharacteristicChanged: $characteristic")
+            logInfo("onCharacteristicChanged: $characteristic ${characteristic?.value?.toHexString()}")
+
+            val characteristicValue = characteristic?.value
+
             synchronized(gattListeners) {
                 for ((key, listener) in gattListeners) {
                     GlobalScope.launch {
                         logInfo("onCharacteristicChanged: $key")
                         listener.onCharacteristicChanged(gatt, characteristic)
+                        listener.onCharacteristicChangedValue(gatt, characteristic, characteristicValue)
                     }
                 }
             }

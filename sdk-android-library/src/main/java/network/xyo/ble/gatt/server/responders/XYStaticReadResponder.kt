@@ -6,7 +6,7 @@ import network.xyo.ble.gatt.server.XYBluetoothGattServer
 import java.nio.ByteBuffer
 import kotlin.coroutines.resume
 
-class XYStaticReadResponder (var value : ByteArray, val listener : XYStaticReadResponderListener?) : XYBluetoothCharacteristic.XYBluetoothReadCharacteristicResponder {
+class XYStaticReadResponder (var value : ByteArray, val listener : XYStaticReadResponderListener?) : XYBluetoothReadResponder {
     private var lastTime = 0
 
     constructor(string: String, listener: XYStaticReadResponderListener?) : this(string.toByteArray(), listener)
@@ -14,10 +14,11 @@ class XYStaticReadResponder (var value : ByteArray, val listener : XYStaticReadR
     constructor(byte : Byte, listener: XYStaticReadResponderListener?) : this(byteArrayOf(byte), listener)
 
     override fun onReadRequest(device: BluetoothDevice?, offset: Int): XYBluetoothGattServer.XYReadRequest? {
-        val size = value.size - offset
+        //todo connection MTU
+        val size = Math.min((value.size - offset), 26)
         val response = ByteArray(size)
 
-        for (i in offset until value.size) {
+        for (i in offset until size) {
             response[i - offset] = value[i]
         }
 
@@ -27,8 +28,10 @@ class XYStaticReadResponder (var value : ByteArray, val listener : XYStaticReadR
 
         lastTime = offset
 
+        println("${Math.min(offset, value.size)}/${value.size}")
         return XYBluetoothGattServer.XYReadRequest(response, Math.min(offset, value.size))
     }
+
 
     interface XYStaticReadResponderListener {
         fun onReadComplete ()

@@ -44,13 +44,15 @@ class AdvertiserFragment(private val advertiser: XYBluetoothAdvertiser) : XYBase
     private suspend fun restartAdvertiser () {
         val status = advertiser.startAdvertising().await()
 
-        if (status.value == 0 && status.error == null) {
-            ui {
+
+        ui {
+            if (status.value == 0 && status.error == null) {
                 showToast("Success!")
+                return@ui
             }
-            return
+
+            showToast("Error ${status.error}!")
         }
-        showToast("Error ${status.error}!")
     }
 
     private suspend fun updateAdvertisingMode (view: View) {
