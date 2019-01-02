@@ -68,7 +68,7 @@ open class XYBluetoothDescriptor(uuid: UUID, permissions: Int) : BluetoothGattDe
     fun waitForReadRequest(whatToRead: ByteArray?, deviceFilter: BluetoothDevice?) = GlobalScope.async {
         val readValue = whatToRead ?: value
         value = readValue
-        val readRequest = suspendCoroutine<Any?> { cont ->
+        return@async suspendCoroutine<Any?> { cont ->
             val responderKey = "waitForReadRequest $readValue $deviceFilter"
             addReadResponder(responderKey, object : XYBluetoothReadResponder {
                 override fun onReadRequest(device: BluetoothDevice?, offset: Int): XYBluetoothGattServer.XYReadRequest? {

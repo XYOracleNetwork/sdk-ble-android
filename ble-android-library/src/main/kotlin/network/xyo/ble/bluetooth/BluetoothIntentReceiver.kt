@@ -7,7 +7,6 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.util.Log
 import network.xyo.core.XYBase
-import network.xyo.core.XYBase.Companion.logInfo
 
 class BluetoothIntentReceiver : BroadcastReceiver() {
     private val listeners = HashMap<String, BluetoothIntentReceiverListener>()
@@ -103,71 +102,71 @@ class BluetoothIntentReceiver : BroadcastReceiver() {
     }
 
     private fun actionAclConnected (intent: Intent?) {
-        logInfo(TAG, "actionAclConnected")
+        log.info(TAG, "actionAclConnected $intent")
     }
 
     private fun actionAclDisconnected (intent: Intent?) {
-        XYBase.logInfo(TAG, "actionAclDisconnected")
+        log.info(TAG, "actionAclDisconnected $intent")
     }
 
     private fun actionAclDisconnectRequested(intent: Intent?) {
-        XYBase.logInfo(TAG, "actionAclDisconnectRequested")
+        log.info(TAG, "actionAclDisconnectRequested $intent")
     }
 
     private fun actionBondStateChanged(intent: Intent?) {
-        XYBase.logInfo(TAG, "actionBondStateChanged")
+        log.info(TAG, "actionBondStateChanged $intent")
     }
 
     private fun actionClassChanged (intent: Intent?) {
-        XYBase.logInfo(TAG, "actionClassChanged")
+        log.info(TAG, "actionClassChanged $intent")
     }
 
     private fun actionFound (intent: Intent?) {
-        XYBase.logInfo(TAG, "actionFound")
+        log.info(TAG, "actionFound $intent")
     }
 
     private fun actionNameChanged (intent: Intent?) {
-        XYBase.logInfo(TAG, "actionNameChanged")
+        log.info(TAG, "actionNameChanged $intent")
     }
 
     private fun actionPairingRequest (intent: Intent?) {
-        XYBase.logInfo(TAG, "actionPairingRequest")
+        log.info(TAG, "actionPairingRequest $intent")
     }
 
     private fun actionUuid(intent: Intent?) {
-        XYBase.logInfo(TAG, "actionUuid")
+        log.info(TAG, "actionUuid $intent")
     }
 
     private fun extraBondState (intent: Intent?) {
-        XYBase.logInfo(TAG, "extraBondState")
+        log.info(TAG, "extraBondState $intent")
     }
 
     private fun extraClass (intent: Intent?) {
-        XYBase.logInfo(TAG, "extraClass")
+        log.info(TAG, "extraClass $intent")
     }
 
     private fun extraDevice (intent: Intent?) {
-        XYBase.logInfo(TAG, "extraDevice")
+        log.info(TAG, "extraDevice $intent")
     }
 
     private fun extraName (intent: Intent?) {
-        XYBase.logInfo(TAG, "extraName")
+        log.info(TAG, "extraName $intent")
     }
 
     private fun extraRssi (intent: Intent?) {
-        XYBase.logInfo(TAG, "extraRssi")
+        log.info(TAG, "extraRssi $intent")
     }
 
     private fun extraPairingKey (intent: Intent?) {
-        XYBase.logInfo(TAG, "extraPairingKey")
+        log.info(TAG, "extraPairingKey $intent")
     }
 
     private fun extraPairingVagrant (intent: Intent?) {
-        XYBase.logInfo(TAG, "extraPairingVagrant")
+        log.info(TAG, "extraPairingVagrant $intent")
     }
 
 
-    companion object {
+    companion object : XYBase() {
         val bluetoothDeviceIntentFilter = object : IntentFilter() {
             init {
                 addAction(BluetoothDevice.ACTION_ACL_CONNECTED)

@@ -136,7 +136,7 @@ open class XYBluetoothGatt protected constructor(
     }
 
     fun waitForNotification (characteristicToWaitFor: UUID): Deferred<XYBluetoothResult<Any?>> = asyncBle {
-        logInfo("waitForNotification")
+        log.info("waitForNotification")
         return@asyncBle suspendCancellableCoroutine<XYBluetoothResult<Any?>> { cont ->
             val listenerName = "waitForNotification$nowNano"
             val listener = object : XYBluetoothGattCallback() {
@@ -818,7 +818,7 @@ open class XYBluetoothGatt protected constructor(
     private val centralCallback = object : XYBluetoothGattCallback() {
         override fun onCharacteristicChanged(gatt: BluetoothGatt?, characteristic: BluetoothGattCharacteristic?) {
             super.onCharacteristicChanged(gatt, characteristic)
-            logInfo("onCharacteristicChanged: $characteristic ${characteristic?.value?.toHexString()}")
+            log.info("onCharacteristicChanged: $characteristic ${characteristic?.value?.toHexString()}")
 
             val characteristicValue = characteristic?.value
 

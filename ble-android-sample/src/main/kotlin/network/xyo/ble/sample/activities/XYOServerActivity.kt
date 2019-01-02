@@ -19,6 +19,8 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import network.xyo.ble.bluetooth.BluetoothIntentReceiver
 import network.xyo.ble.gatt.server.*
+import network.xyo.ble.gatt.server.responders.XYBluetoothReadResponder
+import network.xyo.ble.gatt.server.responders.XYBluetoothWriteResponder
 import network.xyo.ble.sample.R
 import network.xyo.ble.sample.fragments.AdvertiserFragment
 import network.xyo.ble.sample.fragments.InfoFragment
@@ -29,9 +31,9 @@ import java.nio.charset.Charset
 import java.util.*
 
 class XYOServerActivity : XYOAppBaseActivity() {
-    private var bleServer : XYBluetoothGattServer? = null
-    private var bleAdvertiser : XYBluetoothAdvertiser? = null
-    private val bluetoothIntentReciver = BluetoothIntentReceiver()
+    var bleServer : XYBluetoothGattServer? = null
+    var bleAdvertiser : XYBluetoothAdvertiser? = null
+    val bluetoothIntentReceiver = BluetoothIntentReceiver()
     private lateinit var pagerAdapter: SectionsPagerAdapter
 
     private val simpleService = XYBluetoothService(
@@ -81,12 +83,12 @@ class XYOServerActivity : XYOAppBaseActivity() {
             fragment.addService(simpleService)
         }
 
-        registerReceiver(bluetoothIntentReciver, BluetoothIntentReceiver.bluetoothDeviceIntentFilter)
+        registerReceiver(bluetoothIntentReceiver, BluetoothIntentReceiver.bluetoothDeviceIntentFilter)
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        unregisterReceiver(bluetoothIntentReciver)
+        unregisterReceiver(bluetoothIntentReceiver)
         bleServer?.stopServer()
     }
 
@@ -111,7 +113,7 @@ class XYOServerActivity : XYOAppBaseActivity() {
     /**
      * A simple write characteristic that logs whenever it is written to.
      */
-    private val logResponder = object : XYBluetoothCharacteristic.XYBluetoothWriteCharacteristicResponder {
+    private val logResponder = object : XYBluetoothWriteResponder {
         override fun onWriteRequest(writeRequestValue: ByteArray?, device: BluetoothDevice?): Boolean? {
             Log.v("BluetoothGattServer", writeRequestValue?.toString(Charset.defaultCharset()))
             return true
@@ -121,7 +123,7 @@ class XYOServerActivity : XYOAppBaseActivity() {
     /**
      * A simple read characteristic that increases one time every time it is read.
      */
-    private val countResponder = object : XYBluetoothCharacteristic.XYBluetoothReadCharacteristicResponder {
+    private val countResponder = object : XYBluetoothReadResponder {
         var count = 0
 
         override fun onReadRequest(device: BluetoothDevice?, offset: Int): XYBluetoothGattServer.XYReadRequest? {
