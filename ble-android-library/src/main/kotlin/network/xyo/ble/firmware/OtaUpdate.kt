@@ -58,7 +58,6 @@ class OtaUpdate(var device: XY4BluetoothDevice, private val otaFile: OtaFile?): 
             _sck_gpio = value
         }
 
-    //todo - NOT IMPLEMENTED
 //    private var _allowRetry = true
 //    var allowRetry: Boolean
 //        get() = _allowRetry
@@ -316,8 +315,7 @@ class OtaUpdate(var device: XY4BluetoothDevice, private val otaFile: OtaFile?): 
     companion object {
         private const val TAG = "OtaUpdate"
 
-        //TODO - setBlock retry
-        const val MAX_RETRY_COUNT = 3
+        //const val MAX_RETRY_COUNT = 3
         const val END_SIGNAL = -0x2000000
         const val REBOOT_SIGNAL = -0x3000000
         const val MEMORY_TYPE_EXTERNAL_SPI = 0x13
