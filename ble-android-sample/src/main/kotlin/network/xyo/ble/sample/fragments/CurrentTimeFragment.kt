@@ -82,18 +82,10 @@ class CurrentTimeFragment : XYAppBaseFragment() {
             val conn = device.connection {
                 hasConnectionError = false
 
-                device.currentTimeService.currentTime.get().await().let { it ->
-                    activity?.data?.currentTime = "${it.value ?: it.error?.message ?: "Error"}"
-                }
-
-                device.currentTimeService.localTimeInformation.get().await().let { it ->
-                    activity?.data?.localTimeInformation = "${it.value ?: it.error?.message
-                    ?: "Error"}"
-                }
-
-                device.currentTimeService.referenceTimeInformation.get().await().let { it ->
-                    activity?.data?.referenceTimeInformation = "${it.value ?: it.error?.message
-                    ?: "Error"}"
+                activity?.data?.let {
+                    it.currentTime = device.currentTimeService.currentTime.get().await().format()
+                    it.localTimeInformation = device.currentTimeService.localTimeInformation.get().await().format()
+                    it.referenceTimeInformation = device.currentTimeService.referenceTimeInformation.get().await().format()
                 }
 
             }
@@ -112,18 +104,10 @@ class CurrentTimeFragment : XYAppBaseFragment() {
             val conn = device.connection {
                 hasConnectionError = false
 
-                device.currentTimeService.currentTime.get().await().let { it ->
-                    activity?.data?.currentTime = "${it.value ?: it.error?.message ?: "Error"}"
-                }
-
-                device.currentTimeService.localTimeInformation.get().await().let { it ->
-                    activity?.data?.localTimeInformation = "${it.value ?: it.error?.message
-                    ?: "Error"}"
-                }
-
-                device.currentTimeService.referenceTimeInformation.get().await().let { it ->
-                    activity?.data?.referenceTimeInformation = "${it.value ?: it.error?.message
-                    ?: "Error"}"
+                activity?.data?.let {
+                    it.currentTime = device.currentTimeService.currentTime.get().await().format()
+                    it.localTimeInformation = device.currentTimeService.localTimeInformation.get().await().format()
+                    it.referenceTimeInformation = device.currentTimeService.referenceTimeInformation.get().await().format()
                 }
 
             }

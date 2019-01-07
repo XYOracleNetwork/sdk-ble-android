@@ -84,29 +84,13 @@ class AlertFragment : XYAppBaseFragment() {
             val conn = device.connection {
                 hasConnectionError = false
 
-                device.alertNotification.controlPoint.get().await().let { it ->
-                    activity?.data?.controlPoint = "${it.value ?: it.error?.message ?: "Error"}"
+                activity?.data?.let {
+                    it.controlPoint = device.alertNotification.controlPoint.get().await().format()
+                    it.unreadAlertStatus = device.alertNotification.unreadAlertStatus.get().await().format()
+                    it.newAlert = device.alertNotification.newAlert.get().await().format()
+                    it.supportedNewAlertCategory = device.alertNotification.supportedNewAlertCategory.get().await().format()
+                    it.supportedUnreadAlertCategory = device.alertNotification.supportedUnreadAlertCategory.get().await().format()
                 }
-
-                device.alertNotification.unreadAlertStatus.get().await().let { it ->
-                    activity?.data?.unreadAlertStatus = "${it.value ?: it.error?.message
-                    ?: "Error"}"
-                }
-
-                device.alertNotification.newAlert.get().await().let { it ->
-                    activity?.data?.newAlert = "${it.value ?: it.error?.message ?: "Error"}"
-                }
-
-                device.alertNotification.supportedNewAlertCategory.get().await().let { it ->
-                    activity?.data?.supportedNewAlertCategory = "${it.value ?: it.error?.message
-                    ?: "Error"}"
-                }
-
-                device.alertNotification.supportedUnreadAlertCategory.get().await().let { it ->
-                    activity?.data?.supportedUnreadAlertCategory = "${it.value ?: it.error?.message
-                    ?: "Error"}"
-                }
-
             }
             conn.await()
 
@@ -122,27 +106,12 @@ class AlertFragment : XYAppBaseFragment() {
             val conn = device.connection {
                 hasConnectionError = false
 
-                device.alertNotification.controlPoint.get().await().let { it ->
-                    activity?.data?.controlPoint = "${it.value ?: it.error?.message ?: "Error"}"
-                }
-
-                device.alertNotification.unreadAlertStatus.get().await().let { it ->
-                    activity?.data?.unreadAlertStatus = "${it.value ?: it.error?.message
-                    ?: "Error"}"
-                }
-
-                device.alertNotification.newAlert.get().await().let { it ->
-                    activity?.data?.newAlert = "${it.value ?: it.error?.message ?: "Error"}"
-                }
-
-                device.alertNotification.supportedNewAlertCategory.get().await().let { it ->
-                    activity?.data?.supportedNewAlertCategory = "${it.value ?: it.error?.message
-                    ?: "Error"}"
-                }
-
-                device.alertNotification.supportedUnreadAlertCategory.get().await().let { it ->
-                    activity?.data?.supportedUnreadAlertCategory = "${it.value ?: it.error?.message
-                    ?: "Error"}"
+                activity?.data?.let {
+                    it.controlPoint = device.alertNotification.controlPoint.get().await().format()
+                    it.unreadAlertStatus = device.alertNotification.unreadAlertStatus.get().await().format()
+                    it.newAlert = device.alertNotification.newAlert.get().await().format()
+                    it.supportedNewAlertCategory = device.alertNotification.supportedNewAlertCategory.get().await().format()
+                    it.supportedUnreadAlertCategory = device.alertNotification.supportedUnreadAlertCategory.get().await().format()
                 }
 
             }

@@ -84,8 +84,8 @@ class LinkLossFragment : XYAppBaseFragment() {
             val conn = device.connection {
                 hasConnectionError = false
 
-                device.linkLossService.alertLevel.get().await().let { it ->
-                    activity?.data?.alertLevel = "${it.value ?: it.error?.message ?: "Error"}"
+                activity?.data?.let {
+                    it.alertLevel = device.linkLossService.alertLevel.get().await().format()
                 }
 
             }
@@ -103,8 +103,8 @@ class LinkLossFragment : XYAppBaseFragment() {
             val conn = device.connection {
                 hasConnectionError = false
 
-                device.linkLossService.alertLevel.get().await().let { it ->
-                    activity?.data?.alertLevel = "${it.value ?: it.error?.message ?: "Error"}"
+                activity?.data?.let {
+                    it.alertLevel = device.linkLossService.alertLevel.get().await().format()
                 }
 
             }

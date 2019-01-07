@@ -83,8 +83,8 @@ class BatteryFragment : XYAppBaseFragment() {
             val conn = device.connection {
                 hasConnectionError = false
 
-                device.batteryService.level.get().await().let { it ->
-                    activity?.data?.level = "${it.value ?: it.error?.message ?: "Error"}"
+                activity?.data?.let {
+                    it.level = device.batteryService.level.get().await().format()
                 }
 
             }
@@ -102,8 +102,8 @@ class BatteryFragment : XYAppBaseFragment() {
             val conn = device.connection {
                 hasConnectionError = false
 
-                device.batteryService.level.get().await().let { it ->
-                    activity?.data?.level = "${it.value ?: it.error?.message ?: "Error"}"
+                activity?.data?.let {
+                    it.level = device.batteryService.level.get().await().format()
                 }
 
             }

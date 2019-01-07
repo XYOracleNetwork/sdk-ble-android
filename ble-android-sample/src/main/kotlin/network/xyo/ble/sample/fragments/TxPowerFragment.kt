@@ -85,8 +85,8 @@ class TxPowerFragment : XYAppBaseFragment() {
             val conn = device.connection {
                 hasConnectionError = false
 
-                device.txPowerService.txPowerLevel.get().await().let { it ->
-                    activity?.data?.txPowerLevel = "${it.value ?: it.error?.message ?: "Error"}"
+                activity?.data?.let {
+                    it.txPowerLevel = device.txPowerService.txPowerLevel.get().await().format()
                 }
 
             }
@@ -104,8 +104,8 @@ class TxPowerFragment : XYAppBaseFragment() {
             val conn = device.connection {
                 hasConnectionError = false
 
-                device.txPowerService.txPowerLevel.get().await().let { it ->
-                    activity?.data?.txPowerLevel = "${it.value ?: it.error?.message ?: "Error"}"
+                activity?.data?.let {
+                    it.txPowerLevel = device.txPowerService.txPowerLevel.get().await().format()
                 }
 
             }
