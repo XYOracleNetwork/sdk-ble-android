@@ -68,6 +68,10 @@ open class XY3BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
         return controlService.buzzerSelect.set(2)
     }
 
+    override fun stopFind(): Deferred<XYBluetoothResult<Int>> {
+        return controlService.buzzerSelect.set(-1)
+    }
+
     override fun lock(): Deferred<XYBluetoothResult<ByteArray>> {
         log.info("lock")
         return basicConfigService.lock.set(DEFAULT_LOCK_CODE)

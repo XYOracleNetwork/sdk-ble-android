@@ -66,6 +66,10 @@ open class XY4BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
         return primary.buzzer.set(11)
     }
 
+    override fun stopFind(): Deferred<XYBluetoothResult<Int>> {
+        return primary.buzzer.set(-1)
+    }
+
     override fun lock(): Deferred<XYBluetoothResult<ByteArray>> {
         log.info("lock")
         return primary.lock.set(DefaultLockCode)
