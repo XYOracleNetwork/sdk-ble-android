@@ -1,6 +1,5 @@
 package network.xyo.ble.sample.fragments
 
-
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -18,7 +17,6 @@ import network.xyo.ble.gatt.XYBluetoothGatt
 import network.xyo.ble.sample.R
 import network.xyo.core.XYBase
 import network.xyo.ui.ui
-
 
 class InfoFragment : XYAppBaseFragment(), View.OnClickListener, CompoundButton.OnCheckedChangeListener {
 
@@ -366,7 +364,7 @@ class InfoFragment : XYAppBaseFragment(), View.OnClickListener, CompoundButton.O
         }
     }
 
-    private val HEX_CHARS = "0123456789ABCDEF".toCharArray()
+    private val hexChars = "0123456789ABCDEF".toCharArray()
     private fun ByteArray.toHex(): String {
         val result = StringBuffer()
 
@@ -374,8 +372,8 @@ class InfoFragment : XYAppBaseFragment(), View.OnClickListener, CompoundButton.O
             val octet = it.toInt()
             val firstIndex = (octet and 0xF0).ushr(4)
             val secondIndex = octet and 0x0F
-            result.append(HEX_CHARS[firstIndex])
-            result.append(HEX_CHARS[secondIndex])
+            result.append(hexChars[firstIndex])
+            result.append(hexChars[secondIndex])
         }
 
         return result.toString()

@@ -1,6 +1,5 @@
 package network.xyo.ble.sample.fragments
 
-
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
@@ -22,7 +21,6 @@ import network.xyo.ble.sample.R
 import network.xyo.ui.ui
 import network.xyo.ble.sample.fragments.core.BackFragmentListener
 import network.xyo.core.XYBase
-
 
 class FirmwareUpdateFragment : XYAppBaseFragment(), BackFragmentListener {
 

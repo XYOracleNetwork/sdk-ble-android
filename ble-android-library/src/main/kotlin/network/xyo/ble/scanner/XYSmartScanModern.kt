@@ -58,7 +58,7 @@ class XYSmartScanModern(context: Context) : XYSmartScan(context) {
 
         override fun onScanFailed(errorCode: Int) {
             super.onScanFailed(errorCode)
-            log.error("onScanFailed: ${errorCode}, ${codeToScanFailed(errorCode)}", false)
+            log.error("onScanFailed: $errorCode, ${codeToScanFailed(errorCode)}", false)
             if (ScanCallback.SCAN_FAILED_APPLICATION_REGISTRATION_FAILED == errorCode) {
                 restartBluetooth()
             }

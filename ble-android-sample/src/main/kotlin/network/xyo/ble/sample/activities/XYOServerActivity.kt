@@ -13,10 +13,8 @@ import androidx.fragment.app.FragmentPagerAdapter
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
 import kotlinx.android.synthetic.main.activicty_ble_server.*
-import kotlinx.android.synthetic.main.device_activity.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import network.xyo.ble.bluetooth.BluetoothIntentReceiver
 import network.xyo.ble.gatt.server.*
@@ -24,7 +22,6 @@ import network.xyo.ble.gatt.server.responders.XYBluetoothReadResponder
 import network.xyo.ble.gatt.server.responders.XYBluetoothWriteResponder
 import network.xyo.ble.sample.R
 import network.xyo.ble.sample.fragments.AdvertiserFragment
-import network.xyo.ble.sample.fragments.InfoFragment
 import network.xyo.ble.sample.fragments.RootServicesFragment
 import network.xyo.ui.XYBaseFragment
 import java.nio.ByteBuffer

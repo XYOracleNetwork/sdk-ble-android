@@ -1,10 +1,8 @@
 package network.xyo.ble.gatt.server.responders
 
 import android.bluetooth.BluetoothDevice
-import network.xyo.ble.gatt.server.XYBluetoothCharacteristic
 import network.xyo.ble.gatt.server.XYBluetoothGattServer
 import java.nio.ByteBuffer
-import kotlin.coroutines.resume
 
 class XYStaticReadResponder (var value : ByteArray, val listener : XYStaticReadResponderListener?) : XYBluetoothReadResponder {
     private var lastTime = 0

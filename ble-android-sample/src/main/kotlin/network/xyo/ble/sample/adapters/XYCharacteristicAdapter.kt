@@ -8,6 +8,7 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import network.xyo.ble.sample.R
+import java.util.*
 
 class XYCharacteristicAdapter(services : Array<BluetoothGattCharacteristic>) : RecyclerView.Adapter<XYCharacteristicAdapter.ViewHolder>() {
     private val listeners = HashMap<String, XYCharacteristicAdapterListener>()
@@ -49,8 +50,8 @@ class XYCharacteristicAdapter(services : Array<BluetoothGattCharacteristic>) : R
     }
 
     class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
-        val uuid = itemView.findViewById<TextView>(R.id.characteristic_uuid)
-        val button = itemView.findViewById<Button>(R.id.view_characteristic_button)
+        val uuid:TextView = itemView.findViewById(R.id.characteristic_uuid)
+        val button:Button = itemView.findViewById(R.id.view_characteristic_button)
     }
 
     companion object {

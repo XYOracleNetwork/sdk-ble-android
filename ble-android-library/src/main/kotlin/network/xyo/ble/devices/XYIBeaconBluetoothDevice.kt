@@ -1,10 +1,8 @@
 package network.xyo.ble.devices
 
 import android.content.Context
-import network.xyo.ble.gatt.XYBluetoothError
 import network.xyo.ble.scanner.XYScanResult
 import network.xyo.core.XYBase
-import unsigned.Ubyte
 import unsigned.Ushort
 import java.nio.BufferUnderflowException
 import java.nio.ByteBuffer

@@ -15,7 +15,7 @@ import network.xyo.core.XYBase
 
 class XYBLEStatsView(context: Context, attrs: AttributeSet) : LinearLayout(context, attrs) {
 
-    private val scanner : XYSmartScan
+    private val scanner = (context.applicationContext as XYApplication).scanner
 
     private val smartScanListener = object : XYSmartScan.Listener() {
         override fun entered(device: XYBluetoothDevice) {
@@ -40,7 +40,6 @@ class XYBLEStatsView(context: Context, attrs: AttributeSet) : LinearLayout(conte
     }
 
     init {
-        scanner = (context.applicationContext as XYApplication).scanner
         scanner.addListener("XYBLEStatsView", smartScanListener)
     }
 

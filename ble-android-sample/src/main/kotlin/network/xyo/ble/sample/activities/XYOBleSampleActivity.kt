@@ -20,7 +20,6 @@ import network.xyo.ble.sample.adapters.XYDeviceAdapter
 import network.xyo.ble.scanner.XYSmartScan
 import network.xyo.ui.ui
 
-
 class XYOBleSampleActivity : XYOAppBaseActivity() {
     private var adapter: BaseAdapter? = null
 

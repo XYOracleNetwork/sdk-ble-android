@@ -13,7 +13,6 @@ import network.xyo.ble.scanner.XYScanRecord
 import network.xyo.ble.scanner.XYScanResult
 import network.xyo.core.XYBase
 import java.nio.ByteBuffer
-import java.time.LocalDateTime
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 
@@ -66,10 +65,6 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, private
 
     override fun hashCode(): Int {
         return hash
-    }
-
-    override fun equals(other: Any?): Boolean {
-        return super.equals(other)
     }
 
     //this should only be called from the onEnter function so that

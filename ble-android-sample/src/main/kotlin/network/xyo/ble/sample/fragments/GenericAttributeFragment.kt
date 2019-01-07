@@ -1,6 +1,5 @@
 package network.xyo.ble.sample.fragments
 
-
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -13,7 +12,6 @@ import network.xyo.ble.devices.XY3BluetoothDevice
 import network.xyo.ble.devices.XY4BluetoothDevice
 import network.xyo.ble.sample.R
 import network.xyo.ui.ui
-
 
 class GenericAttributeFragment : XYAppBaseFragment() {
 

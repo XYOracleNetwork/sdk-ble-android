@@ -8,7 +8,6 @@ import android.os.Handler
 import kotlinx.coroutines.*
 import network.xyo.ble.CallByVersion
 import network.xyo.ble.scanner.XYScanResult
-import java.lang.StringBuilder
 import java.util.*
 import kotlin.coroutines.Continuation
 import kotlin.coroutines.resume
@@ -977,7 +976,7 @@ open class XYBluetoothGatt protected constructor(
             cleanUpThread = GlobalScope.launch {
 
                 while (!closed) {
-                    log.info("cleanUpIfNeeded: ${references}")
+                    log.info("cleanUpIfNeeded: $references")
                     //if the global and local last connection times do not match
                     //after the delay, that means a newer connection is now responsible for closing it
                     val localAccessTime = now

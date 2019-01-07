@@ -49,8 +49,8 @@ class XYServiceListAdapter(services : Array<BluetoothGattService>) : RecyclerVie
     }
 
     class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
-        val uuid = itemView.findViewById<TextView>(R.id.service_uuid)
-        val button = itemView.findViewById<Button>(R.id.view_service_button)
+        val uuid:TextView = itemView.findViewById(R.id.service_uuid)
+        val button:Button = itemView.findViewById(R.id.view_service_button)
     }
 
     companion object {

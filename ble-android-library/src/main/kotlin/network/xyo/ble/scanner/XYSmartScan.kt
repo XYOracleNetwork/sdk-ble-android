@@ -9,7 +9,6 @@ import android.content.IntentFilter
 import android.location.LocationManager
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import network.xyo.ble.devices.XY4BluetoothDevice
 import network.xyo.ble.devices.XYBluetoothDevice
 import network.xyo.ble.devices.XYMobileBluetoothDevice
 import network.xyo.ble.gatt.XYBluetoothBase
@@ -66,7 +65,7 @@ abstract class XYSmartScan(context: Context) : XYBluetoothBase(context) {
                 when (action) {
                     BluetoothAdapter.ACTION_STATE_CHANGED -> {
                         val state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, -1)
-                        log.info("onReceive: State= ${state}")
+                        log.info("onReceive: State= $state")
                         if (intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, -1) == BluetoothAdapter.STATE_OFF) {
                             if (restartingBluetooth)
                             {

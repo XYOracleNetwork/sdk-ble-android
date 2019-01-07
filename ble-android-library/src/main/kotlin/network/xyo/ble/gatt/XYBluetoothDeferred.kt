@@ -22,9 +22,6 @@ fun <T> queueBle(
         block: suspend CoroutineScope.() -> XYBluetoothResult<T>
 ): Deferred<XYBluetoothResult<T>> {
     return runBlocking {
-        val r = async(context, start, block).await()
-        return@runBlocking async{
-            return@async r
-        }
+        return@runBlocking async(context, start, block)
     }
 }
