@@ -62,15 +62,15 @@ class GenericAccessFragment : XYAppBaseFragment() {
         when (activity?.device) {
             is XY4BluetoothDevice -> {
                 val x4 = (activity?.device as? XY4BluetoothDevice)
-                x4?.let { getX4Values(it) }
+                x4?.let { getXY4Values(it) }
             }
             is XY3BluetoothDevice -> {
                 val x3 = (activity?.device as? XY3BluetoothDevice)
-                x3?.let { getX3Values(it) }
+                x3?.let { getXY3Values(it) }
             }
             is XY2BluetoothDevice -> {
                 val x2 = (activity?.device as? XY2BluetoothDevice)
-                x2?.let { getX2Values(it) }
+                x2?.let { getXY2Values(it) }
             }
             else -> {
                 text_device_name.text = getString(R.string.unknown_device)
@@ -78,7 +78,7 @@ class GenericAccessFragment : XYAppBaseFragment() {
         }
     }
 
-    private fun getX4Values(device: XY4BluetoothDevice) {
+    private fun getXY4Values(device: XY4BluetoothDevice) {
         GlobalScope.launch {
             var hasConnectionError = true
 
@@ -115,7 +115,7 @@ class GenericAccessFragment : XYAppBaseFragment() {
         }
     }
 
-    private fun getX3Values(device: XY3BluetoothDevice) {
+    private fun getXY3Values(device: XY3BluetoothDevice) {
         GlobalScope.launch {
             var hasConnectionError = true
 
@@ -152,7 +152,7 @@ class GenericAccessFragment : XYAppBaseFragment() {
         }
     }
 
-    private fun getX2Values(device: XY2BluetoothDevice) {
+    private fun getXY2Values(device: XY2BluetoothDevice) {
         GlobalScope.launch {
             var hasConnectionError = true
 
