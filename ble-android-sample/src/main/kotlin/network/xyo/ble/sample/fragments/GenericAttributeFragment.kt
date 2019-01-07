@@ -88,8 +88,8 @@ class GenericAttributeFragment : XYAppBaseFragment() {
             val conn = device.connection {
                 hasConnectionError = false
 
-                device.genericAttributeService.serviceChanged.get().await().let { it ->
-                    activity?.data?.serviceChanged = "${it.value ?: it.error?.message ?: "Error"}"
+                activity?.data?.let {
+                    it.serviceChanged = device.genericAttributeService.serviceChanged.get().await().format()
                 }
 
             }
@@ -107,8 +107,8 @@ class GenericAttributeFragment : XYAppBaseFragment() {
             val conn = device.connection {
                 hasConnectionError = false
 
-                device.genericAttributeService.serviceChanged.get().await().let { it ->
-                    activity?.data?.serviceChanged = "${it.value ?: it.error?.message ?: "Error"}"
+                activity?.data?.let {
+                    it.serviceChanged = device.genericAttributeService.serviceChanged.get().await().format()
                 }
 
             }
@@ -126,8 +126,8 @@ class GenericAttributeFragment : XYAppBaseFragment() {
             val conn = device.connection {
                 hasConnectionError = false
 
-                device.genericAttributeService.serviceChanged.get().await().let { it ->
-                    activity?.data?.serviceChanged = "${it.value ?: it.error?.message ?: "Error"}"
+                activity?.data?.let {
+                    it.serviceChanged = device.genericAttributeService.serviceChanged.get().await().format()
                 }
 
             }
