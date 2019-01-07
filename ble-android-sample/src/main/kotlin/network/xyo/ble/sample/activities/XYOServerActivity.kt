@@ -1,6 +1,7 @@
 package network.xyo.ble.sample.activities
 
 import android.bluetooth.BluetoothDevice
+import android.bluetooth.BluetoothGattCharacteristic
 import android.bluetooth.BluetoothGattService
 import android.os.Bundle
 import android.util.Log
@@ -12,12 +13,18 @@ import androidx.fragment.app.FragmentPagerAdapter
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
 import kotlinx.android.synthetic.main.activicty_ble_server.*
+import kotlinx.android.synthetic.main.device_activity.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import network.xyo.ble.bluetooth.BluetoothIntentReceiver
 import network.xyo.ble.gatt.server.*
+import network.xyo.ble.gatt.server.responders.XYBluetoothReadResponder
+import network.xyo.ble.gatt.server.responders.XYBluetoothWriteResponder
 import network.xyo.ble.sample.R
 import network.xyo.ble.sample.fragments.AdvertiserFragment
+import network.xyo.ble.sample.fragments.InfoFragment
 import network.xyo.ble.sample.fragments.RootServicesFragment
 import network.xyo.ui.XYBaseFragment
 import java.nio.ByteBuffer
@@ -27,39 +34,53 @@ import java.util.*
 class XYOServerActivity : XYOAppBaseActivity() {
     var bleServer : XYBluetoothGattServer? = null
     var bleAdvertiser : XYBluetoothAdvertiser? = null
-    private val simpleService = XYBluetoothService(UUID.fromString("3079ca44-ae64-4797-b4e5-a31e3304c481"), BluetoothGattService.SERVICE_TYPE_PRIMARY)
-    private val characteristicRead = XYBluetoothReadCharacteristic(UUID.fromString("01ef8f90-e99f-48ae-87bb-f683b93c692f"))
-    private val characteristicWrite = XYBluetoothWriteCharacteristic(UUID.fromString("02ef8f90-e99f-48ae-87bb-f683b93c692f"))
+    val bluetoothIntentReceiver = BluetoothIntentReceiver()
+    private lateinit var pagerAdapter: SectionsPagerAdapter
 
-    override fun onBluetoothDisabled() {
+    private val simpleService = XYBluetoothService(
+            UUID.fromString("3079ca44-ae64-4797-b4e5-a31e3304c481"),
+            BluetoothGattService.SERVICE_TYPE_PRIMARY
+    )
 
-    }
+    private val characteristicRead = XYBluetoothCharacteristic(
+            UUID.fromString("01ef8f90-e99f-48ae-87bb-f683b93c692f"),
+            BluetoothGattCharacteristic.PROPERTY_READ,
+            BluetoothGattCharacteristic.PERMISSION_READ
+    )
 
-    override fun onBluetoothEnabled() {
+    private val characteristicWrite = XYBluetoothCharacteristic(
+            UUID.fromString("02ef8f90-e99f-48ae-87bb-f683b93c692f"),
+            BluetoothGattCharacteristic.PROPERTY_WRITE,
+            BluetoothGattCharacteristic.PERMISSION_WRITE
+    )
 
-    }
+    val services = arrayOf<BluetoothGattService>(simpleService)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activicty_ble_server)
 
 
-        val pagerAdapter = SectionsPagerAdapter(supportFragmentManager)
+        val tabAdapter = SectionsPagerAdapter(supportFragmentManager)
+        pagerAdapter = tabAdapter
         val serverPagerContainer = findViewById<ViewPager>(R.id.server_pager_container)
         serverPagerContainer.adapter = pagerAdapter
         serverPagerContainer.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(server_tabs))
         serverPagerContainer.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(server_tabs) as ViewPager.OnPageChangeListener)
+        server_tabs.addOnTabSelectedListener(TabLayout.ViewPagerOnTabSelectedListener(server_pager_container))
+        bleAdvertiser = XYBluetoothAdvertiser(applicationContext)
+
+        registerReceiver(bluetoothIntentReceiver, BluetoothIntentReceiver.bluetoothDeviceIntentFilter)
+
 
         GlobalScope.launch {
-            bleAdvertiser = XYBluetoothAdvertiser(applicationContext)
             spinUpServer().await()
-            val fragment = pagerAdapter.getFragmentByPosition(1) as RootServicesFragment
-            fragment.addService(simpleService)
         }
     }
 
     override fun onDestroy() {
         super.onDestroy()
+        unregisterReceiver(bluetoothIntentReceiver)
         bleServer?.stopServer()
     }
 
@@ -67,24 +88,21 @@ class XYOServerActivity : XYOAppBaseActivity() {
         val server = XYBluetoothGattServer(applicationContext)
         server.startServer()
         bleServer = server
-        server.addService(simpleService).await()
+        return@async server.addService(simpleService).await()
     }
 
     private fun spinUpServer () = GlobalScope.async {
         simpleService.addCharacteristic(characteristicRead)
         simpleService.addCharacteristic(characteristicWrite)
-
-
-        createTestServer().await()
-        characteristicRead.addResponder("countResponder", countResponder)
-        characteristicWrite.addResponder("log Responder",logResponder)
-        return@async
+        characteristicRead.addReadResponder("countResponder", countResponder)
+        characteristicWrite.addWriteResponder("log Responder",logResponder)
+        return@async createTestServer().await()
     }
 
     /**
      * A simple write characteristic that logs whenever it is written to.
      */
-    private val logResponder = object : XYBluetoothWriteCharacteristic.XYBluetoothWriteCharacteristicResponder {
+    private val logResponder = object : XYBluetoothWriteResponder {
         override fun onWriteRequest(writeRequestValue: ByteArray?, device: BluetoothDevice?): Boolean? {
             Log.v("BluetoothGattServer", writeRequestValue?.toString(Charset.defaultCharset()))
             return true
@@ -94,12 +112,12 @@ class XYOServerActivity : XYOAppBaseActivity() {
     /**
      * A simple read characteristic that increases one time every time it is read.
      */
-    private val countResponder = object : XYBluetoothReadCharacteristic.XYBluetoothReadCharacteristicResponder {
+    private val countResponder = object : XYBluetoothReadResponder {
         var count = 0
 
-        override fun onReadRequest(device: BluetoothDevice?): ByteArray? {
+        override fun onReadRequest(device: BluetoothDevice?, offset: Int): XYBluetoothGattServer.XYReadRequest? {
             count++
-            return ByteBuffer.allocate(4).putInt(count).array()
+            return XYBluetoothGattServer.XYReadRequest( ByteBuffer.allocate(4).putInt(count).array(), 0)
         }
     }
 
@@ -108,13 +126,12 @@ class XYOServerActivity : XYOAppBaseActivity() {
         private val fragments: SparseArray<XYBaseFragment> = SparseArray(size)
 
         override fun getItem(position: Int): Fragment {
-            println(bleServer?.getServices()?.size)
             when (position) {
                 0 -> return AdvertiserFragment.newInstance()
-                1 -> return RootServicesFragment.newInstance(bleServer?.getServices())
+                1 -> return RootServicesFragment.newInstance(services)
             }
 
-            return RootServicesFragment.newInstance(bleServer?.getServices())
+            throw Exception("Position out of index!")
         }
 
         override fun getCount(): Int {
@@ -127,7 +144,7 @@ class XYOServerActivity : XYOAppBaseActivity() {
             return fragment
         }
 
-        fun getFragmentByPosition(position: Int): XYBaseFragment {
+        fun getFragmentByPosition(position: Int): XYBaseFragment? {
             return fragments.get(position)
         }
     }

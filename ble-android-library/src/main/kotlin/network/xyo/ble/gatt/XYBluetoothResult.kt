@@ -1,6 +1,6 @@
 package network.xyo.ble.gatt
 
-class XYBluetoothResult<T> {
+open class XYBluetoothResult<T> {
 
     var value: T? = null
     var error: XYBluetoothError? = null
@@ -23,5 +23,9 @@ class XYBluetoothResult<T> {
 
     override fun toString(): String {
         return "XYBluetoothResult: V: $value, E: ${error?.message ?: error ?: ""}"
+    }
+
+    open fun format(): String {
+        return (value ?: error?.message ?: "Error").toString()
     }
 }

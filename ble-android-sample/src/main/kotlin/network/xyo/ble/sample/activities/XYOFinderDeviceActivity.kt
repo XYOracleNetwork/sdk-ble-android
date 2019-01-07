@@ -18,8 +18,8 @@ import network.xyo.ble.devices.XYFinderBluetoothDevice
 import network.xyo.ble.sample.R
 import network.xyo.ble.sample.XYDeviceData
 import network.xyo.ble.sample.fragments.*
-import network.xyo.ui.XYBaseFragment
 import network.xyo.ble.sample.fragments.core.BackFragmentListener
+import network.xyo.ui.XYBaseFragment
 import network.xyo.ui.ui
 
 /**
@@ -68,15 +68,6 @@ class XYOFinderDeviceActivity : XYOAppBaseActivity() {
         val frag = (supportFragmentManager.findFragmentById(R.id.container) as FirmwareUpdateFragment?)
         frag?.onFileSelected(requestCode, resultCode, data)
     }
-
-    override fun onBluetoothEnabled() {
-        ll_device_disabled.visibility = GONE
-    }
-
-    override fun onBluetoothDisabled() {
-        ll_device_disabled.visibility = VISIBLE
-    }
-
 
     private val xy3DeviceListener = object : XY3BluetoothDevice.Listener() {
         override fun entered(device: XYBluetoothDevice) {

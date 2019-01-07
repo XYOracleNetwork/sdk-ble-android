@@ -60,11 +60,11 @@ class CurrentTimeFragment : XYAppBaseFragment() {
         when (activity?.device) {
             is XY4BluetoothDevice -> {
                 val x4 = (activity?.device as? XY4BluetoothDevice)
-                x4?.let { getX4Values(it) }
+                x4?.let { getXY4Values(it) }
             }
             is XY3BluetoothDevice -> {
                 val x3 = (activity?.device as? XY3BluetoothDevice)
-                x3?.let { getX3Values(it) }
+                x3?.let { getXY3Values(it) }
             }
             is XY2BluetoothDevice -> {
                 text_currentTime.text = getString(R.string.not_supported_x2)
@@ -75,25 +75,17 @@ class CurrentTimeFragment : XYAppBaseFragment() {
         }
     }
 
-    private fun getX4Values(device: XY4BluetoothDevice) {
+    private fun getXY4Values(device: XY4BluetoothDevice) {
         GlobalScope.launch {
             var hasConnectionError = true
 
             val conn = device.connection {
                 hasConnectionError = false
 
-                device.currentTimeService.currentTime.get().await().let { it ->
-                    activity?.data?.currentTime = "${it.value ?: it.error?.message ?: "Error"}"
-                }
-
-                device.currentTimeService.localTimeInformation.get().await().let { it ->
-                    activity?.data?.localTimeInformation = "${it.value ?: it.error?.message
-                    ?: "Error"}"
-                }
-
-                device.currentTimeService.referenceTimeInformation.get().await().let { it ->
-                    activity?.data?.referenceTimeInformation = "${it.value ?: it.error?.message
-                    ?: "Error"}"
+                activity?.data?.let {
+                    it.currentTime = device.currentTimeService.currentTime.get().await().format()
+                    it.localTimeInformation = device.currentTimeService.localTimeInformation.get().await().format()
+                    it.referenceTimeInformation = device.currentTimeService.referenceTimeInformation.get().await().format()
                 }
 
             }
@@ -105,25 +97,17 @@ class CurrentTimeFragment : XYAppBaseFragment() {
     }
 
 
-    private fun getX3Values(device: XY3BluetoothDevice) {
+    private fun getXY3Values(device: XY3BluetoothDevice) {
         GlobalScope.launch {
             var hasConnectionError = true
 
             val conn = device.connection {
                 hasConnectionError = false
 
-                device.currentTimeService.currentTime.get().await().let { it ->
-                    activity?.data?.currentTime = "${it.value ?: it.error?.message ?: "Error"}"
-                }
-
-                device.currentTimeService.localTimeInformation.get().await().let { it ->
-                    activity?.data?.localTimeInformation = "${it.value ?: it.error?.message
-                    ?: "Error"}"
-                }
-
-                device.currentTimeService.referenceTimeInformation.get().await().let { it ->
-                    activity?.data?.referenceTimeInformation = "${it.value ?: it.error?.message
-                    ?: "Error"}"
+                activity?.data?.let {
+                    it.currentTime = device.currentTimeService.currentTime.get().await().format()
+                    it.localTimeInformation = device.currentTimeService.localTimeInformation.get().await().format()
+                    it.referenceTimeInformation = device.currentTimeService.referenceTimeInformation.get().await().format()
                 }
 
             }

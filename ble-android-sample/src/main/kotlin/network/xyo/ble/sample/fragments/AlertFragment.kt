@@ -49,11 +49,11 @@ class AlertFragment : XYAppBaseFragment() {
         when (activity?.device) {
             is XY4BluetoothDevice -> {
                 val x4 = (activity?.device as? XY4BluetoothDevice)
-                x4?.let { getX4Values(it) }
+                x4?.let { getXY4Values(it) }
             }
             is XY3BluetoothDevice -> {
                 val x3 = (activity?.device as? XY3BluetoothDevice)
-                x3?.let { getX3Values(it) }
+                x3?.let { getXY3Values(it) }
             }
             is XY2BluetoothDevice -> {
                 text_control_point.text = getString(R.string.not_supported_x2)
@@ -77,36 +77,20 @@ class AlertFragment : XYAppBaseFragment() {
         }
     }
 
-    private fun getX4Values(device: XY4BluetoothDevice) {
+    private fun getXY4Values(device: XY4BluetoothDevice) {
         GlobalScope.launch {
             var hasConnectionError = true
 
             val conn = device.connection {
                 hasConnectionError = false
 
-                device.alertNotification.controlPoint.get().await().let { it ->
-                    activity?.data?.controlPoint = "${it.value ?: it.error?.message ?: "Error"}"
+                activity?.data?.let {
+                    it.controlPoint = device.alertNotification.controlPoint.get().await().format()
+                    it.unreadAlertStatus = device.alertNotification.unreadAlertStatus.get().await().format()
+                    it.newAlert = device.alertNotification.newAlert.get().await().format()
+                    it.supportedNewAlertCategory = device.alertNotification.supportedNewAlertCategory.get().await().format()
+                    it.supportedUnreadAlertCategory = device.alertNotification.supportedUnreadAlertCategory.get().await().format()
                 }
-
-                device.alertNotification.unreadAlertStatus.get().await().let { it ->
-                    activity?.data?.unreadAlertStatus = "${it.value ?: it.error?.message
-                    ?: "Error"}"
-                }
-
-                device.alertNotification.newAlert.get().await().let { it ->
-                    activity?.data?.newAlert = "${it.value ?: it.error?.message ?: "Error"}"
-                }
-
-                device.alertNotification.supportedNewAlertCategory.get().await().let { it ->
-                    activity?.data?.supportedNewAlertCategory = "${it.value ?: it.error?.message
-                    ?: "Error"}"
-                }
-
-                device.alertNotification.supportedUnreadAlertCategory.get().await().let { it ->
-                    activity?.data?.supportedUnreadAlertCategory = "${it.value ?: it.error?.message
-                    ?: "Error"}"
-                }
-
             }
             conn.await()
 
@@ -115,34 +99,19 @@ class AlertFragment : XYAppBaseFragment() {
         }
     }
 
-    private fun getX3Values(device: XY3BluetoothDevice) {
+    private fun getXY3Values(device: XY3BluetoothDevice) {
         GlobalScope.launch {
             var hasConnectionError = true
 
             val conn = device.connection {
                 hasConnectionError = false
 
-                device.alertNotification.controlPoint.get().await().let { it ->
-                    activity?.data?.controlPoint = "${it.value ?: it.error?.message ?: "Error"}"
-                }
-
-                device.alertNotification.unreadAlertStatus.get().await().let { it ->
-                    activity?.data?.unreadAlertStatus = "${it.value ?: it.error?.message
-                    ?: "Error"}"
-                }
-
-                device.alertNotification.newAlert.get().await().let { it ->
-                    activity?.data?.newAlert = "${it.value ?: it.error?.message ?: "Error"}"
-                }
-
-                device.alertNotification.supportedNewAlertCategory.get().await().let { it ->
-                    activity?.data?.supportedNewAlertCategory = "${it.value ?: it.error?.message
-                    ?: "Error"}"
-                }
-
-                device.alertNotification.supportedUnreadAlertCategory.get().await().let { it ->
-                    activity?.data?.supportedUnreadAlertCategory = "${it.value ?: it.error?.message
-                    ?: "Error"}"
+                activity?.data?.let {
+                    it.controlPoint = device.alertNotification.controlPoint.get().await().format()
+                    it.unreadAlertStatus = device.alertNotification.unreadAlertStatus.get().await().format()
+                    it.newAlert = device.alertNotification.newAlert.get().await().format()
+                    it.supportedNewAlertCategory = device.alertNotification.supportedNewAlertCategory.get().await().format()
+                    it.supportedUnreadAlertCategory = device.alertNotification.supportedUnreadAlertCategory.get().await().format()
                 }
 
             }

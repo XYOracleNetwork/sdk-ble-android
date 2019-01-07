@@ -315,7 +315,6 @@ open class XYBluetoothGattClient protected constructor(
         }
     }
 
-    val CLIENT_CHARACTERISTIC_CONFIG: UUID = UUID.fromString("00002902-0000-1000-8000-00805f9b34fb")
 
     fun findAndWriteCharacteristicNotify(service: UUID, characteristic: UUID, enable:Boolean) : Deferred<XYBluetoothResult<Boolean>> {
         return asyncBle {
@@ -353,5 +352,10 @@ open class XYBluetoothGattClient protected constructor(
 
             return@asyncBle XYBluetoothResult(value, error)
         }
+    }
+
+
+    companion object {
+        val CLIENT_CHARACTERISTIC_CONFIG: UUID = UUID.fromString("00002902-0000-1000-8000-00805f9b34fb")
     }
 }

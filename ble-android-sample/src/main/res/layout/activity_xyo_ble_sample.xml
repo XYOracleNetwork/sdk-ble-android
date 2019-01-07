@@ -7,13 +7,6 @@
     android:layout_alignParentTop="true"
     android:orientation="vertical">
 
-    <Button
-        android:id="@+id/launchServer"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentTop="true"
-        android:text="Server" />
 
     <include
         android:id="@+id/include_stats"
@@ -21,6 +14,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true" />
+
+    <network.xyo.ui.views.XYButton
+            android:id="@+id/launchServer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:text="@string/server" />
 
     <ListView
         android:id="@+id/listview"

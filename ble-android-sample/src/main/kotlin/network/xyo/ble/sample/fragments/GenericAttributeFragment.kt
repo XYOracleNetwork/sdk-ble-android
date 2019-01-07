@@ -58,20 +58,20 @@ class GenericAttributeFragment : XYAppBaseFragment() {
             is XY4BluetoothDevice -> {
                 val x4 = (activity?.device as? XY4BluetoothDevice)
                 x4?.let {
-                    getX4Values(x4)
+                    getXY4Values(x4)
 
                 }
             }
             is XY3BluetoothDevice -> {
                 val x3 = (activity?.device as? XY3BluetoothDevice)
                 x3?.let {
-                    getX3Values(x3)
+                    getXY3Values(x3)
                 }
             }
             is XY2BluetoothDevice -> {
                 val x2 = (activity?.device as? XY2BluetoothDevice)
                 x2?.let {
-                    getX2Values(x2)
+                    getXY2Values(x2)
                 }
             }
             else -> {
@@ -81,15 +81,15 @@ class GenericAttributeFragment : XYAppBaseFragment() {
         }
     }
 
-    private fun getX4Values(device: XY4BluetoothDevice) {
+    private fun getXY4Values(device: XY4BluetoothDevice) {
         GlobalScope.launch {
             var hasConnectionError = true
 
             val conn = device.connection {
                 hasConnectionError = false
 
-                device.genericAttributeService.serviceChanged.get().await().let { it ->
-                    activity?.data?.serviceChanged = "${it.value ?: it.error?.message ?: "Error"}"
+                activity?.data?.let {
+                    it.serviceChanged = device.genericAttributeService.serviceChanged.get().await().format()
                 }
 
             }
@@ -100,15 +100,15 @@ class GenericAttributeFragment : XYAppBaseFragment() {
         }
     }
 
-    private fun getX3Values(device: XY3BluetoothDevice) {
+    private fun getXY3Values(device: XY3BluetoothDevice) {
         GlobalScope.launch {
             var hasConnectionError = true
 
             val conn = device.connection {
                 hasConnectionError = false
 
-                device.genericAttributeService.serviceChanged.get().await().let { it ->
-                    activity?.data?.serviceChanged = "${it.value ?: it.error?.message ?: "Error"}"
+                activity?.data?.let {
+                    it.serviceChanged = device.genericAttributeService.serviceChanged.get().await().format()
                 }
 
             }
@@ -119,15 +119,15 @@ class GenericAttributeFragment : XYAppBaseFragment() {
         }
     }
 
-    private fun getX2Values(device: XY2BluetoothDevice) {
+    private fun getXY2Values(device: XY2BluetoothDevice) {
         GlobalScope.launch {
             var hasConnectionError = true
 
             val conn = device.connection {
                 hasConnectionError = false
 
-                device.genericAttributeService.serviceChanged.get().await().let { it ->
-                    activity?.data?.serviceChanged = "${it.value ?: it.error?.message ?: "Error"}"
+                activity?.data?.let {
+                    it.serviceChanged = device.genericAttributeService.serviceChanged.get().await().format()
                 }
 
             }

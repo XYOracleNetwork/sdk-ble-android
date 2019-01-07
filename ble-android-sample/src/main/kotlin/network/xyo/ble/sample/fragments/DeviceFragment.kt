@@ -11,6 +11,7 @@ import kotlinx.coroutines.launch
 import network.xyo.ble.devices.XY2BluetoothDevice
 import network.xyo.ble.devices.XY3BluetoothDevice
 import network.xyo.ble.devices.XY4BluetoothDevice
+import network.xyo.ble.gatt.XYBluetoothResult
 import network.xyo.ble.sample.R
 import network.xyo.ui.ui
 
@@ -65,15 +66,15 @@ class DeviceFragment : XYAppBaseFragment() {
         when (activity?.device) {
             is XY4BluetoothDevice -> {
                 val x4 = (activity?.device as? XY4BluetoothDevice)
-                x4?.let { getX4Values(it) }
+                x4?.let { getInformationValues(it) }
             }
             is XY3BluetoothDevice -> {
                 val x3 = (activity?.device as? XY3BluetoothDevice)
-                x3?.let { getX3Values(it) }
+                x3?.let { getInformationValues(it) }
             }
             is XY2BluetoothDevice -> {
                 val x2 = (activity?.device as? XY2BluetoothDevice)
-                x2?.let { getX2Values(it) }
+                x2?.let { getInformationValues(it) }
             }
             else -> {
                 text_system_id.text = getString(R.string.unknown_device)
@@ -81,54 +82,50 @@ class DeviceFragment : XYAppBaseFragment() {
         }
     }
 
-    private fun getX4Values(device: XY4BluetoothDevice) {
+    private fun getInformationValues(device: XY4BluetoothDevice) {
         GlobalScope.launch {
             var hasConnectionError = true
 
             val conn = device.connection {
                 hasConnectionError = false
 
-                device.deviceInformationService.systemId.get().await().let { it ->
-                    activity?.data?.systemId = "${it.value ?: it.error?.message ?: "Error"}"
+                activity?.data?.let {
+                    it.systemId = device.deviceInformationService.systemId.get().await().format()
+                    it.modelNumberString = device.deviceInformationService.modelNumberString.get().await().format()
+                    it.serialNumberString = device.deviceInformationService.serialNumberString.get().await().format()
+                    it.firmwareRevisionString = device.deviceInformationService.firmwareRevisionString.get().await().format()
+                    it.hardwareRevisionString = device.deviceInformationService.hardwareRevisionString.get().await().format()
+                    it.softwareRevisionString = device.deviceInformationService.softwareRevisionString.get().await().format()
+                    it.manufacturerNameString = device.deviceInformationService.manufacturerNameString.get().await().format()
+                    it.ieeeRegulatoryCertificationDataList = device.deviceInformationService.ieeeRegulatoryCertificationDataList.get().await().format()
+                    it.pnpId = device.deviceInformationService.pnpId.get().await().format()
                 }
+            }
+            conn.await()
 
-                device.deviceInformationService.modelNumberString.get().await().let { it ->
-                    activity?.data?.modelNumberString = it.value ?: it.error?.message
-                            ?: "Error"
-                }
+            updateUI()
+            checkConnectionError(hasConnectionError)
+        }
+    }
 
-                device.deviceInformationService.serialNumberString.get().await().let { it ->
-                    activity?.data?.serialNumberString = it.value ?: it.error?.message
-                            ?: "Error"
-                }
 
-                device.deviceInformationService.firmwareRevisionString.get().await().let { it ->
-                    activity?.data?.firmwareRevisionString = it.value ?: it.error?.message
-                            ?: "Error"
-                }
+    private fun getInformationValues(device: XY3BluetoothDevice) {
+        GlobalScope.launch {
+            var hasConnectionError = true
 
-                device.deviceInformationService.hardwareRevisionString.get().await().let { it ->
-                    activity?.data?.hardwareRevisionString = it.value ?: it.error?.message
-                            ?: "Error"
-                }
+            val conn = device.connection {
+                hasConnectionError = false
 
-                device.deviceInformationService.softwareRevisionString.get().await().let { it ->
-                    activity?.data?.softwareRevisionString = it.value ?: it.error?.message
-                            ?: "Error"
-                }
-
-                device.deviceInformationService.manufacturerNameString.get().await().let { it ->
-                    activity?.data?.manufacturerNameString = it.value ?: it.error?.message
-                            ?: "Error"
-                }
-
-                device.deviceInformationService.ieeeRegulatoryCertificationDataList.get().await().let { it ->
-                    activity?.data?.ieeeRegulatoryCertificationDataList = "${it.value
-                            ?: it.error?.message ?: "Error"}"
-                }
-
-                device.deviceInformationService.pnpId.get().await().let { it ->
-                    activity?.data?.pnpId = "${it.value ?: it.error?.message ?: "Error"}"
+                activity?.data?.let {
+                    it.systemId = device.deviceInformationService.systemId.get().await().format()
+                    it.modelNumberString = device.deviceInformationService.modelNumberString.get().await().format()
+                    it.serialNumberString = device.deviceInformationService.serialNumberString.get().await().format()
+                    it.firmwareRevisionString = device.deviceInformationService.firmwareRevisionString.get().await().format()
+                    it.hardwareRevisionString = device.deviceInformationService.hardwareRevisionString.get().await().format()
+                    it.softwareRevisionString = device.deviceInformationService.softwareRevisionString.get().await().format()
+                    it.manufacturerNameString = device.deviceInformationService.manufacturerNameString.get().await().format()
+                    it.ieeeRegulatoryCertificationDataList = device.deviceInformationService.ieeeRegulatoryCertificationDataList.get().await().format()
+                    it.pnpId = device.deviceInformationService.pnpId.get().await().format()
                 }
 
             }
@@ -139,121 +136,23 @@ class DeviceFragment : XYAppBaseFragment() {
         }
     }
 
-
-    private fun getX3Values(device: XY3BluetoothDevice) {
+    private fun getInformationValues(device: XY2BluetoothDevice) {
         GlobalScope.launch {
             var hasConnectionError = true
 
             val conn = device.connection {
                 hasConnectionError = false
-                var er: String?
 
-                device.deviceInformationService.systemId.get().await().let { it ->
-                    it.error?.message.let { er = it }
-                    activity?.data?.systemId = "${it.value ?: er}"
-                }
-
-                device.deviceInformationService.modelNumberString.get().await().let { it ->
-                    it.error?.message.let { er = it }
-                    activity?.data?.modelNumberString = "${it.value ?: er}"
-                }
-
-                device.deviceInformationService.serialNumberString.get().await().let { it ->
-                    it.error?.message.let { er = it }
-                    activity?.data?.serialNumberString = "${it.value ?: er}"
-                }
-
-                device.deviceInformationService.firmwareRevisionString.get().await().let { it ->
-                    it.error?.message.let { er = it }
-                    activity?.data?.firmwareRevisionString = "${it.value ?: er}"
-                }
-
-                device.deviceInformationService.hardwareRevisionString.get().await().let { it ->
-                    it.error?.message.let { er = it }
-                    activity?.data?.hardwareRevisionString = "${it.value ?: er}"
-                }
-
-                device.deviceInformationService.softwareRevisionString.get().await().let { it ->
-                    it.error?.message.let { er = it }
-                    activity?.data?.softwareRevisionString = "${it.value ?: er}"
-                }
-
-                device.deviceInformationService.manufacturerNameString.get().await().let { it ->
-                    it.error?.message.let { er = it }
-                    activity?.data?.manufacturerNameString = "${it.value ?: er}"
-                }
-
-                device.deviceInformationService.ieeeRegulatoryCertificationDataList.get().await().let { it ->
-                    it.error?.message.let { er = it }
-                    activity?.data?.ieeeRegulatoryCertificationDataList = "${it.value ?: er}"
-
-                }
-
-                device.deviceInformationService.pnpId.get().await().let { it ->
-                    it.error?.message.let { er = it }
-                    activity?.data?.pnpId = "${it.value ?: er}"
-                }
-
-            }
-            conn.await()
-
-            updateUI()
-            checkConnectionError(hasConnectionError)
-        }
-    }
-
-    private fun getX2Values(device: XY2BluetoothDevice) {
-        GlobalScope.launch {
-            var hasConnectionError = true
-
-            val conn = device.connection {
-                hasConnectionError = false
-                var er: String?
-
-                device.deviceInformationService.systemId.get().await().let { it ->
-                    it.error?.message.let { er = it }
-                    activity?.data?.systemId = "${it.value ?: er}"
-                }
-
-                device.deviceInformationService.modelNumberString.get().await().let { it ->
-                    it.error?.message.let { er = it }
-                    activity?.data?.modelNumberString = "${it.value ?: er}"
-                }
-
-                device.deviceInformationService.serialNumberString.get().await().let { it ->
-                    it.error?.message.let { er = it }
-                    activity?.data?.serialNumberString = "${it.value ?: er}"
-                }
-
-                device.deviceInformationService.firmwareRevisionString.get().await().let { it ->
-                    it.error?.message.let { er = it }
-                    activity?.data?.firmwareRevisionString = "${it.value ?: er}"
-                }
-
-                device.deviceInformationService.hardwareRevisionString.get().await().let { it ->
-                    it.error?.message.let { er = it }
-                    activity?.data?.hardwareRevisionString = "${it.value ?: er}"
-                }
-
-                device.deviceInformationService.softwareRevisionString.get().await().let { it ->
-                    it.error?.message.let { er = it }
-                    activity?.data?.softwareRevisionString = "${it.value ?: er}"
-                }
-
-                device.deviceInformationService.manufacturerNameString.get().await().let { it ->
-                    it.error?.message.let { er = it }
-                    activity?.data?.manufacturerNameString = "${it.value ?: er}"
-                }
-
-                device.deviceInformationService.ieeeRegulatoryCertificationDataList.get().await().let { it ->
-                    it.error?.message.let { er = it }
-                    activity?.data?.ieeeRegulatoryCertificationDataList = "${it.value ?: er}"
-
-                }
-
-                device.deviceInformationService.pnpId.get().await().let { it ->
-                    it.error?.message.let { er = it }
-                    activity?.data?.pnpId = "${it.value ?: er}"
+                activity?.data?.let {
+                    it.systemId = device.deviceInformationService.systemId.get().await().format()
+                    it.modelNumberString = device.deviceInformationService.modelNumberString.get().await().format()
+                    it.serialNumberString = device.deviceInformationService.serialNumberString.get().await().format()
+                    it.firmwareRevisionString = device.deviceInformationService.firmwareRevisionString.get().await().format()
+                    it.hardwareRevisionString = device.deviceInformationService.hardwareRevisionString.get().await().format()
+                    it.softwareRevisionString = device.deviceInformationService.softwareRevisionString.get().await().format()
+                    it.manufacturerNameString = device.deviceInformationService.manufacturerNameString.get().await().format()
+                    it.ieeeRegulatoryCertificationDataList = device.deviceInformationService.ieeeRegulatoryCertificationDataList.get().await().format()
+                    it.pnpId = device.deviceInformationService.pnpId.get().await().format()
                 }
 
             }

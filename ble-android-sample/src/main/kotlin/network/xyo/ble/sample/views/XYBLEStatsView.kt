@@ -35,7 +35,7 @@ class XYBLEStatsView(context: Context, attrs: AttributeSet) : LinearLayout(conte
         }
 
         override fun statusChanged(status: XYSmartScan.Status) {
-            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+            log.info("statusChanged")
         }
     }
 
