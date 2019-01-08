@@ -46,7 +46,7 @@ open class XYGpsBluetoothDevice(context: Context, scanResult: XYScanResult, hash
     }
 
     init {
-        addGattListener(tag, buttonListener)
+        addGattListener(className, buttonListener)
     }
 
     override val prefix = "xy:gps"
