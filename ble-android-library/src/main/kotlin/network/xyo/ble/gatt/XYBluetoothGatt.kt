@@ -560,11 +560,11 @@ open class XYBluetoothGatt protected constructor(
     private fun <T> Continuation<T>.tryResumeSilent(value: T) {
         try {
             resume(value)
-        } catch (ex: CancellationException) {
-            // This function throws [CancellationException] if the coroutine is cancelled or completed while suspended.
+        } catch (ex: Exception) {
+            // This function throws if the coroutine is cancelled or completed while suspended.
             // It seems that the proper fix for this is to actually cancel it if it is cancelled and actually throw and error
             // if it is resumed twice
-            log.error(ex, true)
+            log.error(ex, false)
         }
     }
 
