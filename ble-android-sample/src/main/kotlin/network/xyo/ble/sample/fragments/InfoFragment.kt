@@ -14,6 +14,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import network.xyo.ble.devices.*
 import network.xyo.ble.gatt.XYBluetoothGatt
+import network.xyo.ble.gatt.XYBluetoothGattBase
 import network.xyo.ble.sample.R
 import network.xyo.core.XYBase
 import network.xyo.ui.ui
@@ -91,7 +92,7 @@ class InfoFragment : XYAppBaseFragment(), View.OnClickListener, CompoundButton.O
                 text_max_gap_size.text = activity?.device?.maxDetectTime.toString()
             }
 
-            if (activity?.device?.connectionState == XYBluetoothGatt.ConnectionState.Connected) {
+            if (activity?.device?.connectionState == XYBluetoothGattBase.ConnectionState.Connected) {
                 button_connect?.visibility = GONE
                 button_disconnect?.visibility = VISIBLE
             } else {

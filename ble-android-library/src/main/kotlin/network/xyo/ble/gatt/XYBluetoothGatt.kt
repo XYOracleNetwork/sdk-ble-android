@@ -8,6 +8,7 @@ import android.os.Handler
 import kotlinx.coroutines.*
 import network.xyo.ble.CallByVersion
 import network.xyo.ble.scanner.XYScanResult
+import network.xyo.core.XYBase
 import java.util.*
 import kotlin.coroutines.Continuation
 import kotlin.coroutines.resume
@@ -23,7 +24,7 @@ open class XYBluetoothGatt protected constructor(
         private val transport: Int?,
         private val phy: Int?,
         private val handler: Handler?
-) : XYBluetoothBase(context) {
+) : XYBluetoothGattBase(context) {
 
     protected var references = 0
 
@@ -38,26 +39,6 @@ open class XYBluetoothGatt protected constructor(
     open class XYBluetoothGattCallback : BluetoothGattCallback() {
         open fun onCharacteristicChangedValue (gatt : BluetoothGatt?, characteristicToRead: BluetoothGattCharacteristic?, value : ByteArray?) {}
     }
-
-    enum class ConnectionState(val state: Int) {
-        Unknown(-1),
-        Disconnected(BluetoothGatt.STATE_DISCONNECTED),
-        Connected(BluetoothGatt.STATE_CONNECTED),
-        Connecting(BluetoothGatt.STATE_CONNECTING),
-        Disconnecting(BluetoothGatt.STATE_DISCONNECTING)
-    }
-
-    var _connectionState: Int? = null
-    val connectionState: ConnectionState
-        get() {
-            return when (_connectionState) {
-                BluetoothGatt.STATE_DISCONNECTED -> ConnectionState.Disconnected
-                BluetoothGatt.STATE_CONNECTING -> ConnectionState.Connecting
-                BluetoothGatt.STATE_CONNECTED -> ConnectionState.Connected
-                BluetoothGatt.STATE_DISCONNECTING -> ConnectionState.Disconnecting
-                else -> ConnectionState.Unknown
-            }
-        }
 
     protected var _stayConnected = false
 
@@ -1002,7 +983,7 @@ open class XYBluetoothGatt protected constructor(
         }
     }
 
-    companion object {
+    companion object: XYBase() {
         //gap after last connection that we wait to close the connection
         private const val CLEANUP_DELAY = 5_000L
     }

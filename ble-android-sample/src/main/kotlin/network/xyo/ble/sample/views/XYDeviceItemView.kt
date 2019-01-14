@@ -10,6 +10,7 @@ import network.xyo.ble.devices.XYBluetoothDevice
 import network.xyo.ble.devices.XYFinderBluetoothDevice
 import network.xyo.ble.devices.XYIBeaconBluetoothDevice
 import network.xyo.ble.gatt.XYBluetoothGatt
+import network.xyo.ble.gatt.XYBluetoothGattBase
 import network.xyo.ble.sample.R
 import network.xyo.ble.sample.activities.XYOFinderDeviceActivity
 import network.xyo.core.XYBase
@@ -41,7 +42,7 @@ class XYDeviceItemView(context: Context, attrs: AttributeSet) : RelativeLayout(c
         post {
             text_family.text = device?.javaClass?.simpleName
             text_name.text = device?.name
-            text_connected.text = (device?.connectionState == XYBluetoothGatt.ConnectionState.Connected).toString()
+            text_connected.text = (device?.connectionState == XYBluetoothGattBase.ConnectionState.Connected).toString()
             text_address.text = device?.address
             text_rssi.text = device?.rssi.toString()
 
