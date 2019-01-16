@@ -97,5 +97,5 @@ dependencies {
     localImplementation project(':core-android-library')
     jitpackApi 'com.github.XYOracleNetwork:sdk-core-android:1.2.3'
 
-    implementation 'com.github.kotlin-graphics:kotlin-unsigned:v2.1'
+    implementation 'com.github.kotlin-graphics:kotlin-unsigned:3.1.9'
 }

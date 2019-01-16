@@ -10,7 +10,6 @@ android {
         applicationId "network.xyo.ble.sample"
         minSdkVersion 21
         targetSdkVersion 28
-
     }
 
     defaultPublishConfig "jitpackRelease"
@@ -60,7 +59,7 @@ buildscript {
         google()
     }
     dependencies {
-        classpath "com.android.tools.build:gradle:3.2.1"
+        classpath "com.android.tools.build:gradle:$androidPluginVersion"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
         classpath "com.github.dcendents:android-maven-gradle-plugin:$mavenVersion"
     }
@@ -82,7 +81,7 @@ dependencies {
     api "com.nabinbhandari.android:permissions:3.8"
 
     localImplementation project(':core-android-library')
-    jitpackApi 'com.github.XYOracleNetwork:sdk-core-android:1.2.0'
+    jitpackApi 'com.github.XYOracleNetwork:sdk-core-android:1.2.3'
 
     localImplementation project(':ui-android-library')
     jitpackApi 'com.github.XYOracleNetwork:sdk-ui-android:1.2.0'
@@ -92,5 +91,5 @@ dependencies {
     implementation project(':ble-android-library')
     api "androidx.legacy:legacy-support-v4:1.0.0"
 
-    implementation 'com.github.kotlin-graphics:kotlin-unsigned:v2.1'
+    implementation 'com.github.kotlin-graphics:kotlin-unsigned:3.1.9'
 }
