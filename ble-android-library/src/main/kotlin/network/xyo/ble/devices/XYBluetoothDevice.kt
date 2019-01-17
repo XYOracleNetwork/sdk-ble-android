@@ -61,7 +61,7 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, private
 
     var notifyExit: ((device: XYBluetoothDevice) -> (Unit))? = null
 
-    var checkingForExit = false
+    private var checkingForExit = false
 
     override fun hashCode(): Int {
         return hash
@@ -143,6 +143,10 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, private
         }
         averageDetectGap = (lastDetectTime - firstDetectTime) / detectCount
         lastDetectTime = now
+
+        // fixes the KeepNear sensitivity
+        lastAccessTime = now
+
         synchronized(listeners) {
             for ((_, listener) in listeners) {
                 GlobalScope.launch {
@@ -225,11 +229,12 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, private
 
         //the period of time to wait for marking something as out of range
         //if we have not gotten any ads or been connected to it
-        const val OUTOFRANGE_DELAY = 10000L
+        const val OUTOFRANGE_DELAY = 15000L
+
 
         internal var canCreate = false
         val manufacturerToCreator = HashMap<Int, XYCreator>()
-        val serviceToCreator = HashMap<UUID, XYCreator>()
+        private val serviceToCreator = HashMap<UUID, XYCreator>()
 
         private fun getDevicesFromManufacturers(context: Context, scanResult: XYScanResult, globalDevices: ConcurrentHashMap<Int, XYBluetoothDevice>, newDevices: HashMap<Int, XYBluetoothDevice>) {
             for ((manufacturerId, creator) in manufacturerToCreator) {
