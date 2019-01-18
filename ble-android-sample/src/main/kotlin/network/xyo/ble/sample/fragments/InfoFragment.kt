@@ -13,7 +13,6 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import network.xyo.ble.devices.*
-import network.xyo.ble.gatt.XYBluetoothGatt
 import network.xyo.ble.gatt.XYBluetoothGattBase
 import network.xyo.ble.sample.R
 import network.xyo.core.XYBase
@@ -311,8 +310,8 @@ class InfoFragment : XYAppBaseFragment(), View.OnClickListener, CompoundButton.O
         }
     }
 
-    private fun enableButtonNotify(enable: Boolean): Deferred<Unit> {
-        return GlobalScope.async {
+    private fun enableButtonNotify(enable: Boolean) {
+        GlobalScope.launch {
             val xy4 = activity?.device as? XY4BluetoothDevice
             if (xy4 != null) {
                 val notify = xy4.primary.buttonState.enableNotify(enable).await()
@@ -329,7 +328,6 @@ class InfoFragment : XYAppBaseFragment(), View.OnClickListener, CompoundButton.O
                     }
                 }
             }
-            return@async
         }
     }
 
@@ -397,7 +395,7 @@ class InfoFragment : XYAppBaseFragment(), View.OnClickListener, CompoundButton.O
         }
     }
 
-    companion object: XYBase() {
+    companion object : XYBase() {
         fun newInstance() = InfoFragment()
     }
 }

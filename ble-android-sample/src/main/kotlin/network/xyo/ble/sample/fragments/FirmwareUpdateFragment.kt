@@ -88,7 +88,7 @@ class FirmwareUpdateFragment : XYAppBaseFragment(), BackFragmentListener {
 
     }
 
-    fun promptCancelUpdate() {
+    private fun promptCancelUpdate() {
         val alertDialog = AlertDialog.Builder(activity).create()
         alertDialog.setTitle("Update in progress")
         alertDialog.setMessage("Please wait for the update to complete.")

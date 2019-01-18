@@ -12,7 +12,7 @@ import com.nabinbhandari.android.permissions.PermissionHandler
 import com.nabinbhandari.android.permissions.Permissions
 import kotlinx.android.synthetic.main.activity_xyo_ble_sample.*
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 import network.xyo.ble.devices.XY4BluetoothDevice
 import network.xyo.ble.devices.XYFinderBluetoothDevice
 import network.xyo.ble.sample.R
@@ -130,14 +130,14 @@ class XYOBleSampleActivity : XYOAppBaseActivity() {
 
     private fun onBluetoothEnabled() {
         ll_disabled.visibility = GONE
-        GlobalScope.async {
+        GlobalScope.launch {
             scanner.start()
         }
     }
 
     private fun onBluetoothDisabled() {
         ll_disabled.visibility = VISIBLE
-        GlobalScope.async {
+        GlobalScope.launch {
             scanner.stop()
         }
     }
@@ -145,7 +145,7 @@ class XYOBleSampleActivity : XYOAppBaseActivity() {
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
-        GlobalScope.async {
+        GlobalScope.launch {
             scanner.start()
         }
     }
