@@ -9,10 +9,9 @@ import kotlinx.android.synthetic.main.device_item.view.*
 import network.xyo.ble.devices.XYBluetoothDevice
 import network.xyo.ble.devices.XYFinderBluetoothDevice
 import network.xyo.ble.devices.XYIBeaconBluetoothDevice
-import network.xyo.ble.gatt.XYBluetoothGatt
 import network.xyo.ble.gatt.XYBluetoothGattBase
 import network.xyo.ble.sample.R
-import network.xyo.ble.sample.activities.XYOFinderDeviceActivity
+import network.xyo.ble.sample.activities.XYODeviceActivity
 import network.xyo.core.XYBase
 
 /**
@@ -33,8 +32,8 @@ class XYDeviceItemView(context: Context, attrs: AttributeSet) : RelativeLayout(c
     }
 
     fun openDevice(device: XYBluetoothDevice) {
-        val intent = Intent(context, XYOFinderDeviceActivity::class.java)
-        intent.putExtra(XYOFinderDeviceActivity.EXTRA_DEVICEHASH, device.hashCode())
+        val intent = Intent(context, XYODeviceActivity::class.java)
+        intent.putExtra(XYODeviceActivity.EXTRA_DEVICEHASH, device.hashCode())
         context.startActivity(intent)
     }
 

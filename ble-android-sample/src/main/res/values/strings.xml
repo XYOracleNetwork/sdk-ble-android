@@ -52,6 +52,7 @@
     <string name="gatt">GATT</string>
     <string name="linkloss">linkLoss</string>
     <string name="tx">Tx</string>
+    <string name="song">Song</string>
 
     <string name="family">Family:\u0020</string>
     <string name="major">Major:\u0020</string>
@@ -72,6 +73,7 @@
     <string name="pulses_second">Pulses/Second:\u0020</string>
     <string name="devices">Devices:\u0020</string>
     <string name="refresh">Refresh</string>
+    <string name="set_song_one">Set Song One</string>
     <string name="not_available">Not Available</string>
     <string name="control_point">controlPoint:\u0020</string>
     <string name="unread_alert_status">unreadAlertStatus:\u0020</string>
@@ -79,6 +81,7 @@
     <string name="supported_new_alert_category">supportedNewAlertCategory:\u0020</string>
     <string name="supported_unread_alert_category">supportedUnreadAlertCategory:\u0020</string>
     <string name="tx_power_level">TX Power Level:\u0020</string>
+    <string name="current_song">Current Song:\u0020</string>
 
     <string name="battery_level">Battery Level:\u0020</string>
     <string name="current_time">currentTime:\u0020</string>

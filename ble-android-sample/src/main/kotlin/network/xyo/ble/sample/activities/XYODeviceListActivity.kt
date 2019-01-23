@@ -10,7 +10,7 @@ import android.widget.BaseAdapter
 import android.widget.Button
 import com.nabinbhandari.android.permissions.PermissionHandler
 import com.nabinbhandari.android.permissions.Permissions
-import kotlinx.android.synthetic.main.activity_xyo_ble_sample.*
+import kotlinx.android.synthetic.main.activity_device_list.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import network.xyo.ble.devices.XY4BluetoothDevice
@@ -20,14 +20,14 @@ import network.xyo.ble.sample.adapters.XYDeviceAdapter
 import network.xyo.ble.scanner.XYSmartScan
 import network.xyo.ui.ui
 
-class XYOBleSampleActivity : XYOAppBaseActivity() {
+class XYODeviceListActivity : XYOAppBaseActivity() {
     private var adapter: BaseAdapter? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         log.info("onCreate")
         super.onCreate(savedInstanceState)
 
-        setContentView(R.layout.activity_xyo_ble_sample)
+        setContentView(R.layout.activity_device_list)
 
         progress_spinner_scanner.visibility = VISIBLE
 
@@ -35,7 +35,7 @@ class XYOBleSampleActivity : XYOAppBaseActivity() {
         listview!!.adapter = adapter
 
         val launchServerButton = findViewById<Button>(R.id.launchServer)
-        launchServerButton.setOnClickListener { startActivity(Intent(this@XYOBleSampleActivity, XYOServerActivity::class.java)) }
+        launchServerButton.setOnClickListener { startActivity(Intent(this@XYODeviceListActivity, XYOServerActivity::class.java)) }
     }
 
     private fun connectListeners() {

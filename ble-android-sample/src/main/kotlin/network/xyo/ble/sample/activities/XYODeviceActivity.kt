@@ -26,7 +26,7 @@ import network.xyo.ui.ui
  * Created by arietrouw on 12/28/17.
  */
 
-class XYOFinderDeviceActivity : XYOAppBaseActivity() {
+class XYODeviceActivity : XYOAppBaseActivity() {
 
     var device: XYBluetoothDevice? = null
     private lateinit var sectionsPagerAdapter: SectionsPagerAdapter
@@ -202,12 +202,12 @@ class XYOFinderDeviceActivity : XYOAppBaseActivity() {
 
     companion object {
         var EXTRA_DEVICEHASH = "DeviceHash"
-        private val TAG = XYOFinderDeviceActivity::class.java.simpleName
+        private val TAG = XYODeviceActivity::class.java.simpleName
     }
 
 
     inner class SectionsPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
-        private val size = 10
+        private val size = 11
         private var fragments: SparseArray<XYBaseFragment> = SparseArray(size)
 
         override fun getItem(position: Int): Fragment {
@@ -242,6 +242,9 @@ class XYOFinderDeviceActivity : XYOAppBaseActivity() {
                     frag = TxPowerFragment.newInstance()
                 }
                 9 -> {
+                    frag = SongFragment.newInstance()
+                }
+                10 -> {
                     frag = FirmwareUpdateFragment.newInstance()
                 }
                 else -> frag = InfoFragment.newInstance()

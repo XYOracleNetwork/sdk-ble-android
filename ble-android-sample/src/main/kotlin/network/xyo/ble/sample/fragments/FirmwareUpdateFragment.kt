@@ -191,7 +191,7 @@ class FirmwareUpdateFragment : XYAppBaseFragment(), BackFragmentListener {
         }
     }
 
-    //Callback from XYOFinderDeviceActivity.onActivityResult
+    //Callback from XYODeviceActivity.onActivityResult
     // TODO - Why are we making this dependency? [AT] --
     @Suppress("UNUSED_PARAMETER")
     fun onFileSelected(requestCode: Int, resultCode: Int, data: Intent?) {

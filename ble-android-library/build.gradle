@@ -66,9 +66,6 @@ android {
 
     flavorDimensions "xylibs"
     productFlavors {
-        local {
-            dimension "xylibs"
-        }
         jitpack {
             dimension "xylibs"
         }
@@ -76,12 +73,10 @@ android {
 
     buildTypes {
         release {
-            debuggable true
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
         debug {
-            minifyEnabled false
             debuggable true
         }
     }
@@ -93,9 +88,8 @@ dependencies {
     api "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion"
     api "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutinesVersion"
     api "androidx.annotation:annotation:1.0.1"
-
-    localImplementation project(':core-android-library')
-    jitpackApi 'com.github.XYOracleNetwork:sdk-core-android:1.2.3'
+    
+    api 'com.github.XYOracleNetwork:sdk-core-android:1.2.3'
 
     implementation 'com.github.kotlin-graphics:kotlin-unsigned:3.1.9'
 }

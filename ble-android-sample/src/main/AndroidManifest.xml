@@ -15,7 +15,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true">
         <activity
-            android:name="network.xyo.ble.sample.activities.XYOBleSampleActivity"
+            android:name="network.xyo.ble.sample.activities.XYODeviceListActivity"
             android:theme="@style/XYTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -23,7 +23,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="network.xyo.ble.sample.activities.XYOFinderDeviceActivity"
+            android:name="network.xyo.ble.sample.activities.XYODeviceActivity"
             android:theme="@style/XYTheme" />
 
         <activity

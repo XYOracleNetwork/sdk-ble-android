@@ -25,7 +25,7 @@ class BatteryFragment : XYAppBaseFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         button_battery_refresh.setOnClickListener {
-            setBatteryLevel()
+            readBatteryLevel()
         }
     }
 
@@ -33,7 +33,7 @@ class BatteryFragment : XYAppBaseFragment() {
         super.onResume()
 
         if (activity?.data?.level.isNullOrEmpty() && activity?.isBusy() == false) {
-            setBatteryLevel()
+            readBatteryLevel()
         } else {
             updateUI()
         }
@@ -47,7 +47,7 @@ class BatteryFragment : XYAppBaseFragment() {
         }
     }
 
-    private fun setBatteryLevel() {
+    private fun readBatteryLevel() {
         ui {
             activity?.showProgressSpinner()
         }
