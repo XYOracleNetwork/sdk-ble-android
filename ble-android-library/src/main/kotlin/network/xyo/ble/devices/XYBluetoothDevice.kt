@@ -103,7 +103,7 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, private
     }
 
     internal open fun onEnter() {
-        log.info("onEnter: $address")
+        //log.info("onEnter: $address")
         enterCount++
         lastAdTime = now
         synchronized(listeners) {
@@ -117,7 +117,7 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, private
     }
 
     internal open fun onExit() {
-        log.info("onExit: $address")
+        // log.info("onExit: $address")
         exitCount++
         synchronized(listeners) {
             for ((_, listener) in listeners) {
@@ -160,7 +160,7 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, private
     }
 
     override fun onConnectionStateChange(newState: Int) {
-        log.info("onConnectionStateChange: $id : $newState: $listeners.size")
+        //log.info("onConnectionStateChange: $id : $newState: $listeners.size")
         synchronized(listeners) {
             for ((tag, listener) in listeners) {
                 GlobalScope.launch {
@@ -190,7 +190,7 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, private
     }
 
     fun addListener(key: String, listener: Listener) {
-        log.info("addListener:$key:$listener")
+        //log.info("addListener:$key:$listener")
         GlobalScope.launch {
             synchronized(listeners) {
                 listeners.put(key, listener)
@@ -199,7 +199,7 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, private
     }
 
     fun removeListener(key: String) {
-        log.info("removeListener:$key")
+        // log.info("removeListener:$key")
         GlobalScope.launch {
             synchronized(listeners) {
                 listeners.remove(key)

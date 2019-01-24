@@ -45,7 +45,6 @@ open class XY4BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
 
     private val buttonListener = object : XYBluetoothGattCallback() {
         override fun onCharacteristicChanged(gatt: BluetoothGatt?, characteristic: BluetoothGattCharacteristic?) {
-            log.info("onCharacteristicChanged")
             super.onCharacteristicChanged(gatt, characteristic)
             if (characteristic?.uuid == primary.buttonState.uuid) {
                 enableButtonNotifyIfConnected()
@@ -62,7 +61,6 @@ open class XY4BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
     override val prefix = "xy:ibeacon"
 
     override fun find(): Deferred<XYBluetoothResult<Int>> {
-        log.info("find")
         return primary.buzzer.set(11)
     }
 
@@ -71,27 +69,22 @@ open class XY4BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
     }
 
     override fun lock(): Deferred<XYBluetoothResult<ByteArray>> {
-        log.info("lock")
         return primary.lock.set(DefaultLockCode)
     }
 
     override fun unlock(): Deferred<XYBluetoothResult<ByteArray>> {
-        log.info("unlock")
         return primary.unlock.set(DefaultLockCode)
     }
 
     override fun stayAwake(): Deferred<XYBluetoothResult<Int>> {
-        log.info("stayAwake")
         return primary.stayAwake.set(1)
     }
 
     override fun fallAsleep(): Deferred<XYBluetoothResult<Int>> {
-        log.info("fallAsleep")
         return primary.stayAwake.set(0)
     }
 
     override fun batteryLevel(): Deferred<XYBluetoothResult<Int>> {
-        log.info("batteryLevel")
         return batteryService.level.get()
     }
 
@@ -99,9 +92,7 @@ open class XY4BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
         super.onDetect(scanResult)
         if (scanResult != null) {
             if (pressFromScanResult(scanResult)) {
-                log.info("onDetect: pressFromScanResult: true")
                 if (now - lastButtonPressTime > BUTTON_ADVERTISEMENT_LENGTH) {
-                    log.info("onDetect: pressFromScanResult: first")
                     reportButtonPressed(ButtonPress.Single)
                     lastButtonPressTime = now
                 }
@@ -131,16 +122,12 @@ open class XY4BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
     }
 
     private fun enableButtonNotifyIfConnected() {
-
-        log.info("enableButtonNotifyIfConnected")
         if (connectionState == ConnectionState.Connected) {
-            log.info("enableButtonNotifyIfConnected: Connected")
             primary.buttonState.enableNotify(true)
         }
     }
 
     override fun onConnectionStateChange(newState: Int) {
-        log.info("onConnectionStateChange")
         super.onConnectionStateChange(newState)
         enableButtonNotifyIfConnected()
     }
@@ -202,7 +189,6 @@ open class XY4BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
         }
 
         fun reportGlobalButtonPressed(device: XY4BluetoothDevice, state: ButtonPress) {
-            log.info("reportButtonPressed (Global)")
             GlobalScope.launch {
                 synchronized(globalListeners) {
                     for (listener in globalListeners) {
@@ -228,7 +214,8 @@ open class XY4BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
             override fun getDevicesFromScanResult(context: Context, scanResult: XYScanResult, globalDevices: ConcurrentHashMap<Int, XYBluetoothDevice>, foundDevices: HashMap<Int, XYBluetoothDevice>) {
                 val hash = hashFromScanResult(scanResult)
                 if (hash != null) {
-                    foundDevices[hash] = globalDevices[hash] ?: XY4BluetoothDevice(context, scanResult, hash)
+                    foundDevices[hash] = globalDevices[hash]
+                            ?: XY4BluetoothDevice(context, scanResult, hash)
                 }
             }
         }

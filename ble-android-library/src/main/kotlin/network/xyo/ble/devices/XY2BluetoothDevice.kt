@@ -27,8 +27,11 @@ open class XY2BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
     val sensorService = SensorService(this)
 
     override fun find(): Deferred<XYBluetoothResult<Int>> {
-        log.info("find")
         return controlService.buzzerSelect.set(2)
+    }
+
+    override fun stopFind(): Deferred<XYBluetoothResult<Int>> {
+        return controlService.buzzerSelect.set(-1)
     }
 
     override val prefix = "xy:ibeacon"
@@ -59,7 +62,8 @@ open class XY2BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
             override fun getDevicesFromScanResult(context: Context, scanResult: XYScanResult, globalDevices: ConcurrentHashMap<Int, XYBluetoothDevice>, foundDevices: HashMap<Int, XYBluetoothDevice>) {
                 val hash = hashFromScanResult(scanResult)
                 if (hash != null) {
-                    foundDevices[hash] = globalDevices[hash] ?: XY2BluetoothDevice(context, scanResult, hash)
+                    foundDevices[hash] = globalDevices[hash]
+                            ?: XY2BluetoothDevice(context, scanResult, hash)
                 }
             }
         }

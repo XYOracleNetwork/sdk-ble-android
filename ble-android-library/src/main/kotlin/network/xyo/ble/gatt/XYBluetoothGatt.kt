@@ -357,13 +357,13 @@ open class XYBluetoothGatt protected constructor(
     }
 
     protected fun close() = asyncBle {
-        log.info("close")
+        //log.info("close")
         val gatt = gatt ?: return@asyncBle XYBluetoothResult(true)
         if (connectionState != ConnectionState.Disconnected) {
             disconnect().await()
         }
         gatt.close()
-        log.info("close: Closed")
+       // log.info("close: Closed")
         removeGattListener("default")
         this@XYBluetoothGatt.gatt = null
         return@asyncBle XYBluetoothResult(true)
@@ -819,7 +819,6 @@ open class XYBluetoothGatt protected constructor(
             log.info("onCharacteristicWrite: $status")
             super.onCharacteristicWrite(gatt, characteristic, status)
             synchronized(gattListeners) {
-                log.info("onCharacteristicWrite3: $status")
                 for ((_, listener) in gattListeners) {
                     GlobalScope.launch {
                         listener.onCharacteristicWrite(gatt, characteristic, status)
@@ -957,7 +956,7 @@ open class XYBluetoothGatt protected constructor(
             cleanUpThread = GlobalScope.launch {
 
                 while (!closed) {
-                    log.info("cleanUpIfNeeded: $references")
+                    //log.info("cleanUpIfNeeded: $references")
                     //if the global and local last connection times do not match
                     //after the delay, that means a newer connection is now responsible for closing it
                     val localAccessTime = now

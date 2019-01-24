@@ -256,7 +256,7 @@ abstract class XYSmartScan(context: Context) : XYBluetoothBase(context) {
     }
 
     private fun reportEntered(device: XYBluetoothDevice) {
-        log.info("reportEntered")
+        //log.info("reportEntered")
         synchronized(listeners) {
             for ((_, listener) in listeners) {
                 GlobalScope.launch {
@@ -267,7 +267,7 @@ abstract class XYSmartScan(context: Context) : XYBluetoothBase(context) {
     }
 
     private fun reportExited(device: XYBluetoothDevice) {
-        log.info("reportExited")
+        //log.info("reportExited")
         synchronized(listeners) {
             for ((_, listener) in listeners) {
                 GlobalScope.launch {
