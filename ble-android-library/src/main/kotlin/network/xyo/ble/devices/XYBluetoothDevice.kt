@@ -47,9 +47,12 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, private
         }
 
     protected var _name: String = ""
-    open val name: String?
+    open var name: String?
         get() {
             return device?.name ?: _name
+        }
+        set(name) {
+            _name = name ?: _name
         }
 
     open val id: String
