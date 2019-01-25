@@ -10,7 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import com.google.android.material.tabs.TabLayout
-import kotlinx.android.synthetic.main.device_activity.*
+import kotlinx.android.synthetic.main.activity_device.*
 import network.xyo.ble.devices.XY3BluetoothDevice
 import network.xyo.ble.devices.XY4BluetoothDevice
 import network.xyo.ble.devices.XYBluetoothDevice
@@ -43,7 +43,7 @@ class XYODeviceActivity : XYOAppBaseActivity() {
             showToast("Failed to Find Device")
             finish()
         }
-        setContentView(R.layout.device_activity)
+        setContentView(R.layout.activity_device)
 
         data = XYDeviceData()
 

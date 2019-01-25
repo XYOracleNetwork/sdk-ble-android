@@ -12,7 +12,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
-import kotlinx.android.synthetic.main.activicty_ble_server.*
+import kotlinx.android.synthetic.main.activity_server.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
@@ -55,7 +55,7 @@ class XYOServerActivity : XYOAppBaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activicty_ble_server)
+        setContentView(R.layout.activity_server)
 
 
         val tabAdapter = SectionsPagerAdapter(supportFragmentManager)

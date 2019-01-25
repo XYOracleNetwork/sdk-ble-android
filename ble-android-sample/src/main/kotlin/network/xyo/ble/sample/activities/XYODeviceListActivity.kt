@@ -7,7 +7,6 @@ import android.os.Bundle
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.widget.BaseAdapter
-import android.widget.Button
 import com.nabinbhandari.android.permissions.PermissionHandler
 import com.nabinbhandari.android.permissions.Permissions
 import kotlinx.android.synthetic.main.activity_device_list.*
@@ -34,8 +33,8 @@ class XYODeviceListActivity : XYOAppBaseActivity() {
         adapter = XYDeviceAdapter(this)
         listview!!.adapter = adapter
 
-        val launchServerButton = findViewById<Button>(R.id.launchServer)
-        launchServerButton.setOnClickListener { startActivity(Intent(this@XYODeviceListActivity, XYOServerActivity::class.java)) }
+        launchServer.setOnClickListener { startActivity(Intent(this@XYODeviceListActivity, XYOServerActivity::class.java)) }
+        launchTest.setOnClickListener { startActivity(Intent(this@XYODeviceListActivity, XYOTestActivity::class.java)) }
     }
 
     private fun connectListeners() {

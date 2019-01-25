@@ -15,12 +15,24 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true" />
 
-    <network.xyo.ui.views.XYButton
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:orientation="vertical"
+        >
+        <network.xyo.ui.views.XYButton
             android:id="@+id/launchServer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
             android:text="@string/server" />
+
+        <network.xyo.ui.views.XYButton
+            android:id="@+id/launchTest"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/test" />
+    </LinearLayout>
 
     <ListView
         android:id="@+id/listview"

@@ -2,6 +2,7 @@
     <string name="app_name">XYO BLE Sample</string>
 
     <string name="advertiser">Advertiser</string>
+    <string name="beep_all">Beep All</string>
 
     <string name="advertising_mode_title">Advertising Mode</string>
     <string name="advertising_mode_selector_1">ADVERTISE_MODE_LOW_LATENCY</string>
@@ -24,6 +25,7 @@
     <string name="manufacturer_id_title">Manufacturer Id</string>
     <string name="manufacturer_data_title">Manufacturer Data</string>
     <string name="update">Update</string>
+    <string name="start">Start</string>
     <string name="services">Services</string>
     <string name="service_uuid">Service UUID</string>
     <string name="view_service">View</string>
@@ -116,5 +118,6 @@
     <string name="bluetooth_disabled">Bluetooth Disabled</string>
 
     <string name="server">Server</string>
+    <string name="test">Test</string>
 
 </resources>
