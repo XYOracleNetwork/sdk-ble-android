@@ -6,6 +6,8 @@ import android.bluetooth.le.ScanFilter
 import android.bluetooth.le.ScanResult
 import android.bluetooth.le.ScanSettings
 import android.content.Context
+import android.os.Build
+import network.xyo.ble.CallByVersion
 import network.xyo.ble.gatt.XYBluetoothResult
 import network.xyo.ble.gatt.asyncBle
 import java.util.*
@@ -66,7 +68,7 @@ class XYSmartScanModern(context: Context) : XYSmartScan(context) {
 
         override fun onScanResult(callbackType: Int, result: ScanResult?) {
             super.onScanResult(callbackType, result)
-            //log.info("onBatchScanResults: $result")
+            //log.info("onScanResult: $result")
             result?.let {
                 val xyResults = ArrayList<XYScanResult>()
                 xyResults.add(XYScanResultModern(it))
@@ -76,7 +78,30 @@ class XYSmartScanModern(context: Context) : XYSmartScan(context) {
     }
 
     private fun getSettings(): ScanSettings {
-        return ScanSettings.Builder().setScanMode(android.bluetooth.le.ScanSettings.SCAN_MODE_LOW_LATENCY).build()
+        var result: ScanSettings? = null
+        CallByVersion()
+                .add(Build.VERSION_CODES.M) {
+                    result = getSettings23()
+                }
+                .add(Build.VERSION_CODES.LOLLIPOP) {
+                    result = getSettings21()
+                }.call()
+        return result!!
+    }
+
+    private fun getSettings21(): ScanSettings {
+        return ScanSettings.Builder()
+                .setScanMode(android.bluetooth.le.ScanSettings.SCAN_MODE_BALANCED)
+                .build()
+    }
+
+    @TargetApi(Build.VERSION_CODES.M)
+    private fun getSettings23(): ScanSettings {
+        return ScanSettings.Builder()
+                .setScanMode(android.bluetooth.le.ScanSettings.SCAN_MODE_BALANCED)
+                .setCallbackType(android.bluetooth.le.ScanSettings.CALLBACK_TYPE_ALL_MATCHES)
+                .setMatchMode(android.bluetooth.le.ScanSettings.MATCH_MODE_STICKY)
+                .build()
     }
 
     override suspend fun stop(): Boolean {

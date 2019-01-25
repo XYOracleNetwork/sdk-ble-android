@@ -64,13 +64,6 @@ android {
         }
     }
 
-    flavorDimensions "xylibs"
-    productFlavors {
-        jitpack {
-            dimension "xylibs"
-        }
-    }
-
     buildTypes {
         release {
             minifyEnabled true

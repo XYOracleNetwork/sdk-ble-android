@@ -54,7 +54,6 @@ class InfoFragment : XYAppBaseFragment(), View.OnClickListener, CompoundButton.O
                 button_enable_notify.visibility = GONE
                 button_disable_notify.visibility = GONE
             }
-
         }
     }
 
@@ -63,6 +62,27 @@ class InfoFragment : XYAppBaseFragment(), View.OnClickListener, CompoundButton.O
         log.info("onResume: InfoFragment")
         updateAdList()
         updateUI()
+
+        activity?.device?.addListener("info", object: XYBluetoothDevice.Listener() {
+            override fun entered(device: XYBluetoothDevice) {
+                super.entered(device)
+                ui {
+                    showToast("Entered")
+                }
+            }
+
+            override fun exited(device: XYBluetoothDevice) {
+                super.exited(device)
+                ui {
+                    showToast("Exited")
+                }
+            }
+        })
+    }
+
+    override fun onPause() {
+        super.onPause()
+        activity?.device?.removeListener("info")
     }
 
     override fun update() {
