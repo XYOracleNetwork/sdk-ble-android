@@ -147,9 +147,6 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, private
         averageDetectGap = (lastDetectTime - firstDetectTime) / detectCount
         lastDetectTime = now
 
-        // fixes the KeepNear sensitivity
-        lastAccessTime = now
-
         synchronized(listeners) {
             for ((_, listener) in listeners) {
                 GlobalScope.launch {
