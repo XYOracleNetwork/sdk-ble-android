@@ -218,13 +218,15 @@ abstract class XYSmartScan(context: Context) : XYBluetoothBase(context) {
                     if (scanRecord != null) {
                         device.updateAds(scanRecord)
                     }
-                    device.rssi = scanResult.rssi
-                    device.name = scanResult.scanRecord?.deviceName ?: device.name
+
                     if (device.rssi == null) {
                         reportEntered(device)
                         device.onEnter()
                         device.notifyExit = handleDeviceNotifyExit
                     }
+                    device.rssi = scanResult.rssi
+                    device.name = scanResult.scanRecord?.deviceName ?: device.name
+
                     reportDetected(device)
                     device.onDetect(scanResult)
                 }
