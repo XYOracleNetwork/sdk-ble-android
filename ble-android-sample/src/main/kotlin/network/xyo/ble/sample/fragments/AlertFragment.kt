@@ -10,10 +10,12 @@ import kotlinx.coroutines.launch
 import network.xyo.ble.devices.XY2BluetoothDevice
 import network.xyo.ble.devices.XY3BluetoothDevice
 import network.xyo.ble.devices.XY4BluetoothDevice
+import network.xyo.ble.devices.XYBluetoothDevice
 import network.xyo.ble.sample.R
+import network.xyo.ble.sample.XYDeviceData
 import network.xyo.ui.ui
 
-class AlertFragment : XYAppBaseFragment() {
+class AlertFragment : XYDeviceFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -32,7 +34,7 @@ class AlertFragment : XYAppBaseFragment() {
     override fun onResume() {
         super.onResume()
 
-        if (activity?.data?.controlPoint.isNullOrEmpty() && activity?.isBusy() == false) {
+        if (deviceData?.controlPoint.isNullOrEmpty() && progressListener?.isInProgress() == false) {
             setAlertValues()
         } else {
             updateUI()
@@ -42,16 +44,16 @@ class AlertFragment : XYAppBaseFragment() {
 
     private fun setAlertValues() {
         ui {
-            activity?.showProgressSpinner()
+            progressListener?.showProgress()
         }
 
-        when (activity?.device) {
+        when (device) {
             is XY4BluetoothDevice -> {
-                val x4 = (activity?.device as? XY4BluetoothDevice)
+                val x4 = (device as? XY4BluetoothDevice)
                 x4?.let { getXY4Values(it) }
             }
             is XY3BluetoothDevice -> {
-                val x3 = (activity?.device as? XY3BluetoothDevice)
+                val x3 = (device as? XY3BluetoothDevice)
                 x3?.let { getXY3Values(it) }
             }
             is XY2BluetoothDevice -> {
@@ -66,13 +68,13 @@ class AlertFragment : XYAppBaseFragment() {
 
     private fun updateUI() {
         ui {
-            activity?.hideProgressSpinner()
+            progressListener?.hideProgress()
 
-            text_control_point?.text = activity?.data?.controlPoint
-            text_unread_alert_status?.text = activity?.data?.unreadAlertStatus
-            text_new_alert?.text = activity?.data?.newAlert
-            text_new_alert_category?.text = activity?.data?.supportedNewAlertCategory
-            text_unread_alert_category?.text = activity?.data?.supportedUnreadAlertCategory
+            text_control_point?.text = deviceData?.controlPoint
+            text_unread_alert_status?.text = deviceData?.unreadAlertStatus
+            text_new_alert?.text = deviceData?.newAlert
+            text_new_alert_category?.text = deviceData?.supportedNewAlertCategory
+            text_unread_alert_category?.text = deviceData?.supportedUnreadAlertCategory
         }
     }
 
@@ -83,7 +85,7 @@ class AlertFragment : XYAppBaseFragment() {
             val conn = device.connection {
                 hasConnectionError = false
 
-                activity?.data?.let {
+                deviceData?.let {
                     it.controlPoint = device.alertNotification.controlPoint.get().await().format()
                     it.unreadAlertStatus = device.alertNotification.unreadAlertStatus.get().await().format()
                     it.newAlert = device.alertNotification.newAlert.get().await().format()
@@ -105,7 +107,7 @@ class AlertFragment : XYAppBaseFragment() {
             val conn = device.connection {
                 hasConnectionError = false
 
-                activity?.data?.let {
+                deviceData?.let {
                     it.controlPoint = device.alertNotification.controlPoint.get().await().format()
                     it.unreadAlertStatus = device.alertNotification.unreadAlertStatus.get().await().format()
                     it.newAlert = device.alertNotification.newAlert.get().await().format()
@@ -125,5 +127,12 @@ class AlertFragment : XYAppBaseFragment() {
 
         fun newInstance() =
                 AlertFragment()
+
+        fun newInstance (device: XYBluetoothDevice?, deviceData : XYDeviceData?) : AlertFragment {
+            val frag = AlertFragment()
+            frag.device = device
+            frag.deviceData = deviceData
+            return frag
+        }
     }
 }

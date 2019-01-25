@@ -10,14 +10,16 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import network.xyo.ble.devices.XY3BluetoothDevice
 import network.xyo.ble.devices.XY4BluetoothDevice
+import network.xyo.ble.devices.XYBluetoothDevice
 import network.xyo.ble.sample.R
+import network.xyo.ble.sample.XYDeviceData
 import network.xyo.ui.ui
 import unsigned.Ubyte
 import unsigned.Ushort
 import unsigned.toUbyte
 import java.nio.ByteBuffer
 
-class SongFragment : XYAppBaseFragment() {
+class SongFragment : XYDeviceFragment() {
 
     var currentSong = ""
 
@@ -217,7 +219,7 @@ class SongFragment : XYAppBaseFragment() {
     override fun onResume() {
         super.onResume()
 
-        if (activity?.data?.level.isNullOrEmpty() && activity?.isBusy() == false) {
+        if (deviceData?.level.isNullOrEmpty() && progressListener?.isInProgress() == false) {
             readCurrentSong()
         } else {
             updateUI()
@@ -227,24 +229,24 @@ class SongFragment : XYAppBaseFragment() {
     private fun updateUI() {
         ui {
             text_current_song.text = currentSong
-            activity?.hideProgressSpinner()
+            progressListener?.hideProgress()
         }
     }
 
     fun readCurrentSong() {
         ui {
-            activity?.showProgressSpinner()
+            progressListener?.showProgress()
         }
 
-        when (activity?.device) {
+        when (device) {
             is XY4BluetoothDevice -> {
-                val xy4 = (activity?.device as? XY4BluetoothDevice)
+                val xy4 = (device as? XY4BluetoothDevice)
                 xy4?.let {
                     getXY4Values(xy4)
                 }
             }
             is XY3BluetoothDevice -> {
-                val xy3 = (activity?.device as? XY3BluetoothDevice)
+                val xy3 = (device as? XY3BluetoothDevice)
                 xy3?.let {
                     getXY3Values(xy3)
                 }
@@ -257,12 +259,12 @@ class SongFragment : XYAppBaseFragment() {
 
     fun setSongOne() {
         ui {
-            activity?.showProgressSpinner()
+            progressListener?.showProgress()
         }
 
-        when (activity?.device) {
+        when (device) {
             is XY4BluetoothDevice -> {
-                val xy4 = (activity?.device as? XY4BluetoothDevice)
+                val xy4 = (device as? XY4BluetoothDevice)
                 xy4?.let {
                     GlobalScope.launch {
                         var hasConnectionError = true
@@ -334,6 +336,13 @@ class SongFragment : XYAppBaseFragment() {
 
         fun newInstance() =
                 SongFragment()
+
+        fun newInstance (device: XYBluetoothDevice?, deviceData : XYDeviceData?) : SongFragment {
+            val frag = SongFragment()
+            frag.device = device
+            frag.deviceData = deviceData
+            return frag
+        }
     }
 
 }
