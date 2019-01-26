@@ -234,7 +234,7 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, private
 
         internal var canCreate = false
         val manufacturerToCreator = HashMap<Int, XYCreator>()
-        private val serviceToCreator = HashMap<UUID, XYCreator>()
+        val serviceToCreator = HashMap<UUID, XYCreator>()
 
         private fun getDevicesFromManufacturers(context: Context, scanResult: XYScanResult, globalDevices: ConcurrentHashMap<Int, XYBluetoothDevice>, newDevices: HashMap<Int, XYBluetoothDevice>) {
             for ((manufacturerId, creator) in manufacturerToCreator) {
