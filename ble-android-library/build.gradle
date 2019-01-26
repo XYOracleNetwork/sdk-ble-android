@@ -44,7 +44,7 @@ android {
         targetSdkVersion 28
     }
 
-    defaultPublishConfig "jitpackRelease"
+    defaultPublishConfig "release"
 
     lintOptions {
         htmlReport true
