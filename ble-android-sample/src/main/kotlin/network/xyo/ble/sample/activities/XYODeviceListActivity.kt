@@ -13,6 +13,7 @@ import kotlinx.android.synthetic.main.activity_device_list.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import network.xyo.ble.devices.XY4BluetoothDevice
+import network.xyo.ble.devices.XYBluetoothDevice
 import network.xyo.ble.devices.XYFinderBluetoothDevice
 import network.xyo.ble.sample.R
 import network.xyo.ble.sample.adapters.XYDeviceAdapter
@@ -37,11 +38,18 @@ class XYODeviceListActivity : XYOAppBaseActivity() {
         launchTest.setOnClickListener { startActivity(Intent(this@XYODeviceListActivity, XYOTestActivity::class.java)) }
     }
 
+    private fun openDevice(device: XYBluetoothDevice) {
+        val intent = Intent(this, XYODeviceActivity::class.java)
+        intent.putExtra(XYODeviceActivity.EXTRA_DEVICEHASH, device.hashCode())
+        this.startActivity(intent)
+    }
+
     private fun connectListeners() {
         XY4BluetoothDevice.addGlobalListener(tag, object : XY4BluetoothDevice.Listener() {
             override fun buttonSinglePressed(device: XYFinderBluetoothDevice) {
                 super.buttonSinglePressed(device)
                 showToast("XY4 Button Single Pressed: ${device.address}")
+                openDevice(device)
             }
 
             override fun buttonDoublePressed(device: XYFinderBluetoothDevice) {
@@ -130,7 +138,7 @@ class XYODeviceListActivity : XYOAppBaseActivity() {
     private fun onBluetoothEnabled() {
         ll_disabled.visibility = GONE
         GlobalScope.launch {
-            scanner.start()
+            //scanner.start()
         }
     }
 
@@ -145,7 +153,7 @@ class XYODeviceListActivity : XYOAppBaseActivity() {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
         GlobalScope.launch {
-            scanner.start()
+            //scanner.start()
         }
     }
 }

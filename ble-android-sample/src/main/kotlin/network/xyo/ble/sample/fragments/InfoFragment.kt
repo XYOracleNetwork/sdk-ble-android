@@ -308,7 +308,7 @@ class InfoFragment : XYAppBaseFragment(), View.OnClickListener, CompoundButton.O
     private fun updateStayAwakeEnabledStates(): Deferred<Unit> {
         return GlobalScope.async {
             log.info("updateStayAwakeEnabledStates")
-            val xy4 = activity?.device as? XY4BluetoothDevice
+            /*val xy4 = activity?.device as? XY4BluetoothDevice
             if (xy4 != null) {
                 val stayAwake = xy4.primary.stayAwake.get().await()
                 log.info("updateStayAwakeEnabledStates: ${stayAwake.value}")
@@ -325,7 +325,7 @@ class InfoFragment : XYAppBaseFragment(), View.OnClickListener, CompoundButton.O
                 }
             } else {
                 log.error("updateStayAwakeEnabledStates: Not an XY4!", false)
-            }
+            }*/
             return@async
         }
     }
