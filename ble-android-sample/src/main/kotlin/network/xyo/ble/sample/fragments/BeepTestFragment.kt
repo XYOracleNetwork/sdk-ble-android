@@ -44,8 +44,8 @@ class BeepTestFragment : XYBaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         start.setOnClickListener {
-            GlobalScope.launch {
-                scanner?.devices?.forEach { (_, value) ->
+            scanner?.devices?.forEach { (_, value) ->
+                GlobalScope.launch {
                     when (value) {
                         is XY4BluetoothDevice -> {
                             if ((value.rssi ?: -100) > -50) {
