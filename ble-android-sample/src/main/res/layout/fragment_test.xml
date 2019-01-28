@@ -22,6 +22,30 @@
                 android:layout_height="wrap_content"
                 android:text="@string/start" />
 
+            <network.xyo.ui.views.XYTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/start_count"
+                />
+
+            <network.xyo.ui.views.XYTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/connect_count"
+                />
+
+            <network.xyo.ui.views.XYTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/unlock_count"
+                />
+
+            <network.xyo.ui.views.XYTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/beep_count"
+                />
+
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

@@ -3,6 +3,7 @@ package network.xyo.ble.gatt
 
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.coroutineContext
 
 //causes *all* ble calls to be initiated in a single thread
 fun <T> asyncBle(
