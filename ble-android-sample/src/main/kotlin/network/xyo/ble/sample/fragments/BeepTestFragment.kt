@@ -48,33 +48,33 @@ class BeepTestFragment : XYBaseFragment() {
                 GlobalScope.launch {
                     when (value) {
                         is XY4BluetoothDevice -> {
-                            if ((value.rssi ?: -100) > -50) {
+                            if ((value.rssi ?: -100) > -70) {
                                 log.info("BeepTest: ${value.id}: Trying to Beep [${value.rssi}]")
                                 startCount++
                                 updateUI()
                                 try {
-                                    //val connectResult = value.connection {
-                                    log.info("BeepTest: ${value.id}: Connected")
-                                    connectCount++
-                                    updateUI()
-                                    if (value.unlock().await().error == null) {
-                                        log.info("BeepTest: ${value.id}: Unlocked")
-                                        unlockCount++
+                                    val connectResult = value.connection {
+                                        log.info("BeepTest: ${value.id}: Connected")
+                                        connectCount++
                                         updateUI()
-                                        if (value.primary.buzzer.set(11).await().error == null) {
-                                            log.info("BeepTest: ${value.id}: Success")
-                                            beepCount++
+                                        if (value.unlock().await().error == null) {
+                                            log.info("BeepTest: ${value.id}: Unlocked")
+                                            unlockCount++
                                             updateUI()
+                                            if (value.primary.buzzer.set(11).await().error == null) {
+                                                log.info("BeepTest: ${value.id}: Success")
+                                                beepCount++
+                                                updateUI()
+                                            } else {
+                                                log.error("BeepTest: ${value.id}: Failed")
+                                            }
                                         } else {
-                                            log.error("BeepTest: ${value.id}: Failed")
+                                            log.error("BeepTest: ${value.id}: Failed to Unlock")
                                         }
-                                    } else {
-                                        log.error("BeepTest: ${value.id}: Failed to Unlock")
+                                    }.await()
+                                    if (connectResult.error != null) {
+                                        log.error("BeepTest: ${value.id}: Failed to Connect: ${connectResult.error?.message}")
                                     }
-                                    /*}.await()
-                                if (connectResult.error != null) {
-                                    log.error("BeepTest: ${value.id}: Failed to Connect: ${connectResult.error?.message}")
-                                }*/
                                 } catch (ex: Exception) {
                                     log.error("BeepTest: ${ex.message}")
                                 }

@@ -26,6 +26,21 @@ open class XYBluetoothGatt protected constructor(
         private val handler: Handler?
 ) : XYBluetoothGattBase(context) {
 
+    enum class BleConnectionStatus(val status: Short) {
+        Success (0),
+        Timeout(8),
+        RemoteDisconnect(19),
+        FailedToEstablish(62),
+        NoResources(128),
+        IntertnalError(129),
+        WrongState(130),
+        DBFull(131),
+        Busy(132),
+        GattError(133),
+        IllegalParameter(135),
+        AuthFail(137)
+    }
+
     protected var references = 0
 
     //last time this device was accessed (connected to)
@@ -271,7 +286,7 @@ open class XYBluetoothGatt protected constructor(
                     removeGattListener(listenerName)
                     resumed = true
                     cont.tryResumeSilent(null)
-                } else {
+                } /*else {
                     lastAccessTime = now
 
                     launch {
@@ -293,7 +308,7 @@ open class XYBluetoothGatt protected constructor(
                             }
                         }
                     }
-                }
+                }*/
             }
         }
         return@asyncBle XYBluetoothResult(value, error)
@@ -379,56 +394,89 @@ open class XYBluetoothGatt protected constructor(
         } else if (gatt.services != null && gatt.services.size > 0) {
             value = gatt.services
         } else {
-            value = suspendCancellableCoroutine { cont ->
-                log.info("discover")
-                val listenerName = "discover$nowNano"
-                val listener = object : XYBluetoothGattCallback() {
-                    override fun onServicesDiscovered(gatt: BluetoothGatt?, status: Int) {
-                        super.onServicesDiscovered(gatt, status)
-                        if (!resumed) {
-                            if (status != BluetoothGatt.GATT_SUCCESS) {
-                                error = XYBluetoothError("discover: discoverStatus: $status")
-                                removeGattListener(listenerName)
-                                resumed = true
-                                cont.tryResumeSilent(null)
-                            } else {
-                                if (gatt == null) {
-                                    error = XYBluetoothError("discover: gatt: NULL")
-                                    removeGattListener(listenerName)
+            var listenerName: String? = "discover$nowNano"
+            try {
+                withTimeout(100000) {
+                    value = suspendCancellableCoroutine { cont ->
+                        log.info("discover")
+                        val listener = object : XYBluetoothGattCallback() {
+                            override fun onServicesDiscovered(gatt: BluetoothGatt?, status: Int) {
+                                super.onServicesDiscovered(gatt, status)
+                                if (!resumed) {
+                                    if (status != BluetoothGatt.GATT_SUCCESS) {
+                                        error = XYBluetoothError("discover: discoverStatus: $status")
+                                        listenerName?.let {
+                                            removeGattListener(it)
+                                            listenerName = null
+                                        }
+                                        resumed = true
+                                        cont.tryResumeSilent(null)
+                                    } else {
+                                        if (gatt == null) {
+                                            error = XYBluetoothError("discover: gatt: NULL")
+                                            listenerName?.let {
+                                                removeGattListener(it)
+                                                listenerName = null
+                                            }
+                                            resumed = true
+                                            cont.tryResumeSilent(null)
+                                        } else {
+                                            listenerName?.let {
+                                                removeGattListener(it)
+                                                listenerName = null
+                                            }
+                                            resumed = true
+                                            cont.tryResumeSilent(gatt.services)
+                                        }
+                                    }
+                                }
+                            }
+
+                            override fun onConnectionStateChange(gatt: BluetoothGatt?, status: Int, newState: Int) {
+                                super.onConnectionStateChange(gatt, status, newState)
+                                if (newState != BluetoothGatt.STATE_CONNECTED && !resumed) {
+                                    error = XYBluetoothError("asyncDiscover: connection dropped")
+                                    listenerName?.let {
+                                        removeGattListener(it)
+                                        listenerName = null
+                                    }
                                     resumed = true
                                     cont.tryResumeSilent(null)
-                                } else {
-                                    removeGattListener(listenerName)
-                                    resumed = true
-                                    cont.tryResumeSilent(gatt.services)
                                 }
                             }
                         }
-                    }
-
-                    override fun onConnectionStateChange(gatt: BluetoothGatt?, status: Int, newState: Int) {
-                        super.onConnectionStateChange(gatt, status, newState)
-                        if (newState != BluetoothGatt.STATE_CONNECTED && !resumed) {
-                            error = XYBluetoothError("asyncDiscover: connection dropped")
-                            removeGattListener(listenerName)
+                        listenerName?.let {
+                            addGattListener(it, listener)
+                        }
+                        if (!gatt.discoverServices() && !resumed) {
+                            error = XYBluetoothError("asyncDiscover: gatt.discoverServices failed to start")
+                            listenerName?.let {
+                                removeGattListener(it)
+                                listenerName = null
+                            }
+                            resumed = true
+                            cont.tryResumeSilent(null)
+                        }
+                        if (connectionState != ConnectionState.Connected && !resumed) {
+                            error = XYBluetoothError("discover: connection dropped 2: $connectionState")
+                            listenerName?.let {
+                                removeGattListener(it)
+                                listenerName = null
+                            }
                             resumed = true
                             cont.tryResumeSilent(null)
                         }
                     }
                 }
-                addGattListener(listenerName, listener)
-                if (!gatt.discoverServices() && !resumed) {
-                    error = XYBluetoothError("asyncDiscover: gatt.discoverServices failed to start")
-                    removeGattListener(listenerName)
-                    resumed = true
-                    cont.tryResumeSilent(null)
+            } catch (ex: TimeoutCancellationException) {
+                error = XYBluetoothError("asyncDiscover: Timeout")
+                if (listenerName != null) {
+                    listenerName?.let {
+                        removeGattListener(it)
+                        listenerName = null
+                    }
                 }
-                if (connectionState != ConnectionState.Connected && !resumed) {
-                    error = XYBluetoothError("discover: connection dropped 2: $connectionState")
-                    removeGattListener(listenerName)
-                    resumed = true
-                    cont.tryResumeSilent(null)
-                }
+                log.error(ex)
             }
         }
         return@asyncBle XYBluetoothResult(value, error)
