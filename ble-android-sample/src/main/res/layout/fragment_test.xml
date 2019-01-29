@@ -17,10 +17,16 @@
             android:padding="10dp">
 
             <network.xyo.ui.views.XYButton
-                android:id="@+id/start"
+                android:id="@+id/start_async"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/start" />
+                android:text="@string/start_async" />
+
+            <network.xyo.ui.views.XYButton
+                android:id="@+id/start_sync"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/start_sync" />
 
             <network.xyo.ui.views.XYTextView
                 android:layout_width="match_parent"

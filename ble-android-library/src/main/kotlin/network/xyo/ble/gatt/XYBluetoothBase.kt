@@ -85,7 +85,6 @@ open class XYBluetoothBase(context: Context) : XYBase() {
     companion object {
         //this is the thread that all calls should happen on for gatt calls.
         val BluetoothThread: CoroutineContext
-        val BluetoothQueue = Executors.newSingleThreadExecutor().asCoroutineDispatcher()
 
         init {
             BluetoothThread = if (android.os.Build.VERSION.SDK_INT >= 21) {

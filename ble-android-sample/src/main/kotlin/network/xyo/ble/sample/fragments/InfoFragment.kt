@@ -92,6 +92,7 @@ class InfoFragment : XYAppBaseFragment(), View.OnClickListener, CompoundButton.O
     private fun updateUI() {
         ui {
             log.info("update")
+            activity?.showProgressSpinner()
             if (activity?.device != null) {
 
                 text_family.text = activity?.device?.name
@@ -118,7 +119,7 @@ class InfoFragment : XYAppBaseFragment(), View.OnClickListener, CompoundButton.O
                 button_connect?.visibility = VISIBLE
                 button_disconnect?.visibility = GONE
             }
-
+            activity?.hideProgressSpinner()
         }
     }
 
@@ -164,15 +165,15 @@ class InfoFragment : XYAppBaseFragment(), View.OnClickListener, CompoundButton.O
                 enableButtonNotify(false)
             }
             R.id.button_startTest -> {
-                testRefreshGatt()
+                //testRefreshGatt()
             }
         }
     }
 
-    private fun testRefreshGatt() {
+    /*private fun testRefreshGatt() {
         GlobalScope.launch {
             val device: XYBluetoothDevice? = activity?.device
-            val connection = device?.connectGatt()?.await()
+            val connection = device?.connect()?.await()
             if (connection?.error != null) {
                 activity?.showToast("Connection failed")
                 return@launch
@@ -181,7 +182,7 @@ class InfoFragment : XYAppBaseFragment(), View.OnClickListener, CompoundButton.O
             activity?.showToast(result.toString())
 
         }
-    }
+    }*/
 
     private fun connect() {
         val device: XYBluetoothDevice? = activity?.device

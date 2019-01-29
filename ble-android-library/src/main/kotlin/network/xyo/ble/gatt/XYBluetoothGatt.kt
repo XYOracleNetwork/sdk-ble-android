@@ -9,8 +9,11 @@ import kotlinx.coroutines.*
 import network.xyo.ble.CallByVersion
 import network.xyo.ble.scanner.XYScanResult
 import network.xyo.core.XYBase
+import network.xyo.core.XYLogging
 import java.util.*
+import java.util.concurrent.Executors
 import kotlin.coroutines.Continuation
+import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.resume
 
 //XYBluetoothGatt is a pure wrapper that does not add any functionality
@@ -41,6 +44,8 @@ open class XYBluetoothGatt protected constructor(
         AuthFail(137)
     }
 
+    val bluetoothQueue = Executors.newSingleThreadExecutor().asCoroutineDispatcher()
+
     protected var references = 0
 
     //last time this device was accessed (connected to)
@@ -50,6 +55,30 @@ open class XYBluetoothGatt protected constructor(
     protected var lastAdTime = 0L
 
     var rssi: Int? = null
+
+    //force ble functions for this gatt to run in order
+    fun <T> queueBle(
+            context: CoroutineContext = bluetoothQueue,
+            start: CoroutineStart = CoroutineStart.DEFAULT,
+            block: suspend CoroutineScope.() -> XYBluetoothResult<T>
+    ): Deferred<XYBluetoothResult<T>> {
+        lastAccessTime = now
+        return GlobalScope.async(context, start) {
+            lastAccessTime = now
+            return@async runBlocking {
+                lastAccessTime = now
+                try {
+                    return@runBlocking withTimeout(30000) {
+                        lastAccessTime = now
+                        return@withTimeout async(XYBluetoothBase.BluetoothThread, CoroutineStart.DEFAULT, block)
+                    }.await()
+                } catch (ex: TimeoutCancellationException) {
+                    log.error(ex)
+                    return@runBlocking XYBluetoothResult<T>(XYBluetoothError(ex.message ?: "Exception"))
+                }
+            }
+        }
+    }
 
     open class XYBluetoothGattCallback : BluetoothGattCallback() {
         open fun onCharacteristicChangedValue (gatt : BluetoothGatt?, characteristicToRead: BluetoothGattCharacteristic?, value : ByteArray?) {}
@@ -156,8 +185,7 @@ open class XYBluetoothGatt protected constructor(
         }
     }
 
-
-    fun refreshGatt() = asyncBle {
+    private fun refreshGatt() = asyncBle {
         log.info("refreshGatt")
         var result = false
         var error: XYBluetoothError? = null
@@ -180,7 +208,7 @@ open class XYBluetoothGatt protected constructor(
         return@asyncBle XYBluetoothResult(result, error)
     }
 
-    fun connectGatt() = asyncBle {
+    private fun connectGatt() = asyncBle {
         log.info("connectGatt")
         var error: XYBluetoothError? = null
         var value: Boolean? = null
@@ -218,8 +246,12 @@ open class XYBluetoothGatt protected constructor(
         return@asyncBle XYBluetoothResult(value, error)
     }
 
-    fun connect() = asyncBle {
+    fun connect() = queueBle {
         log.info("connect")
+
+        //this prevents a queued close from closing while we run
+        lastAccessTime = now
+
         var error: XYBluetoothError? = null
         var value: Boolean? = null
         var gatt = this@XYBluetoothGatt.gatt
@@ -286,10 +318,10 @@ open class XYBluetoothGatt protected constructor(
                     removeGattListener(listenerName)
                     resumed = true
                     cont.tryResumeSilent(null)
-                } /*else {
+                } else {
                     lastAccessTime = now
 
-                    launch {
+                    /*launch {
                         try {
                             withTimeout(15000) {
                                 while (!resumed) {
@@ -307,21 +339,22 @@ open class XYBluetoothGatt protected constructor(
                                 cont.tryResumeSilent(null)
                             }
                         }
-                    }
-                }*/
+                    }*/
+                }
             }
         }
-        return@asyncBle XYBluetoothResult(value, error)
+        return@queueBle XYBluetoothResult(value, error)
     }
 
-    fun disconnect() = asyncBle {
+    fun disconnect() = queueBle {
         log.info("disconnect")
+
         var error: XYBluetoothError? = null
 
         val gatt = this@XYBluetoothGatt.gatt
-                ?: return@asyncBle XYBluetoothResult(true, XYBluetoothError("Already Disconnected"))
+                ?: return@queueBle XYBluetoothResult(true, XYBluetoothError("Already Disconnected"))
 
-        val listenerName = "asyncDisconnect$nowNano"
+        val listenerName = "asyncDisconnect: ${this@XYBluetoothGatt.device?.address}"
         val value = suspendCancellableCoroutine<Boolean> { cont ->
             val listener = object : XYBluetoothGattCallback() {
                 var resumed = false
@@ -368,7 +401,7 @@ open class XYBluetoothGatt protected constructor(
             }
         }
 
-        return@asyncBle XYBluetoothResult(value, error)
+        return@queueBle XYBluetoothResult(value, error)
     }
 
     protected fun close() = asyncBle {
@@ -384,7 +417,12 @@ open class XYBluetoothGatt protected constructor(
         return@asyncBle XYBluetoothResult(true)
     }
 
-    protected fun discover() = asyncBle {
+    private fun discover() = asyncBle {
+        log.info("discover")
+
+        //this prevents a queued close from closing while we run
+        lastAccessTime = now
+
         var error: XYBluetoothError? = null
         var value: List<BluetoothGattService>? = null
         var resumed = false
@@ -396,7 +434,7 @@ open class XYBluetoothGatt protected constructor(
         } else {
             var listenerName: String? = "discover$nowNano"
             try {
-                withTimeout(100000) {
+                withTimeout(10000) {
                     value = suspendCancellableCoroutine { cont ->
                         log.info("discover")
                         val listener = object : XYBluetoothGattCallback() {
@@ -421,6 +459,7 @@ open class XYBluetoothGatt protected constructor(
                                             resumed = true
                                             cont.tryResumeSilent(null)
                                         } else {
+                                            lastAccessTime = now
                                             listenerName?.let {
                                                 removeGattListener(it)
                                                 listenerName = null
@@ -483,7 +522,7 @@ open class XYBluetoothGatt protected constructor(
     }
 
     //this can only be called after a successful discover
-    protected fun findCharacteristic(service: UUID, characteristic: UUID) = asyncBle {
+    protected fun findCharacteristic(service: UUID, characteristic: UUID) = queueBle {
 
         log.info("findCharacteristic")
         var error: XYBluetoothError? = null
@@ -514,7 +553,7 @@ open class XYBluetoothGatt protected constructor(
             }
         }
         log.info("findCharacteristic: Returning: $value")
-        return@asyncBle XYBluetoothResult(value, error)
+        return@queueBle XYBluetoothResult(value, error)
     }
 
     protected fun writeCharacteristic(characteristicToWrite: BluetoothGattCharacteristic) = queueBle {
@@ -613,47 +652,32 @@ open class XYBluetoothGatt protected constructor(
         return XYBluetoothResult(value, error)
     }
 
-    protected fun writeDescriptor(descriptorToWrite: BluetoothGattDescriptor): Deferred<XYBluetoothResult<ByteArray>> {
-        return queueBle {
-            log.info("writeDescriptor")
-            var error: XYBluetoothError? = null
-            var value: ByteArray? = null
+    protected fun writeDescriptor(descriptorToWrite: BluetoothGattDescriptor) = queueBle {
+        log.info("writeDescriptor")
+        var error: XYBluetoothError? = null
+        var value: ByteArray? = null
 
-            val gatt = this@XYBluetoothGatt.gatt
+        val gatt = this@XYBluetoothGatt.gatt
 
-            if (gatt == null) {
-                error = XYBluetoothError("writeDescriptor: No Gatt")
-            } else {
-                val listenerName = "writeDescriptor$nowNano"
-                value = suspendCancellableCoroutine { cont ->
-                    var resumed = false
-                    val listener = object : XYBluetoothGattCallback() {
-                        override fun onDescriptorWrite(gatt: BluetoothGatt?, descriptor: BluetoothGattDescriptor?, status: Int) {
-                            log.info("onDescriptorWrite: $status")
-                            super.onDescriptorWrite(gatt, descriptor, status)
-                            if (!resumed) {
-                                //since it is always possible to have a rogue callback, make sure it is the one we are looking for
-                                if (descriptorToWrite == descriptor) {
-                                    if (status == BluetoothGatt.GATT_SUCCESS) {
-                                        removeGattListener(listenerName)
-                                        resumed = true
-                                        cont.tryResumeSilent(descriptorToWrite.value)
-                                    } else {
-                                        error = XYBluetoothError("writeDescriptor: onDescriptorWrite failed: $status")
-                                        removeGattListener(listenerName)
-                                        resumed = true
-                                        cont.tryResumeSilent(null)
-                                    }
-                                }
-                            }
-                        }
-
-                        override fun onConnectionStateChange(gatt: BluetoothGatt?, status: Int, newState: Int) {
-                            log.info("onConnectionStateChange")
-                            super.onConnectionStateChange(gatt, status, newState)
-                            if (!resumed) {
-                                if (newState != BluetoothGatt.STATE_CONNECTED) {
-                                    error = XYBluetoothError("writeDescriptor: connection dropped")
+        if (gatt == null) {
+            error = XYBluetoothError("writeDescriptor: No Gatt")
+        } else {
+            val listenerName = "writeDescriptor$nowNano"
+            value = suspendCancellableCoroutine { cont ->
+                var resumed = false
+                val listener = object : XYBluetoothGattCallback() {
+                    override fun onDescriptorWrite(gatt: BluetoothGatt?, descriptor: BluetoothGattDescriptor?, status: Int) {
+                        log.info("onDescriptorWrite: $status")
+                        super.onDescriptorWrite(gatt, descriptor, status)
+                        if (!resumed) {
+                            //since it is always possible to have a rogue callback, make sure it is the one we are looking for
+                            if (descriptorToWrite == descriptor) {
+                                if (status == BluetoothGatt.GATT_SUCCESS) {
+                                    removeGattListener(listenerName)
+                                    resumed = true
+                                    cont.tryResumeSilent(descriptorToWrite.value)
+                                } else {
+                                    error = XYBluetoothError("writeDescriptor: onDescriptorWrite failed: $status")
                                     removeGattListener(listenerName)
                                     resumed = true
                                     cont.tryResumeSilent(null)
@@ -661,65 +685,64 @@ open class XYBluetoothGatt protected constructor(
                             }
                         }
                     }
-                    addGattListener(listenerName, listener)
-                    if (!gatt.writeDescriptor(descriptorToWrite)) {
-                        error = XYBluetoothError("writeDescriptor: gatt.writeDescriptor failed to start")
-                        removeGattListener(listenerName)
-                        resumed = true
-                        cont.tryResumeSilent(null)
-                    } else if (connectionState != ConnectionState.Connected) {
-                        error = XYBluetoothError("writeDescriptor: connection dropped 2")
-                        removeGattListener(listenerName)
-                        resumed = true
-                        cont.tryResumeSilent(null)
+
+                    override fun onConnectionStateChange(gatt: BluetoothGatt?, status: Int, newState: Int) {
+                        log.info("onConnectionStateChange")
+                        super.onConnectionStateChange(gatt, status, newState)
+                        if (!resumed) {
+                            if (newState != BluetoothGatt.STATE_CONNECTED) {
+                                error = XYBluetoothError("writeDescriptor: connection dropped")
+                                removeGattListener(listenerName)
+                                resumed = true
+                                cont.tryResumeSilent(null)
+                            }
+                        }
                     }
                 }
+                addGattListener(listenerName, listener)
+                if (!gatt.writeDescriptor(descriptorToWrite)) {
+                    error = XYBluetoothError("writeDescriptor: gatt.writeDescriptor failed to start")
+                    removeGattListener(listenerName)
+                    resumed = true
+                    cont.tryResumeSilent(null)
+                } else if (connectionState != ConnectionState.Connected) {
+                    error = XYBluetoothError("writeDescriptor: connection dropped 2")
+                    removeGattListener(listenerName)
+                    resumed = true
+                    cont.tryResumeSilent(null)
+                }
             }
-
-            return@queueBle XYBluetoothResult(value, error)
         }
+
+        return@queueBle XYBluetoothResult(value, error)
     }
 
-    protected fun readCharacteristic(characteristicToRead: BluetoothGattCharacteristic): Deferred<XYBluetoothResult<BluetoothGattCharacteristic>> {
-        return queueBle {
-            log.info("readCharacteristic")
-            var error: XYBluetoothError? = null
-            var value: BluetoothGattCharacteristic? = null
+    protected fun readCharacteristic(characteristicToRead: BluetoothGattCharacteristic) = queueBle {
+        log.info("readCharacteristic")
+        var error: XYBluetoothError? = null
+        var value: BluetoothGattCharacteristic? = null
 
-            val gatt = this@XYBluetoothGatt.gatt
+        val gatt = this@XYBluetoothGatt.gatt
 
-            if (gatt == null) {
-                error = XYBluetoothError("readCharacteristic: No Gatt")
-            } else {
-                val listenerName = "readCharacteristic$nowNano"
-                value = suspendCancellableCoroutine { cont ->
-                    var resumed = false
-                    val listener = object : XYBluetoothGattCallback() {
+        if (gatt == null) {
+            error = XYBluetoothError("readCharacteristic: No Gatt")
+        } else {
+            val listenerName = "readCharacteristic$nowNano"
+            value = suspendCancellableCoroutine { cont ->
+                var resumed = false
+                val listener = object : XYBluetoothGattCallback() {
 
-                        override fun onCharacteristicRead(gatt: BluetoothGatt?, characteristic: BluetoothGattCharacteristic?, status: Int) {
-                            super.onCharacteristicRead(gatt, characteristic, status)
-                            if (!resumed) {
-                                //since it is always possible to have a rogue callback, make sure it is the one we are looking for
-                                if (characteristicToRead == characteristic) {
-                                    if (status == BluetoothGatt.GATT_SUCCESS) {
-                                        removeGattListener(listenerName)
-                                        resumed = true
-                                        cont.tryResumeSilent(characteristic)
-                                    } else {
-                                        error = XYBluetoothError("readCharacteristic: onCharacteristicRead failed: $status")
-                                        removeGattListener(listenerName)
-                                        resumed = true
-                                        cont.tryResumeSilent(null)
-                                    }
-                                }
-                            }
-                        }
-
-                        override fun onConnectionStateChange(gatt: BluetoothGatt?, status: Int, newState: Int) {
-                            super.onConnectionStateChange(gatt, status, newState)
-                            if (!resumed && coroutineContext.isActive) {
-                                if (newState != BluetoothGatt.STATE_CONNECTED) {
-                                    error = XYBluetoothError("readCharacteristic: connection dropped")
+                    override fun onCharacteristicRead(gatt: BluetoothGatt?, characteristic: BluetoothGattCharacteristic?, status: Int) {
+                        super.onCharacteristicRead(gatt, characteristic, status)
+                        if (!resumed) {
+                            //since it is always possible to have a rogue callback, make sure it is the one we are looking for
+                            if (characteristicToRead == characteristic) {
+                                if (status == BluetoothGatt.GATT_SUCCESS) {
+                                    removeGattListener(listenerName)
+                                    resumed = true
+                                    cont.tryResumeSilent(characteristic)
+                                } else {
+                                    error = XYBluetoothError("readCharacteristic: onCharacteristicRead failed: $status")
                                     removeGattListener(listenerName)
                                     resumed = true
                                     cont.tryResumeSilent(null)
@@ -727,75 +750,81 @@ open class XYBluetoothGatt protected constructor(
                             }
                         }
                     }
-                    addGattListener(listenerName, listener)
-                    if (!gatt.readCharacteristic(characteristicToRead)) {
-                        error = XYBluetoothError("readCharacteristic: gatt.readCharacteristic failed to start")
-                        removeGattListener(listenerName)
-                        resumed = true
-                        cont.tryResumeSilent(null)
-                    }
-                    if (connectionState != ConnectionState.Connected) {
-                        error = XYBluetoothError("readCharacteristic: connection dropped 2")
-                        removeGattListener(listenerName)
-                        resumed = true
-                        cont.tryResumeSilent(null)
+
+                    override fun onConnectionStateChange(gatt: BluetoothGatt?, status: Int, newState: Int) {
+                        super.onConnectionStateChange(gatt, status, newState)
+                        if (!resumed && coroutineContext.isActive) {
+                            if (newState != BluetoothGatt.STATE_CONNECTED) {
+                                error = XYBluetoothError("readCharacteristic: connection dropped")
+                                removeGattListener(listenerName)
+                                resumed = true
+                                cont.tryResumeSilent(null)
+                            }
+                        }
                     }
                 }
+                addGattListener(listenerName, listener)
+                if (!gatt.readCharacteristic(characteristicToRead)) {
+                    error = XYBluetoothError("readCharacteristic: gatt.readCharacteristic failed to start")
+                    removeGattListener(listenerName)
+                    resumed = true
+                    cont.tryResumeSilent(null)
+                }
+                if (connectionState != ConnectionState.Connected) {
+                    error = XYBluetoothError("readCharacteristic: connection dropped 2")
+                    removeGattListener(listenerName)
+                    resumed = true
+                    cont.tryResumeSilent(null)
+                }
             }
-
-            return@queueBle XYBluetoothResult(value, error)
         }
+
+        return@queueBle XYBluetoothResult(value, error)
     }
 
 
     //make a safe session to interact with the device
     //if null is passed back, the sdk was unable to create the safe session
-    fun <T> connectionWithResult(closure: suspend () -> XYBluetoothResult<T>): Deferred<XYBluetoothResult<T>> {
-        return asyncBle {
-            log.info("connection")
-            var value: T? = null
-            var error: XYBluetoothError? = null
-            references++
+    fun <T> connectionWithResult(closure: suspend () -> XYBluetoothResult<T>) = asyncBle {
+        log.info("connection")
+        var value: T? = null
+        var error: XYBluetoothError?
+        references++
 
-            if (connectGatt().await().error == null) {
-                if (connect().await().error == null) {
-                    val discovered = discover().await()
-                    error = discovered.error
-                    if (error == null) {
-                        val result = closure()
-                        error = result.error
-                        value = result.value
-                    }
-                }
-            } else {
-                error = XYBluetoothError("connection: Failed to Connect")
+        if (connect().await().error == null) {
+            val discovered = discover().await()
+            error = discovered.error
+            if (error == null) {
+                val result = closure()
+                error = result.error
+                value = result.value
             }
-            references--
-            return@asyncBle XYBluetoothResult(value, error)
+        } else {
+            error = XYBluetoothError("connection: Failed to Connect")
         }
+
+        references--
+        return@asyncBle XYBluetoothResult(value, error)
     }
 
-    fun connection(closure: suspend () -> Unit): Deferred<XYBluetoothResult<Unit>> {
-        return asyncBle {
-            log.info("connection")
-            val value: Unit? = null
-            var error: XYBluetoothError? = null
-            references++
+    fun connection(closure: suspend () -> Unit) = asyncBle {
+        log.info("connection")
+        val value: Unit? = null
+        var error: XYBluetoothError?
+        references++
 
-            if (connectGatt().await().error == null) {
-                if (connect().await().error == null) {
-                    val discovered = discover().await()
-                    error = discovered.error
-                    if (error == null) {
-                        closure()
-                    }
-                }
-            } else {
-                error = XYBluetoothError("connection: Failed to Connect")
+        if (connect().await().error == null) {
+            val discovered = discover().await()
+            error = discovered.error
+            if (error == null) {
+                closure()
             }
-            references--
-            return@asyncBle XYBluetoothResult(value, error)
+        } else {
+            error = XYBluetoothError("connection: Failed to Connect")
         }
+
+        references--
+        return@asyncBle XYBluetoothResult(value, error)
     }
 
     @TargetApi(Build.VERSION_CODES.KITKAT)
@@ -1005,11 +1034,8 @@ open class XYBluetoothGatt protected constructor(
 
                 while (!closed) {
                     //log.info("cleanUpIfNeeded: $references")
-                    //if the global and local last connection times do not match
-                    //after the delay, that means a newer connection is now responsible for closing it
-                    val localAccessTime = now
 
-                    delay(CLEANUP_DELAY)
+                    delay(1000) //fake pulse interval
 
                     //this initiates a fake pulse
                     gatt?.readRemoteRssi()
@@ -1020,7 +1046,7 @@ open class XYBluetoothGatt protected constructor(
 
                     log.info("cleanUpIfNeeded: Checking")
 
-                    if (!getStayConnected() && !closed && references == 0 && lastAccessTime < localAccessTime) {
+                    if (!getStayConnected() && !closed && references == 0 && (lastAccessTime + CLEANUP_DELAY) < now) {
                         log.info("cleanUpIfNeeded: Cleaning")
                         close().await()
                     }
@@ -1032,6 +1058,6 @@ open class XYBluetoothGatt protected constructor(
 
     companion object: XYBase() {
         //gap after last connection that we wait to close the connection
-        private const val CLEANUP_DELAY = 5_000L
+        private const val CLEANUP_DELAY = 10_000L
     }
 }

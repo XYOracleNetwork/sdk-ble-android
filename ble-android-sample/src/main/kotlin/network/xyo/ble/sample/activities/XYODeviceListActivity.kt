@@ -12,6 +12,7 @@ import com.nabinbhandari.android.permissions.Permissions
 import kotlinx.android.synthetic.main.activity_device_list.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import network.xyo.ble.devices.XY3BluetoothDevice
 import network.xyo.ble.devices.XY4BluetoothDevice
 import network.xyo.ble.devices.XYBluetoothDevice
 import network.xyo.ble.devices.XYFinderBluetoothDevice
@@ -60,6 +61,22 @@ class XYODeviceListActivity : XYOAppBaseActivity() {
             override fun buttonLongPressed(device: XYFinderBluetoothDevice) {
                 super.buttonLongPressed(device)
                 showToast("XY4 Button Long Pressed")
+            }
+        })
+        XY3BluetoothDevice.addGlobalListener(tag, object : XY3BluetoothDevice.Listener() {
+            override fun buttonSinglePressed(device: XYFinderBluetoothDevice) {
+                super.buttonSinglePressed(device)
+                showToast("XY3 Button Single Pressed: ${device.address}")
+                openDevice(device)
+            }
+            override fun buttonDoublePressed(device: XYFinderBluetoothDevice) {
+                super.buttonDoublePressed(device)
+                showToast("XY3 Button Double Pressed")
+            }
+
+            override fun buttonLongPressed(device: XYFinderBluetoothDevice) {
+                super.buttonLongPressed(device)
+                showToast("XY3 Button Long Pressed")
             }
         })
     }
