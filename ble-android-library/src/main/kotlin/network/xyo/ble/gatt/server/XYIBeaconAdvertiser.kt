@@ -47,7 +47,7 @@ open class XYIBeaconAdvertiser (context: Context) : XYBluetoothAdvertiser(contex
 
     override fun makeAdvertisingData(): AdvertiseData {
         val builder = AdvertiseData.Builder()
-        builder.addManufacturerData(manufacturerId ?: DEFAULT_MANUFACTURER_ID, makeManufacturerData(0x72))
+        builder.addManufacturerData(manufacturerId ?: DEFAULT_MANUFACTURER_ID, makeManufacturerData(-51))
         return builder.build()
     }
 
