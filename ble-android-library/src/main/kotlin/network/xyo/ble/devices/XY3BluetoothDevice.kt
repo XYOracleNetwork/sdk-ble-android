@@ -1,5 +1,6 @@
 package network.xyo.ble.devices
 
+import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothGatt
 import android.bluetooth.BluetoothGattCharacteristic
 import android.content.Context
@@ -52,6 +53,14 @@ open class XY3BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
 
     init {
         addGattListener("xy3", buttonListener)
+    }
+
+    //for some reason, if we let XY3 constantly update the device, it fails to connect
+    override fun updateBluetoothDevice(device: BluetoothDevice?) {
+        if (this.device == null) {
+            this.device = device
+        }
+        lastAdTime = now
     }
 
     override val minor: Ushort

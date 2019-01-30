@@ -18,7 +18,7 @@ open class XYBluetoothGattClient protected constructor(
         handler: Handler?
 ) : XYBluetoothGatt(context, device, autoConnect, callback, transport, phy, handler) {
 
-    fun updateBluetoothDevice(device: BluetoothDevice?) {
+    open fun updateBluetoothDevice(device: BluetoothDevice?) {
         this.device = device
         lastAdTime = now
     }
