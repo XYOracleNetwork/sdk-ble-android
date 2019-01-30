@@ -93,7 +93,8 @@ class InfoFragment : XYDeviceFragment(), View.OnClickListener, CompoundButton.On
     private fun updateUI() {
         ui {
             log.info("update")
-          activity?.showProgressSpinner()
+            progressListener?.showProgress()
+
             if (device != null) {
 
 
@@ -121,7 +122,7 @@ class InfoFragment : XYDeviceFragment(), View.OnClickListener, CompoundButton.On
                 button_connect?.visibility = VISIBLE
                 button_disconnect?.visibility = GONE
             }
-            activity?.hideProgressSpinner()
+            progressListener?.hideProgress()
         }
     }
 

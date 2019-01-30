@@ -154,9 +154,10 @@ class FirmwareUpdateFragment : XYDeviceFragment(), BackFragmentListener {
 
     private fun refreshAdapter() {
         progressListener?.showProgress()
+
         GlobalScope.launch {
             //need to connect before refreshing
-            device?.connectGatt()?.await()
+            val result = device?.connect()?.await()
             // val result = device?.refreshGatt()?.await()
             ui { progressListener?.showProgress() }
             if (result?.value as Boolean) {
