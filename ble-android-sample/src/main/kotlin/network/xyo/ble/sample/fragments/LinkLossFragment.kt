@@ -11,11 +11,13 @@ import kotlinx.coroutines.launch
 import network.xyo.ble.devices.XY2BluetoothDevice
 import network.xyo.ble.devices.XY3BluetoothDevice
 import network.xyo.ble.devices.XY4BluetoothDevice
+import network.xyo.ble.devices.XYBluetoothDevice
 import network.xyo.ble.sample.R
+import network.xyo.ble.sample.XYDeviceData
 import network.xyo.ui.ui
 
 
-class LinkLossFragment : XYAppBaseFragment() {
+class LinkLossFragment : XYDeviceFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -34,7 +36,7 @@ class LinkLossFragment : XYAppBaseFragment() {
     override fun onResume() {
         super.onResume()
 
-        if (activity?.data?.alertLevel.isNullOrEmpty() && activity?.isBusy() == false) {
+        if (deviceData?.alertLevel.isNullOrEmpty() && progressListener?.isInProgress() == false) {
             initLinkLossValues()
         } else {
             updateUI()
@@ -43,26 +45,26 @@ class LinkLossFragment : XYAppBaseFragment() {
 
     private fun updateUI() {
         ui {
-            activity?.hideProgressSpinner()
+            progressListener?.isInProgress()
 
-            text_alert_level?.text = activity?.data?.alertLevel
+            text_alert_level?.text = deviceData?.alertLevel
         }
     }
 
     private fun initLinkLossValues() {
         ui {
-            activity?.showProgressSpinner()
+            progressListener?.showProgress()
         }
 
-        when (activity?.device) {
+        when (device) {
             is XY4BluetoothDevice -> {
-                val x4 = (activity?.device as? XY4BluetoothDevice)
+                val x4 = (device as? XY4BluetoothDevice)
                 x4?.let {
                     getXY4Values(x4)
                 }
             }
             is XY3BluetoothDevice -> {
-                val x3 = (activity?.device as? XY3BluetoothDevice)
+                val x3 = (device as? XY3BluetoothDevice)
                 x3?.let {
                     getXY3Values(x3)
                 }
@@ -84,7 +86,7 @@ class LinkLossFragment : XYAppBaseFragment() {
             val conn = device.connection {
                 hasConnectionError = false
 
-                activity?.data?.let {
+                deviceData?.let {
                     it.alertLevel = device.linkLossService.alertLevel.get().await().format()
                 }
 
@@ -103,7 +105,7 @@ class LinkLossFragment : XYAppBaseFragment() {
             val conn = device.connection {
                 hasConnectionError = false
 
-                activity?.data?.let {
+                deviceData?.let {
                     it.alertLevel = device.linkLossService.alertLevel.get().await().format()
                 }
 
@@ -119,6 +121,13 @@ class LinkLossFragment : XYAppBaseFragment() {
 
         fun newInstance() =
                 LinkLossFragment()
+
+        fun newInstance (device: XYBluetoothDevice?, deviceData : XYDeviceData?) : LinkLossFragment {
+            val frag = LinkLossFragment()
+            frag.device = device
+            frag.deviceData = deviceData
+            return frag
+        }
     }
 
 }

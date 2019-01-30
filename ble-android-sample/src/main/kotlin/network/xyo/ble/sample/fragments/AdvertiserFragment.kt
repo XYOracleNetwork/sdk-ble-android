@@ -12,14 +12,12 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import network.xyo.ble.gatt.server.XYBluetoothAdvertiser
 import network.xyo.ble.sample.R
-import network.xyo.ble.sample.activities.XYOServerActivity
 import network.xyo.ui.XYBaseFragment
 import network.xyo.ui.ui
 import java.util.*
 
 class AdvertiserFragment : XYBaseFragment() {
-    val advertiser: XYBluetoothAdvertiser?
-        get () = (activity as? XYOServerActivity)?.bleAdvertiser
+    var advertiser: XYBluetoothAdvertiser? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_advertiser, container, false)
@@ -28,6 +26,7 @@ class AdvertiserFragment : XYBaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val updateButton = view.update
+
         updateButton.setOnClickListener {
             GlobalScope.launch {
                 updateAdvertisingMode(view)
@@ -165,7 +164,13 @@ class AdvertiserFragment : XYBaseFragment() {
     }
 
     companion object {
-        fun newInstance() : AdvertiserFragment {
+        fun newInstance(advertiser: XYBluetoothAdvertiser?) : AdvertiserFragment {
+            val frag = AdvertiserFragment()
+            frag.advertiser = advertiser
+            return frag
+        }
+
+        fun newInstance () : AdvertiserFragment {
             return AdvertiserFragment()
         }
     }
