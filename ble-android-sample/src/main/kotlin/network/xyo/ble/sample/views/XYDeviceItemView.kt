@@ -82,11 +82,6 @@ class XYDeviceItemView(context: Context, attrs: AttributeSet) : RelativeLayout(c
         override fun connectionStateChanged(device: XYBluetoothDevice, newState: Int) {
             log.info(TAG,"connectionStateChanged")
         }
-
-        override fun buttonSinglePressed(device: XYFinderBluetoothDevice) {
-            super.buttonSinglePressed(device)
-            openDevice(device)
-        }
     }
 
     fun setDevice(device: XYBluetoothDevice?) {

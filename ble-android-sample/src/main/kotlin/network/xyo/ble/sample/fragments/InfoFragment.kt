@@ -93,7 +93,9 @@ class InfoFragment : XYDeviceFragment(), View.OnClickListener, CompoundButton.On
     private fun updateUI() {
         ui {
             log.info("update")
+          activity?.showProgressSpinner()
             if (device != null) {
+
 
                 text_family.text = device?.name
                 text_rssi.text = device?.rssi.toString()
@@ -119,7 +121,7 @@ class InfoFragment : XYDeviceFragment(), View.OnClickListener, CompoundButton.On
                 button_connect?.visibility = VISIBLE
                 button_disconnect?.visibility = GONE
             }
-
+            activity?.hideProgressSpinner()
         }
     }
 
@@ -164,14 +166,16 @@ class InfoFragment : XYDeviceFragment(), View.OnClickListener, CompoundButton.On
                 enableButtonNotify(false)
             }
             R.id.button_startTest -> {
-                testRefreshGatt()
+                //testRefreshGatt()
             }
         }
     }
 
-    private fun testRefreshGatt() {
+    /*private fun testRefreshGatt() {
         GlobalScope.launch {
             val connection = device?.connectGatt()?.await()
+            val device: XYBluetoothDevice? = activity?.device
+            val connection = device?.connect()?.await()
             if (connection?.error != null) {
                 showToast("Connection failed")
                 return@launch
@@ -179,7 +183,7 @@ class InfoFragment : XYDeviceFragment(), View.OnClickListener, CompoundButton.On
             val result = device?.refreshGatt()?.await()
             showToast(result.toString())
         }
-    }
+    }*/
 
     private fun connect() {
         GlobalScope.launch {
@@ -304,7 +308,8 @@ class InfoFragment : XYDeviceFragment(), View.OnClickListener, CompoundButton.On
     private fun updateStayAwakeEnabledStates(): Deferred<Unit> {
         return GlobalScope.async {
             log.info("updateStayAwakeEnabledStates")
-            val xy4 = device as? XY4BluetoothDevice
+            // val xy4 = device as? XY4BluetoothDevice
+            /*val xy4 = activity?.device as? XY4BluetoothDevice
             if (xy4 != null) {
                 val stayAwake = xy4.primary.stayAwake.get().await()
                 log.info("updateStayAwakeEnabledStates: ${stayAwake.value}")
@@ -321,7 +326,7 @@ class InfoFragment : XYDeviceFragment(), View.OnClickListener, CompoundButton.On
                 }
             } else {
                 log.error("updateStayAwakeEnabledStates: Not an XY4!", false)
-            }
+            }*/
             return@async
         }
     }

@@ -25,7 +25,8 @@
     <string name="manufacturer_id_title">Manufacturer Id</string>
     <string name="manufacturer_data_title">Manufacturer Data</string>
     <string name="update">Update</string>
-    <string name="start">Start</string>
+    <string name="start_async">Start Async</string>
+    <string name="start_sync">Start Sync</string>
     <string name="services">Services</string>
     <string name="service_uuid">Service UUID</string>
     <string name="view_service">View</string>

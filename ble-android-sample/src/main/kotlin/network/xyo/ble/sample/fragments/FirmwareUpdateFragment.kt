@@ -157,7 +157,7 @@ class FirmwareUpdateFragment : XYDeviceFragment(), BackFragmentListener {
         GlobalScope.launch {
             //need to connect before refreshing
             device?.connectGatt()?.await()
-            val result = device?.refreshGatt()?.await()
+            // val result = device?.refreshGatt()?.await()
             ui { progressListener?.showProgress() }
             if (result?.value as Boolean) {
                 ui { showToast("BLE adapter was reset, performing update") }

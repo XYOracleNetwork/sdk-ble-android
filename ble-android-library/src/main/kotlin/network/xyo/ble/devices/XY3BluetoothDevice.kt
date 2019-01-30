@@ -1,5 +1,6 @@
 package network.xyo.ble.devices
 
+import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothGatt
 import android.bluetooth.BluetoothGattCharacteristic
 import android.content.Context
@@ -52,6 +53,14 @@ open class XY3BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
 
     init {
         addGattListener("xy3", buttonListener)
+    }
+
+    //we only allow mac addresses that end in 4 to be updated since those are the connectible ones
+    override fun updateBluetoothDevice(device: BluetoothDevice?) {
+        if (device?.address?.endsWith("4") == true) {
+            this.device = device
+        }
+        lastAdTime = now
     }
 
     override val minor: Ushort
