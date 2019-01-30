@@ -55,9 +55,9 @@ open class XY3BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
         addGattListener("xy3", buttonListener)
     }
 
-    //for some reason, if we let XY3 constantly update the device, it fails to connect
+    //we only allow mac addresses that end in 4 to be updated since those are the connectible ones
     override fun updateBluetoothDevice(device: BluetoothDevice?) {
-        if (this.device == null) {
+        if (device?.address?.endsWith("4") == true) {
             this.device = device
         }
         lastAdTime = now
