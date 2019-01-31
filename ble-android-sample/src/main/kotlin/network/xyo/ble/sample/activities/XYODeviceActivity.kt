@@ -19,6 +19,7 @@ import network.xyo.ble.sample.R
 import network.xyo.ble.sample.XYDeviceData
 import network.xyo.ble.sample.fragments.*
 import network.xyo.ble.sample.fragments.core.BackFragmentListener
+import network.xyo.ble.sample.fragments.core.ProgressListener
 import network.xyo.ui.XYBaseFragment
 import network.xyo.ui.ui
 
@@ -31,6 +32,20 @@ class XYODeviceActivity : XYOAppBaseActivity() {
     var device: XYBluetoothDevice? = null
     private lateinit var sectionsPagerAdapter: SectionsPagerAdapter
     lateinit var data: XYDeviceData
+
+    private val progressListener  = object : ProgressListener {
+        override fun hideProgress() {
+            hideProgressSpinner()
+        }
+
+        override fun isInProgress(): Boolean {
+            return isBusy()
+        }
+
+        override fun showProgress() {
+            showProgressSpinner()
+        }
+    }
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -211,43 +226,54 @@ class XYODeviceActivity : XYOAppBaseActivity() {
         private var fragments: SparseArray<XYBaseFragment> = SparseArray(size)
 
         override fun getItem(position: Int): Fragment {
-            lateinit var frag: XYBaseFragment
+            lateinit var frag: XYAppBaseFragment
 
             when (position) {
                 0 -> {
-                    frag = InfoFragment.newInstance()
+                    frag = InfoFragment.newInstance(device, data)
+                    frag.progressListener = progressListener
                 }
                 1 -> {
-                    frag = AlertFragment.newInstance()
+                    frag = AlertFragment.newInstance(device, data)
+                    frag.progressListener = progressListener
                 }
                 2 -> {
-                    frag = BatteryFragment.newInstance()
+                    frag = BatteryFragment.newInstance(device, data)
+                    frag.progressListener = progressListener
                 }
                 3 -> {
-                    frag = CurrentTimeFragment.newInstance()
+                    frag = CurrentTimeFragment.newInstance(device, data)
+                    frag.progressListener = progressListener
                 }
                 4 -> {
-                    frag = DeviceFragment.newInstance()
+                    frag = DeviceFragment.newInstance(device, data)
+                    frag.progressListener = progressListener
                 }
                 5 -> {
-                    frag = GenericAccessFragment.newInstance()
+                    frag = GenericAccessFragment.newInstance(device, data)
+                    frag.progressListener = progressListener
                 }
                 6 -> {
-                    frag = GenericAttributeFragment.newInstance()
+                    frag = GenericAttributeFragment.newInstance(device, data)
+                    frag.progressListener = progressListener
                 }
                 7 -> {
-                    frag = LinkLossFragment.newInstance()
+                    frag = LinkLossFragment.newInstance(device, data)
+                    frag.progressListener = progressListener
                 }
                 8 -> {
-                    frag = TxPowerFragment.newInstance()
+                    frag = TxPowerFragment.newInstance(device, data)
+                    frag.progressListener = progressListener
                 }
                 9 -> {
-                    frag = SongFragment.newInstance()
+                    frag = SongFragment.newInstance(device, data)
+                    frag.progressListener = progressListener
                 }
                 10 -> {
-                    frag = FirmwareUpdateFragment.newInstance()
+                    frag = FirmwareUpdateFragment.newInstance(device, data)
+                    frag.progressListener = progressListener
                 }
-                else -> frag = InfoFragment.newInstance()
+                else -> frag = InfoFragment.newInstance(device, data)
             }
 
             return frag

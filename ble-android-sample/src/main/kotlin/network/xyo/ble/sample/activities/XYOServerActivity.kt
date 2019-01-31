@@ -124,7 +124,7 @@ class XYOServerActivity : XYOAppBaseActivity() {
 
         override fun getItem(position: Int): Fragment {
             when (position) {
-                0 -> return AdvertiserFragment.newInstance()
+                0 -> return AdvertiserFragment.newInstance(bleAdvertiser)
                 1 -> return RootServicesFragment.newInstance(services)
             }
 

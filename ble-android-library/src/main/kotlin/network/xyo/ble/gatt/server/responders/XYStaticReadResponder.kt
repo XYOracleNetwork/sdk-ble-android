@@ -26,7 +26,6 @@ class XYStaticReadResponder (var value : ByteArray, val listener : XYStaticReadR
 
         lastTime = offset
 
-        println("${Math.min(offset, value.size)}/${value.size}")
         return XYBluetoothGattServer.XYReadRequest(response, Math.min(offset, value.size))
     }
 

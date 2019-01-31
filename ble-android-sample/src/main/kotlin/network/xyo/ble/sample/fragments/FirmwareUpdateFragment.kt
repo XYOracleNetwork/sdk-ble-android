@@ -18,11 +18,12 @@ import network.xyo.ble.devices.XYBluetoothDevice
 import network.xyo.ble.firmware.OtaFile
 import network.xyo.ble.firmware.OtaUpdate
 import network.xyo.ble.sample.R
+import network.xyo.ble.sample.XYDeviceData
 import network.xyo.ui.ui
 import network.xyo.ble.sample.fragments.core.BackFragmentListener
 import network.xyo.core.XYBase
 
-class FirmwareUpdateFragment : XYAppBaseFragment(), BackFragmentListener {
+class FirmwareUpdateFragment : XYDeviceFragment(), BackFragmentListener {
 
     private var firmwareFileName: String? = null
     private var updateInProgress: Boolean = false
@@ -103,7 +104,7 @@ class FirmwareUpdateFragment : XYAppBaseFragment(), BackFragmentListener {
             log.info("updateListener: updated")
             updateInProgress = false
             ui {
-                activity?.hideProgressSpinner()
+                progressListener?.hideProgress()
                 showToast("Update complete. Rebooting device...")
                 activity?.onBackPressed()
             }
@@ -120,7 +121,7 @@ class FirmwareUpdateFragment : XYAppBaseFragment(), BackFragmentListener {
                     promptRefreshAdapter()
                 }
 
-                activity?.hideProgressSpinner()
+                progressListener?.showProgress()
                 button_update?.isEnabled = true
                 lv_files?.visibility = VISIBLE
                 tv_file_name?.visibility = VISIBLE
@@ -152,21 +153,20 @@ class FirmwareUpdateFragment : XYAppBaseFragment(), BackFragmentListener {
     }
 
     private fun refreshAdapter() {
-        activity?.showProgressSpinner()
+        progressListener?.showProgress()
+
         GlobalScope.launch {
-            val device: XYBluetoothDevice? = activity?.device
             //need to connect before refreshing
             val result = device?.connect()?.await()
-            //val result = device?.refreshGatt()?.await()
-            ui { activity?.hideProgressSpinner() }
+            // val result = device?.refreshGatt()?.await()
+            ui { progressListener?.showProgress() }
             if (result?.value as Boolean) {
                 ui { showToast("BLE adapter was reset, performing update") }
                 performUpdate()
             } else {
                 ui { showToast("Failed to refresh BLE adapter") }
             }
-            activity?.showToast(result.toString())
-
+            showToast(result.toString())
         }
     }
 
@@ -179,12 +179,12 @@ class FirmwareUpdateFragment : XYAppBaseFragment(), BackFragmentListener {
                     tv_file_name?.visibility = GONE
                     tv_file_progress?.visibility = VISIBLE
                     button_update?.isEnabled = false
-                    activity?.showProgressSpinner()
+                    progressListener?.showProgress()
                     tv_file_progress?.text = getString(R.string.update_started)
                 }
 
                 log.info("performUpdate started: $String")
-                (activity?.device as? XY4BluetoothDevice)?.updateFirmware(firmwareFileName!!, updateListener)
+                (device as? XY4BluetoothDevice)?.updateFirmware(firmwareFileName!!, updateListener)
             } else {
                 ui { showToast("Select a File first") }
             }
@@ -205,5 +205,12 @@ class FirmwareUpdateFragment : XYAppBaseFragment(), BackFragmentListener {
 
     companion object: XYBase() {
         fun newInstance() = FirmwareUpdateFragment()
+
+        fun newInstance (device: XYBluetoothDevice?, deviceData : XYDeviceData?) : FirmwareUpdateFragment {
+            val frag = FirmwareUpdateFragment()
+            frag.device = device
+            frag.deviceData = deviceData
+            return frag
+        }
     }
 }

@@ -10,10 +10,12 @@ import kotlinx.coroutines.launch
 import network.xyo.ble.devices.XY2BluetoothDevice
 import network.xyo.ble.devices.XY3BluetoothDevice
 import network.xyo.ble.devices.XY4BluetoothDevice
+import network.xyo.ble.devices.XYBluetoothDevice
 import network.xyo.ble.sample.R
+import network.xyo.ble.sample.XYDeviceData
 import network.xyo.ui.ui
 
-class GenericAttributeFragment : XYAppBaseFragment() {
+class GenericAttributeFragment : XYDeviceFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -32,7 +34,7 @@ class GenericAttributeFragment : XYAppBaseFragment() {
     override fun onResume() {
         super.onResume()
 
-        if (activity?.data?.serviceChanged.isNullOrEmpty() && activity?.isBusy() == false) {
+        if (deviceData?.serviceChanged.isNullOrEmpty() && progressListener?.isInProgress() == false) {
             setGattValues()
         } else {
             updateUI()
@@ -41,33 +43,33 @@ class GenericAttributeFragment : XYAppBaseFragment() {
 
     private fun updateUI() {
         ui {
-            activity?.hideProgressSpinner()
+            progressListener?.hideProgress()
 
-            text_service_changed?.text = activity?.data?.serviceChanged
+            text_service_changed?.text = deviceData?.serviceChanged
         }
     }
 
     private fun setGattValues() {
         ui {
-            activity?.hideProgressSpinner()
+            progressListener?.hideProgress()
         }
 
-        when (activity?.device) {
+        when (device) {
             is XY4BluetoothDevice -> {
-                val x4 = (activity?.device as? XY4BluetoothDevice)
+                val x4 = (device as? XY4BluetoothDevice)
                 x4?.let {
                     getXY4Values(x4)
 
                 }
             }
             is XY3BluetoothDevice -> {
-                val x3 = (activity?.device as? XY3BluetoothDevice)
+                val x3 = (device as? XY3BluetoothDevice)
                 x3?.let {
                     getXY3Values(x3)
                 }
             }
             is XY2BluetoothDevice -> {
-                val x2 = (activity?.device as? XY2BluetoothDevice)
+                val x2 = (device as? XY2BluetoothDevice)
                 x2?.let {
                     getXY2Values(x2)
                 }
@@ -86,7 +88,7 @@ class GenericAttributeFragment : XYAppBaseFragment() {
             val conn = device.connection {
                 hasConnectionError = false
 
-                activity?.data?.let {
+                deviceData?.let {
                     it.serviceChanged = device.genericAttributeService.serviceChanged.get().await().format()
                 }
 
@@ -105,7 +107,7 @@ class GenericAttributeFragment : XYAppBaseFragment() {
             val conn = device.connection {
                 hasConnectionError = false
 
-                activity?.data?.let {
+                deviceData?.let {
                     it.serviceChanged = device.genericAttributeService.serviceChanged.get().await().format()
                 }
 
@@ -124,7 +126,7 @@ class GenericAttributeFragment : XYAppBaseFragment() {
             val conn = device.connection {
                 hasConnectionError = false
 
-                activity?.data?.let {
+                deviceData?.let {
                     it.serviceChanged = device.genericAttributeService.serviceChanged.get().await().format()
                 }
 
@@ -140,5 +142,12 @@ class GenericAttributeFragment : XYAppBaseFragment() {
 
         fun newInstance() =
                 GenericAttributeFragment()
+
+        fun newInstance (device: XYBluetoothDevice?, deviceData : XYDeviceData?) : GenericAttributeFragment {
+            val frag = GenericAttributeFragment()
+            frag.device = device
+            frag.deviceData = deviceData
+            return frag
+        }
     }
 }

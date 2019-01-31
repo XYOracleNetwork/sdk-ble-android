@@ -12,14 +12,12 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import network.xyo.ble.gatt.server.XYBluetoothAdvertiser
 import network.xyo.ble.sample.R
-import network.xyo.ble.sample.activities.XYOServerActivity
 import network.xyo.ui.XYBaseFragment
 import network.xyo.ui.ui
 import java.util.*
 
 class AdvertiserFragment : XYBaseFragment() {
-    val advertiser: XYBluetoothAdvertiser?
-        get () = (activity as? XYOServerActivity)?.bleAdvertiser
+    var advertiser: XYBluetoothAdvertiser? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_advertiser, container, false)
@@ -28,6 +26,7 @@ class AdvertiserFragment : XYBaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val updateButton = view.update
+
         updateButton.setOnClickListener {
             GlobalScope.launch {
                 updateAdvertisingMode(view)
@@ -59,114 +58,119 @@ class AdvertiserFragment : XYBaseFragment() {
         }
     }
 
-    private suspend fun updateAdvertisingMode (view: View) {
+    private fun updateAdvertisingMode (view: View) {
         val radioButtonGroup = view.advertising_mode_selector
         val radioButtonID = radioButtonGroup.checkedRadioButtonId
         val radioButton = radioButtonGroup.findViewById<RadioButton>(radioButtonID)
         val idx = radioButtonGroup.indexOfChild(radioButton)
 
         when(idx) {
-            0 -> advertiser?.changeAdvertisingMode(AdvertiseSettings.ADVERTISE_MODE_LOW_LATENCY, false)?.await()
-            1 -> advertiser?.changeAdvertisingMode(AdvertiseSettings.ADVERTISE_MODE_BALANCED, false)?.await()
-            2 -> advertiser?.changeAdvertisingMode(AdvertiseSettings.ADVERTISE_MODE_LOW_POWER, false)?.await()
-            3 -> advertiser?.changeAdvertisingMode(null, false)?.await()
+            0 -> advertiser?.changeAdvertisingMode(AdvertiseSettings.ADVERTISE_MODE_LOW_LATENCY)
+            1 -> advertiser?.changeAdvertisingMode(AdvertiseSettings.ADVERTISE_MODE_BALANCED)
+            2 -> advertiser?.changeAdvertisingMode(AdvertiseSettings.ADVERTISE_MODE_LOW_POWER)
+            3 -> advertiser?.changeAdvertisingMode(null)
 
         }
     }
 
-    private suspend fun updateAdvertisingPower (view: View) {
+    private fun updateAdvertisingPower (view: View) {
         val radioButtonGroup = view.advertising_power_selector
         val radioButtonID = radioButtonGroup.checkedRadioButtonId
         val radioButton = radioButtonGroup.findViewById<RadioButton>(radioButtonID)
         val idx = radioButtonGroup.indexOfChild(radioButton)
 
         when(idx) {
-            0 -> advertiser?.changeAdvertisingTxLevel(AdvertiseSettings.ADVERTISE_TX_POWER_HIGH, false)?.await()
-            1 -> advertiser?.changeAdvertisingTxLevel(AdvertiseSettings.ADVERTISE_TX_POWER_MEDIUM, false)?.await()
-            2 -> advertiser?.changeAdvertisingTxLevel(AdvertiseSettings.ADVERTISE_TX_POWER_HIGH, false)?.await()
-            3 -> advertiser?.changeAdvertisingTxLevel(AdvertiseSettings.ADVERTISE_TX_POWER_ULTRA_LOW, false)?.await()
-            4 -> advertiser?.changeAdvertisingTxLevel(null, false)?.await()
+            0 -> advertiser?.changeAdvertisingTxLevel(AdvertiseSettings.ADVERTISE_TX_POWER_HIGH)
+            1 -> advertiser?.changeAdvertisingTxLevel(AdvertiseSettings.ADVERTISE_TX_POWER_MEDIUM)
+            2 -> advertiser?.changeAdvertisingTxLevel(AdvertiseSettings.ADVERTISE_TX_POWER_HIGH)
+            3 -> advertiser?.changeAdvertisingTxLevel(AdvertiseSettings.ADVERTISE_TX_POWER_ULTRA_LOW)
+            4 -> advertiser?.changeAdvertisingTxLevel(null)
         }
     }
 
-    private suspend  fun updateConnectible (view: View) {
+    private  fun updateConnectible (view: View) {
         val radioButtonGroup = view.connectable_selector
         val radioButtonID = radioButtonGroup.checkedRadioButtonId
         val radioButton = radioButtonGroup.findViewById<RadioButton>(radioButtonID)
         val idx = radioButtonGroup.indexOfChild(radioButton)
 
         when(idx) {
-            0 -> advertiser?.changeContactable(true, false)?.await()
-            1 -> advertiser?.changeContactable(false, false)?.await()
-            2 -> advertiser?.changeContactable(null, false)?.await()
+            0 -> advertiser?.changeContactable(true)
+            1 -> advertiser?.changeContactable(false)
         }
     }
 
-    private suspend fun updateTimeout(view: View) {
+    private fun updateTimeout(view: View) {
         try {
             val timeoutTime = Integer.parseInt(view.timeout_input.text.toString())
-            advertiser?.changeTimeout(timeoutTime, false)?.await()
+            advertiser?.changeTimeout(timeoutTime)
         } catch (e : NumberFormatException) {
-            advertiser?.changeTimeout(null, false)?.await()
+            advertiser?.changeTimeout(null)
         }
     }
 
-    private suspend fun updateIncludeDeviceName (view: View) {
+    private fun updateIncludeDeviceName (view: View) {
         val radioButtonGroup = view.include_device_name_selector
         val radioButtonID = radioButtonGroup.checkedRadioButtonId
         val radioButton = radioButtonGroup.findViewById<RadioButton>(radioButtonID)
         val idx = radioButtonGroup.indexOfChild(radioButton)
 
         when(idx) {
-            0 -> advertiser?.changeIncludeDeviceName(true, false)?.await()
-            1 -> advertiser?.changeIncludeDeviceName(false, false)?.await()
-            2 -> advertiser?.changeIncludeDeviceName(null, false)?.await()
+            0 -> advertiser?.changeIncludeDeviceName(true)
+            1 -> advertiser?.changeIncludeDeviceName(false)
+            2 -> advertiser?.changeIncludeDeviceName(null)
         }
     }
 
-    private suspend fun updateIncludeTxPowerLevel (view: View) {
+    private fun updateIncludeTxPowerLevel (view: View) {
         val radioButtonGroup = view.include_tx_power_level_selector
         val radioButtonID = radioButtonGroup.checkedRadioButtonId
         val radioButton = radioButtonGroup.findViewById<RadioButton>(radioButtonID)
         val idx = radioButtonGroup.indexOfChild(radioButton)
 
         when(idx) {
-            0 -> advertiser?.changeIncludeTxPowerLevel(true, false)?.await()
-            1 -> advertiser?.changeIncludeTxPowerLevel(false, false)?.await()
-            2 -> advertiser?.changeIncludeTxPowerLevel(null, false)?.await()
+            0 -> advertiser?.changeIncludeTxPowerLevel(true)
+            1 -> advertiser?.changeIncludeTxPowerLevel(false)
+            2 -> advertiser?.changeIncludeTxPowerLevel(null)
         }
     }
 
-    private suspend fun updatePrimaryServiceUuid(view: View) {
+    private fun updatePrimaryServiceUuid(view: View) {
         try {
             val uuid = ParcelUuid(UUID.fromString(view.primary_service_input.toString()))
-            advertiser?.changePrimaryService(uuid, false)?.await()
+            advertiser?.changePrimaryService(uuid)
         } catch (e : IllegalArgumentException) {
-            advertiser?.changePrimaryService(null, false)?.await()
+            advertiser?.changePrimaryService(null)
         }
     }
 
-    private suspend fun updatePrimaryServiceData(view: View) {
+    private fun updatePrimaryServiceData(view: View) {
         val data = view.primary_service_data_input.toString().toByteArray()
-        advertiser?.changePrimaryServiceData(data, false)?.await()
+        advertiser?.changePrimaryServiceData(data)
     }
 
-    private suspend fun updateManufactureId(view: View) {
+    private fun updateManufactureId(view: View) {
         try {
             val id = Integer.parseInt(view.manufacturer_id_input.text.toString())
-            advertiser?.changeManufacturerId(id, false)?.await()
+            advertiser?.changeManufacturerId(id)
         } catch (e : NumberFormatException) {
-            advertiser?.changeManufacturerId(null, false)?.await()
+            advertiser?.changeManufacturerId(null)
         }
     }
 
-    private suspend fun updateManufactureData(view: View) {
+    private fun updateManufactureData(view: View) {
         val data = view.manufacturer_data_input.toString().toByteArray()
-        advertiser?.changePrimaryServiceData(data, false)?.await()
+        advertiser?.changePrimaryServiceData(data)
     }
 
     companion object {
-        fun newInstance() : AdvertiserFragment {
+        fun newInstance(advertiser: XYBluetoothAdvertiser?) : AdvertiserFragment {
+            val frag = AdvertiserFragment()
+            frag.advertiser = advertiser
+            return frag
+        }
+
+        fun newInstance () : AdvertiserFragment {
             return AdvertiserFragment()
         }
     }

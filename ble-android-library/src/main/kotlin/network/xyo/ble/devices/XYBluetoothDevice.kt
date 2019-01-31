@@ -60,7 +60,7 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, private
             return ""
         }
 
-    open var outOfRangeDelay = OUTOFRANGE_DELAY
+    open var outOfRangeDelay = OUT_OF_RANGE_DELAY
 
     var notifyExit: ((device: XYBluetoothDevice) -> (Unit))? = null
 
@@ -79,7 +79,7 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, private
         }
         checkingForExit = true
         GlobalScope.launch {
-            while (checkingForExit) {
+            while (checkingForExit && !cancelNotifications) {
                 //log.info("checkForExit: $id : $rssi : $now : $outOfRangeDelay : $lastAdTime : $lastAccessTime")
                 delay(outOfRangeDelay)
 
@@ -229,12 +229,17 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, private
 
         //the period of time to wait for marking something as out of range
         //if we have not gotten any ads or been connected to it
-        const val OUTOFRANGE_DELAY = 15000L
+        const val OUT_OF_RANGE_DELAY = 15000L
 
 
         internal var canCreate = false
         val manufacturerToCreator = HashMap<Int, XYCreator>()
+
+        //Do not serviceToCreator this Private. It's called by other apps
         val serviceToCreator = HashMap<UUID, XYCreator>()
+
+        // cancel the checkForExit routine so we don't get notifications after service is stopped
+        var cancelNotifications: Boolean = false
 
         private fun getDevicesFromManufacturers(context: Context, scanResult: XYScanResult, globalDevices: ConcurrentHashMap<Int, XYBluetoothDevice>, newDevices: HashMap<Int, XYBluetoothDevice>) {
             for ((manufacturerId, creator) in manufacturerToCreator) {

@@ -10,10 +10,12 @@ import kotlinx.coroutines.launch
 import network.xyo.ble.devices.XY2BluetoothDevice
 import network.xyo.ble.devices.XY3BluetoothDevice
 import network.xyo.ble.devices.XY4BluetoothDevice
+import network.xyo.ble.devices.XYBluetoothDevice
 import network.xyo.ble.sample.R
+import network.xyo.ble.sample.XYDeviceData
 import network.xyo.ui.ui
 
-class BatteryFragment : XYAppBaseFragment() {
+class BatteryFragment : XYDeviceFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -32,7 +34,7 @@ class BatteryFragment : XYAppBaseFragment() {
     override fun onResume() {
         super.onResume()
 
-        if (activity?.data?.level.isNullOrEmpty() && activity?.isBusy() == false) {
+        if (deviceData?.level.isNullOrEmpty() && progressListener?.isInProgress() == false) {
             readBatteryLevel()
         } else {
             updateUI()
@@ -41,26 +43,26 @@ class BatteryFragment : XYAppBaseFragment() {
 
     private fun updateUI() {
         ui {
-            activity?.hideProgressSpinner()
+            progressListener?.hideProgress()
 
-            text_battery_level?.text = activity?.data?.level
+            text_battery_level?.text = deviceData?.level
         }
     }
 
     private fun readBatteryLevel() {
         ui {
-            activity?.showProgressSpinner()
+            progressListener?.showProgress()
         }
 
-        when (activity?.device) {
+        when (device) {
             is XY4BluetoothDevice -> {
-                val x4 = (activity?.device as? XY4BluetoothDevice)
+                val x4 = (device as? XY4BluetoothDevice)
                 x4?.let {
                     getXY4Values(x4)
                 }
             }
             is XY3BluetoothDevice -> {
-                val x3 = (activity?.device as? XY3BluetoothDevice)
+                val x3 = (device as? XY3BluetoothDevice)
                 x3?.let {
                     getXY3Values(x3)
                 }
@@ -81,7 +83,7 @@ class BatteryFragment : XYAppBaseFragment() {
             val conn = device.connection {
                 hasConnectionError = false
 
-                activity?.data?.let {
+                deviceData?.let {
                     it.level = device.batteryService.level.get().await().format()
                 }
 
@@ -100,7 +102,7 @@ class BatteryFragment : XYAppBaseFragment() {
             val conn = device.connection {
                 hasConnectionError = false
 
-                activity?.data?.let {
+                deviceData?.let {
                     it.level = device.batteryService.level.get().await().format()
                 }
 
@@ -116,6 +118,13 @@ class BatteryFragment : XYAppBaseFragment() {
 
         fun newInstance() =
                 BatteryFragment()
+
+        fun newInstance (device: XYBluetoothDevice?, deviceData : XYDeviceData?) : BatteryFragment {
+            val frag = BatteryFragment()
+            frag.device = device
+            frag.deviceData = deviceData
+            return frag
+        }
     }
 
 }
