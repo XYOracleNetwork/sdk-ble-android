@@ -113,7 +113,7 @@ class AdvertiserFragment : XYBaseFragment() {
 
     private suspend fun updateIncludeDeviceName (view: View) {
         val radioButtonGroup = view.include_device_name_selector
-        val radioButtonID = radioButtonGroup.getCheckedRadioButtonId()
+        val radioButtonID = radioButtonGroup.checkedRadioButtonId
         val radioButton = radioButtonGroup.findViewById<RadioButton>(radioButtonID)
         val idx = radioButtonGroup.indexOfChild(radioButton)
 

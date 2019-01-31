@@ -8,15 +8,15 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.fragment_service.view.*
 import network.xyo.ble.sample.R
 import network.xyo.ble.sample.adapters.XYCharacteristicAdapter
 import network.xyo.ui.XYBaseFragment
 
 class ServiceFragment : XYBaseFragment() {
-    private var service : BluetoothGattService? = null
+    private var service: BluetoothGattService? = null
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -29,8 +29,9 @@ class ServiceFragment : XYBaseFragment() {
         view.service_type.text = getServiceType()
 
         val recyclerView = view.characteristic_list
-        val characteristicList =  XYCharacteristicAdapter(service?.characteristics?.toTypedArray() ?: arrayOf())
-        val manager = LinearLayoutManager(activity?.applicationContext, LinearLayout.VERTICAL, false)
+        val characteristicList = XYCharacteristicAdapter(service?.characteristics?.toTypedArray()
+                ?: arrayOf())
+        val manager = LinearLayoutManager(activity?.applicationContext, RecyclerView.VERTICAL, false)
         manager.reverseLayout = true
         manager.stackFromEnd = true
         recyclerView.layoutManager = manager
@@ -48,7 +49,7 @@ class ServiceFragment : XYBaseFragment() {
         })
     }
 
-    private fun getServiceType () : String {
+    private fun getServiceType(): String {
         when (service?.type) {
             SERVICE_TYPE_PRIMARY -> return "SERVICE_TYPE_PRIMARY"
             SERVICE_TYPE_SECONDARY -> return "SERVICE_TYPE_SECONDARY"
@@ -57,7 +58,7 @@ class ServiceFragment : XYBaseFragment() {
     }
 
     companion object {
-        fun newInstance (service : BluetoothGattService) : ServiceFragment {
+        fun newInstance(service: BluetoothGattService): ServiceFragment {
             val frag = ServiceFragment()
             frag.service = service
             return frag

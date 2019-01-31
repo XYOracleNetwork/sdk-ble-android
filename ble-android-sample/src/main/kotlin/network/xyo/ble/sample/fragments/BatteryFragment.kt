@@ -1,6 +1,5 @@
 package network.xyo.ble.sample.fragments
 
-
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -14,7 +13,6 @@ import network.xyo.ble.devices.XY4BluetoothDevice
 import network.xyo.ble.sample.R
 import network.xyo.ui.ui
 
-
 class BatteryFragment : XYAppBaseFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -27,7 +25,7 @@ class BatteryFragment : XYAppBaseFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         button_battery_refresh.setOnClickListener {
-            setBatteryLevel()
+            readBatteryLevel()
         }
     }
 
@@ -35,7 +33,7 @@ class BatteryFragment : XYAppBaseFragment() {
         super.onResume()
 
         if (activity?.data?.level.isNullOrEmpty() && activity?.isBusy() == false) {
-            setBatteryLevel()
+            readBatteryLevel()
         } else {
             updateUI()
         }
@@ -49,7 +47,7 @@ class BatteryFragment : XYAppBaseFragment() {
         }
     }
 
-    private fun setBatteryLevel() {
+    private fun readBatteryLevel() {
         ui {
             activity?.showProgressSpinner()
         }

@@ -7,36 +7,42 @@ import android.os.Bundle
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.widget.BaseAdapter
-import android.widget.Button
 import com.nabinbhandari.android.permissions.PermissionHandler
 import com.nabinbhandari.android.permissions.Permissions
-import kotlinx.android.synthetic.main.activity_xyo_ble_sample.*
+import kotlinx.android.synthetic.main.activity_device_list.*
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
+import network.xyo.ble.devices.XY3BluetoothDevice
 import network.xyo.ble.devices.XY4BluetoothDevice
+import network.xyo.ble.devices.XYBluetoothDevice
 import network.xyo.ble.devices.XYFinderBluetoothDevice
 import network.xyo.ble.sample.R
 import network.xyo.ble.sample.adapters.XYDeviceAdapter
 import network.xyo.ble.scanner.XYSmartScan
 import network.xyo.ui.ui
 
-
-class XYOBleSampleActivity : XYOAppBaseActivity() {
+class XYODeviceListActivity : XYOAppBaseActivity() {
     private var adapter: BaseAdapter? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         log.info("onCreate")
         super.onCreate(savedInstanceState)
 
-        setContentView(R.layout.activity_xyo_ble_sample)
+        setContentView(R.layout.activity_device_list)
 
         progress_spinner_scanner.visibility = VISIBLE
 
         adapter = XYDeviceAdapter(this)
         listview!!.adapter = adapter
 
-        val launchServerButton = findViewById<Button>(R.id.launchServer)
-        launchServerButton.setOnClickListener { startActivity(Intent(this@XYOBleSampleActivity, XYOServerActivity::class.java)) }
+        launchServer.setOnClickListener { startActivity(Intent(this@XYODeviceListActivity, XYOServerActivity::class.java)) }
+        launchTest.setOnClickListener { startActivity(Intent(this@XYODeviceListActivity, XYOTestActivity::class.java)) }
+    }
+
+    private fun openDevice(device: XYBluetoothDevice) {
+        val intent = Intent(this, XYODeviceActivity::class.java)
+        intent.putExtra(XYODeviceActivity.EXTRA_DEVICEHASH, device.hashCode())
+        this.startActivity(intent)
     }
 
     private fun connectListeners() {
@@ -44,6 +50,7 @@ class XYOBleSampleActivity : XYOAppBaseActivity() {
             override fun buttonSinglePressed(device: XYFinderBluetoothDevice) {
                 super.buttonSinglePressed(device)
                 showToast("XY4 Button Single Pressed: ${device.address}")
+                openDevice(device)
             }
 
             override fun buttonDoublePressed(device: XYFinderBluetoothDevice) {
@@ -54,6 +61,22 @@ class XYOBleSampleActivity : XYOAppBaseActivity() {
             override fun buttonLongPressed(device: XYFinderBluetoothDevice) {
                 super.buttonLongPressed(device)
                 showToast("XY4 Button Long Pressed")
+            }
+        })
+        XY3BluetoothDevice.addGlobalListener(tag, object : XY3BluetoothDevice.Listener() {
+            override fun buttonSinglePressed(device: XYFinderBluetoothDevice) {
+                super.buttonSinglePressed(device)
+                showToast("XY3 Button Single Pressed: ${device.address}")
+                openDevice(device)
+            }
+            override fun buttonDoublePressed(device: XYFinderBluetoothDevice) {
+                super.buttonDoublePressed(device)
+                showToast("XY3 Button Double Pressed")
+            }
+
+            override fun buttonLongPressed(device: XYFinderBluetoothDevice) {
+                super.buttonLongPressed(device)
+                showToast("XY3 Button Long Pressed")
             }
         })
     }
@@ -131,14 +154,14 @@ class XYOBleSampleActivity : XYOAppBaseActivity() {
 
     private fun onBluetoothEnabled() {
         ll_disabled.visibility = GONE
-        GlobalScope.async {
-            scanner.start()
+        GlobalScope.launch {
+            //scanner.start()
         }
     }
 
     private fun onBluetoothDisabled() {
         ll_disabled.visibility = VISIBLE
-        GlobalScope.async {
+        GlobalScope.launch {
             scanner.stop()
         }
     }
@@ -146,8 +169,8 @@ class XYOBleSampleActivity : XYOAppBaseActivity() {
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
-        GlobalScope.async {
-            scanner.start()
+        GlobalScope.launch {
+            //scanner.start()
         }
     }
 }

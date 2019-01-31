@@ -3,7 +3,7 @@ package network.xyo.ble.sample
 import android.app.Application
 import android.os.Build
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 import network.xyo.ble.devices.*
 import network.xyo.ble.scanner.XYSmartScan
 import network.xyo.ble.scanner.XYSmartScanLegacy
@@ -35,18 +35,18 @@ class XYApplication : Application() {
         XY2BluetoothDevice.enable(true)
         XYGpsBluetoothDevice.enable(true)
 
-        GlobalScope.async {
+        GlobalScope.launch {
             scanner.start()
         }
     }
 
     override fun onTerminate() {
         log.info("onTerminate")
-        GlobalScope.async {
+        GlobalScope.launch {
             scanner.stop()
         }
         super.onTerminate()
     }
 
-    companion object: XYBase()
+    companion object : XYBase()
 }

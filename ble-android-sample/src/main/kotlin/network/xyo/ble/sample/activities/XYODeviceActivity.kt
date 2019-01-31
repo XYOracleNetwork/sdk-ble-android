@@ -10,7 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import com.google.android.material.tabs.TabLayout
-import kotlinx.android.synthetic.main.device_activity.*
+import kotlinx.android.synthetic.main.activity_device.*
 import network.xyo.ble.devices.XY3BluetoothDevice
 import network.xyo.ble.devices.XY4BluetoothDevice
 import network.xyo.ble.devices.XYBluetoothDevice
@@ -26,7 +26,7 @@ import network.xyo.ui.ui
  * Created by arietrouw on 12/28/17.
  */
 
-class XYOFinderDeviceActivity : XYOAppBaseActivity() {
+class XYODeviceActivity : XYOAppBaseActivity() {
 
     var device: XYBluetoothDevice? = null
     private lateinit var sectionsPagerAdapter: SectionsPagerAdapter
@@ -43,7 +43,7 @@ class XYOFinderDeviceActivity : XYOAppBaseActivity() {
             showToast("Failed to Find Device")
             finish()
         }
-        setContentView(R.layout.device_activity)
+        setContentView(R.layout.activity_device)
 
         data = XYDeviceData()
 
@@ -202,12 +202,12 @@ class XYOFinderDeviceActivity : XYOAppBaseActivity() {
 
     companion object {
         var EXTRA_DEVICEHASH = "DeviceHash"
-        private val TAG = XYOFinderDeviceActivity::class.java.simpleName
+        private val TAG = XYODeviceActivity::class.java.simpleName
     }
 
 
     inner class SectionsPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
-        private val size = 10
+        private val size = 11
         private var fragments: SparseArray<XYBaseFragment> = SparseArray(size)
 
         override fun getItem(position: Int): Fragment {
@@ -242,6 +242,9 @@ class XYOFinderDeviceActivity : XYOAppBaseActivity() {
                     frag = TxPowerFragment.newInstance()
                 }
                 9 -> {
+                    frag = SongFragment.newInstance()
+                }
+                10 -> {
                     frag = FirmwareUpdateFragment.newInstance()
                 }
                 else -> frag = InfoFragment.newInstance()

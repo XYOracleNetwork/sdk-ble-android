@@ -1,5 +1,6 @@
 package network.xyo.ble.devices
 
+import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothGatt
 import android.bluetooth.BluetoothGattCharacteristic
 import android.content.Context
@@ -43,7 +44,6 @@ open class XY3BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
 
     private val buttonListener = object : XYBluetoothGattCallback() {
         override fun onCharacteristicChanged(gatt: BluetoothGatt?, characteristic: BluetoothGattCharacteristic?) {
-            log.info("onCharacteristicChanged")
             super.onCharacteristicChanged(gatt, characteristic)
             if (characteristic?.uuid == controlService.button.uuid) {
                 reportButtonPressed(buttonPressFromInt(characteristic.getIntValue(BluetoothGattCharacteristic.FORMAT_UINT8, 0)))
@@ -55,6 +55,14 @@ open class XY3BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
         addGattListener("xy3", buttonListener)
     }
 
+    //we only allow mac addresses that end in 4 to be updated since those are the connectible ones
+    override fun updateBluetoothDevice(device: BluetoothDevice?) {
+        if (device?.address?.endsWith("4") == true) {
+            this.device = device
+        }
+        lastAdTime = now
+    }
+
     override val minor: Ushort
         get() {
             //we have to mask the low nibble for the power level
@@ -64,27 +72,26 @@ open class XY3BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
     override val prefix = "xy:ibeacon"
 
     override fun find(): Deferred<XYBluetoothResult<Int>> {
-        log.info("find")
         return controlService.buzzerSelect.set(2)
     }
 
+    override fun stopFind(): Deferred<XYBluetoothResult<Int>> {
+        return controlService.buzzerSelect.set(-1)
+    }
+
     override fun lock(): Deferred<XYBluetoothResult<ByteArray>> {
-        log.info("lock")
         return basicConfigService.lock.set(DEFAULT_LOCK_CODE)
     }
 
     override fun unlock(): Deferred<XYBluetoothResult<ByteArray>> {
-        log.info("unlock")
         return basicConfigService.unlock.set(DEFAULT_LOCK_CODE)
     }
 
     override fun stayAwake(): Deferred<XYBluetoothResult<Int>> {
-        log.info("stayAwake")
         return extendedConfigService.registration.set(1)
     }
 
     override fun fallAsleep(): Deferred<XYBluetoothResult<Int>> {
-        log.info("fallAsleep")
         return extendedConfigService.registration.set(0)
     }
 
@@ -93,7 +100,6 @@ open class XY3BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
         if (scanResult != null) {
             if (pressFromScanResult(scanResult)) {
                 if (now - lastButtonPressTime > BUTTON_ADVERTISEMENT_LENGTH) {
-                    log.info("onDetect: pressFromScanResult: first")
                     reportButtonPressed(ButtonPress.Single)
                     lastButtonPressTime = now
                 }
@@ -102,9 +108,7 @@ open class XY3BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
     }
 
     private fun enableButtonNotifyIfConnected() {
-        log.info("enableButtonNotifyIfConnected")
         if (connectionState == ConnectionState.Connected) {
-            log.info("enableButtonNotifyIfConnected: Connected")
             controlService.button.enableNotify(true)
         }
     }
@@ -187,7 +191,6 @@ open class XY3BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
         }
 
         fun reportGlobalButtonPressed(device: XY3BluetoothDevice, state: ButtonPress) {
-            log.info("reportButtonPressed (Global)")
             GlobalScope.launch {
                 synchronized(globalListeners) {
                     for (listener in globalListeners) {
@@ -213,7 +216,8 @@ open class XY3BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
             override fun getDevicesFromScanResult(context: Context, scanResult: XYScanResult, globalDevices: ConcurrentHashMap<Int, XYBluetoothDevice>, foundDevices: HashMap<Int, XYBluetoothDevice>) {
                 val hash = hashFromScanResult(scanResult)
                 if (hash != null) {
-                    foundDevices[hash] = globalDevices[hash] ?: XY3BluetoothDevice(context, scanResult, hash)
+                    foundDevices[hash] = globalDevices[hash]
+                            ?: XY3BluetoothDevice(context, scanResult, hash)
                 }
             }
         }

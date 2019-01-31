@@ -2,6 +2,7 @@
     <string name="app_name">XYO BLE Sample</string>
 
     <string name="advertiser">Advertiser</string>
+    <string name="beep_all">Beep All</string>
 
     <string name="advertising_mode_title">Advertising Mode</string>
     <string name="advertising_mode_selector_1">ADVERTISE_MODE_LOW_LATENCY</string>
@@ -24,6 +25,8 @@
     <string name="manufacturer_id_title">Manufacturer Id</string>
     <string name="manufacturer_data_title">Manufacturer Data</string>
     <string name="update">Update</string>
+    <string name="start_async">Start Async</string>
+    <string name="start_sync">Start Sync</string>
     <string name="services">Services</string>
     <string name="service_uuid">Service UUID</string>
     <string name="view_service">View</string>
@@ -52,6 +55,7 @@
     <string name="gatt">GATT</string>
     <string name="linkloss">linkLoss</string>
     <string name="tx">Tx</string>
+    <string name="song">Song</string>
 
     <string name="family">Family:\u0020</string>
     <string name="major">Major:\u0020</string>
@@ -72,6 +76,7 @@
     <string name="pulses_second">Pulses/Second:\u0020</string>
     <string name="devices">Devices:\u0020</string>
     <string name="refresh">Refresh</string>
+    <string name="set_song_one">Set Song One</string>
     <string name="not_available">Not Available</string>
     <string name="control_point">controlPoint:\u0020</string>
     <string name="unread_alert_status">unreadAlertStatus:\u0020</string>
@@ -79,6 +84,7 @@
     <string name="supported_new_alert_category">supportedNewAlertCategory:\u0020</string>
     <string name="supported_unread_alert_category">supportedUnreadAlertCategory:\u0020</string>
     <string name="tx_power_level">TX Power Level:\u0020</string>
+    <string name="current_song">Current Song:\u0020</string>
 
     <string name="battery_level">Battery Level:\u0020</string>
     <string name="current_time">currentTime:\u0020</string>
@@ -113,5 +119,6 @@
     <string name="bluetooth_disabled">Bluetooth Disabled</string>
 
     <string name="server">Server</string>
+    <string name="test">Test</string>
 
 </resources>

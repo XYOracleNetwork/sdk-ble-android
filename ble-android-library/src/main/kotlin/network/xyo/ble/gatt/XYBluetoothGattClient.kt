@@ -18,7 +18,7 @@ open class XYBluetoothGattClient protected constructor(
         handler: Handler?
 ) : XYBluetoothGatt(context, device, autoConnect, callback, transport, phy, handler) {
 
-    fun updateBluetoothDevice(device: BluetoothDevice?) {
+    open fun updateBluetoothDevice(device: BluetoothDevice?) {
         this.device = device
         lastAdTime = now
     }
@@ -197,6 +197,9 @@ open class XYBluetoothGattClient protected constructor(
 
     fun findAndWriteCharacteristic(service: UUID, characteristic: UUID, valueToWrite:Int, formatType:Int, offset:Int) : Deferred<XYBluetoothResult<Int>> {
         return asyncBle {
+            //this prevents a queued close from closing while we run
+            lastAccessTime = now
+
             log.info("findAndWriteCharacteristic")
             var error: XYBluetoothError? = null
             var value: Int? = null
@@ -230,6 +233,9 @@ open class XYBluetoothGattClient protected constructor(
 
     fun findAndWriteCharacteristicFloat(service: UUID, characteristic: UUID, mantissa: Int, exponent: Int, formatType:Int, offset:Int) : Deferred<XYBluetoothResult<ByteArray>> {
         return asyncBle {
+            //this prevents a queued close from closing while we run
+            lastAccessTime = now
+
             log.info("findAndWriteCharacteristicFloat")
             var error: XYBluetoothError? = null
             var value: ByteArray? = null
@@ -259,6 +265,9 @@ open class XYBluetoothGattClient protected constructor(
 
     fun findAndWriteCharacteristic(service: UUID, characteristic: UUID, valueToWrite:String) : Deferred<XYBluetoothResult<String>> {
         return asyncBle {
+            //this prevents a queued close from closing while we run
+            lastAccessTime = now
+
             log.info("findAndWriteCharacteristic")
             var error: XYBluetoothError? = null
             var value: String? = null
@@ -288,6 +297,9 @@ open class XYBluetoothGattClient protected constructor(
 
     fun findAndWriteCharacteristic(service: UUID, characteristic: UUID, bytes:ByteArray) : Deferred<XYBluetoothResult<ByteArray>> {
         return asyncBle {
+            //this prevents a queued close from closing while we run
+            lastAccessTime = now
+
             log.info("findAndWriteCharacteristic")
             var error: XYBluetoothError? = null
             var value: ByteArray? = null
@@ -318,6 +330,9 @@ open class XYBluetoothGattClient protected constructor(
 
     fun findAndWriteCharacteristicNotify(service: UUID, characteristic: UUID, enable:Boolean) : Deferred<XYBluetoothResult<Boolean>> {
         return asyncBle {
+            //this prevents a queued close from closing while we run
+            lastAccessTime = now
+
             log.info("findAndWriteCharacteristicNotify")
             var error: XYBluetoothError? = null
             var value: Boolean? = null

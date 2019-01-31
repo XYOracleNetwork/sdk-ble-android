@@ -1,6 +1,5 @@
 package network.xyo.ble.sample.fragments
 
-
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
@@ -22,7 +21,6 @@ import network.xyo.ble.sample.R
 import network.xyo.ui.ui
 import network.xyo.ble.sample.fragments.core.BackFragmentListener
 import network.xyo.core.XYBase
-
 
 class FirmwareUpdateFragment : XYAppBaseFragment(), BackFragmentListener {
 
@@ -90,7 +88,7 @@ class FirmwareUpdateFragment : XYAppBaseFragment(), BackFragmentListener {
 
     }
 
-    fun promptCancelUpdate() {
+    private fun promptCancelUpdate() {
         val alertDialog = AlertDialog.Builder(activity).create()
         alertDialog.setTitle("Update in progress")
         alertDialog.setMessage("Please wait for the update to complete.")
@@ -158,8 +156,8 @@ class FirmwareUpdateFragment : XYAppBaseFragment(), BackFragmentListener {
         GlobalScope.launch {
             val device: XYBluetoothDevice? = activity?.device
             //need to connect before refreshing
-            device?.connectGatt()?.await()
-            val result = device?.refreshGatt()?.await()
+            val result = device?.connect()?.await()
+            //val result = device?.refreshGatt()?.await()
             ui { activity?.hideProgressSpinner() }
             if (result?.value as Boolean) {
                 ui { showToast("BLE adapter was reset, performing update") }
@@ -193,7 +191,7 @@ class FirmwareUpdateFragment : XYAppBaseFragment(), BackFragmentListener {
         }
     }
 
-    //Callback from XYOFinderDeviceActivity.onActivityResult
+    //Callback from XYODeviceActivity.onActivityResult
     // TODO - Why are we making this dependency? [AT] --
     @Suppress("UNUSED_PARAMETER")
     fun onFileSelected(requestCode: Int, resultCode: Int, data: Intent?) {

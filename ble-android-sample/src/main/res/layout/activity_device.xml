@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     android:theme="@style/XYTheme"
-    tools:context="network.xyo.ble.sample.activities.XYOFinderDeviceActivity">
+    tools:context="network.xyo.ble.sample.activities.XYODeviceActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appbar"
@@ -86,6 +86,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/tx" />
+
+            <com.google.android.material.tabs.TabItem
+                android:id="@+id/tabSong"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/song" />
 
             <com.google.android.material.tabs.TabItem
                 android:id="@+id/tabFw"

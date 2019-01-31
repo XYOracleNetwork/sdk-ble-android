@@ -45,7 +45,7 @@ class XYScanResultModern(private val scanResult:ScanResult): XYScanResult() {
     }
 
     override fun equals(other: Any?): Boolean {
-        return scanResult.equals(other)
+        return scanResult == other
     }
 
     override fun toString(): String {

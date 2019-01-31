@@ -13,7 +13,6 @@ import network.xyo.ble.scanner.XYScanRecord
 import network.xyo.ble.scanner.XYScanResult
 import network.xyo.core.XYBase
 import java.nio.ByteBuffer
-import java.time.LocalDateTime
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 
@@ -48,9 +47,12 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, private
         }
 
     protected var _name: String = ""
-    open val name: String?
+    open var name: String?
         get() {
             return device?.name ?: _name
+        }
+        set(name) {
+            _name = name ?: _name
         }
 
     open val id: String
@@ -58,18 +60,14 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, private
             return ""
         }
 
-    open var outOfRangeDelay = OUTOFRANGE_DELAY
+    open var outOfRangeDelay = OUT_OF_RANGE_DELAY
 
     var notifyExit: ((device: XYBluetoothDevice) -> (Unit))? = null
 
-    var checkingForExit = false
+    private var checkingForExit = false
 
     override fun hashCode(): Int {
         return hash
-    }
-
-    override fun equals(other: Any?): Boolean {
-        return super.equals(other)
     }
 
     //this should only be called from the onEnter function so that
@@ -81,7 +79,7 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, private
         }
         checkingForExit = true
         GlobalScope.launch {
-            while (checkingForExit) {
+            while (checkingForExit && !cancelNotifications) {
                 //log.info("checkForExit: $id : $rssi : $now : $outOfRangeDelay : $lastAdTime : $lastAccessTime")
                 delay(outOfRangeDelay)
 
@@ -108,7 +106,7 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, private
     }
 
     internal open fun onEnter() {
-        log.info("onEnter: $address")
+        //log.info("onEnter: $address")
         enterCount++
         lastAdTime = now
         synchronized(listeners) {
@@ -122,7 +120,7 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, private
     }
 
     internal open fun onExit() {
-        log.info("onExit: $address")
+        // log.info("onExit: $address")
         exitCount++
         synchronized(listeners) {
             for ((_, listener) in listeners) {
@@ -148,6 +146,7 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, private
         }
         averageDetectGap = (lastDetectTime - firstDetectTime) / detectCount
         lastDetectTime = now
+
         synchronized(listeners) {
             for ((_, listener) in listeners) {
                 GlobalScope.launch {
@@ -161,7 +160,7 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, private
     }
 
     override fun onConnectionStateChange(newState: Int) {
-        log.info("onConnectionStateChange: $id : $newState: $listeners.size")
+        //log.info("onConnectionStateChange: $id : $newState: $listeners.size")
         synchronized(listeners) {
             for ((tag, listener) in listeners) {
                 GlobalScope.launch {
@@ -191,7 +190,7 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, private
     }
 
     fun addListener(key: String, listener: Listener) {
-        log.info("addListener:$key:$listener")
+        //log.info("addListener:$key:$listener")
         GlobalScope.launch {
             synchronized(listeners) {
                 listeners.put(key, listener)
@@ -200,7 +199,7 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, private
     }
 
     fun removeListener(key: String) {
-        log.info("removeListener:$key")
+        // log.info("removeListener:$key")
         GlobalScope.launch {
             synchronized(listeners) {
                 listeners.remove(key)
@@ -230,11 +229,17 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, private
 
         //the period of time to wait for marking something as out of range
         //if we have not gotten any ads or been connected to it
-        const val OUTOFRANGE_DELAY = 10000L
+        const val OUT_OF_RANGE_DELAY = 15000L
+
 
         internal var canCreate = false
         val manufacturerToCreator = HashMap<Int, XYCreator>()
+
+        //Do not serviceToCreator this Private. It's called by other apps
         val serviceToCreator = HashMap<UUID, XYCreator>()
+
+        // cancel the checkForExit routine so we don't get notifications after service is stopped
+        var cancelNotifications: Boolean = false
 
         private fun getDevicesFromManufacturers(context: Context, scanResult: XYScanResult, globalDevices: ConcurrentHashMap<Int, XYBluetoothDevice>, newDevices: HashMap<Int, XYBluetoothDevice>) {
             for ((manufacturerId, creator) in manufacturerToCreator) {
