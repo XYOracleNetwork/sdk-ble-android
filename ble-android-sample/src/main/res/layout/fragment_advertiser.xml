@@ -16,8 +16,21 @@
             android:orientation="vertical"
             android:padding="10dp">
 
+            <Switch
+                android:id="@+id/sw_is_ibeacon"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/is_ibeacon" />
+
+            <network.xyo.ui.views.XYTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingTop="10dp"
+                android:text="@string/standard_advertiser"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+
             <network.xyo.ui.views.XYEditText
-                    android:id="@+id/primary_service_input"
+                    android:id="@+id/standard_primary_service_input"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -25,7 +38,7 @@
                     android:inputType="text" />
 
             <network.xyo.ui.views.XYEditText
-                    android:id="@+id/primary_service_data_input"
+                    android:id="@+id/standard_primary_service_data_input"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -33,7 +46,7 @@
                     android:inputType="text" />
 
             <network.xyo.ui.views.XYEditText
-                    android:id="@+id/manufacturer_id_input"
+                    android:id="@+id/standard_manufacturer_id_input"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -42,20 +55,57 @@
                     android:inputType="number" />
 
             <network.xyo.ui.views.XYEditText
-                    android:id="@+id/manufacturer_data_input"
+                    android:id="@+id/standard_manufacturer_data_input"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:hint="@string/manufacturer_data_title"
                     android:inputType="text" />
 
+
+            <network.xyo.ui.views.XYTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingTop="10dp"
+                android:text="@string/ibeacon_advertiser"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+
             <network.xyo.ui.views.XYEditText
-                    android:id="@+id/timeout_input"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:hint="@string/timeout_title"
-                    android:inputType="number" />
+                android:id="@+id/ibeacon_primary_service_input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="@string/primary_service_title"
+                android:inputType="text" />
+
+            <network.xyo.ui.views.XYEditText
+                android:id="@+id/ibeacon_manufacturer_id_input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:ems="10"
+                android:hint="@string/manufacturer_id_title"
+                android:inputType="number" />
+
+            <network.xyo.ui.views.XYEditText
+                android:id="@+id/ibeacon_major"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:ems="10"
+                android:hint="@string/ibeacon_major"
+                android:inputType="number" />
+
+            <network.xyo.ui.views.XYEditText
+                android:id="@+id/ibeacon_minor"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:ems="10"
+                android:hint="@string/ibeacon_minor"
+                android:inputType="number" />
+
+
 
             <network.xyo.ui.views.XYTextView
                 android:id="@+id/advertising_mode_title"
@@ -254,6 +304,14 @@
                     android:text="@string/none" />
             </RadioGroup>
 
+            <network.xyo.ui.views.XYEditText
+                android:id="@+id/timeout_input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="@string/timeout_title"
+                android:inputType="number" />
+
             <network.xyo.ui.views.XYButton
                 android:id="@+id/update"
                 android:layout_width="wrap_content"
@@ -262,4 +320,5 @@
 
         </LinearLayout>
     </ScrollView>
+
 </LinearLayout>

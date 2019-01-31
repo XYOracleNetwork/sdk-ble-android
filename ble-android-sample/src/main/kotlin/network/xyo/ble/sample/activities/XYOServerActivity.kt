@@ -65,7 +65,7 @@ class XYOServerActivity : XYOAppBaseActivity() {
         serverPagerContainer.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(server_tabs))
         serverPagerContainer.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(server_tabs) as ViewPager.OnPageChangeListener)
         server_tabs.addOnTabSelectedListener(TabLayout.ViewPagerOnTabSelectedListener(server_pager_container))
-        bleAdvertiser = XYBluetoothAdvertiser(applicationContext)
+        bleAdvertiser = XYBluetoothAdvertiser(applicationContext, null)
 
         registerReceiver(bluetoothIntentReceiver, BluetoothIntentReceiver.bluetoothDeviceIntentFilter)
 
@@ -119,7 +119,7 @@ class XYOServerActivity : XYOAppBaseActivity() {
     }
 
     inner class SectionsPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
-        private val size = 2
+        private val size = 3
         private val fragments: SparseArray<XYBaseFragment> = SparseArray(size)
 
         override fun getItem(position: Int): Fragment {

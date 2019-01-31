@@ -1,8 +1,10 @@
 package network.xyo.ble.sample.fragments
 
+import android.bluetooth.le.AdvertiseData
 import android.bluetooth.le.AdvertiseSettings
 import android.os.Bundle
 import android.os.ParcelUuid
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,13 +13,18 @@ import kotlinx.android.synthetic.main.fragment_advertiser.view.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import network.xyo.ble.gatt.server.XYBluetoothAdvertiser
+import network.xyo.ble.gatt.server.XYIBeaconAdvertiseDataCreator
 import network.xyo.ble.sample.R
+import network.xyo.core.XYBase
 import network.xyo.ui.XYBaseFragment
 import network.xyo.ui.ui
+import java.nio.ByteBuffer
 import java.util.*
 
 class AdvertiserFragment : XYBaseFragment() {
+    private var isInIBeacon = false
     var advertiser: XYBluetoothAdvertiser? = null
+
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_advertiser, container, false)
@@ -26,6 +33,7 @@ class AdvertiserFragment : XYBaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val updateButton = view.update
+        val iBeaconSwitch = view.sw_is_ibeacon
 
         updateButton.setOnClickListener {
             GlobalScope.launch {
@@ -33,18 +41,21 @@ class AdvertiserFragment : XYBaseFragment() {
                 updateAdvertisingPower(view)
                 updateConnectible(view)
                 updateTimeout(view)
-                updateIncludeDeviceName(view)
                 updateIncludeTxPowerLevel(view)
-                updatePrimaryServiceUuid(view)
-                updatePrimaryServiceData(view)
-                updateManufactureId(view)
-                updateManufactureData(view)
-                restartAdvertiser()
+                if(updateAdvertiserData(view)) {
+                    restartAdvertiser()
+                }
+
             }
+        }
+
+        iBeaconSwitch.setOnCheckedChangeListener { _, isChecked ->
+            isInIBeacon = isChecked
         }
     }
 
     private suspend fun restartAdvertiser () {
+        advertiser?.stopAdvertising()
         val status = advertiser?.startAdvertising()?.await()
 
 
@@ -109,18 +120,6 @@ class AdvertiserFragment : XYBaseFragment() {
         }
     }
 
-    private fun updateIncludeDeviceName (view: View) {
-        val radioButtonGroup = view.include_device_name_selector
-        val radioButtonID = radioButtonGroup.checkedRadioButtonId
-        val radioButton = radioButtonGroup.findViewById<RadioButton>(radioButtonID)
-        val idx = radioButtonGroup.indexOfChild(radioButton)
-
-        when(idx) {
-            0 -> advertiser?.changeIncludeDeviceName(true)
-            1 -> advertiser?.changeIncludeDeviceName(false)
-            2 -> advertiser?.changeIncludeDeviceName(null)
-        }
-    }
 
     private fun updateIncludeTxPowerLevel (view: View) {
         val radioButtonGroup = view.include_tx_power_level_selector
@@ -135,38 +134,92 @@ class AdvertiserFragment : XYBaseFragment() {
         }
     }
 
-    private fun updatePrimaryServiceUuid(view: View) {
+    private fun getIncludeDeviceName (view: View) : Boolean {
+        val radioButtonGroup = view.include_device_name_selector
+        val radioButtonID = radioButtonGroup.checkedRadioButtonId
+        val radioButton = radioButtonGroup.findViewById<RadioButton>(radioButtonID)
+        val idx = radioButtonGroup.indexOfChild(radioButton)
+
+        when(idx) {
+            0 -> return true
+        }
+
+        return false
+    }
+
+    private fun updateAdvertiserData (view: View) : Boolean {
+        if (isInIBeacon) {
+            return updateAdvertiserDataIBeacon(view)
+        }
+        return updateAdvertiserDataRegular(view)
+    }
+
+    private fun updateAdvertiserDataIBeacon (view: View) : Boolean {
+
         try {
-            val uuid = ParcelUuid(UUID.fromString(view.primary_service_input.toString()))
-            advertiser?.changePrimaryService(uuid)
+            val manufactorId = Integer.parseInt(view.ibeacon_manufacturer_id_input.text.toString())
+            val major = Integer.parseInt(view.ibeacon_major.text.toString())
+            val minor = Integer.parseInt(view.ibeacon_minor.text.toString())
+            val uuid = UUID.fromString(view.ibeacon_primary_service_input.text.toString())
+
+
+
+            val data = XYIBeaconAdvertiseDataCreator.create(
+                    ByteBuffer.allocate(2).putShort(major.toShort()).array(),
+                    ByteBuffer.allocate(2).putShort(minor.toShort()).array(),
+                    uuid,
+                    manufactorId,
+                    getIncludeDeviceName(view))
+
+            advertiser?.advertisingData = data
+            return true
+
+        } catch (e: NumberFormatException) {
+            showToast("Error Phrasing Malefactor ID")
+        }  catch (e : IllegalArgumentException) {
+            ui {
+                showToast("Error Phrasing Primary Service UUID")
+            }
+        }
+        return false
+    }
+    
+
+    private fun updateAdvertiserDataRegular (view: View) : Boolean {
+        val builder = AdvertiseData.Builder()
+        try {
+            val uuid = ParcelUuid(UUID.fromString(view.standard_primary_service_input.toString()))
+            builder.addServiceUuid(uuid)
+            builder.addServiceData(uuid, view.standard_primary_service_data_input.toString().toByteArray())
         } catch (e : IllegalArgumentException) {
-            advertiser?.changePrimaryService(null)
+            ui {
+                showToast("Error Phrasing Primary Service UUID")
+            }
+            return false
         }
-    }
 
-    private fun updatePrimaryServiceData(view: View) {
-        val data = view.primary_service_data_input.toString().toByteArray()
-        advertiser?.changePrimaryServiceData(data)
-    }
-
-    private fun updateManufactureId(view: View) {
         try {
-            val id = Integer.parseInt(view.manufacturer_id_input.text.toString())
-            advertiser?.changeManufacturerId(id)
+            val id = Integer.parseInt(view.standard_manufacturer_id_input.text.toString())
+            val data = view.standard_manufacturer_data_input.text.toString().toByteArray()
+            builder.addManufacturerData(id, data)
         } catch (e : NumberFormatException) {
-            advertiser?.changeManufacturerId(null)
+            ui {
+                showToast("Error Phrasing Malefactor ID")
+            }
+            return false
         }
+
+        builder.setIncludeDeviceName(getIncludeDeviceName(view))
+        advertiser?.advertisingData = builder.build()
+        return true
     }
 
-    private fun updateManufactureData(view: View) {
-        val data = view.manufacturer_data_input.toString().toByteArray()
-        advertiser?.changePrimaryServiceData(data)
-    }
 
-    companion object {
-        fun newInstance(advertiser: XYBluetoothAdvertiser?) : AdvertiserFragment {
+
+    companion object : XYBase() {
+        fun newInstance(regularAdvertiser: XYBluetoothAdvertiser?) : AdvertiserFragment {
             val frag = AdvertiserFragment()
-            frag.advertiser = advertiser
+            frag.advertiser = regularAdvertiser
             return frag
         }
 
