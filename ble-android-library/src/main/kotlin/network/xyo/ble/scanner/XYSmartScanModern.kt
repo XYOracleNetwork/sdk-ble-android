@@ -10,8 +10,8 @@ import android.os.Build
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import network.xyo.ble.CallByVersion
-import network.xyo.ble.gatt.XYBluetoothResult
-import network.xyo.ble.gatt.asyncBle
+import network.xyo.ble.gatt.peripheral.XYBluetoothResult
+import network.xyo.ble.gatt.peripheral.asyncBle
 import java.util.*
 
 @TargetApi(21)

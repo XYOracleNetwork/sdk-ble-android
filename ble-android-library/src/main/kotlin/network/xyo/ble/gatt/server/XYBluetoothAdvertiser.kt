@@ -9,9 +9,9 @@ import android.content.Context
 import android.os.ParcelUuid
 import kotlinx.coroutines.Deferred
 import network.xyo.ble.gatt.XYBluetoothBase
-import network.xyo.ble.gatt.XYBluetoothError
-import network.xyo.ble.gatt.XYBluetoothResult
-import network.xyo.ble.gatt.asyncBle
+import network.xyo.ble.gatt.peripheral.XYBluetoothError
+import network.xyo.ble.gatt.peripheral.XYBluetoothResult
+import network.xyo.ble.gatt.peripheral.asyncBle
 import kotlin.coroutines.suspendCoroutine
 import kotlin.coroutines.resume
 

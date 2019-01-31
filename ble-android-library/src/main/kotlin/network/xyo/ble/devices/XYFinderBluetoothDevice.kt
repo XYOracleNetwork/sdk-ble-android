@@ -5,9 +5,9 @@ import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import network.xyo.ble.firmware.OtaUpdate
-import network.xyo.ble.gatt.XYBluetoothError
-import network.xyo.ble.gatt.XYBluetoothResult
-import network.xyo.ble.gatt.asyncBle
+import network.xyo.ble.gatt.peripheral.XYBluetoothError
+import network.xyo.ble.gatt.peripheral.XYBluetoothResult
+import network.xyo.ble.gatt.peripheral.asyncBle
 import network.xyo.ble.scanner.XYScanResult
 import network.xyo.core.XYBase
 import java.io.InputStream

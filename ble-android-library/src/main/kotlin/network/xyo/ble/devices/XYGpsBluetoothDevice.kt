@@ -1,12 +1,13 @@
 package network.xyo.ble.devices
 
 import android.bluetooth.BluetoothGatt
+import android.bluetooth.BluetoothGattCallback
 import android.bluetooth.BluetoothGattCharacteristic
 import android.content.Context
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import network.xyo.ble.gatt.XYBluetoothResult
+import network.xyo.ble.gatt.peripheral.XYBluetoothResult
 import network.xyo.ble.scanner.XYScanResult
 import network.xyo.ble.services.standard.*
 import network.xyo.ble.services.xy3.*
@@ -33,10 +34,8 @@ open class XYGpsBluetoothDevice(context: Context, scanResult: XYScanResult, hash
     val extendedControlService = ExtendedControlService(this)
     val sensorService = SensorService(this)
 
-    private val buttonListener = object: XYBluetoothGattCallback() {
+    private val buttonListener = object: BluetoothGattCallback() {
         override fun onCharacteristicChanged(gatt: BluetoothGatt?, characteristic: BluetoothGattCharacteristic?) {
-            super.onCharacteristicChanged(gatt, characteristic)
-
             super.onCharacteristicChanged(gatt, characteristic)
             if (characteristic?.uuid == controlService.button.uuid) {
                 //reportButtonPressed(characteristic.getIntValue(BluetoothGattCharacteristic.FORMAT_UINT8, 0))
@@ -46,7 +45,7 @@ open class XYGpsBluetoothDevice(context: Context, scanResult: XYScanResult, hash
     }
 
     init {
-        addGattListener(className, buttonListener)
+        centralCallback.addListener(className, buttonListener)
     }
 
     override val prefix = "xy:gps"

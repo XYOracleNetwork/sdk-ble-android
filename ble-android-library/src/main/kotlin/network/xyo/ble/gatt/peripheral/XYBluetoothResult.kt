@@ -1,4 +1,4 @@
-package network.xyo.ble.gatt
+package network.xyo.ble.gatt.peripheral
 
 open class XYBluetoothResult<T> {
 

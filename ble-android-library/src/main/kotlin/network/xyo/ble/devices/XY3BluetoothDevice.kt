@@ -2,12 +2,13 @@ package network.xyo.ble.devices
 
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothGatt
+import android.bluetooth.BluetoothGattCallback
 import android.bluetooth.BluetoothGattCharacteristic
 import android.content.Context
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import network.xyo.ble.gatt.XYBluetoothResult
+import network.xyo.ble.gatt.peripheral.XYBluetoothResult
 import network.xyo.ble.scanner.XYScanResult
 import network.xyo.ble.services.standard.*
 import network.xyo.ble.services.xy3.*
@@ -42,7 +43,7 @@ open class XY3BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
         On(1)
     }
 
-    private val buttonListener = object : XYBluetoothGattCallback() {
+    private val buttonListener = object : BluetoothGattCallback() {
         override fun onCharacteristicChanged(gatt: BluetoothGatt?, characteristic: BluetoothGattCharacteristic?) {
             super.onCharacteristicChanged(gatt, characteristic)
             if (characteristic?.uuid == controlService.button.uuid) {
@@ -52,7 +53,7 @@ open class XY3BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
     }
 
     init {
-        addGattListener("xy3", buttonListener)
+        centralCallback.addListener("xy3", buttonListener)
     }
 
     //we only allow mac addresses that end in 4 to be updated since those are the connectible ones

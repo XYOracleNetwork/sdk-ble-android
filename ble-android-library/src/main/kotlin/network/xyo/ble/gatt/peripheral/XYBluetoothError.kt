@@ -1,4 +1,4 @@
-package network.xyo.ble.gatt
+package network.xyo.ble.gatt.peripheral
 import network.xyo.core.XYBase
 
 open class XYBluetoothError(message: String) : Error(message) {

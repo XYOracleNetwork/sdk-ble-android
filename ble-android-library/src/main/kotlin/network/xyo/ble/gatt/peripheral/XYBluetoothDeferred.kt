@@ -1,6 +1,7 @@
-package network.xyo.ble.gatt
+package network.xyo.ble.gatt.peripheral
 
 import kotlinx.coroutines.*
+import network.xyo.ble.gatt.XYBluetoothBase
 import kotlin.coroutines.CoroutineContext
 
 //causes *all* ble calls to be initiated in a single thread

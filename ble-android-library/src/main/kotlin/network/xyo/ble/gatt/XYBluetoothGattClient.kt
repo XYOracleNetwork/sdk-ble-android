@@ -6,6 +6,7 @@ import android.bluetooth.BluetoothGattDescriptor
 import android.content.Context
 import android.os.Handler
 import kotlinx.coroutines.Deferred
+import network.xyo.ble.gatt.peripheral.*
 import java.util.*
 
 open class XYBluetoothGattClient protected constructor(
