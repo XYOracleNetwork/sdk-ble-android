@@ -57,10 +57,10 @@ open class XY3BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
 
     //we only allow mac addresses that end in 4 to be updated since those are the connectible ones
     override fun updateBluetoothDevice(device: BluetoothDevice?) {
-        if (device?.address?.endsWith("4") == true) {
+        //if (device?.address?.endsWith("4") == true) {
             this.device = device
-        }
-        lastAdTime = now
+        //}
+        //lastAdTime = now
     }
 
     override val minor: Ushort
@@ -107,16 +107,16 @@ open class XY3BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
         }
     }
 
-    private fun enableButtonNotifyIfConnected() {
+    /*private fun enableButtonNotifyIfConnected() {
         if (connectionState == ConnectionState.Connected) {
             controlService.button.enableNotify(true)
         }
-    }
+    }*/
 
     override fun reportButtonPressed(state: ButtonPress) {
         super.reportButtonPressed(state)
         //every time a notify fires, we have to re-enable it
-        enableButtonNotifyIfConnected()
+        //enableButtonNotifyIfConnected()
         XY3BluetoothDevice.reportGlobalButtonPressed(this, state)
     }
 
