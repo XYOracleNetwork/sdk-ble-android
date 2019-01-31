@@ -1,6 +1,7 @@
 package network.xyo.ble.devices
 
 import android.bluetooth.BluetoothGatt
+import android.bluetooth.BluetoothGattCallback
 import android.bluetooth.BluetoothGattCharacteristic
 import android.content.Context
 import kotlinx.coroutines.Deferred
@@ -8,10 +9,8 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import network.xyo.ble.firmware.OtaFile
 import network.xyo.ble.firmware.OtaUpdate
-import network.xyo.ble.gatt.XYBluetoothResult
+import network.xyo.ble.gatt.peripheral.XYBluetoothResult
 import network.xyo.ble.scanner.XYScanResult
-import network.xyo.ble.services.EddystoneConfigService
-import network.xyo.ble.services.EddystoneService
 import network.xyo.ble.services.dialog.SpotaService
 import network.xyo.ble.services.standard.*
 import network.xyo.ble.services.xy4.PrimaryService
@@ -33,9 +32,6 @@ open class XY4BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
     val linkLossService = LinkLossService(this)
     val txPowerService = TxPowerService(this)
 
-    val eddystoneService = EddystoneService(this)
-    val eddystoneConfigService = EddystoneConfigService(this)
-
     val primary = PrimaryService(this)
     val spotaService = SpotaService(this)
 
@@ -43,7 +39,7 @@ open class XY4BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
 
     private var updater: OtaUpdate? = null
 
-    private val buttonListener = object : XYBluetoothGattCallback() {
+    private val buttonListener = object : BluetoothGattCallback() {
         override fun onCharacteristicChanged(gatt: BluetoothGatt?, characteristic: BluetoothGattCharacteristic?) {
             super.onCharacteristicChanged(gatt, characteristic)
             if (characteristic?.uuid == primary.buttonState.uuid) {
@@ -54,7 +50,7 @@ open class XY4BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
     }
 
     init {
-        addGattListener("xy4", buttonListener)
+        centralCallback.addListener("xy4", buttonListener)
         enableButtonNotifyIfConnected()
     }
 

@@ -2,7 +2,7 @@ package network.xyo.ble.devices
 
 import android.content.Context
 import kotlinx.coroutines.Deferred
-import network.xyo.ble.gatt.XYBluetoothResult
+import network.xyo.ble.gatt.peripheral.XYBluetoothResult
 import network.xyo.ble.scanner.XYScanResult
 import network.xyo.ble.services.standard.*
 import network.xyo.ble.services.xy3.*

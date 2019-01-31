@@ -3,8 +3,8 @@ package network.xyo.ble.firmware
 import kotlinx.coroutines.*
 import network.xyo.ble.devices.XY4BluetoothDevice
 import network.xyo.ble.devices.XYBluetoothDevice
-import network.xyo.ble.gatt.XYBluetoothResult
-import network.xyo.ble.gatt.asyncBle
+import network.xyo.ble.gatt.peripheral.XYBluetoothResult
+import network.xyo.ble.gatt.peripheral.asyncBle
 import network.xyo.core.XYBase
 
 class OtaUpdate(var device: XY4BluetoothDevice, private val otaFile: OtaFile?): XYBase() {
@@ -221,7 +221,7 @@ class OtaUpdate(var device: XY4BluetoothDevice, private val otaFile: OtaFile?): 
     private fun setMemDev(): Deferred<XYBluetoothResult<Int>> {
         return asyncBle {
             val memType = MEMORY_TYPE_EXTERNAL_SPI shl 24 or _imageBank
-            log.info( "setMemDev: " + String.format("%#010x", memType))
+            log.info("setMemDev: " + String.format("%#010x", memType))
             val result = device.spotaService.SPOTA_MEM_DEV.set(memType).await()
 
             return@asyncBle XYBluetoothResult(result.value, result.error)
@@ -248,7 +248,7 @@ class OtaUpdate(var device: XY4BluetoothDevice, private val otaFile: OtaFile?): 
                 lastBlockReady = true
             }
 
-            log.info( "setPatchLength blockSize: $blockSize - ${String.format("%#06x", blockSize)}")
+            log.info("setPatchLength blockSize: $blockSize - ${String.format("%#06x", blockSize)}")
 
             val result = device.spotaService.SPOTA_PATCH_LEN.set(blockSize!!).await()
 
@@ -269,12 +269,12 @@ class OtaUpdate(var device: XY4BluetoothDevice, private val otaFile: OtaFile?): 
 
             val chunk = block[i]
             val msg = "Sending block " + (blockCounter + 1) + ", chunk " + (i + 1) + " of " + block.size + ", size " + chunk.size
-            log.info( msg)
+            log.info(msg)
 
 
 
             if (lastChunk) {
-                log.info( "sendBlock... lastChunk")
+                log.info("sendBlock... lastChunk")
                 if (!lastBlock) {
                     blockCounter++
                 } else {
@@ -296,7 +296,7 @@ class OtaUpdate(var device: XY4BluetoothDevice, private val otaFile: OtaFile?): 
         log.info( "sendEndSignal...")
         return asyncBle {
             val result = device.spotaService.SPOTA_MEM_DEV.set(END_SIGNAL).await()
-            log.info( "sendEndSignal result: $result")
+            log.info("sendEndSignal result: $result")
             endSignalSent = true
             return@asyncBle XYBluetoothResult(result.value, result.error)
         }

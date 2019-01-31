@@ -79,9 +79,8 @@ class AlertFragment : XYDeviceFragment() {
     }
 
     private fun getXY4Values(device: XY4BluetoothDevice) {
+        var hasConnectionError = true
         GlobalScope.launch {
-            var hasConnectionError = true
-
             val conn = device.connection {
                 hasConnectionError = false
 

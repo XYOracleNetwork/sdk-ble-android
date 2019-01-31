@@ -165,6 +165,10 @@ abstract class XYSmartScan(context: Context) : XYBluetoothBase(context) {
         return true
     }
 
+    open fun started(): Boolean {
+        return startTime != 0L
+    }
+
     open suspend fun stop(): Boolean {
         log.info("stop")
         startTime = 0

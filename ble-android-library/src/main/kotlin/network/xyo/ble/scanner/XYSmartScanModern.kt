@@ -7,9 +7,11 @@ import android.bluetooth.le.ScanResult
 import android.bluetooth.le.ScanSettings
 import android.content.Context
 import android.os.Build
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import network.xyo.ble.CallByVersion
-import network.xyo.ble.gatt.XYBluetoothResult
-import network.xyo.ble.gatt.asyncBle
+import network.xyo.ble.gatt.peripheral.XYBluetoothResult
+import network.xyo.ble.gatt.peripheral.asyncBle
 import java.util.*
 
 @TargetApi(21)
@@ -28,8 +30,16 @@ class XYSmartScanModern(context: Context) : XYSmartScan(context) {
                     log.info("startScan:Failed to get Bluetooth Scanner. Disabled?")
                     return@asyncBle XYBluetoothResult(false)
                 } else {
-                    val filters = ArrayList<ScanFilter>()
-                    scanner.startScan(filters, getSettings(), callback)
+                    // this loop is for Android 7 to prevent getting nuked for scanning too much
+                    launch {
+                        while (started()) {
+                            val filters = ArrayList<ScanFilter>()
+                            scanner.startScan(filters, getSettings(), callback)
+                            delay(60000 * 5) //5 minutes
+                            scanner.stopScan(callback)
+                            delay(500)
+                        }
+                    }
                 }
 
                 return@asyncBle XYBluetoothResult(true)
@@ -61,9 +71,9 @@ class XYSmartScanModern(context: Context) : XYSmartScan(context) {
         override fun onScanFailed(errorCode: Int) {
             super.onScanFailed(errorCode)
             log.error("onScanFailed: $errorCode, ${codeToScanFailed(errorCode)}", false)
-            if (ScanCallback.SCAN_FAILED_APPLICATION_REGISTRATION_FAILED == errorCode) {
+            /*if (ScanCallback.SCAN_FAILED_APPLICATION_REGISTRATION_FAILED == errorCode) {
                 restartBluetooth()
-            }
+            }*/
         }
 
         override fun onScanResult(callbackType: Int, result: ScanResult?) {
@@ -80,6 +90,9 @@ class XYSmartScanModern(context: Context) : XYSmartScan(context) {
     private fun getSettings(): ScanSettings {
         var result: ScanSettings? = null
         CallByVersion()
+                .add(Build.VERSION_CODES.O) {
+                    result = getSettings26()
+                }
                 .add(Build.VERSION_CODES.M) {
                     result = getSettings23()
                 }
@@ -89,16 +102,26 @@ class XYSmartScanModern(context: Context) : XYSmartScan(context) {
         return result!!
     }
 
+    //Android 5 and 6
     private fun getSettings21(): ScanSettings {
         return ScanSettings.Builder()
                 .setScanMode(android.bluetooth.le.ScanSettings.SCAN_MODE_BALANCED)
                 .build()
     }
 
+    //Android 7 and 7.1
     @TargetApi(Build.VERSION_CODES.M)
     private fun getSettings23(): ScanSettings {
         return ScanSettings.Builder()
-                .setScanMode(android.bluetooth.le.ScanSettings.SCAN_MODE_LOW_LATENCY)
+                .setScanMode(android.bluetooth.le.ScanSettings.SCAN_MODE_LOW_POWER)
+                .build()
+    }
+
+    //Android 8 and 9
+    @TargetApi(Build.VERSION_CODES.O)
+    private fun getSettings26(): ScanSettings {
+        return ScanSettings.Builder()
+                .setScanMode(android.bluetooth.le.ScanSettings.SCAN_MODE_BALANCED)
                 .setCallbackType(android.bluetooth.le.ScanSettings.CALLBACK_TYPE_ALL_MATCHES)
                 .setMatchMode(android.bluetooth.le.ScanSettings.MATCH_MODE_STICKY)
                 .build()

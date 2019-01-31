@@ -4,6 +4,9 @@ import android.bluetooth.*
 import android.content.Context
 import android.os.Build
 import network.xyo.ble.gatt.*
+import network.xyo.ble.gatt.peripheral.XYBluetoothError
+import network.xyo.ble.gatt.peripheral.XYBluetoothResult
+import network.xyo.ble.gatt.peripheral.asyncBle
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.collections.HashMap
