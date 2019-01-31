@@ -105,7 +105,7 @@ open class XYIBeaconBluetoothDevice(context: Context, scanResult: XYScanResult?,
             }
         }
 
-        internal val uuidToCreator = HashMap<UUID, XYCreator>()
+        val uuidToCreator = HashMap<UUID, XYCreator>()
 
         internal val creator = object : XYCreator() {
             override fun getDevicesFromScanResult(

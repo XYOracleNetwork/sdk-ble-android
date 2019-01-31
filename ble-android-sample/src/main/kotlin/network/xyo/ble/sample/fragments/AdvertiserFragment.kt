@@ -183,7 +183,7 @@ class AdvertiserFragment : XYBaseFragment() {
         }
         return false
     }
-    
+
 
     private fun updateAdvertiserDataRegular (view: View) : Boolean {
         val builder = AdvertiseData.Builder()
