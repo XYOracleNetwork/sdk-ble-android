@@ -125,10 +125,6 @@ open class XYBluetoothGattServer(context: Context) : XYBluetoothBase(context) {
     private fun sendResponseWithSuccess(byteArray: ByteArray?, requestId: Int, device: BluetoothDevice?, offset : Int?) {
         if (androidGattServer != null && device != null) {
             if (isDeviceConnected(device)) {
-                if (byteArray?.size ?: 0 > 100) {
-                    androidGattServer?.sendResponse(device, requestId, BluetoothGatt.GATT_SUCCESS, offset ?: 0, byteArray?.copyOfRange(0, 40))
-                    return
-                }
                 androidGattServer?.sendResponse(device, requestId, BluetoothGatt.GATT_SUCCESS, offset ?: 0, byteArray)
             }
         }
