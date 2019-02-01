@@ -8,6 +8,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.location.LocationManager
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import network.xyo.ble.devices.XYBluetoothDevice
 import network.xyo.ble.devices.XYMobileBluetoothDevice
@@ -159,21 +160,21 @@ abstract class XYSmartScan(context: Context) : XYBluetoothBase(context) {
             _background = background
         }
 
-    open suspend fun start(): Boolean {
+    open fun start() = GlobalScope.async {
         log.info("start")
         startTime = now
-        return true
+        return@async true
     }
 
     open fun started(): Boolean {
         return startTime != 0L
     }
 
-    open suspend fun stop(): Boolean {
+    open fun stop() = GlobalScope.async {
         log.info("stop")
         startTime = 0
         scanResultCount = 0
-        return true
+        return@async true
     }
 
     protected fun restartBluetooth() {

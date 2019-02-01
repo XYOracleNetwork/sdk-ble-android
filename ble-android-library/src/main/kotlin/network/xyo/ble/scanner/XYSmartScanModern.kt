@@ -7,6 +7,8 @@ import android.bluetooth.le.ScanResult
 import android.bluetooth.le.ScanSettings
 import android.content.Context
 import android.os.Build
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import network.xyo.ble.CallByVersion
@@ -16,9 +18,9 @@ import java.util.*
 
 @TargetApi(21)
 class XYSmartScanModern(context: Context) : XYSmartScan(context) {
-    override suspend fun start(): Boolean {
+    override fun start() = GlobalScope.async {
         log.info("start")
-        super.start()
+        super.start().await()
 
         val result = asyncBle {
 
@@ -31,7 +33,7 @@ class XYSmartScanModern(context: Context) : XYSmartScan(context) {
                     return@asyncBle XYBluetoothResult(false)
                 } else {
                     // this loop is for Android 7 to prevent getting nuked for scanning too much
-                    launch {
+                    GlobalScope.launch {
                         while (started()) {
                             val filters = ArrayList<ScanFilter>()
                             scanner.startScan(filters, getSettings(), callback)
@@ -50,9 +52,9 @@ class XYSmartScanModern(context: Context) : XYSmartScan(context) {
         }.await()
 
         if (result.error != null) {
-            return false
+            return@async false
         }
-        return result.value!!
+        return@async result.value ?: false
     }
 
     private val callback = object : ScanCallback() {
@@ -113,7 +115,7 @@ class XYSmartScanModern(context: Context) : XYSmartScan(context) {
     @TargetApi(Build.VERSION_CODES.M)
     private fun getSettings23(): ScanSettings {
         return ScanSettings.Builder()
-                .setScanMode(android.bluetooth.le.ScanSettings.SCAN_MODE_LOW_POWER)
+                .setScanMode(android.bluetooth.le.ScanSettings.SCAN_MODE_BALANCED)
                 .build()
     }
 
@@ -127,9 +129,9 @@ class XYSmartScanModern(context: Context) : XYSmartScan(context) {
                 .build()
     }
 
-    override suspend fun stop(): Boolean {
+    override fun stop() = GlobalScope.async {
         log.info("stop")
-        super.stop()
+        super.stop().await()
         val result = asyncBle {
             val bluetoothAdapter = this@XYSmartScanModern.bluetoothAdapter
 
@@ -149,9 +151,9 @@ class XYSmartScanModern(context: Context) : XYSmartScan(context) {
         }.await()
 
         if (result.error != null) {
-            return false
+            return@async false
         }
-        return result.value!!
+        return@async result.value ?: false
 
     }
 }

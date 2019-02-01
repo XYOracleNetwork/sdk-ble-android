@@ -3,9 +3,7 @@ package network.xyo.ble.gatt.peripheral.actions
 import android.bluetooth.BluetoothGatt
 import android.bluetooth.BluetoothGattCallback
 import android.bluetooth.BluetoothGattService
-import kotlinx.coroutines.TimeoutCancellationException
-import kotlinx.coroutines.suspendCancellableCoroutine
-import kotlinx.coroutines.withTimeout
+import kotlinx.coroutines.*
 import network.xyo.ble.gatt.peripheral.XYBluetoothError
 import network.xyo.ble.gatt.peripheral.XYBluetoothGattCallback
 import network.xyo.ble.gatt.peripheral.XYBluetoothResult
@@ -15,7 +13,7 @@ import kotlin.coroutines.resume
 
 class XYBluetoothGattDiscover(val gatt: BluetoothGatt, val gattCallback: XYBluetoothGattCallback) {
 
-    private var _timeout = 5000L
+    private var _timeout = 1500000L
 
     fun timeout(timeout: Long) {
         _timeout = timeout
@@ -23,12 +21,13 @@ class XYBluetoothGattDiscover(val gatt: BluetoothGatt, val gattCallback: XYBluet
 
     var listenerName = "XYBluetoothGattDiscover${hashCode()}"
 
-    fun start() = asyncBle {
+    fun start() = GlobalScope.async {
         log.info("discover")
         var error: XYBluetoothError? = null
         var value: List<BluetoothGattService>? = null
 
         if (gatt.services != null && gatt.services.size > 0) {
+            log.info("discover: Returning previous discover: ${gatt.services.size}")
             value = gatt.services
         } else {
             try {
@@ -45,6 +44,7 @@ class XYBluetoothGattDiscover(val gatt: BluetoothGatt, val gattCallback: XYBluet
                                     cont.resume(null)
                                 } else {
                                     //success - send back the services
+                                    log.info("discover: Returning new services")
                                     cont.resume(this@XYBluetoothGattDiscover.gatt.services)
                                 }
                             }
@@ -60,19 +60,17 @@ class XYBluetoothGattDiscover(val gatt: BluetoothGatt, val gattCallback: XYBluet
                             }
                         }
                         gattCallback.addListener(listenerName, listener)
-                        if (!gatt.discoverServices()) {
-                            error = XYBluetoothError("start: gatt.discoverServices failed to start")
-                            gattCallback.removeListener(listenerName)
-                            cont.resume(null)
+                        GlobalScope.launch {
+                            asyncBle {
+                                val discoverStarted = gatt.discoverServices()
+                                if (!discoverStarted) {
+                                    error = XYBluetoothError("start: gatt.discoverServices failed to start")
+                                    gattCallback.removeListener(listenerName)
+                                    cont.resume(null)
+                                }
+                                return@asyncBle XYBluetoothResult(discoverStarted)
+                            }.await()
                         }
-                        /*if (gatt.connectionState != XYBluetoothGattBase.ConnectionState.Connected) {
-                            error = XYBluetoothError("discover: connection dropped 2: $xyGatt.connectionState")
-                            listenerName?.let {
-                                xyGatt.removeGattListener(it)
-                                listenerName = null
-                            }
-                            cont.resume(null)
-                        }*/
                     }
                 }
             } catch (ex: TimeoutCancellationException) {
@@ -81,7 +79,7 @@ class XYBluetoothGattDiscover(val gatt: BluetoothGatt, val gattCallback: XYBluet
                 log.error(ex)
             }
         }
-        return@asyncBle XYBluetoothResult(value, error)
+        return@async XYBluetoothResult(value, error)
     }
 
     companion object: XYBase()

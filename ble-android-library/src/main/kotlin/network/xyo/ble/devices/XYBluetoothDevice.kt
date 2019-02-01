@@ -129,7 +129,11 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, private
                 }
             }
         }
-        close()
+        GlobalScope.launch {
+            if (gatt != null) {
+                close().await()
+            }
+        }
     }
 
     override fun onDetect(scanResult: XYScanResult?) {

@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import kotlinx.android.synthetic.main.fragment_test.*
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import network.xyo.ble.devices.XY4BluetoothDevice
@@ -35,10 +36,10 @@ class BeepTestFragment : XYBaseFragment() {
 
     fun updateUI() {
         ui {
-            start_count.text = "Starts: $startCount"
-            connect_count.text = "Connects: $connectCount"
-            unlock_count.text = "Unlocks: $unlockCount"
-            beep_count.text = "Beeps: $beepCount"
+            start_count?.text = "Starts: $startCount"
+            connect_count?.text = "Connects: $connectCount"
+            unlock_count?.text = "Unlocks: $unlockCount"
+            beep_count?.text = "Beeps: $beepCount"
         }
     }
 
@@ -54,7 +55,8 @@ class BeepTestFragment : XYBaseFragment() {
                                 startCount++
                                 updateUI()
                                 try {
-                                    val connectResult = value.connection {
+                                    //val connectResult = value.connection {
+                                    if (value.connect().await().error == null) {
                                         log.info("BeepTest: ${value.id}: Connected")
                                         connectCount++
                                         updateUI()
@@ -72,10 +74,13 @@ class BeepTestFragment : XYBaseFragment() {
                                         } else {
                                             log.error("BeepTest: ${value.id}: Failed to Unlock")
                                         }
-                                    }.await()
+                                    } else {
+                                        log.error("BeepTest: ${value.id}: Failed to Connect")
+                                    }
+                                    /*}.await()
                                     if (connectResult.error != null) {
                                         log.error("BeepTest: ${value.id}: Failed to Connect: ${connectResult.error?.message}")
-                                    }
+                                    }*/
                                 } catch (ex: Exception) {
                                     log.error("BeepTest: ${ex.message}")
                                 }
