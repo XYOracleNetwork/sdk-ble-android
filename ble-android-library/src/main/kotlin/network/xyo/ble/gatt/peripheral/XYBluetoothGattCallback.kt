@@ -35,6 +35,11 @@ open class XYBluetoothGattCallback: BluetoothGattCallback() {
             for ((key, listener) in gattListeners) {
                 GlobalScope.launch {
                     log.info("onCharacteristicChanged: $key")
+                    
+                    // todo
+                    // there is a possible race condition when getting the value from a characteristic that is
+                    // changing quickly
+                    // https://bugs.chromium.org/p/chromium/issues/detail?id=647673&desc=2
                     listener.onCharacteristicChanged(gatt, characteristic)
                 }
             }
