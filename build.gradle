@@ -21,7 +21,7 @@ buildscript {
     }
     ext {
         pluginDependencies = [
-                android      : "com.android.tools.build:gradle:$androidPluginVersion",
+                android: "com.android.tools.build:gradle:$androidPluginVersion",
         ]
     }
 

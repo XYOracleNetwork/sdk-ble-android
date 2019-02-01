@@ -80,9 +80,9 @@ dependencies {
     api "androidx.coordinatorlayout:coordinatorlayout:1.0.0"
     api "com.nabinbhandari.android:permissions:3.8"
 
-    api 'com.github.XYOracleNetwork:sdk-core-android:1.2.3'
-    
-    api 'com.github.XYOracleNetwork:sdk-ui-android:1.2.0'
+    api 'com.github.XYOracleNetwork:sdk-core-android:1.2.5'
+
+    api 'com.github.XYOracleNetwork:sdk-ui-android:1.2.2'
 
     api "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.0.1"
     api "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.0.1"
