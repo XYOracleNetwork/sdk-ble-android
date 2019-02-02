@@ -6,6 +6,7 @@ import android.bluetooth.BluetoothGattCharacteristic
 import android.content.Context
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import network.xyo.ble.firmware.OtaFile
 import network.xyo.ble.firmware.OtaUpdate
@@ -21,7 +22,7 @@ import java.nio.ByteBuffer
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 
-open class XY4BluetoothDevice(context: Context, scanResult: XYScanResult, hash: Int) : XYFinderBluetoothDevice(context, scanResult, hash) {
+open class XY4BluetoothDevice(context: Context, scanResult: XYScanResult, hash: String) : XYFinderBluetoothDevice(context, scanResult, hash) {
 
     val alertNotification = AlertNotificationService(this)
     val batteryService = BatteryService(this)
@@ -56,32 +57,32 @@ open class XY4BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
 
     override val prefix = "xy:ibeacon"
 
-    override fun find(): Deferred<XYBluetoothResult<Int>> {
-        return primary.buzzer.set(11)
+    override fun find() = GlobalScope.async {
+        return@async primary.buzzer.set(11).await()
     }
 
-    override fun stopFind(): Deferred<XYBluetoothResult<Int>> {
-        return primary.buzzer.set(-1)
+    override fun stopFind() = GlobalScope.async {
+        return@async primary.buzzer.set(-1).await()
     }
 
-    override fun lock(): Deferred<XYBluetoothResult<ByteArray>> {
-        return primary.lock.set(DefaultLockCode)
+    override fun lock() = GlobalScope.async {
+        return@async primary.lock.set(DefaultLockCode).await()
     }
 
-    override fun unlock(): Deferred<XYBluetoothResult<ByteArray>> {
-        return primary.unlock.set(DefaultLockCode)
+    override fun unlock() = GlobalScope.async {
+        return@async primary.unlock.set(DefaultLockCode).await()
     }
 
-    override fun stayAwake(): Deferred<XYBluetoothResult<Int>> {
-        return primary.stayAwake.set(1)
+    override fun stayAwake() = GlobalScope.async {
+        return@async primary.stayAwake.set(1).await()
     }
 
-    override fun fallAsleep(): Deferred<XYBluetoothResult<Int>> {
-        return primary.stayAwake.set(0)
+    override fun fallAsleep() = GlobalScope.async {
+        return@async primary.stayAwake.set(0).await()
     }
 
-    override fun batteryLevel(): Deferred<XYBluetoothResult<Int>> {
-        return batteryService.level.get()
+    override fun batteryLevel() = GlobalScope.async {
+        return@async batteryService.level.get().await()
     }
 
     override fun onDetect(scanResult: XYScanResult?) {
@@ -118,7 +119,7 @@ open class XY4BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
     }
 
     private fun enableButtonNotifyIfConnected() {
-        if (connectionState == ConnectionState.Connected) {
+        if (connection?.state == BluetoothGatt.STATE_CONNECTED) {
             primary.buttonState.enableNotify(true)
         }
     }
@@ -207,12 +208,10 @@ open class XY4BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
         }
 
         internal val creator = object : XYCreator() {
-            override fun getDevicesFromScanResult(context: Context, scanResult: XYScanResult, globalDevices: ConcurrentHashMap<Int, XYBluetoothDevice>, foundDevices: HashMap<Int, XYBluetoothDevice>) {
+            override fun getDevicesFromScanResult(context: Context, scanResult: XYScanResult, globalDevices: ConcurrentHashMap<String, XYBluetoothDevice>, foundDevices: HashMap<String, XYBluetoothDevice>) {
                 val hash = hashFromScanResult(scanResult)
-                if (hash != null) {
-                    foundDevices[hash] = globalDevices[hash]
-                            ?: XY4BluetoothDevice(context, scanResult, hash)
-                }
+                foundDevices[hash] = globalDevices[hash]
+                        ?: XY4BluetoothDevice(context, scanResult, hash)
             }
         }
 
@@ -248,12 +247,12 @@ open class XY4BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
             }
         }
 
-        internal fun hashFromScanResult(scanResult: XYScanResult): Int? {
+        internal fun hashFromScanResult(scanResult: XYScanResult): String {
             val uuid = iBeaconUuidFromScanResult(scanResult)
             val major = majorFromScanResult(scanResult)
             val minor = minorFromScanResult(scanResult)
 
-            return "$uuid:$major:$minor".hashCode()
+            return "$uuid:$major:$minor"
         }
 
     }

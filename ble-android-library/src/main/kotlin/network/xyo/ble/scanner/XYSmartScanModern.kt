@@ -51,10 +51,10 @@ class XYSmartScanModern(context: Context) : XYSmartScan(context) {
             return@asyncBle XYBluetoothResult(false)
         }.await()
 
-        if (result.error != null) {
+        if (result?.error != null) {
             return@async false
         }
-        return@async result.value ?: false
+        return@async result?.value ?: false
     }
 
     private val callback = object : ScanCallback() {
@@ -150,10 +150,10 @@ class XYSmartScanModern(context: Context) : XYSmartScan(context) {
             return@asyncBle XYBluetoothResult(true)
         }.await()
 
-        if (result.error != null) {
+        if (result?.error != null) {
             return@async false
         }
-        return@async result.value ?: false
+        return@async result?.value ?: false
 
     }
 }

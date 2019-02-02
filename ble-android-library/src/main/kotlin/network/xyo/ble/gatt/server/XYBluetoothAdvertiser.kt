@@ -85,10 +85,10 @@ open class XYBluetoothAdvertiser(context: Context, var advertisingData : Adverti
         bleAdvertiser?.stopAdvertising(primaryCallback)
     }
 
-    private fun restart () : Deferred<XYBluetoothResult<Int>> {
+    /*private fun restart () : Deferred<XYBluetoothResult<Int>> {
         stopAdvertising()
         return startAdvertising()
-    }
+    }*/
 
     open fun changeIncludeTxPowerLevel (newIncludeTxPowerLevel : Boolean?) {
         includeTxPowerLevel = newIncludeTxPowerLevel

@@ -11,7 +11,7 @@ import java.nio.ByteBuffer
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 
-open class XY2BluetoothDevice(context: Context, scanResult: XYScanResult, hash: Int) : XYFinderBluetoothDevice(context, scanResult, hash) {
+open class XY2BluetoothDevice(context: Context, scanResult: XYScanResult, hash: String) : XYFinderBluetoothDevice(context, scanResult, hash) {
 
     val batteryService = BatteryService(this)
     val deviceInformationService = DeviceInformationService(this)
@@ -59,12 +59,10 @@ open class XY2BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
         }
 
         internal val creator = object : XYCreator() {
-            override fun getDevicesFromScanResult(context: Context, scanResult: XYScanResult, globalDevices: ConcurrentHashMap<Int, XYBluetoothDevice>, foundDevices: HashMap<Int, XYBluetoothDevice>) {
+            override fun getDevicesFromScanResult(context: Context, scanResult: XYScanResult, globalDevices: ConcurrentHashMap<String, XYBluetoothDevice>, foundDevices: HashMap<String, XYBluetoothDevice>) {
                 val hash = hashFromScanResult(scanResult)
-                if (hash != null) {
-                    foundDevices[hash] = globalDevices[hash]
-                            ?: XY2BluetoothDevice(context, scanResult, hash)
-                }
+                foundDevices[hash] = globalDevices[hash]
+                        ?: XY2BluetoothDevice(context, scanResult, hash)
             }
         }
 
@@ -88,11 +86,11 @@ open class XY2BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
             }
         }
 
-        fun hashFromScanResult(scanResult: XYScanResult): Int? {
+        fun hashFromScanResult(scanResult: XYScanResult): String {
             val uuid = iBeaconUuidFromScanResult(scanResult)
             val major = majorFromScanResult(scanResult)
             val minor = minorFromScanResult(scanResult)
-            return "$uuid:$major:$minor".hashCode()
+            return "$uuid:$major:$minor"
         }
     }
 }

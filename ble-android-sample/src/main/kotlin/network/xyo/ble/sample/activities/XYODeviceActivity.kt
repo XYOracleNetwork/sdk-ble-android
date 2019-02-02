@@ -51,7 +51,7 @@ class XYODeviceActivity : XYOAppBaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val deviceHash = intent.getIntExtra(EXTRA_DEVICEHASH, 0)
+        val deviceHash = intent.getStringExtra(EXTRA_DEVICEHASH)
         log.info("onCreate: $deviceHash")
         device = scanner.devices[deviceHash]
         if (device == null) {
@@ -87,12 +87,16 @@ class XYODeviceActivity : XYOAppBaseActivity() {
     private val xy3DeviceListener = object : XY3BluetoothDevice.Listener() {
         override fun entered(device: XYBluetoothDevice) {
             update()
-            showToast("Entered")
+            ui {
+                showToast("Entered")
+            }
         }
 
         override fun exited(device: XYBluetoothDevice) {
             update()
-            showToast("Exited")
+            ui {
+                showToast("Exited")
+            }
         }
 
         override fun detected(device: XYBluetoothDevice) {
@@ -103,34 +107,48 @@ class XYODeviceActivity : XYOAppBaseActivity() {
             log.info("connectionStateChanged: $newState")
             update()
             if (newState == 2) {
-                showToast("Connected")
+                ui {
+                    showToast("Connected")
+                }
             } else {
-                showToast("Disconnected")
+                ui {
+                    showToast("Disconnected")
+                }
             }
         }
 
         override fun buttonSinglePressed(device: XYFinderBluetoothDevice) {
-            showToast("Button Pressed: Single")
+            ui {
+                showToast("Button Pressed: Single")
+            }
         }
 
         override fun buttonDoublePressed(device: XYFinderBluetoothDevice) {
-            showToast("Button Pressed: Double")
+            ui {
+                showToast("Button Pressed: Double")
+            }
         }
 
         override fun buttonLongPressed(device: XYFinderBluetoothDevice) {
-            showToast("Button Pressed: Long")
+            ui {
+                showToast("Button Pressed: Long")
+            }
         }
     }
 
     private val xy4DeviceListener = object : XY4BluetoothDevice.Listener() {
         override fun entered(device: XYBluetoothDevice) {
             update()
-            showToast("Entered")
+            ui {
+                showToast("Entered")
+            }
         }
 
         override fun exited(device: XYBluetoothDevice) {
             update()
-            showToast("Exited")
+            ui {
+                showToast("Exited")
+            }
         }
 
         override fun detected(device: XYBluetoothDevice) {
@@ -140,23 +158,31 @@ class XYODeviceActivity : XYOAppBaseActivity() {
         override fun connectionStateChanged(device: XYBluetoothDevice, newState: Int) {
             log.info("connectionStateChanged: $newState")
             update()
-            if (newState == 2) {
-                showToast("Connected")
-            } else {
-                showToast("Disconnected")
+            ui {
+                if (newState == 2) {
+                    showToast("Connected")
+                } else {
+                    showToast("Disconnected")
+                }
             }
         }
 
         override fun buttonSinglePressed(device: XYFinderBluetoothDevice) {
-            showToast("Button Pressed: Single")
+            ui {
+                showToast("Button Pressed: Single")
+            }
         }
 
         override fun buttonDoublePressed(device: XYFinderBluetoothDevice) {
-            showToast("Button Pressed: Double")
+            ui {
+                showToast("Button Pressed: Double")
+            }
         }
 
         override fun buttonLongPressed(device: XYFinderBluetoothDevice) {
-            showToast("Button Pressed: Long")
+            ui {
+                showToast("Button Pressed: Long")
+            }
         }
     }
 

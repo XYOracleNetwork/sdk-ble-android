@@ -7,7 +7,7 @@ import network.xyo.core.XYBase
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 
-open class XYAppleBluetoothDevice(context: Context, device: BluetoothDevice, hash: Int) : XYBluetoothDevice(context, device, hash) {
+open class XYAppleBluetoothDevice(context: Context, device: BluetoothDevice, hash: String) : XYBluetoothDevice(context, device, hash) {
 
     open class Listener : XYBluetoothDevice.Listener()
 
@@ -28,7 +28,7 @@ open class XYAppleBluetoothDevice(context: Context, device: BluetoothDevice, has
         internal val typeToCreator = HashMap<Byte, XYCreator>()
 
         internal val creator = object : XYCreator() {
-            override fun getDevicesFromScanResult(context: Context, scanResult: XYScanResult, globalDevices: ConcurrentHashMap<Int, XYBluetoothDevice>, foundDevices: HashMap<Int, XYBluetoothDevice>) {
+            override fun getDevicesFromScanResult(context: Context, scanResult: XYScanResult, globalDevices: ConcurrentHashMap<String, XYBluetoothDevice>, foundDevices: HashMap<String, XYBluetoothDevice>) {
                 for ((typeId, creator) in typeToCreator) {
                     val bytes = scanResult.scanRecord?.getManufacturerSpecificData(MANUFACTURER_ID)
                     if (bytes != null) {
@@ -42,14 +42,14 @@ open class XYAppleBluetoothDevice(context: Context, device: BluetoothDevice, has
                 val hash = hashFromScanResult(scanResult)
                 val device = scanResult.device
 
-                if (canCreate && hash != null && device != null) {
+                if (canCreate && device != null) {
                     foundDevices[hash] = globalDevices[hash] ?: XYAppleBluetoothDevice(context, device, hash)
                 }
             }
         }
 
-        fun hashFromScanResult(scanResult: XYScanResult): Int? {
-            return scanResult.address.hashCode()
+        fun hashFromScanResult(scanResult: XYScanResult): String {
+            return scanResult.address
         }
     }
 }

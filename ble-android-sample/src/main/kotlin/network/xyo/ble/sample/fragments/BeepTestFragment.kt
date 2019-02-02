@@ -104,35 +104,35 @@ class BeepTestFragment : XYBaseFragment() {
                                 startCount++
                                 updateUI()
                                 try {
-                                    val connectResult = value.connection {
-                                        log.info("BeepTest: ${value.id}: Connected")
+                                    val connectResult = value.connection(90000) {
+                                        log.info("BeepTest(Sync): ${value.id}: Connected")
                                         connectCount++
                                         updateUI()
                                         if (value.unlock().await().error == null) {
-                                            log.info("BeepTest: ${value.id}: Unlocked")
+                                            log.info("BeepTest(Sync): ${value.id}: Unlocked")
                                             unlockCount++
                                             updateUI()
                                             if (value.primary.buzzer.set(11).await().error == null) {
-                                                log.info("BeepTest: ${value.id}: Success")
+                                                log.info("BeepTest(Sync): ${value.id}: Success")
                                                 beepCount++
                                                 updateUI()
                                             } else {
-                                                log.error("BeepTest: ${value.id}: Failed")
+                                                log.error("BeepTest(Sync): ${value.id}: Failed")
                                             }
                                         } else {
-                                            log.error("BeepTest: ${value.id}: Failed to Unlock")
+                                            log.error("BeepTest(Sync): ${value.id}: Failed to Unlock")
                                         }
                                     }.await()
                                     if (connectResult.error != null) {
-                                        log.error("BeepTest: ${value.id}: Failed to Connect: ${connectResult.error?.message}")
+                                        log.error("BeepTest(Sync): ${value.id}: Failed to Connect: ${connectResult.error?.message}")
                                     }
                                 } catch (ex: Exception) {
-                                    log.error("BeepTest: ${ex.message}")
+                                    log.error("BeepTest(Sync): ${ex.message}")
                                 }
                             }
                         }
                         else -> {
-                            log.info("BeepTest: Not a XY 4")
+                            log.info("BeepTest(Sync): Not a XY 4")
                         }
                     }
                 }

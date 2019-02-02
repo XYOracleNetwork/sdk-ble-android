@@ -4,14 +4,11 @@ import android.bluetooth.BluetoothGatt
 import android.bluetooth.BluetoothGattCallback
 import android.bluetooth.BluetoothGattCharacteristic
 import kotlinx.coroutines.*
-import network.xyo.ble.gatt.peripheral.XYBluetoothError
-import network.xyo.ble.gatt.peripheral.XYBluetoothGattCallback
-import network.xyo.ble.gatt.peripheral.XYBluetoothResult
-import network.xyo.ble.gatt.peripheral.asyncBle
+import network.xyo.ble.gatt.peripheral.*
 import network.xyo.core.XYBase
 import kotlin.coroutines.resume
 
-class XYBluetoothGattWriteCharacteristic(val gatt: BluetoothGatt, val gattCallback: XYBluetoothGattCallback) {
+class XYBluetoothGattWriteCharacteristic(val gatt: XYThreadSafeBluetoothGatt, val gattCallback: XYBluetoothGattCallback) {
 
     private var _timeout = 15000L
 
@@ -59,15 +56,12 @@ class XYBluetoothGattWriteCharacteristic(val gatt: BluetoothGatt, val gattCallba
                     }
                     gattCallback.addListener(listenerName, listener)
                     GlobalScope.launch {
-                        asyncBle {
-                            val writeStarted = gatt.writeCharacteristic(characteristicToWrite)
-                            if (!writeStarted) {
-                                error = XYBluetoothError("writeCharacteristic: gatt.writeCharacteristic failed to start")
-                                gattCallback.removeListener(listenerName)
-                                cont.resume(null)
-                            }
-                            return@asyncBle XYBluetoothResult(writeStarted)
-                        }.await()
+                        val writeStarted = gatt.writeCharacteristic(characteristicToWrite).await()
+                        if (writeStarted != true) {
+                            error = XYBluetoothError("writeCharacteristic: gatt.writeCharacteristic failed to start")
+                            gattCallback.removeListener(listenerName)
+                            cont.resume(null)
+                        }
                     }
                 }
             }

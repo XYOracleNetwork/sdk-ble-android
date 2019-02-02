@@ -12,7 +12,7 @@ import unsigned.Ushort
 import java.util.*
 
 //this is a "fake" device that represents the device that is doing the scanning
-open class XYMobileBluetoothDevice(context: Context, scanResult: XYScanResult, hash:Int) : XYFinderBluetoothDevice(context, scanResult, hash) {
+open class XYMobileBluetoothDevice(context: Context, scanResult: XYScanResult, hash:String) : XYFinderBluetoothDevice(context, scanResult, hash) {
 
     init {
         //we use this since the user would prefer for it to survice a resinstall.  DO NOT USE for advertising!
@@ -42,7 +42,7 @@ open class XYMobileBluetoothDevice(context: Context, scanResult: XYScanResult, h
 
         fun create(context: Context, device: BluetoothDevice? = null) : XYMobileBluetoothDevice {
             val fakeScanResult = XYScanResultManual(device, -20, null, SystemClock.elapsedRealtimeNanos())
-            return XYMobileBluetoothDevice(context, fakeScanResult, FAMILY_UUID.hashCode())
+            return XYMobileBluetoothDevice(context, fakeScanResult, FAMILY_UUID.toString())
         }
     }
 }

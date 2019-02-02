@@ -84,13 +84,13 @@ class AlertFragment : XYDeviceFragment() {
             val conn = device.connection {
                 hasConnectionError = false
 
-                deviceData?.let {
+                /*deviceData?.let {
                     it.controlPoint = device.alertNotification.controlPoint.get().await().format()
                     it.unreadAlertStatus = device.alertNotification.unreadAlertStatus.get().await().format()
                     it.newAlert = device.alertNotification.newAlert.get().await().format()
                     it.supportedNewAlertCategory = device.alertNotification.supportedNewAlertCategory.get().await().format()
                     it.supportedUnreadAlertCategory = device.alertNotification.supportedUnreadAlertCategory.get().await().format()
-                }
+                }*/
             }
             conn.await()
 
@@ -106,13 +106,13 @@ class AlertFragment : XYDeviceFragment() {
             val conn = device.connection {
                 hasConnectionError = false
 
-                deviceData?.let {
+                /*deviceData?.let {
                     it.controlPoint = device.alertNotification.controlPoint.get().await().format()
                     it.unreadAlertStatus = device.alertNotification.unreadAlertStatus.get().await().format()
                     it.newAlert = device.alertNotification.newAlert.get().await().format()
                     it.supportedNewAlertCategory = device.alertNotification.supportedNewAlertCategory.get().await().format()
                     it.supportedUnreadAlertCategory = device.alertNotification.supportedUnreadAlertCategory.get().await().format()
-                }
+                }*/
 
             }
             conn.await()

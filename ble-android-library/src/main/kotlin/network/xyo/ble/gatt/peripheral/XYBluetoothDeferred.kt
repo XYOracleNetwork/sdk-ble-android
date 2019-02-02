@@ -12,24 +12,22 @@ fun <T> asyncBle(
         timeout: Long = 10000L,
         context: CoroutineContext = XYBluetoothBase.BluetoothThread,
         start: CoroutineStart = CoroutineStart.DEFAULT,
-        block: suspend CoroutineScope.() -> XYBluetoothResult<T>
-): Deferred<XYBluetoothResult<T>> {
+        block: suspend CoroutineScope.() -> T?
+): Deferred<T?> {
+    var result: T? = null
     XYLogging("asyncBle").info("Enter")
     return GlobalScope.async(context, start) {
         XYLogging("asyncBle").info("Global Scope")
-        var result: XYBluetoothResult<T>?
         try {
             result = withTimeout(timeout) {
                 XYLogging("asyncBle").info("withTimeout")
-                val r = block()
-                return@withTimeout r
+                return@withTimeout block()
             }
         } catch (ex: TimeoutCancellationException) {
             XYLogging("asyncBle").info("Excepted")
             XYLogging("asyncBle").error(ex)
-            result = XYBluetoothResult(XYBluetoothError("Timeout"))
         }
         XYLogging("asyncBle").info("Returning")
-        return@async result ?: XYBluetoothResult(XYBluetoothError("No Result"))
+        return@async result
     }
 }

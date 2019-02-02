@@ -41,7 +41,7 @@ class XYODeviceListActivity : XYOAppBaseActivity() {
 
     private fun openDevice(device: XYBluetoothDevice) {
         val intent = Intent(this, XYODeviceActivity::class.java)
-        intent.putExtra(XYODeviceActivity.EXTRA_DEVICEHASH, device.hashCode())
+        intent.putExtra(XYODeviceActivity.EXTRA_DEVICEHASH, device.hash)
         this.startActivity(intent)
     }
 
