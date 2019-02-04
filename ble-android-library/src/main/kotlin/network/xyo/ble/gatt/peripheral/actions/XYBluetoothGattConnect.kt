@@ -41,6 +41,19 @@ class XYBluetoothGattConnect(val device: BluetoothDevice): XYBase() {
     var state = BluetoothGatt.STATE_DISCONNECTED
     var status = BluetoothGatt.GATT_SUCCESS
 
+    //make suire we always close connections
+    protected fun finalize() {
+        val gatt = this.gatt
+        if (gatt != null) {
+            log.error("finalize: Finalize closing up connection!!!!")
+            GlobalScope.launch {
+                log.info("finalize: launch")
+                close().await()
+            }
+            this.gatt = null
+        }
+    }
+
     @TargetApi(Build.VERSION_CODES.KITKAT)
     private fun connectGatt19(
             context: Context,
@@ -206,6 +219,12 @@ class XYBluetoothGattConnect(val device: BluetoothDevice): XYBase() {
 
         log.info("connect: Returning[$value]")
         return@async XYBluetoothResult(value, error)
+    }
+
+    fun close() = GlobalScope.async {
+        gatt?.disconnect()?.await()
+        gatt?.close()?.await()
+        gatt = null
     }
 
     companion object: XYBase()

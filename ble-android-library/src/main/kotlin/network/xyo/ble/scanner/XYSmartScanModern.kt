@@ -35,11 +35,23 @@ class XYSmartScanModern(context: Context) : XYSmartScan(context) {
                     // this loop is for Android 7 to prevent getting nuked for scanning too much
                     GlobalScope.launch {
                         while (started()) {
-                            val filters = ArrayList<ScanFilter>()
-                            scanner.startScan(filters, getSettings(), callback)
-                            delay(60000 * 5) //5 minutes
-                            scanner.stopScan(callback)
-                            delay(500)
+                            if (status == Status.Enabled) {
+                                val filters = ArrayList<ScanFilter>()
+                                scanner.startScan(filters, getSettings(), callback)
+                                //prevent the pause after a restart from being 5 minutes
+                                //15 minutes
+                                for (i in 0..180) {
+                                    delay(5000) //5 seconds
+                                    if (status != Status.Enabled) {
+                                        break
+                                    }
+                                }
+                                scanner.stopScan(callback)
+                                delay(1000)
+                            } else {
+                                //wait for enabled status
+                                delay(5000)
+                            }
                         }
                     }
                 }
@@ -73,9 +85,9 @@ class XYSmartScanModern(context: Context) : XYSmartScan(context) {
         override fun onScanFailed(errorCode: Int) {
             super.onScanFailed(errorCode)
             log.error("onScanFailed: $errorCode, ${codeToScanFailed(errorCode)}", false)
-            /*if (ScanCallback.SCAN_FAILED_APPLICATION_REGISTRATION_FAILED == errorCode) {
+            if (ScanCallback.SCAN_FAILED_APPLICATION_REGISTRATION_FAILED == errorCode) {
                 restartBluetooth()
-            }*/
+            }
         }
 
         override fun onScanResult(callbackType: Int, result: ScanResult?) {
@@ -116,6 +128,7 @@ class XYSmartScanModern(context: Context) : XYSmartScan(context) {
     private fun getSettings23(): ScanSettings {
         return ScanSettings.Builder()
                 .setScanMode(android.bluetooth.le.ScanSettings.SCAN_MODE_BALANCED)
+                .setMatchMode(android.bluetooth.le.ScanSettings.MATCH_MODE_STICKY)
                 .build()
     }
 

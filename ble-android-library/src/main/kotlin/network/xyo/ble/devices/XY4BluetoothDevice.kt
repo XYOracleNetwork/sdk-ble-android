@@ -10,6 +10,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import network.xyo.ble.firmware.OtaFile
 import network.xyo.ble.firmware.OtaUpdate
+import network.xyo.ble.gatt.peripheral.XYBluetoothError
 import network.xyo.ble.gatt.peripheral.XYBluetoothResult
 import network.xyo.ble.scanner.XYScanResult
 import network.xyo.ble.services.dialog.SpotaService
@@ -57,32 +58,42 @@ open class XY4BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
 
     override val prefix = "xy:ibeacon"
 
-    override fun find() = GlobalScope.async {
-        return@async primary.buzzer.set(11).await()
+    override fun find() = connectionWithResult {
+        log.info("find")
+        if (unlock().await().error == null) {
+            val writeResult = primary.buzzer.set(11).await()
+            if (writeResult.error == null) {
+                return@connectionWithResult XYBluetoothResult(writeResult.value)
+            } else {
+                return@connectionWithResult XYBluetoothResult(-1, XYBluetoothError("Failed to Write Characteristic"))
+            }
+        } else {
+            return@connectionWithResult XYBluetoothResult(-1, XYBluetoothError("Failed to Unlock"))
+        }
     }
 
-    override fun stopFind() = GlobalScope.async {
-        return@async primary.buzzer.set(-1).await()
+    override fun stopFind() = connectionWithResult {
+        return@connectionWithResult primary.buzzer.set(-1).await()
     }
 
-    override fun lock() = GlobalScope.async {
-        return@async primary.lock.set(DefaultLockCode).await()
+    override fun lock() = connectionWithResult {
+        return@connectionWithResult primary.lock.set(DefaultLockCode).await()
     }
 
-    override fun unlock() = GlobalScope.async {
-        return@async primary.unlock.set(DefaultLockCode).await()
+    override fun unlock() = connectionWithResult {
+        return@connectionWithResult primary.unlock.set(DefaultLockCode).await()
     }
 
-    override fun stayAwake() = GlobalScope.async {
-        return@async primary.stayAwake.set(1).await()
+    override fun stayAwake() = connectionWithResult {
+        return@connectionWithResult primary.stayAwake.set(1).await()
     }
 
-    override fun fallAsleep() = GlobalScope.async {
-        return@async primary.stayAwake.set(0).await()
+    override fun fallAsleep() = connectionWithResult {
+        return@connectionWithResult primary.stayAwake.set(0).await()
     }
 
-    override fun batteryLevel() = GlobalScope.async {
-        return@async batteryService.level.get().await()
+    override fun batteryLevel() = connectionWithResult {
+        return@connectionWithResult batteryService.level.get().await()
     }
 
     override fun onDetect(scanResult: XYScanResult?) {

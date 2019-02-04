@@ -22,6 +22,7 @@ abstract class XYSmartScan(context: Context) : XYBluetoothBase(context) {
     var scanResultCount = 0
 
     enum class Status {
+        None,
         Enabled,
         BluetoothDisabled,
         BluetoothUnavailable,
@@ -54,9 +55,27 @@ abstract class XYSmartScan(context: Context) : XYBluetoothBase(context) {
 
     val devices = ConcurrentHashMap<String, XYBluetoothDevice>()
 
+    var restartingBluetooth = false
+
+    private val recevier = object: BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            if (BluetoothAdapter.ACTION_STATE_CHANGED == intent?.action) {
+                if (intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, -1) == BluetoothAdapter.STATE_OFF) {
+                    log.info(">>>> Bluetooth Adapter Disabled <<<<")
+                    if (restartingBluetooth && started()) {
+                        BluetoothAdapter.getDefaultAdapter().enable()
+                        restartingBluetooth = false
+                    }
+                } else {
+                    log.info(">>>> Bluetooth Adapter Enabled <<<<")
+                }
+            }
+        }
+    }
+
     init {
         devices[hostDevice.hash] = hostDevice
-
+        context.registerReceiver(recevier, IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED))
     }
 
     val status: Status
@@ -124,15 +143,6 @@ abstract class XYSmartScan(context: Context) : XYBluetoothBase(context) {
         }
     }
 
-    enum class BluetoothStatus {
-        None,
-        Enabled,
-        BluetoothUnavailable,
-        BluetoothUnstable,
-        BluetoothDisabled,
-        LocationDisabled
-    }
-
     enum class ScanFailed {
         Unknown,
         AlreadyStarted,
@@ -180,9 +190,8 @@ abstract class XYSmartScan(context: Context) : XYBluetoothBase(context) {
     protected fun restartBluetooth() {
         log.info(">>>>> restartBluetooth: Restarting Bluetooth Adapter <<<<<")
 
+        restartingBluetooth = true
         BluetoothAdapter.getDefaultAdapter().disable()
-        // Must call enable here. Using a BroadcastReceiver does not restart it correctly.
-        BluetoothAdapter.getDefaultAdapter().enable()
     }
 
     fun addListener(key: String, listener: Listener) {

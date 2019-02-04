@@ -172,11 +172,6 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, val has
                 }
             }
         }
-        if (_stayConnected && (connection?.state == BluetoothGatt.STATE_DISCONNECTED || connection?.state == null)) {
-            GlobalScope.launch {
-                connect().await()
-            }
-        }
     }
 
     override fun onConnectionStateChange(newState: Int) {

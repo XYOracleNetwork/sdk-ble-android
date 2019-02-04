@@ -110,6 +110,8 @@ class XYODeviceListActivity : XYOAppBaseActivity() {
             }
             XYSmartScan.Status.LocationDisabled -> {
             }
+            XYSmartScan.Status.None -> {
+            }
         }
     }
 
