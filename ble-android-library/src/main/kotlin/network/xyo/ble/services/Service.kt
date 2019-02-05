@@ -3,8 +3,6 @@ package network.xyo.ble.services
 import android.bluetooth.BluetoothGattCharacteristic
 import network.xyo.core.XYBase
 import network.xyo.ble.devices.XYBluetoothDevice
-import network.xyo.ble.gatt.XYBluetoothResult
-import kotlinx.coroutines.Deferred
 import java.util.*
 
 abstract class Service(val device: XYBluetoothDevice) : XYBase() {
@@ -38,8 +36,8 @@ abstract class Service(val device: XYBluetoothDevice) : XYBase() {
         fun set(value: ByteArray) = service.writeBytes(uuid, value)
     }
 
-    private fun readInt(characteristic: UUID, formatType: Int = BluetoothGattCharacteristic.FORMAT_UINT8, offset:Int = 0) = device.connectionWithResult {
-        return@connectionWithResult device.findAndReadCharacteristicInt(
+    private fun readInt(characteristic: UUID, formatType: Int = BluetoothGattCharacteristic.FORMAT_UINT8, offset:Int = 0) = device.connection {
+        return@connection device.findAndReadCharacteristicInt(
                 serviceUuid,
                 characteristic,
                 formatType,
@@ -47,9 +45,9 @@ abstract class Service(val device: XYBluetoothDevice) : XYBase() {
         ).await()
     }
 
-    private fun writeInt(characteristic: UUID, value: Int, formatType: Int = BluetoothGattCharacteristic.FORMAT_UINT8, offset:Int = 0) = device.connectionWithResult {
+    private fun writeInt(characteristic: UUID, value: Int, formatType: Int = BluetoothGattCharacteristic.FORMAT_UINT8, offset:Int = 0) = device.connection {
         log.info("writeInt: connection")
-        return@connectionWithResult device.findAndWriteCharacteristic(
+        return@connection device.findAndWriteCharacteristic(
                 serviceUuid,
                 characteristic,
                 value,
@@ -58,8 +56,8 @@ abstract class Service(val device: XYBluetoothDevice) : XYBase() {
         ).await()
     }
 
-    private fun readFloat(characteristic: UUID, formatType: Int = BluetoothGattCharacteristic.FORMAT_FLOAT, offset:Int = 0) = device.connectionWithResult {
-        return@connectionWithResult device.findAndReadCharacteristicFloat(
+    private fun readFloat(characteristic: UUID, formatType: Int = BluetoothGattCharacteristic.FORMAT_FLOAT, offset:Int = 0) = device.connection {
+        return@connection device.findAndReadCharacteristicFloat(
                 serviceUuid,
                 characteristic,
                 formatType,
@@ -67,8 +65,8 @@ abstract class Service(val device: XYBluetoothDevice) : XYBase() {
         ).await()
     }
 
-    private fun writeFloat(characteristic: UUID, mantissa: Int, exponent: Int, formatType: Int = BluetoothGattCharacteristic.FORMAT_FLOAT, offset:Int = 0) = device.connectionWithResult {
-        return@connectionWithResult device.findAndWriteCharacteristicFloat(
+    private fun writeFloat(characteristic: UUID, mantissa: Int, exponent: Int, formatType: Int = BluetoothGattCharacteristic.FORMAT_FLOAT, offset:Int = 0) = device.connection {
+        return@connection device.findAndWriteCharacteristicFloat(
                 serviceUuid,
                 characteristic,
                 mantissa,
@@ -78,39 +76,39 @@ abstract class Service(val device: XYBluetoothDevice) : XYBase() {
         ).await()
     }
 
-    private fun readString(characteristic: UUID, offset:Int = 0) = device.connectionWithResult {
-        return@connectionWithResult device.findAndReadCharacteristicString(
+    private fun readString(characteristic: UUID, offset:Int = 0) = device.connection {
+        return@connection device.findAndReadCharacteristicString(
                 serviceUuid,
                 characteristic,
                 offset
         ).await()
     }
 
-    private fun writeString(characteristic: UUID, value: String) = device.connectionWithResult {
-        return@connectionWithResult  device.findAndWriteCharacteristic(
+    private fun writeString(characteristic: UUID, value: String) = device.connection {
+        return@connection  device.findAndWriteCharacteristic(
                 serviceUuid,
                 characteristic,
                 value
         ).await()
     }
 
-    private fun enableNotify(characteristic: UUID, enabled: Boolean) = device.connectionWithResult {
-        return@connectionWithResult device.findAndWriteCharacteristicNotify(
+    private fun enableNotify(characteristic: UUID, enabled: Boolean) = device.connection {
+        return@connection device.findAndWriteCharacteristicNotify(
                 serviceUuid,
                 characteristic,
                 enabled
         ).await()
     }
 
-    private fun readBytes(characteristic: UUID) = device.connectionWithResult {
-        return@connectionWithResult  device.findAndReadCharacteristicBytes(
+    private fun readBytes(characteristic: UUID) = device.connection {
+        return@connection  device.findAndReadCharacteristicBytes(
                 serviceUuid,
                 characteristic
         ).await()
     }
 
-    private fun writeBytes(characteristic: UUID, bytes: ByteArray) = device.connectionWithResult {
-        return@connectionWithResult device.findAndWriteCharacteristic(
+    private fun writeBytes(characteristic: UUID, bytes: ByteArray) = device.connection {
+        return@connection device.findAndWriteCharacteristic(
                 serviceUuid,
                 characteristic,
                 bytes

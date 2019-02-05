@@ -87,7 +87,9 @@ open class XYBluetoothBase(context: Context) : XYBase() {
         val BluetoothThread: CoroutineContext
 
         init {
-            BluetoothThread = if (android.os.Build.VERSION.SDK_INT >= 21) {
+            BluetoothThread = if (android.os.Build.VERSION.SDK_INT >= 26) {
+                Executors.newSingleThreadExecutor().asCoroutineDispatcher()
+            } else if (android.os.Build.VERSION.SDK_INT >= 21) {
                 Executors.newSingleThreadExecutor().asCoroutineDispatcher()
             } else {
                 //if the device is before 20, use the UI thread for the BLE calls

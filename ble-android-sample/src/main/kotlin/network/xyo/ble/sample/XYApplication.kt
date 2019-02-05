@@ -35,6 +35,11 @@ class XYApplication : Application() {
         XY2BluetoothDevice.enable(true)
         XYGpsBluetoothDevice.enable(true)
 
+        Thread.setDefaultUncaughtExceptionHandler { t, e ->
+            log.error("Exception Thread: $t")
+            log.error(e)
+        }
+
         GlobalScope.launch {
             scanner.start()
         }

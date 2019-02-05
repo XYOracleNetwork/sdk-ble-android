@@ -9,13 +9,13 @@ import android.content.Context
 import android.os.ParcelUuid
 import kotlinx.coroutines.Deferred
 import network.xyo.ble.gatt.XYBluetoothBase
-import network.xyo.ble.gatt.XYBluetoothError
-import network.xyo.ble.gatt.XYBluetoothResult
-import network.xyo.ble.gatt.asyncBle
+import network.xyo.ble.gatt.peripheral.XYBluetoothError
+import network.xyo.ble.gatt.peripheral.XYBluetoothResult
+import network.xyo.ble.gatt.peripheral.asyncBle
 import kotlin.coroutines.suspendCoroutine
 import kotlin.coroutines.resume
 
-open class XYBluetoothAdvertiser(context: Context) : XYBluetoothBase(context){
+open class XYBluetoothAdvertiser(context: Context, var advertisingData : AdvertiseData?) : XYBluetoothBase(context){
     protected val listeners = HashMap<String, AdvertiseCallback>()
     private val bleAdvertiser : BluetoothLeAdvertiser? = bluetoothAdapter?.bluetoothLeAdvertiser
 
@@ -23,13 +23,7 @@ open class XYBluetoothAdvertiser(context: Context) : XYBluetoothBase(context){
     protected var advertisingTxLever : Int? = null
     protected var connectible : Boolean? = null
     protected var timeout : Int? = null
-
-    protected var includeDeviceName : Boolean? = null
     protected var includeTxPowerLevel : Boolean? = null
-    protected var primaryService : ParcelUuid? = null
-    protected var primaryServiceData : ByteArray? = null
-    protected var manufacturerId : Int? = null
-    protected var manufacturerData : ByteArray? = null
 
     fun addListener (key: String, listener : AdvertiseCallback) {
         listeners[key] = listener
@@ -53,9 +47,35 @@ open class XYBluetoothAdvertiser(context: Context) : XYBluetoothBase(context){
                         cont.resume(0)
                     }
                 })
-                bleAdvertiser.startAdvertising(getAdvertisingSettings(), getAdvertisingData(), primaryCallback)
+
+                bleAdvertiser.startAdvertising(makeAdvertisingSettings(), advertisingData, primaryCallback)
             }
-            return@asyncBle XYBluetoothResult(startCode)
+
+            if (startCode == 0) {
+                return@asyncBle XYBluetoothResult(startCode)
+            }
+
+            when(startCode) {
+                AdvertiseCallback.ADVERTISE_FAILED_ALREADY_STARTED -> {
+                    return@asyncBle XYBluetoothResult(startCode, XYBluetoothError("ADVERTISE_FAILED_ALREADY_STARTED"))
+                }
+
+                AdvertiseCallback.ADVERTISE_FAILED_DATA_TOO_LARGE -> {
+                    return@asyncBle XYBluetoothResult(startCode, XYBluetoothError("ADVERTISE_FAILED_DATA_TOO_LARGE"))
+                }
+
+                AdvertiseCallback.ADVERTISE_FAILED_FEATURE_UNSUPPORTED -> {
+                    return@asyncBle XYBluetoothResult(startCode, XYBluetoothError("ADVERTISE_FAILED_FEATURE_UNSUPPORTED"))
+                }
+
+                AdvertiseCallback.ADVERTISE_FAILED_INTERNAL_ERROR -> {
+                    return@asyncBle XYBluetoothResult(startCode, XYBluetoothError("ADVERTISE_FAILED_INTERNAL_ERROR"))
+                }
+
+                AdvertiseCallback.ADVERTISE_FAILED_TOO_MANY_ADVERTISERS -> {
+                    return@asyncBle XYBluetoothResult(startCode, XYBluetoothError("ADVERTISE_FAILED_TOO_MANY_ADVERTISERS"))
+                }
+            }
         }
 
         return@asyncBle XYBluetoothResult<Int>(XYBluetoothError("No bluetoothLe Advertiser!"))
@@ -65,181 +85,74 @@ open class XYBluetoothAdvertiser(context: Context) : XYBluetoothBase(context){
         bleAdvertiser?.stopAdvertising(primaryCallback)
     }
 
-    fun changeManufacturerData (newManufacturerData : ByteArray?, restart: Boolean) = asyncBle {
-        manufacturerData = newManufacturerData
+    /*private fun restart () : Deferred<XYBluetoothResult<Int>> {
+        stopAdvertising()
+        return startAdvertising()
+    }*/
 
-        if (restart) {
-            return@asyncBle restart().await()
-        }
-        return@asyncBle XYBluetoothResult(0, null)
-    }
-
-    fun changeManufacturerId (newManufacturerId : Int?, restart: Boolean) = asyncBle {
-        manufacturerId = newManufacturerId
-
-        if (restart) {
-            return@asyncBle restart().await()
-        }
-        return@asyncBle XYBluetoothResult(0, null)
-    }
-
-    fun changePrimaryServiceData (newPrimaryServiceData: ByteArray?, restart: Boolean) = asyncBle {
-        primaryServiceData = newPrimaryServiceData
-
-        if (restart) {
-            return@asyncBle restart().await()
-        }
-        return@asyncBle XYBluetoothResult(0, null)
-    }
-
-    fun changePrimaryService (newPrimaryService : ParcelUuid?, restart: Boolean) = asyncBle {
-        primaryService = newPrimaryService
-
-        if (restart) {
-            return@asyncBle restart().await()
-        }
-        return@asyncBle XYBluetoothResult(0, null)
-    }
-
-    fun changeIncludeTxPowerLevel (newIncludeTxPowerLevel : Boolean?, restart: Boolean) = asyncBle {
+    open fun changeIncludeTxPowerLevel (newIncludeTxPowerLevel : Boolean?) {
         includeTxPowerLevel = newIncludeTxPowerLevel
-
-        if (restart) {
-            return@asyncBle restart().await()
-        }
-        return@asyncBle XYBluetoothResult(0, null)
     }
 
-    fun changeIncludeDeviceName (newIncludeDeviceName : Boolean?, restart: Boolean) = asyncBle {
-        includeDeviceName = newIncludeDeviceName
-
-        if (restart) {
-            return@asyncBle restart().await()
-        }
-        return@asyncBle XYBluetoothResult(0, null)
-    }
-
-    fun changeContactable (newConnectible : Boolean?, restart : Boolean) = asyncBle {
+    open fun changeContactable (newConnectible : Boolean) {
         connectible = newConnectible
-
-        if (restart) {
-            return@asyncBle restart().await()
-        }
-        return@asyncBle XYBluetoothResult(0, null)
     }
 
-    fun changeTimeout (newTimeout : Int?, restart : Boolean) = asyncBle {
+    open fun changeTimeout (newTimeout : Int?)  {
         timeout = newTimeout
-
-        if (restart) {
-            return@asyncBle restart().await()
-        }
-        return@asyncBle XYBluetoothResult(0, null)
     }
 
-    fun changeAdvertisingMode (newAdvertisingMode : Int?, restart: Boolean) = asyncBle {
+    open fun changeAdvertisingMode (newAdvertisingMode : Int?) : Boolean {
         if (newAdvertisingMode != null) {
             if (!(newAdvertisingMode == ADVERTISE_MODE_BALANCED
                     || newAdvertisingMode == ADVERTISE_MODE_LOW_LATENCY
                     || newAdvertisingMode == ADVERTISE_MODE_LOW_POWER)) {
-                return@asyncBle XYBluetoothResult<Int>(XYBluetoothError("Invalid Advertising Mode"))
+                return false
             }
         }
         advertisingMode = newAdvertisingMode
 
-        if (restart) {
-            return@asyncBle restart().await()
-        }
-        return@asyncBle XYBluetoothResult(0, null)
+        return true
     }
 
-    fun changeAdvertisingTxLevel (newAdvertisingTxLevel : Int?, restart: Boolean) = asyncBle {
+    open fun changeAdvertisingTxLevel (newAdvertisingTxLevel : Int?) : Boolean {
         if (newAdvertisingTxLevel != null) {
             if (!(newAdvertisingTxLevel == ADVERTISE_TX_POWER_HIGH
                     || newAdvertisingTxLevel == ADVERTISE_TX_POWER_LOW
                     || newAdvertisingTxLevel == ADVERTISE_TX_POWER_MEDIUM
                     || newAdvertisingTxLevel == ADVERTISE_TX_POWER_ULTRA_LOW)) {
-                return@asyncBle XYBluetoothResult<Int>(XYBluetoothError("Invalid Advertising Tx Level"))
+                return false
             }
         }
+
         advertisingTxLever = newAdvertisingTxLevel
 
-        if (restart) {
-            return@asyncBle restart().await()
-        }
-        return@asyncBle XYBluetoothResult(0, null)
+        return true
     }
 
-    private fun restart () : Deferred<XYBluetoothResult<Int>> {
-        stopAdvertising()
-        return startAdvertising()
-    }
 
-    private fun getAdvertisingSettings() : AdvertiseSettings {
-        return makeAdvertisingSettings(advertisingMode, connectible, timeout, advertisingTxLever)
-    }
-
-    private fun getAdvertisingData() : AdvertiseData {
-        return makeAdvertisingData(includeDeviceName, includeTxPowerLevel, primaryService, primaryServiceData, manufacturerId, manufacturerData)
-    }
-
-    private fun makeAdvertisingSettings (advertisingMode : Int?,
-                                         connectible : Boolean?,
-                                         timeout: Int?,
-                                         advertisingTxLever : Int?) : AdvertiseSettings {
-
+    protected open fun makeAdvertisingSettings () : AdvertiseSettings {
         val builder = AdvertiseSettings.Builder()
 
-        if (advertisingMode != null) {
-            builder.setAdvertiseMode(advertisingMode)
+        advertisingMode?.let {
+            builder.setAdvertiseMode(it)
         }
 
-        if (connectible != null) {
-            builder.setConnectable(connectible)
+        connectible?.let {
+            builder.setConnectable(it)
         }
 
-        if (timeout != null) {
-            builder.setTimeout(timeout)
+        timeout?.let {
+            builder.setTimeout(it)
         }
 
-        if (advertisingTxLever != null) {
-            builder.setTxPowerLevel(advertisingTxLever)
-        }
-
-        return builder.build()
-    }
-
-    private fun makeAdvertisingData (includeDeviceName : Boolean?,
-                                     includeTxPowerLevel : Boolean?,
-                                     primaryService : ParcelUuid?,
-                                     primaryServiceData : ByteArray?,
-                                     manufacturerId : Int?,
-                                     manufacturerData : ByteArray?) : AdvertiseData {
-
-        val builder = AdvertiseData.Builder()
-
-        if (includeDeviceName != null) {
-            builder.setIncludeDeviceName(includeDeviceName)
-        }
-
-        if (includeTxPowerLevel != null) {
-            builder.setIncludeTxPowerLevel(includeTxPowerLevel)
-        }
-
-        if (primaryService != null) {
-            builder.addServiceUuid(primaryService)
-
-            if (primaryServiceData != null) {
-                builder.addServiceData(primaryService, primaryServiceData)
-            }
-        }
-
-        if (manufacturerId != null) {
-            builder.addManufacturerData(manufacturerId, manufacturerData)
+        advertisingTxLever?.let {
+            builder.setTxPowerLevel(it)
         }
 
         return builder.build()
     }
+
 
     private val primaryCallback = object : AdvertiseCallback() {
         override fun onStartFailure(errorCode: Int) {

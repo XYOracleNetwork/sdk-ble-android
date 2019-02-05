@@ -15,8 +15,9 @@ import network.xyo.core.XYBase
 import java.nio.ByteBuffer
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
+import kotlin.math.absoluteValue
 
-open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, private val hash: Int) : XYBluetoothGattClient(context, device, false, null, null, null, null) {
+open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, val hash: String) : XYBluetoothGattClient(context, device, false, null, null, null, null) {
 
     //hash - the reason for the hash system is that some devices rotate MAC addresses or polymorph in other ways
     //the user generally wants to treat a single physical device as a single logical device so the
@@ -55,6 +56,11 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, private
             _name = name ?: _name
         }
 
+    open val connected: Boolean
+        get() {
+            return connection?.state == BluetoothGatt.STATE_CONNECTED
+        }
+
     open val id: String
         get() {
             return ""
@@ -67,7 +73,17 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, private
     private var checkingForExit = false
 
     override fun hashCode(): Int {
-        return hash
+        return hash.hashCode()
+    }
+
+    override  fun updateBluetoothDevice(device: BluetoothDevice?) {
+
+        if (device?.address != this.device?.address || this.device == null) {
+            //log.info("updateBluetoothDevice: Updating Device [$hash]")
+            //log.info("updateBluetoothDevice: Updating Device [new = ${device?.address}, old = ${this.device?.address}]")
+            //log.info("updateBluetoothDevice: Updating Device [new = 0x${device?.hashCode()?.absoluteValue?.toString(16)}, old = 0x${this.device?.hashCode()?.absoluteValue?.toString(16)}]")
+            this.device = device
+        }
     }
 
     //this should only be called from the onEnter function so that
@@ -129,7 +145,9 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, private
                 }
             }
         }
-        close()
+        if (!closed) {
+            close()
+        }
     }
 
     override fun onDetect(scanResult: XYScanResult?) {
@@ -153,9 +171,6 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, private
                     listener.detected(this@XYBluetoothDevice)
                 }
             }
-        }
-        if (_stayConnected && connectionState == ConnectionState.Disconnected) {
-            connect()
         }
     }
 
@@ -241,7 +256,7 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, private
         // cancel the checkForExit routine so we don't get notifications after service is stopped
         var cancelNotifications: Boolean = false
 
-        private fun getDevicesFromManufacturers(context: Context, scanResult: XYScanResult, globalDevices: ConcurrentHashMap<Int, XYBluetoothDevice>, newDevices: HashMap<Int, XYBluetoothDevice>) {
+        private fun getDevicesFromManufacturers(context: Context, scanResult: XYScanResult, globalDevices: ConcurrentHashMap<String, XYBluetoothDevice>, newDevices: HashMap<String, XYBluetoothDevice>) {
             for ((manufacturerId, creator) in manufacturerToCreator) {
                 val bytes = scanResult.scanRecord?.getManufacturerSpecificData(manufacturerId)
                 if (bytes != null) {
@@ -250,7 +265,7 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, private
             }
         }
 
-        private fun getDevicesFromServices(context: Context, scanResult: XYScanResult, globalDevices: ConcurrentHashMap<Int, XYBluetoothDevice>, newDevices: HashMap<Int, XYBluetoothDevice>) {
+        private fun getDevicesFromServices(context: Context, scanResult: XYScanResult, globalDevices: ConcurrentHashMap<String, XYBluetoothDevice>, newDevices: HashMap<String, XYBluetoothDevice>) {
             for ((uuid, creator) in serviceToCreator) {
                 if (scanResult.scanRecord?.serviceUuids != null) {
                     if (scanResult.scanRecord?.serviceUuids?.contains(ParcelUuid(uuid)) == true) {
@@ -261,7 +276,7 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, private
         }
 
         internal val creator = object : XYCreator() {
-            override fun getDevicesFromScanResult(context: Context, scanResult: XYScanResult, globalDevices: ConcurrentHashMap<Int, XYBluetoothDevice>, foundDevices: HashMap<Int, XYBluetoothDevice>) {
+            override fun getDevicesFromScanResult(context: Context, scanResult: XYScanResult, globalDevices: ConcurrentHashMap<String, XYBluetoothDevice>, foundDevices: HashMap<String, XYBluetoothDevice>) {
 
                 getDevicesFromServices(context, scanResult, globalDevices, foundDevices)
                 getDevicesFromManufacturers(context, scanResult, globalDevices, foundDevices)
@@ -271,7 +286,7 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, private
 
                     val device = scanResult.device
 
-                    if (canCreate && hash != null && device != null) {
+                    if (canCreate && device != null) {
                         val createdDevice = XYBluetoothDevice(context, device, hash)
                         foundDevices[hash] = createdDevice
                         globalDevices[hash] = createdDevice
@@ -280,8 +295,8 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, private
             }
         }
 
-        internal fun hashFromScanResult(scanResult: XYScanResult): Int? {
-            return scanResult.address.hashCode()
+        internal fun hashFromScanResult(scanResult: XYScanResult): String {
+            return scanResult.address
         }
 
     }

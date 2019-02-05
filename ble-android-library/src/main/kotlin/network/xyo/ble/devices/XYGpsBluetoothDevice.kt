@@ -1,12 +1,13 @@
 package network.xyo.ble.devices
 
 import android.bluetooth.BluetoothGatt
+import android.bluetooth.BluetoothGattCallback
 import android.bluetooth.BluetoothGattCharacteristic
 import android.content.Context
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import network.xyo.ble.gatt.XYBluetoothResult
+import network.xyo.ble.gatt.peripheral.XYBluetoothResult
 import network.xyo.ble.scanner.XYScanResult
 import network.xyo.ble.services.standard.*
 import network.xyo.ble.services.xy3.*
@@ -15,7 +16,7 @@ import java.nio.ByteBuffer
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 
-open class XYGpsBluetoothDevice(context: Context, scanResult: XYScanResult, hash: Int) : XYFinderBluetoothDevice(context, scanResult, hash) {
+open class XYGpsBluetoothDevice(context: Context, scanResult: XYScanResult, hash: String) : XYFinderBluetoothDevice(context, scanResult, hash) {
 
     val alertNotification = AlertNotificationService(this)
     val batteryService = BatteryService(this)
@@ -33,10 +34,8 @@ open class XYGpsBluetoothDevice(context: Context, scanResult: XYScanResult, hash
     val extendedControlService = ExtendedControlService(this)
     val sensorService = SensorService(this)
 
-    private val buttonListener = object: XYBluetoothGattCallback() {
+    private val buttonListener = object: BluetoothGattCallback() {
         override fun onCharacteristicChanged(gatt: BluetoothGatt?, characteristic: BluetoothGattCharacteristic?) {
-            super.onCharacteristicChanged(gatt, characteristic)
-
             super.onCharacteristicChanged(gatt, characteristic)
             if (characteristic?.uuid == controlService.button.uuid) {
                 //reportButtonPressed(characteristic.getIntValue(BluetoothGattCharacteristic.FORMAT_UINT8, 0))
@@ -46,7 +45,7 @@ open class XYGpsBluetoothDevice(context: Context, scanResult: XYScanResult, hash
     }
 
     init {
-        addGattListener(className, buttonListener)
+        centralCallback.addListener(className, buttonListener)
     }
 
     override val prefix = "xy:gps"
@@ -138,11 +137,9 @@ open class XYGpsBluetoothDevice(context: Context, scanResult: XYScanResult, hash
         }
 
         internal val creator = object : XYCreator() {
-            override fun getDevicesFromScanResult(context: Context, scanResult: XYScanResult, globalDevices: ConcurrentHashMap<Int, XYBluetoothDevice>, foundDevices: HashMap<Int, XYBluetoothDevice>) {
+            override fun getDevicesFromScanResult(context: Context, scanResult: XYScanResult, globalDevices: ConcurrentHashMap<String, XYBluetoothDevice>, foundDevices: HashMap<String, XYBluetoothDevice>) {
                 val hash = hashFromScanResult(scanResult)
-                if (hash != null) {
-                    foundDevices[hash] = globalDevices[hash] ?: XYGpsBluetoothDevice(context, scanResult, hash)
-                }
+                foundDevices[hash] = globalDevices[hash] ?: XYGpsBluetoothDevice(context, scanResult, hash)
             }
         }
 
@@ -166,11 +163,11 @@ open class XYGpsBluetoothDevice(context: Context, scanResult: XYScanResult, hash
             }
         }
 
-        fun hashFromScanResult(scanResult: XYScanResult): Int? {
+        fun hashFromScanResult(scanResult: XYScanResult): String {
             val uuid = iBeaconUuidFromScanResult(scanResult)
             val major = majorFromScanResult(scanResult)
             val minor = minorFromScanResult(scanResult)
-            return "$uuid:$major:$minor".hashCode()
+            return "$uuid:$major:$minor"
         }
     }
 }

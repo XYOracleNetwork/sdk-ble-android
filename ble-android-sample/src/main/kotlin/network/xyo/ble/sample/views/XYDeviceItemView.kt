@@ -33,7 +33,7 @@ class XYDeviceItemView(context: Context, attrs: AttributeSet) : RelativeLayout(c
 
     fun openDevice(device: XYBluetoothDevice) {
         val intent = Intent(context, XYODeviceActivity::class.java)
-        intent.putExtra(XYODeviceActivity.EXTRA_DEVICEHASH, device.hashCode())
+        intent.putExtra(XYODeviceActivity.EXTRA_DEVICEHASH, device.hash)
         context.startActivity(intent)
     }
 
@@ -41,7 +41,7 @@ class XYDeviceItemView(context: Context, attrs: AttributeSet) : RelativeLayout(c
         post {
             text_family.text = device?.javaClass?.simpleName
             text_name.text = device?.name
-            text_connected.text = (device?.connectionState == XYBluetoothGattBase.ConnectionState.Connected).toString()
+            text_connected.text = (device?.connected == true).toString()
             text_address.text = device?.address
             text_rssi.text = device?.rssi.toString()
 

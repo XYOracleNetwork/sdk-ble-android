@@ -1,17 +1,17 @@
 package network.xyo.ble.scanner
 
 import android.content.Context
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
 
 class XYSmartScanLegacy(context: Context) : XYSmartScan(context) {
-    override suspend fun start(): Boolean {
+    override fun start() = GlobalScope.async {
         super.start()
-
-        return true
+        return@async true
     }
 
-    override suspend fun stop(): Boolean {
+    override fun stop() = GlobalScope.async {
         super.stop()
-
-        return true
+        return@async true
     }
 }

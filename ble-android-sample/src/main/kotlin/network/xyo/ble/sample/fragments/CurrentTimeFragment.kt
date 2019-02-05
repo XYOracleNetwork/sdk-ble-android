@@ -10,10 +10,13 @@ import kotlinx.coroutines.launch
 import network.xyo.ble.devices.XY2BluetoothDevice
 import network.xyo.ble.devices.XY3BluetoothDevice
 import network.xyo.ble.devices.XY4BluetoothDevice
+import network.xyo.ble.devices.XYBluetoothDevice
+import network.xyo.ble.gatt.peripheral.XYBluetoothResult
 import network.xyo.ble.sample.R
+import network.xyo.ble.sample.XYDeviceData
 import network.xyo.ui.ui
 
-class CurrentTimeFragment : XYAppBaseFragment() {
+class CurrentTimeFragment : XYDeviceFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -32,7 +35,7 @@ class CurrentTimeFragment : XYAppBaseFragment() {
     override fun onResume() {
         super.onResume()
 
-        if (activity?.data?.currentTime.isNullOrEmpty() && activity?.isBusy() == false) {
+        if (deviceData?.currentTime.isNullOrEmpty() && progressListener?.isInProgress() == false) {
             setTimeValues()
         } else {
             updateUI()
@@ -42,26 +45,26 @@ class CurrentTimeFragment : XYAppBaseFragment() {
 
     private fun updateUI() {
         ui {
-            activity?.hideProgressSpinner()
+            progressListener?.hideProgress()
 
-            text_currentTime?.text = activity?.data?.currentTime
-            text_localTimeInformation?.text = activity?.data?.localTimeInformation
-            text_referenceTimeInformation?.text = activity?.data?.referenceTimeInformation
+            text_currentTime?.text = deviceData?.currentTime
+            text_localTimeInformation?.text = deviceData?.localTimeInformation
+            text_referenceTimeInformation?.text = deviceData?.referenceTimeInformation
         }
     }
 
     private fun setTimeValues() {
         ui {
-            activity?.showProgressSpinner()
+            progressListener?.showProgress()
         }
 
-        when (activity?.device) {
+        when (device) {
             is XY4BluetoothDevice -> {
-                val x4 = (activity?.device as? XY4BluetoothDevice)
+                val x4 = (device as? XY4BluetoothDevice)
                 x4?.let { getXY4Values(it) }
             }
             is XY3BluetoothDevice -> {
-                val x3 = (activity?.device as? XY3BluetoothDevice)
+                val x3 = (device as? XY3BluetoothDevice)
                 x3?.let { getXY3Values(it) }
             }
             is XY2BluetoothDevice -> {
@@ -80,11 +83,13 @@ class CurrentTimeFragment : XYAppBaseFragment() {
             val conn = device.connection {
                 hasConnectionError = false
 
-                activity?.data?.let {
+                deviceData?.let {
                     it.currentTime = device.currentTimeService.currentTime.get().await().format()
                     it.localTimeInformation = device.currentTimeService.localTimeInformation.get().await().format()
                     it.referenceTimeInformation = device.currentTimeService.referenceTimeInformation.get().await().format()
                 }
+
+                return@connection XYBluetoothResult(true)
 
             }
             conn.await()
@@ -102,11 +107,13 @@ class CurrentTimeFragment : XYAppBaseFragment() {
             val conn = device.connection {
                 hasConnectionError = false
 
-                activity?.data?.let {
+                deviceData?.let {
                     it.currentTime = device.currentTimeService.currentTime.get().await().format()
                     it.localTimeInformation = device.currentTimeService.localTimeInformation.get().await().format()
                     it.referenceTimeInformation = device.currentTimeService.referenceTimeInformation.get().await().format()
                 }
+
+                return@connection XYBluetoothResult(true)
 
             }
             conn.await()
@@ -120,6 +127,13 @@ class CurrentTimeFragment : XYAppBaseFragment() {
 
         fun newInstance() =
                 CurrentTimeFragment()
+
+        fun newInstance (device: XYBluetoothDevice?, deviceData : XYDeviceData?) : CurrentTimeFragment {
+            val frag = CurrentTimeFragment()
+            frag.device = device
+            frag.deviceData = deviceData
+            return frag
+        }
     }
 
 }

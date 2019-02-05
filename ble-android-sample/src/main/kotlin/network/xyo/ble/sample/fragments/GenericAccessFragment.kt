@@ -10,10 +10,13 @@ import kotlinx.coroutines.launch
 import network.xyo.ble.devices.XY2BluetoothDevice
 import network.xyo.ble.devices.XY3BluetoothDevice
 import network.xyo.ble.devices.XY4BluetoothDevice
+import network.xyo.ble.devices.XYBluetoothDevice
+import network.xyo.ble.gatt.peripheral.XYBluetoothResult
 import network.xyo.ble.sample.R
+import network.xyo.ble.sample.XYDeviceData
 import network.xyo.ui.ui
 
-class GenericAccessFragment : XYAppBaseFragment() {
+class GenericAccessFragment : XYDeviceFragment() {
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -33,7 +36,7 @@ class GenericAccessFragment : XYAppBaseFragment() {
     override fun onResume() {
         super.onResume()
 
-        if (activity?.data?.deviceName.isNullOrEmpty() && activity?.isBusy() == false) {
+        if (deviceData?.deviceName.isNullOrEmpty() && progressListener?.isInProgress() == false) {
             setGenericAccessValues()
         } else {
             updateUI()
@@ -42,32 +45,32 @@ class GenericAccessFragment : XYAppBaseFragment() {
 
     private fun updateUI() {
         ui {
-            activity?.hideProgressSpinner()
+            progressListener?.hideProgress()
 
-            text_device_name?.text = activity?.data?.deviceName
-            text_appearance?.text = activity?.data?.appearance
-            text_privacy_flag?.text = activity?.data?.privacyFlag
-            text_reconnection_address?.text = activity?.data?.reconnectionAddress
-            text_peripheral_params?.text = activity?.data?.peripheralPreferredConnectionParameters
+            text_device_name?.text = deviceData?.deviceName
+            text_appearance?.text = deviceData?.appearance
+            text_privacy_flag?.text = deviceData?.privacyFlag
+            text_reconnection_address?.text = deviceData?.reconnectionAddress
+            text_peripheral_params?.text = deviceData?.peripheralPreferredConnectionParameters
         }
     }
 
     private fun setGenericAccessValues() {
         ui {
-            activity?.showProgressSpinner()
+            progressListener?.showProgress()
         }
 
-        when (activity?.device) {
+        when (device) {
             is XY4BluetoothDevice -> {
-                val x4 = (activity?.device as? XY4BluetoothDevice)
+                val x4 = (device as? XY4BluetoothDevice)
                 x4?.let { getXY4Values(it) }
             }
             is XY3BluetoothDevice -> {
-                val x3 = (activity?.device as? XY3BluetoothDevice)
+                val x3 = (device as? XY3BluetoothDevice)
                 x3?.let { getXY3Values(it) }
             }
             is XY2BluetoothDevice -> {
-                val x2 = (activity?.device as? XY2BluetoothDevice)
+                val x2 = (device as? XY2BluetoothDevice)
                 x2?.let { getXY2Values(it) }
             }
             else -> {
@@ -84,26 +87,28 @@ class GenericAccessFragment : XYAppBaseFragment() {
                 hasConnectionError = false
 
                 device.genericAccessService.deviceName.get().await().let { it ->
-                    activity?.data?.deviceName = "${it.value ?: it.error?.message ?: "Error"}"
+                    deviceData?.deviceName = "${it.value ?: it.error?.message ?: "Error"}"
                 }
 
                 device.genericAccessService.appearance.get().await().let { it ->
-                    activity?.data?.appearance = "${it.value ?: it.error?.message ?: "Error"}"
+                    deviceData?.appearance = "${it.value ?: it.error?.message ?: "Error"}"
                 }
 
                 device.genericAccessService.privacyFlag.get().await().let { it ->
-                    activity?.data?.privacyFlag = "${it.value ?: it.error?.message ?: "Error"}"
+                    deviceData?.privacyFlag = "${it.value ?: it.error?.message ?: "Error"}"
                 }
 
                 device.genericAccessService.reconnectionAddress.get().await().let { it ->
-                    activity?.data?.reconnectionAddress = "${it.value ?: it.error?.message
+                    deviceData?.reconnectionAddress = "${it.value ?: it.error?.message
                     ?: "Error"}"
                 }
 
                 device.genericAccessService.peripheralPreferredConnectionParameters.get().await().let { it ->
-                    activity?.data?.peripheralPreferredConnectionParameters = "${it.value
+                    deviceData?.peripheralPreferredConnectionParameters = "${it.value
                             ?: it.error?.message ?: "Error"}"
                 }
+
+                return@connection XYBluetoothResult(true)
 
             }
             conn.await()
@@ -121,26 +126,28 @@ class GenericAccessFragment : XYAppBaseFragment() {
                 hasConnectionError = false
 
                 device.genericAccessService.deviceName.get().await().let { it ->
-                    activity?.data?.deviceName = "${it.value ?: it.error?.message ?: "Error"}"
+                    deviceData?.deviceName = "${it.value ?: it.error?.message ?: "Error"}"
                 }
 
                 device.genericAccessService.appearance.get().await().let { it ->
-                    activity?.data?.appearance = "${it.value ?: it.error?.message ?: "Error"}"
+                    deviceData?.appearance = "${it.value ?: it.error?.message ?: "Error"}"
                 }
 
                 device.genericAccessService.privacyFlag.get().await().let { it ->
-                    activity?.data?.privacyFlag = "${it.value ?: it.error?.message ?: "Error"}"
+                    deviceData?.privacyFlag = "${it.value ?: it.error?.message ?: "Error"}"
                 }
 
                 device.genericAccessService.reconnectionAddress.get().await().let { it ->
-                    activity?.data?.reconnectionAddress = "${it.value ?: it.error?.message
+                    deviceData?.reconnectionAddress = "${it.value ?: it.error?.message
                     ?: "Error"}"
                 }
 
                 device.genericAccessService.peripheralPreferredConnectionParameters.get().await().let { it ->
-                    activity?.data?.peripheralPreferredConnectionParameters = "${it.value
+                    deviceData?.peripheralPreferredConnectionParameters = "${it.value
                             ?: it.error?.message ?: "Error"}"
                 }
+
+                return@connection XYBluetoothResult(true)
 
             }
             conn.await()
@@ -158,26 +165,28 @@ class GenericAccessFragment : XYAppBaseFragment() {
                 hasConnectionError = false
 
                 device.genericAccessService.deviceName.get().await().let { it ->
-                    activity?.data?.deviceName = "${it.value ?: it.error?.message ?: "Error"}"
+                    deviceData?.deviceName = "${it.value ?: it.error?.message ?: "Error"}"
                 }
 
                 device.genericAccessService.appearance.get().await().let { it ->
-                    activity?.data?.appearance = "${it.value ?: it.error?.message ?: "Error"}"
+                    deviceData?.appearance = "${it.value ?: it.error?.message ?: "Error"}"
                 }
 
                 device.genericAccessService.privacyFlag.get().await().let { it ->
-                    activity?.data?.privacyFlag = "${it.value ?: it.error?.message ?: "Error"}"
+                    deviceData?.privacyFlag = "${it.value ?: it.error?.message ?: "Error"}"
                 }
 
                 device.genericAccessService.reconnectionAddress.get().await().let { it ->
-                    activity?.data?.reconnectionAddress = "${it.value ?: it.error?.message
+                    deviceData?.reconnectionAddress = "${it.value ?: it.error?.message
                     ?: "Error"}"
                 }
 
                 device.genericAccessService.peripheralPreferredConnectionParameters.get().await().let { it ->
-                    activity?.data?.peripheralPreferredConnectionParameters = "${it.value
+                    deviceData?.peripheralPreferredConnectionParameters = "${it.value
                             ?: it.error?.message ?: "Error"}"
                 }
+
+                return@connection XYBluetoothResult(true)
 
             }
             conn.await()
@@ -191,5 +200,12 @@ class GenericAccessFragment : XYAppBaseFragment() {
 
         fun newInstance() =
                 GenericAccessFragment()
+
+        fun newInstance (device: XYBluetoothDevice?, deviceData : XYDeviceData?) : GenericAccessFragment {
+            val frag = GenericAccessFragment()
+            frag.device = device
+            frag.deviceData = deviceData
+            return frag
+        }
     }
 }

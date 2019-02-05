@@ -9,7 +9,7 @@ import java.nio.ByteBuffer
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 
-open class XYIBeaconBluetoothDevice(context: Context, scanResult: XYScanResult?, hash: Int) :
+open class XYIBeaconBluetoothDevice(context: Context, scanResult: XYScanResult?, hash: String) :
     XYBluetoothDevice(context, scanResult?.device, hash) {
 
     protected val _uuid: UUID
@@ -105,14 +105,14 @@ open class XYIBeaconBluetoothDevice(context: Context, scanResult: XYScanResult?,
             }
         }
 
-        internal val uuidToCreator = HashMap<UUID, XYCreator>()
+        val uuidToCreator = HashMap<UUID, XYCreator>()
 
         internal val creator = object : XYCreator() {
             override fun getDevicesFromScanResult(
                 context: Context,
                 scanResult: XYScanResult,
-                globalDevices: ConcurrentHashMap<Int, XYBluetoothDevice>,
-                foundDevices: HashMap<Int, XYBluetoothDevice>
+                globalDevices: ConcurrentHashMap<String, XYBluetoothDevice>,
+                foundDevices: HashMap<String, XYBluetoothDevice>
             ) {
                 for ((uuid, creator) in uuidToCreator) {
                     val bytes =
@@ -127,27 +127,38 @@ open class XYIBeaconBluetoothDevice(context: Context, scanResult: XYScanResult?,
 
                 val hash = hashFromScanResult(scanResult)
 
-                if (canCreate && hash != null) {
+                if (canCreate) {
                     foundDevices[hash] = globalDevices[hash] ?: XYIBeaconBluetoothDevice(context, scanResult, hash)
                 }
             }
         }
 
-        fun hashFromScanResult(scanResult: XYScanResult): Int? {
-            val data = scanResult.scanRecord?.getManufacturerSpecificData(XYAppleBluetoothDevice.MANUFACTURER_ID)
-
-            // check size before reading advertisement
-            if (data != null && data.size > 22) {
-
-                //mask the minor
-                data[21] = data[21].toInt().and(0xfff0).toByte()
-
-                //mask the power
-                data[22] = data[22].toInt().and(0x00).toByte()
-
-                return data.contentHashCode()
+        private fun majorFromScanResult(scanResult: XYScanResult): Ushort? {
+            val bytes = scanResult.scanRecord?.getManufacturerSpecificData(XYAppleBluetoothDevice.MANUFACTURER_ID)
+            return if (bytes != null) {
+                val buffer = ByteBuffer.wrap(bytes)
+                Ushort(buffer.getShort(18).toInt())
+            } else {
+                null
             }
-            return scanResult.address.hashCode()
+        }
+
+        private fun minorFromScanResult(scanResult: XYScanResult): Ushort? {
+            val bytes = scanResult.scanRecord?.getManufacturerSpecificData(XYAppleBluetoothDevice.MANUFACTURER_ID)
+            return if (bytes != null) {
+                val buffer = ByteBuffer.wrap(bytes)
+                Ushort(buffer.getShort(20).toInt())
+            } else {
+                null
+            }
+        }
+
+        internal fun hashFromScanResult(scanResult: XYScanResult): String {
+            val uuid = iBeaconUuidFromScanResult(scanResult)
+            val major = majorFromScanResult(scanResult)
+            val minor = minorFromScanResult(scanResult)
+
+            return "$uuid:$major:$minor"
         }
     }
 }

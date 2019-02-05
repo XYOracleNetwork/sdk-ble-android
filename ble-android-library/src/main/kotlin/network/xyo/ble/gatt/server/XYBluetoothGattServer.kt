@@ -4,6 +4,9 @@ import android.bluetooth.*
 import android.content.Context
 import android.os.Build
 import network.xyo.ble.gatt.*
+import network.xyo.ble.gatt.peripheral.XYBluetoothError
+import network.xyo.ble.gatt.peripheral.XYBluetoothResult
+import network.xyo.ble.gatt.peripheral.asyncBle
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.collections.HashMap
@@ -122,10 +125,6 @@ open class XYBluetoothGattServer(context: Context) : XYBluetoothBase(context) {
     private fun sendResponseWithSuccess(byteArray: ByteArray?, requestId: Int, device: BluetoothDevice?, offset : Int?) {
         if (androidGattServer != null && device != null) {
             if (isDeviceConnected(device)) {
-                if (byteArray?.size ?: 0 > 100) {
-                    androidGattServer?.sendResponse(device, requestId, BluetoothGatt.GATT_SUCCESS, offset ?: 0, byteArray?.copyOfRange(0, 40))
-                    return
-                }
                 androidGattServer?.sendResponse(device, requestId, BluetoothGatt.GATT_SUCCESS, offset ?: 0, byteArray)
             }
         }

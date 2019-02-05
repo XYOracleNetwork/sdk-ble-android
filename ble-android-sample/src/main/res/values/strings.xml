@@ -120,5 +120,11 @@
 
     <string name="server">Server</string>
     <string name="test">Test</string>
+    <string name="ibeacon_advertiser">IBeacon Advertiser</string>
+    <string name="standard_advertiser">Standard Advertiser</string>
+    <string name="ibeacon_major">Major</string>
+    <string name="ibeacon_minor">Minor</string>
+    <string name="ibeacon_id">ID</string>
+    <string name="is_ibeacon">Is IBeacon</string>
 
 </resources>

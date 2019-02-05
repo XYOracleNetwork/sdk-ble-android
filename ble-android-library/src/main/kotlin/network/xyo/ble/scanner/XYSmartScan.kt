@@ -8,6 +8,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.location.LocationManager
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import network.xyo.ble.devices.XYBluetoothDevice
 import network.xyo.ble.devices.XYMobileBluetoothDevice
@@ -21,6 +22,7 @@ abstract class XYSmartScan(context: Context) : XYBluetoothBase(context) {
     var scanResultCount = 0
 
     enum class Status {
+        None,
         Enabled,
         BluetoothDisabled,
         BluetoothUnavailable,
@@ -51,11 +53,29 @@ abstract class XYSmartScan(context: Context) : XYBluetoothBase(context) {
 
     val hostDevice = XYMobileBluetoothDevice.create(context)
 
-    val devices = ConcurrentHashMap<Int, XYBluetoothDevice>()
+    val devices = ConcurrentHashMap<String, XYBluetoothDevice>()
+
+    var restartingBluetooth = false
+
+    private val recevier = object: BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            if (BluetoothAdapter.ACTION_STATE_CHANGED == intent?.action) {
+                if (intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, -1) == BluetoothAdapter.STATE_OFF) {
+                    log.info(">>>> Bluetooth Adapter Disabled <<<<")
+                    if (restartingBluetooth && started()) {
+                        BluetoothAdapter.getDefaultAdapter().enable()
+                        restartingBluetooth = false
+                    }
+                } else {
+                    log.info(">>>> Bluetooth Adapter Enabled <<<<")
+                }
+            }
+        }
+    }
 
     init {
-        devices[hostDevice.hashCode()] = hostDevice
-
+        devices[hostDevice.hash] = hostDevice
+        context.registerReceiver(recevier, IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED))
     }
 
     val status: Status
@@ -90,13 +110,13 @@ abstract class XYSmartScan(context: Context) : XYBluetoothBase(context) {
         return null
     }
 
-    fun getDevicesFromScanResult(scanResult: XYScanResult, globalDevices: ConcurrentHashMap<Int, XYBluetoothDevice>, foundDevices: HashMap<Int, XYBluetoothDevice>) {
+    fun getDevicesFromScanResult(scanResult: XYScanResult, globalDevices: ConcurrentHashMap<String, XYBluetoothDevice>, foundDevices: HashMap<String, XYBluetoothDevice>) {
         //only add them if they do not already exist
         XYBluetoothDevice.creator.getDevicesFromScanResult(context, scanResult, globalDevices, foundDevices)
 
         //add (or replace) all the found devices
         for ((_, foundDevice) in foundDevices) {
-            globalDevices[foundDevice.hashCode()] = foundDevice
+            globalDevices[foundDevice.hash] = foundDevice
         }
     }
 
@@ -121,15 +141,6 @@ abstract class XYSmartScan(context: Context) : XYBluetoothBase(context) {
         open fun statusChanged(status: Status) {
 
         }
-    }
-
-    enum class BluetoothStatus {
-        None,
-        Enabled,
-        BluetoothUnavailable,
-        BluetoothUnstable,
-        BluetoothDisabled,
-        LocationDisabled
     }
 
     enum class ScanFailed {
@@ -159,25 +170,28 @@ abstract class XYSmartScan(context: Context) : XYBluetoothBase(context) {
             _background = background
         }
 
-    open suspend fun start(): Boolean {
+    open fun start() = GlobalScope.async {
         log.info("start")
         startTime = now
-        return true
+        return@async true
     }
 
-    open suspend fun stop(): Boolean {
+    open fun started(): Boolean {
+        return startTime != 0L
+    }
+
+    open fun stop() = GlobalScope.async {
         log.info("stop")
         startTime = 0
         scanResultCount = 0
-        return true
+        return@async true
     }
 
     protected fun restartBluetooth() {
         log.info(">>>>> restartBluetooth: Restarting Bluetooth Adapter <<<<<")
 
+        restartingBluetooth = true
         BluetoothAdapter.getDefaultAdapter().disable()
-        // Must call enable here. Using a BroadcastReceiver does not restart it correctly.
-        BluetoothAdapter.getDefaultAdapter().enable()
     }
 
     fun addListener(key: String, listener: Listener) {
@@ -198,19 +212,19 @@ abstract class XYSmartScan(context: Context) : XYBluetoothBase(context) {
 
     private var handleDeviceNotifyExit = fun(device: XYBluetoothDevice) {
         device.rssi = null
-        devices.remove(device.hashCode())
+        devices.remove(device.hash)
         reportExited(device)
     }
 
     internal fun onScanResult(scanResults: List<XYScanResult>): List<XYScanResult> {
         scanResultCount += scanResults.size
         for (scanResult in scanResults) {
-            val foundDevices = HashMap<Int, XYBluetoothDevice>()
+            val foundDevices = HashMap<String, XYBluetoothDevice>()
             getDevicesFromScanResult(scanResult, this.devices, foundDevices)
             this.devices.putAll(foundDevices)
             if (foundDevices.size > 0) {
                 for ((_, device) in foundDevices) {
-                    this.devices[device.hashCode()] = device
+                    this.devices[device.hash] = device
                     device.updateBluetoothDevice(scanResult.device)
 
                     val scanRecord = scanResult.scanRecord
