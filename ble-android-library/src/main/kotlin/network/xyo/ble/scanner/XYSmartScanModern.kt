@@ -128,6 +128,7 @@ class XYSmartScanModern(context: Context) : XYSmartScan(context) {
     private fun getSettings23(): ScanSettings {
         return ScanSettings.Builder()
                 .setScanMode(android.bluetooth.le.ScanSettings.SCAN_MODE_BALANCED)
+                .setCallbackType(android.bluetooth.le.ScanSettings.CALLBACK_TYPE_ALL_MATCHES)
                 .setMatchMode(android.bluetooth.le.ScanSettings.MATCH_MODE_STICKY)
                 .build()
     }
