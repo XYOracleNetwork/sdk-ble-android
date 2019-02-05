@@ -224,7 +224,7 @@ open class XYBluetoothGatt protected constructor(
         return@async XYBluetoothResult(result, error)
     }
 
-    fun connect(timeout: Long = 10000) = queueBle(timeout, "connect") {
+    fun connect(timeout: Long = 60000) = queueBle(timeout, "connect") {
         log.info("connect: start")
         val device = this@XYBluetoothGatt.device ?: return@queueBle XYBluetoothResult(false, XYBluetoothError("No Device"))
         var connection = this@XYBluetoothGatt.connection //make it thread safe by putting it on the stack
@@ -288,7 +288,7 @@ open class XYBluetoothGatt protected constructor(
         return@queueBle XYBluetoothResult(value, error)
     }
 
-    protected fun readCharacteristic(characteristicToRead: BluetoothGattCharacteristic, timeout: Long = 2000) = queueBle(timeout, "readCharacteristic") {
+    protected fun readCharacteristic(characteristicToRead: BluetoothGattCharacteristic, timeout: Long = 10000) = queueBle(timeout, "readCharacteristic") {
         log.info("readCharacteristic")
         assert(connection?.state == BluetoothGatt.STATE_CONNECTED)
         val gatt = connection?.gatt
@@ -300,7 +300,7 @@ open class XYBluetoothGatt protected constructor(
         }
     }
 
-    protected fun writeCharacteristic(characteristicToWrite: BluetoothGattCharacteristic, timeout: Long = 2000) = queueBle(timeout, "writeCharacteristic") {
+    protected fun writeCharacteristic(characteristicToWrite: BluetoothGattCharacteristic, timeout: Long = 10000) = queueBle(timeout, "writeCharacteristic") {
         log.info("writeCharacteristic")
         assert(connection?.state == BluetoothGatt.STATE_CONNECTED)
         val gatt = connection?.gatt
@@ -312,7 +312,7 @@ open class XYBluetoothGatt protected constructor(
         }
     }
 
-    protected fun setCharacteristicNotify(characteristicToWrite: BluetoothGattCharacteristic, notify: Boolean, timeout: Long = 1400) = queueBle(timeout, "setCharacteristicNotify") {
+    protected fun setCharacteristicNotify(characteristicToWrite: BluetoothGattCharacteristic, notify: Boolean, timeout: Long = 10000) = queueBle(timeout, "setCharacteristicNotify") {
         log.info("setCharacteristicNotify")
         var error: XYBluetoothError? = null
         var value: Boolean? = null
