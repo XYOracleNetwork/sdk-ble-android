@@ -231,6 +231,7 @@ class XYBluetoothGattConnect(val device: BluetoothDevice): XYBase() {
     }
 
     fun close() = GlobalScope.async {
+        log.info("disconnect:close")
         gatt?.disconnect()?.await()
         gatt?.close()?.await()
         gatt = null

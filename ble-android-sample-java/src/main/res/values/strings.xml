@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">XYO BLE SDK Java Sample</string>
+    <string name="title_item_detail">Device Information</string>
+</resources>
