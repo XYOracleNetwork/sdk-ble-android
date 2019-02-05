@@ -2,10 +2,15 @@ package network.xyo.ble.firmware
 
 import android.os.Environment
 import android.util.Log
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 import network.xyo.core.XYBase
-import java.io.FileInputStream
-import java.io.IOException
-import java.io.InputStream
+import java.io.*
+import java.net.HttpURLConnection
+import java.net.URL
+import java.nio.ByteBuffer
+import java.nio.CharBuffer
 import java.util.*
 import kotlin.experimental.xor
 
@@ -152,6 +157,23 @@ class OtaFile(private val inputStream: InputStream?): XYBase() {
                 names.add(file[i].name)
             }
             return names
+        }
+
+        fun readFromServer() = GlobalScope.async {
+            createFileDirectory()
+            val url = URL("https://s3.amazonaws.com/xyfirmware.xyo.network/xy4_585-0-v56.img")
+            val connection = url.openConnection()
+            connection.connectTimeout = 60000
+            val inBuffer = BufferedInputStream(connection.getInputStream())
+            val outStream = FileOutputStream("$filesDir/xy4_585-0-v56.img")
+            val buffer = ByteArray(1024)
+            var len = inBuffer.read(buffer)
+            while (len > 0) {
+                outStream.write(buffer, 0, len)
+                len = inBuffer.read(buffer)
+            }
+            inBuffer.close()
+            outStream.close()
         }
 
         fun createFileDirectory(): Boolean {

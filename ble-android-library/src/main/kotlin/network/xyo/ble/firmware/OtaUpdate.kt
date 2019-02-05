@@ -108,80 +108,88 @@ class OtaUpdate(var device: XY4BluetoothDevice, private val otaFile: OtaFile?): 
 
     private fun startUpdate() {
         updateJob = GlobalScope.launch {
-            var hasError = false
 
-            //STEP 1 - memdev
-            val memResult = setMemDev().await()
-            memResult.error?.let { error ->
-                hasError = true
-                failUpdate(error.message.toString())
-                updateJob?.cancelAndJoin()
-                log.info( "startUpdate - MemDev ERROR: $error")
-            }
+            device.connection {
 
-            //STEP 2 - GpioMap
-            val gpioResult = setGpioMap().await()
-            gpioResult.error?.let { error ->
-                hasError = true
-                failUpdate(error.message.toString())
-                updateJob?.cancelAndJoin()
-                log.info( "startUpdate - GPIO ERROR: $error")
-            }
+                var hasError = false
 
-            //STEP 3 - Set patch length for the first and last block
-            val patchResult = setPatchLength().await()
-            patchResult.error?.let { error ->
-                hasError = true
-                failUpdate(error.message.toString())
-                updateJob?.cancelAndJoin()
-                log.info( "startUpdate - patch ERROR: $error")
-            }
-
-            //STEP 4 - send blocks
-            while (!lastBlockSent && !hasError) {
-                progressUpdate()
-                val blockResult = sendBlock().await()
-                blockResult.error?.let { error ->
+                //STEP 1 - memdev
+                val memResult = setMemDev().await()
+                memResult.error?.let { error ->
                     hasError = true
                     failUpdate(error.message.toString())
                     updateJob?.cancelAndJoin()
-                    log.info( "startUpdate - sendBlock ERROR: $error")
+                    log.info("startUpdate - MemDev ERROR: $error")
                 }
 
-                if (lastBlock) {
-                    if (!lastBlockReady && otaFile?.numberOfBytes?.rem(otaFile.fileBlockSize) != 0) {
-                        log.info( "startUpdate LAST BLOCK - SET PATCH LEN: $lastBlock")
-                        val finalPatchResult = setPatchLength().await()
+                //STEP 2 - GpioMap
+                val gpioResult = setGpioMap().await()
+                gpioResult.error?.let { error ->
+                    hasError = true
+                    failUpdate(error.message.toString())
+                    updateJob?.cancelAndJoin()
+                    log.info("startUpdate - GPIO ERROR: $error")
+                }
 
-                        finalPatchResult.error?.let { error ->
-                            hasError = true
-                            failUpdate(error.message.toString())
-                            updateJob?.cancelAndJoin()
-                            log.info( "startUpdate - finalPatchResult ERROR: $error")
+                //STEP 3 - Set patch length for the first and last block
+                val patchResult = setPatchLength().await()
+                patchResult.error?.let { error ->
+                    hasError = true
+                    failUpdate(error.message.toString())
+                    updateJob?.cancelAndJoin()
+                    log.info("startUpdate - patch ERROR: $error")
+                }
+
+                //STEP 4 - send blocks
+                while (!lastBlockSent && !hasError) {
+                    progressUpdate()
+                    val blockResult = sendBlock().await()
+                    blockResult.error?.let { error ->
+                        hasError = true
+                        failUpdate(error.message.toString())
+                        updateJob?.cancelAndJoin()
+                        log.info("startUpdate - sendBlock ERROR: $error")
+                    }
+
+                    if (lastBlock) {
+                        if (!lastBlockReady && otaFile?.numberOfBytes?.rem(otaFile.fileBlockSize) != 0) {
+                            log.info("startUpdate LAST BLOCK - SET PATCH LEN: $lastBlock")
+                            val finalPatchResult = setPatchLength().await()
+
+                            finalPatchResult.error?.let { error ->
+                                hasError = true
+                                failUpdate(error.message.toString())
+                                updateJob?.cancelAndJoin()
+                                log.info("startUpdate - finalPatchResult ERROR: $error")
+                            }
                         }
                     }
+
                 }
 
+                log.info("startUpdate done sending blocks")
+
+                //SEND END SIGNAL
+                val endResult = sendEndSignal().await()
+                endResult.error?.let { error ->
+                    hasError = true
+                    failUpdate(error.message.toString())
+                    updateJob?.cancelAndJoin()
+                    log.info("startUpdate - endSignal Result ERROR: $error")
+                }
+
+                //REBOOT
+                val reboot = sendReboot().await()
+                reboot.error?.let { error ->
+                    log.info("startUpdate - reboot ERROR: $error")
+                }
+
+                log.info("startUpdate - sent Reboot")
+
+                passUpdate()
+
+                return@connection XYBluetoothResult(true)
             }
-
-            log.info( "startUpdate done sending blocks")
-
-            //SEND END SIGNAL
-            val endResult = sendEndSignal().await()
-            endResult.error?.let { error ->
-                hasError = true
-                failUpdate(error.message.toString())
-                updateJob?.cancelAndJoin()
-                log.info( "startUpdate - endSignal Result ERROR: $error")
-            }
-
-            //REBOOT
-            val reboot = sendReboot().await()
-            reboot.error?.let { error ->
-                log.info( "startUpdate - reboot ERROR: $error")
-            }
-
-            passUpdate()
         }
     }
 

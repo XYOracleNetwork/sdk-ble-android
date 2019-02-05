@@ -48,13 +48,14 @@ class FirmwareUpdateFragment : XYDeviceFragment(), BackFragmentListener {
         return inflater.inflate(R.layout.fragment_firmware_update, container, false)
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        button_update.setOnClickListener {
-            performUpdate()
+    fun loadImageFromServer() {
+        GlobalScope.launch {
+            OtaFile.readFromServer().await()
+            loadList()
         }
+    }
 
+    private fun loadList() {
         //setup file listview
         val context = context
         if (context != null) {
@@ -74,6 +75,20 @@ class FirmwareUpdateFragment : XYDeviceFragment(), BackFragmentListener {
                 }
             }
         }
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        button_update.setOnClickListener {
+            performUpdate()
+        }
+
+        button_load_from_server.setOnClickListener {
+            loadImageFromServer()
+        }
+
+        loadList()
     }
 
     override fun onBackPressed(): Boolean {
