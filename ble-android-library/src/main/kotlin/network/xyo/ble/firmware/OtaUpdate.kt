@@ -18,51 +18,19 @@ class OtaUpdate(var device: XY4BluetoothDevice, private val otaFile: OtaFile?): 
     private var chunkCount = -1
     private var blockCounter = 0
 
-    private var _imageBank = 0
-    var imageBank: Int
-        get() = _imageBank
-        set(value) {
-            _imageBank = value
-        }
+    var imageBank = 0
 
     //SPI_DI
-    private var _miso_gpio = 0x05
-    var MISO_GPIO: Int
-        get() = _miso_gpio
-        set(value) {
-            _miso_gpio = value
-        }
+    var miso_gpio = 0x05
 
     //SPI_DO
-    private var _mosi_gpio = 0x06
-    var MOSI_GPIO: Int
-        get() = _mosi_gpio
-        set(value) {
-            _mosi_gpio = value
-        }
+    var mosi_gpio = 0x06
 
     //SPI_EN
-    private var cs_gpio = 0x07
-    var CS_GPIO: Int
-        get() = cs_gpio
-        set(value) {
-            cs_gpio = value
-        }
+    var cs_gpio = 0x07
 
     //DPI_CLK
-    private var _sck_gpio = 0x00
-    var SCK_GPIO: Int
-        get() = _sck_gpio
-        set(value) {
-            _sck_gpio = value
-        }
-
-//    private var _allowRetry = true
-//    var allowRetry: Boolean
-//        get() = _allowRetry
-//        set(allow) {
-//            _allowRetry = allow
-//        }
+    var sck_gpio = 0x00
 
     /**
      * Starts the update
@@ -227,7 +195,7 @@ class OtaUpdate(var device: XY4BluetoothDevice, private val otaFile: OtaFile?): 
     //STEP 1
     private fun setMemDev(): Deferred<XYBluetoothResult<Int>> {
         return GlobalScope.async {
-            val memType = MEMORY_TYPE_EXTERNAL_SPI shl 24 or _imageBank
+            val memType = MEMORY_TYPE_EXTERNAL_SPI shl 24 or imageBank
             log.info("setMemDev: " + String.format("%#010x", memType))
             val result = device.spotaService.SPOTA_MEM_DEV.set(memType).await()
 
@@ -238,7 +206,7 @@ class OtaUpdate(var device: XY4BluetoothDevice, private val otaFile: OtaFile?): 
     //STEP 2
     private fun setGpioMap(): Deferred<XYBluetoothResult<Int>> {
         return GlobalScope.async {
-            val memInfo = _miso_gpio shl 24 or (_mosi_gpio shl 16) or (cs_gpio shl 8) or _sck_gpio
+            val memInfo = miso_gpio shl 24 or (mosi_gpio shl 16) or (cs_gpio shl 8) or sck_gpio
 
             val result = device.spotaService.SPOTA_GPIO_MAP.set(memInfo).await()
 
