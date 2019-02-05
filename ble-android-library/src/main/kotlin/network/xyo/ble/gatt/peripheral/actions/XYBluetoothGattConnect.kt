@@ -226,7 +226,7 @@ class XYBluetoothGattConnect(val device: BluetoothDevice): XYBase() {
             }
         }
 
-        log.info("connect: Returning[$value]")
+        log.info("connect: Returning[$value][$error]")
         return@async XYBluetoothResult(value, error)
     }
 

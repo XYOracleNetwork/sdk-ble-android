@@ -35,7 +35,7 @@ class XYSmartScanModern(context: Context) : XYSmartScan(context) {
                     // this loop is for Android 7 to prevent getting nuked for scanning too much
                     GlobalScope.launch {
                         while (started()) {
-                            if (status == Status.Enabled) {
+                            if (status != Status.BluetoothDisabled && status != Status.BluetoothUnavailable) {
                                 val filters = ArrayList<ScanFilter>()
                                 scanner.startScan(filters, getSettings(), callback)
                                 //prevent the pause after a restart from being 5 minutes
@@ -119,7 +119,8 @@ class XYSmartScanModern(context: Context) : XYSmartScan(context) {
     //Android 5 and 6
     private fun getSettings21(): ScanSettings {
         return ScanSettings.Builder()
-                .setScanMode(android.bluetooth.le.ScanSettings.SCAN_MODE_BALANCED)
+                .setScanMode(android.bluetooth.le.ScanSettings.SCAN_MODE_LOW_POWER)
+                .setReportDelay(500)
                 .build()
     }
 
@@ -127,7 +128,7 @@ class XYSmartScanModern(context: Context) : XYSmartScan(context) {
     @TargetApi(Build.VERSION_CODES.M)
     private fun getSettings23(): ScanSettings {
         return ScanSettings.Builder()
-                .setScanMode(android.bluetooth.le.ScanSettings.SCAN_MODE_BALANCED)
+                .setScanMode(android.bluetooth.le.ScanSettings.SCAN_MODE_LOW_POWER)
                 .setCallbackType(android.bluetooth.le.ScanSettings.CALLBACK_TYPE_ALL_MATCHES)
                 .setMatchMode(android.bluetooth.le.ScanSettings.MATCH_MODE_STICKY)
                 .build()
