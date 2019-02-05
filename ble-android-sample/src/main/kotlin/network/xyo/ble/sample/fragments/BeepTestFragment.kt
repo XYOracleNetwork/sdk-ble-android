@@ -5,11 +5,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import kotlinx.android.synthetic.main.fragment_test.*
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.*
+import network.xyo.ble.devices.XY3BluetoothDevice
 import network.xyo.ble.devices.XY4BluetoothDevice
+import network.xyo.ble.devices.XYFinderBluetoothDevice
 import network.xyo.ble.gatt.peripheral.XYBluetoothResult
 import network.xyo.ble.sample.R
 import network.xyo.ble.sample.XYApplication
@@ -44,6 +43,76 @@ class BeepTestFragment : XYBaseFragment() {
         }
     }
 
+    private fun doBeepXY4(device: XY4BluetoothDevice) = GlobalScope.async {
+        if ((device.rssi ?: -100) > -60) {
+            log.info("BeepTest(Async): ${device.id}: Trying to Beep [${device.rssi}]")
+            startCount++
+            updateUI()
+            try {
+                val connectResult = device.connection {
+                    log.info("BeepTest: ${device.id}: Connected")
+                    connectCount++
+                    updateUI()
+                    if (device.unlock().await().error == null) {
+                        log.info("BeepTest: ${device.id}: Unlocked")
+                        unlockCount++
+                        updateUI()
+                        if (device.primary.buzzer.set(11).await().error == null) {
+                            log.info("BeepTest: ${device.id}: Success")
+                            beepCount++
+                            updateUI()
+                        } else {
+                            log.error("BeepTest: ${device.id}: Failed")
+                        }
+                    } else {
+                        log.error("BeepTest: ${device.id}: Failed to Unlock")
+                    }
+                    return@connection XYBluetoothResult(true)
+                }.await()
+                if (connectResult.error != null) {
+                    log.error("BeepTest: ${device.id}: Failed to Connect: ${connectResult.error?.message}")
+                }
+            } catch (ex: Exception) {
+                log.error("BeepTest: ${ex.message}")
+            }
+        }
+    }
+
+    private fun doBeepXY3(device: XY3BluetoothDevice) = GlobalScope.async {
+        if ((device.rssi ?: -100) > -60) {
+            log.info("BeepTest(Async): ${device.id}: Trying to Beep [${device.rssi}]")
+            startCount++
+            updateUI()
+            try {
+                val connectResult = device.connection {
+                    log.info("BeepTest: ${device.id}: Connected")
+                    connectCount++
+                    updateUI()
+                    if (device.unlock().await().error == null) {
+                        log.info("BeepTest: ${device.id}: Unlocked")
+                        unlockCount++
+                        updateUI()
+                        if (device.controlService.buzzerSelect.set(2).await().error == null) {
+                            log.info("BeepTest: ${device.id}: Success")
+                            beepCount++
+                            updateUI()
+                        } else {
+                            log.error("BeepTest: ${device.id}: Failed")
+                        }
+                    } else {
+                        log.error("BeepTest: ${device.id}: Failed to Unlock")
+                    }
+                    return@connection XYBluetoothResult(true)
+                }.await()
+                if (connectResult.error != null) {
+                    log.error("BeepTest: ${device.id}: Failed to Connect: ${connectResult.error?.message}")
+                }
+            } catch (ex: Exception) {
+                log.error("BeepTest: ${ex.message}")
+            }
+        }
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         start_async.setOnClickListener {
@@ -51,41 +120,13 @@ class BeepTestFragment : XYBaseFragment() {
                 GlobalScope.launch {
                     when (value) {
                         is XY4BluetoothDevice -> {
-                            if ((value.rssi ?: -100) > -60) {
-                                log.info("BeepTest(Async): ${value.id}: Trying to Beep [${value.rssi}]")
-                                startCount++
-                                updateUI()
-                                try {
-                                    val connectResult = value.connection {
-                                        log.info("BeepTest: ${value.id}: Connected")
-                                        connectCount++
-                                        updateUI()
-                                        if (value.unlock().await().error == null) {
-                                            log.info("BeepTest: ${value.id}: Unlocked")
-                                            unlockCount++
-                                            updateUI()
-                                            if (value.primary.buzzer.set(11).await().error == null) {
-                                                log.info("BeepTest: ${value.id}: Success")
-                                                beepCount++
-                                                updateUI()
-                                            } else {
-                                                log.error("BeepTest: ${value.id}: Failed")
-                                            }
-                                        } else {
-                                            log.error("BeepTest: ${value.id}: Failed to Unlock")
-                                        }
-                                        return@connection XYBluetoothResult(true)
-                                    }.await()
-                                    if (connectResult.error != null) {
-                                        log.error("BeepTest: ${value.id}: Failed to Connect: ${connectResult.error?.message}")
-                                    }
-                                } catch (ex: Exception) {
-                                    log.error("BeepTest: ${ex.message}")
-                                }
-                            }
+                            doBeepXY4(value).await()
+                        }
+                        is XY3BluetoothDevice -> {
+                            doBeepXY3(value).await()
                         }
                         else -> {
-                            log.info("BeepTest: Not a XY 4")
+                            log.info("BeepTest: Not a XY 4/3")
                         }
                     }
                 }
@@ -97,41 +138,13 @@ class BeepTestFragment : XYBaseFragment() {
                 scanner?.devices?.forEach { (_, value) ->
                     when (value) {
                         is XY4BluetoothDevice -> {
-                            if ((value.rssi ?: -100) > -75) {
-                                log.info("BeepTest(Sync): ${value.id}: Trying to Beep [${value.rssi}]")
-                                startCount++
-                                updateUI()
-                                try {
-                                    val connectResult = value.connection {
-                                        log.info("BeepTest(Sync): ${value.id}: Connected")
-                                        connectCount++
-                                        updateUI()
-                                        if (value.unlock().await().error == null) {
-                                            log.info("BeepTest(Sync): ${value.id}: Unlocked")
-                                            unlockCount++
-                                            updateUI()
-                                            if (value.primary.buzzer.set(11).await().error == null) {
-                                                log.info("BeepTest(Sync): ${value.id}: Success")
-                                                beepCount++
-                                                updateUI()
-                                            } else {
-                                                log.error("BeepTest(Sync): ${value.id}: Failed")
-                                            }
-                                        } else {
-                                            log.error("BeepTest(Sync): ${value.id}: Failed to Unlock")
-                                        }
-                                        return@connection XYBluetoothResult(true)
-                                    }.await()
-                                    if (connectResult.error != null) {
-                                        log.error("BeepTest(Sync): ${value.id}: Failed to Connect: ${connectResult.error?.message}")
-                                    }
-                                } catch (ex: Exception) {
-                                    log.error("BeepTest(Sync): ${ex.message}")
-                                }
-                            }
+                            doBeepXY4(value).await()
+                        }
+                        is XY3BluetoothDevice -> {
+                            doBeepXY3(value).await()
                         }
                         else -> {
-                            log.info("BeepTest(Sync): Not a XY 4")
+                            log.info("BeepTest(Sync): Not a XY 4/3")
                         }
                     }
                 }
