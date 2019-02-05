@@ -182,7 +182,10 @@ class XYBluetoothGattConnect(val device: BluetoothDevice): XYBase() {
                                 log.info("connect:failure: $status : $newState")
                                 error = XYBluetoothError("connect: connection failed(status): $status : $newState")
                                 callback.removeListener(listenerName)
-                                cont.resume(null)
+                                GlobalScope.launch {
+                                    close().await()
+                                    cont.resume(null)
+                                }
                             }
                             newState == BluetoothGatt.STATE_CONNECTED -> {
                                 log.info("connect:connected")
@@ -191,7 +194,10 @@ class XYBluetoothGattConnect(val device: BluetoothDevice): XYBase() {
                                     if (discover().await().error == null) {
                                         cont.resume(true)
                                     } else {
-                                        cont.resume(null)
+                                        GlobalScope.launch {
+                                            close().await()
+                                            cont.resume(null)
+                                        }
                                     }
                                 }
                             }
@@ -201,7 +207,10 @@ class XYBluetoothGattConnect(val device: BluetoothDevice): XYBase() {
                             else -> {
                                 error = XYBluetoothError("connect: connection failed unknown(state): $status : $newState")
                                 callback.removeListener(listenerName)
-                                cont.resume(null)
+                                GlobalScope.launch {
+                                    close().await()
+                                    cont.resume(null)
+                                }
                             }
                         }
                     }

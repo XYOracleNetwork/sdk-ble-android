@@ -10,6 +10,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import network.xyo.ble.devices.XY4BluetoothDevice
+import network.xyo.ble.gatt.peripheral.XYBluetoothResult
 import network.xyo.ble.sample.R
 import network.xyo.ble.sample.XYApplication
 import network.xyo.ble.scanner.XYSmartScan
@@ -50,13 +51,12 @@ class BeepTestFragment : XYBaseFragment() {
                 GlobalScope.launch {
                     when (value) {
                         is XY4BluetoothDevice -> {
-                            if ((value.rssi ?: -100) > -75) {
+                            if ((value.rssi ?: -100) > -60) {
                                 log.info("BeepTest(Async): ${value.id}: Trying to Beep [${value.rssi}]")
                                 startCount++
                                 updateUI()
                                 try {
-                                    //val connectResult = value.connection {
-                                    if (value.connect().await().error == null) {
+                                    val connectResult = value.connection {
                                         log.info("BeepTest: ${value.id}: Connected")
                                         connectCount++
                                         updateUI()
@@ -74,13 +74,11 @@ class BeepTestFragment : XYBaseFragment() {
                                         } else {
                                             log.error("BeepTest: ${value.id}: Failed to Unlock")
                                         }
-                                    } else {
-                                        log.error("BeepTest: ${value.id}: Failed to Connect")
-                                    }
-                                    /*}.await()
+                                        return@connection XYBluetoothResult(true)
+                                    }.await()
                                     if (connectResult.error != null) {
                                         log.error("BeepTest: ${value.id}: Failed to Connect: ${connectResult.error?.message}")
-                                    }*/
+                                    }
                                 } catch (ex: Exception) {
                                     log.error("BeepTest: ${ex.message}")
                                 }
@@ -104,7 +102,7 @@ class BeepTestFragment : XYBaseFragment() {
                                 startCount++
                                 updateUI()
                                 try {
-                                    val connectResult = value.connection(90000) {
+                                    val connectResult = value.connection {
                                         log.info("BeepTest(Sync): ${value.id}: Connected")
                                         connectCount++
                                         updateUI()
@@ -122,6 +120,7 @@ class BeepTestFragment : XYBaseFragment() {
                                         } else {
                                             log.error("BeepTest(Sync): ${value.id}: Failed to Unlock")
                                         }
+                                        return@connection XYBluetoothResult(true)
                                     }.await()
                                     if (connectResult.error != null) {
                                         log.error("BeepTest(Sync): ${value.id}: Failed to Connect: ${connectResult.error?.message}")

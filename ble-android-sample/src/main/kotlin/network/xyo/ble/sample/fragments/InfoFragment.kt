@@ -14,6 +14,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import network.xyo.ble.devices.*
 import network.xyo.ble.gatt.XYBluetoothGattBase
+import network.xyo.ble.gatt.peripheral.XYBluetoothResult
 import network.xyo.ble.sample.R
 import network.xyo.ble.sample.XYDeviceData
 import network.xyo.core.XYBase
@@ -201,13 +202,7 @@ class InfoFragment : XYDeviceFragment(), View.OnClickListener, CompoundButton.On
 
     private fun disconnect() {
         GlobalScope.launch {
-            val result = device?.disconnect()?.await()
-            val error = result?.error
-            if (error?.message.isNullOrEmpty()) {
-                ui {
-                    showToast(error?.message.toString())
-                }
-            }
+            device?.disconnect()
             updateUI()
         }
     }
@@ -429,6 +424,7 @@ class InfoFragment : XYDeviceFragment(), View.OnClickListener, CompoundButton.On
                         log.info("testXy4: Fail: $text : ${write.error}")
                     }
                 }
+                return@connection XYBluetoothResult(true)
             }
         }
     }

@@ -58,42 +58,42 @@ open class XY4BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
 
     override val prefix = "xy:ibeacon"
 
-    override fun find() = connectionWithResult {
+    override fun find() = connection {
         log.info("find")
         if (unlock().await().error == null) {
             val writeResult = primary.buzzer.set(11).await()
             if (writeResult.error == null) {
-                return@connectionWithResult XYBluetoothResult(writeResult.value)
+                return@connection XYBluetoothResult(writeResult.value)
             } else {
-                return@connectionWithResult XYBluetoothResult(-1, XYBluetoothError("Failed to Write Characteristic"))
+                return@connection XYBluetoothResult(-1, XYBluetoothError("Failed to Write Characteristic"))
             }
         } else {
-            return@connectionWithResult XYBluetoothResult(-1, XYBluetoothError("Failed to Unlock"))
+            return@connection XYBluetoothResult(-1, XYBluetoothError("Failed to Unlock"))
         }
     }
 
-    override fun stopFind() = connectionWithResult {
-        return@connectionWithResult primary.buzzer.set(-1).await()
+    override fun stopFind() = connection {
+        return@connection primary.buzzer.set(-1).await()
     }
 
-    override fun lock() = connectionWithResult {
-        return@connectionWithResult primary.lock.set(DefaultLockCode).await()
+    override fun lock() = connection {
+        return@connection primary.lock.set(DefaultLockCode).await()
     }
 
-    override fun unlock() = connectionWithResult {
-        return@connectionWithResult primary.unlock.set(DefaultLockCode).await()
+    override fun unlock() = connection {
+        return@connection primary.unlock.set(DefaultLockCode).await()
     }
 
-    override fun stayAwake() = connectionWithResult {
-        return@connectionWithResult primary.stayAwake.set(1).await()
+    override fun stayAwake() = connection {
+        return@connection primary.stayAwake.set(1).await()
     }
 
-    override fun fallAsleep() = connectionWithResult {
-        return@connectionWithResult primary.stayAwake.set(0).await()
+    override fun fallAsleep() = connection {
+        return@connection primary.stayAwake.set(0).await()
     }
 
-    override fun batteryLevel() = connectionWithResult {
-        return@connectionWithResult batteryService.level.get().await()
+    override fun batteryLevel() = connection {
+        return@connection batteryService.level.get().await()
     }
 
     override fun onDetect(scanResult: XYScanResult?) {

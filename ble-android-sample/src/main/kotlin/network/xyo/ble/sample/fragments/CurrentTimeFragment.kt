@@ -11,6 +11,7 @@ import network.xyo.ble.devices.XY2BluetoothDevice
 import network.xyo.ble.devices.XY3BluetoothDevice
 import network.xyo.ble.devices.XY4BluetoothDevice
 import network.xyo.ble.devices.XYBluetoothDevice
+import network.xyo.ble.gatt.peripheral.XYBluetoothResult
 import network.xyo.ble.sample.R
 import network.xyo.ble.sample.XYDeviceData
 import network.xyo.ui.ui
@@ -88,6 +89,8 @@ class CurrentTimeFragment : XYDeviceFragment() {
                     it.referenceTimeInformation = device.currentTimeService.referenceTimeInformation.get().await().format()
                 }
 
+                return@connection XYBluetoothResult(true)
+
             }
             conn.await()
 
@@ -109,6 +112,8 @@ class CurrentTimeFragment : XYDeviceFragment() {
                     it.localTimeInformation = device.currentTimeService.localTimeInformation.get().await().format()
                     it.referenceTimeInformation = device.currentTimeService.referenceTimeInformation.get().await().format()
                 }
+
+                return@connection XYBluetoothResult(true)
 
             }
             conn.await()

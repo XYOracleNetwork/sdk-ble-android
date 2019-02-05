@@ -12,6 +12,7 @@ import network.xyo.ble.devices.XY2BluetoothDevice
 import network.xyo.ble.devices.XY3BluetoothDevice
 import network.xyo.ble.devices.XY4BluetoothDevice
 import network.xyo.ble.devices.XYBluetoothDevice
+import network.xyo.ble.gatt.peripheral.XYBluetoothResult
 import network.xyo.ble.sample.R
 import network.xyo.ble.sample.XYDeviceData
 import network.xyo.ui.ui
@@ -91,6 +92,8 @@ class TxPowerFragment : XYDeviceFragment() {
                     it.txPowerLevel = device.txPowerService.txPowerLevel.get().await().format()
                 }
 
+                return@connection XYBluetoothResult(true)
+
             }
             conn.await()
 
@@ -109,6 +112,8 @@ class TxPowerFragment : XYDeviceFragment() {
                 deviceData?.let {
                     it.txPowerLevel = device.txPowerService.txPowerLevel.get().await().format()
                 }
+
+                return@connection XYBluetoothResult(true)
 
             }
             conn.await()

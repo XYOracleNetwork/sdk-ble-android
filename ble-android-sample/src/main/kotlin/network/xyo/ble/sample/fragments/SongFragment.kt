@@ -11,6 +11,7 @@ import kotlinx.coroutines.launch
 import network.xyo.ble.devices.XY3BluetoothDevice
 import network.xyo.ble.devices.XY4BluetoothDevice
 import network.xyo.ble.devices.XYBluetoothDevice
+import network.xyo.ble.gatt.peripheral.XYBluetoothResult
 import network.xyo.ble.sample.R
 import network.xyo.ble.sample.XYDeviceData
 import network.xyo.ui.ui
@@ -290,6 +291,7 @@ class SongFragment : XYDeviceFragment() {
                                 it.primary.buzzerConfig.set(data).await()
                                 offset += 4
                             }
+                            return@connection XYBluetoothResult(true)
                         }.await()
                         updateUI()
                         checkConnectionError(hasConnectionError)
@@ -310,7 +312,7 @@ class SongFragment : XYDeviceFragment() {
                 hasConnectionError = false
                 var data = device.primary.buzzerConfig.get().await()
                 currentSong = "${data.value?.size}"
-
+                return@connection XYBluetoothResult(true)
             }.await()
 
             updateUI()
@@ -324,6 +326,7 @@ class SongFragment : XYDeviceFragment() {
 
             val conn = device.connection {
                 hasConnectionError = false
+                return@connection XYBluetoothResult(true)
             }
             conn.await()
 

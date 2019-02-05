@@ -11,6 +11,7 @@ import network.xyo.ble.devices.XY2BluetoothDevice
 import network.xyo.ble.devices.XY3BluetoothDevice
 import network.xyo.ble.devices.XY4BluetoothDevice
 import network.xyo.ble.devices.XYBluetoothDevice
+import network.xyo.ble.gatt.peripheral.XYBluetoothResult
 import network.xyo.ble.sample.R
 import network.xyo.ble.sample.XYDeviceData
 import network.xyo.ui.ui
@@ -99,6 +100,8 @@ class DeviceFragment : XYDeviceFragment() {
                     it.ieeeRegulatoryCertificationDataList = device.deviceInformationService.ieeeRegulatoryCertificationDataList.get().await().format()
                     it.pnpId = device.deviceInformationService.pnpId.get().await().format()
                 }
+
+                return@connection XYBluetoothResult(true)
             }
             conn.await()
 
@@ -127,6 +130,8 @@ class DeviceFragment : XYDeviceFragment() {
                     it.pnpId = device.deviceInformationService.pnpId.get().await().format()
                 }
 
+                return@connection XYBluetoothResult(true)
+
             }
             conn.await()
 
@@ -153,6 +158,8 @@ class DeviceFragment : XYDeviceFragment() {
                     it.ieeeRegulatoryCertificationDataList = device.deviceInformationService.ieeeRegulatoryCertificationDataList.get().await().format()
                     it.pnpId = device.deviceInformationService.pnpId.get().await().format()
                 }
+
+                return@connection XYBluetoothResult(true)
 
             }
             conn.await()

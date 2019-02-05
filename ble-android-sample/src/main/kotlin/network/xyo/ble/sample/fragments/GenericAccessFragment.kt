@@ -11,6 +11,7 @@ import network.xyo.ble.devices.XY2BluetoothDevice
 import network.xyo.ble.devices.XY3BluetoothDevice
 import network.xyo.ble.devices.XY4BluetoothDevice
 import network.xyo.ble.devices.XYBluetoothDevice
+import network.xyo.ble.gatt.peripheral.XYBluetoothResult
 import network.xyo.ble.sample.R
 import network.xyo.ble.sample.XYDeviceData
 import network.xyo.ui.ui
@@ -107,6 +108,8 @@ class GenericAccessFragment : XYDeviceFragment() {
                             ?: it.error?.message ?: "Error"}"
                 }
 
+                return@connection XYBluetoothResult(true)
+
             }
             conn.await()
 
@@ -144,6 +147,8 @@ class GenericAccessFragment : XYDeviceFragment() {
                             ?: it.error?.message ?: "Error"}"
                 }
 
+                return@connection XYBluetoothResult(true)
+
             }
             conn.await()
 
@@ -180,6 +185,8 @@ class GenericAccessFragment : XYDeviceFragment() {
                     deviceData?.peripheralPreferredConnectionParameters = "${it.value
                             ?: it.error?.message ?: "Error"}"
                 }
+
+                return@connection XYBluetoothResult(true)
 
             }
             conn.await()
