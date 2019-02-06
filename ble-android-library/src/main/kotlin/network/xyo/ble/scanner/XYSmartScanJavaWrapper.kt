@@ -2,11 +2,12 @@ package network.xyo.ble.scanner
 
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import network.xyo.core.XYBase
 
-class XYSmartScanJavaWrapper(val scanner: XYSmartScan) {
+class XYSmartScanJavaWrapper(val scanner: XYSmartScan): XYBase() {
 
     abstract class Promise<T> {
-        open fun resolve(value: T) {}
+        open fun resolve(value: T?) {}
         open fun reject(error: String) {}
     }
 
@@ -16,7 +17,8 @@ class XYSmartScanJavaWrapper(val scanner: XYSmartScan) {
 
     fun start(promise: Promise<Boolean>? = null){
         GlobalScope.launch {
-            promise?.resolve(scanner.start().await())
+            val result = scanner.start().await()
+            promise?.resolve(result)
         }
     }
 
@@ -26,7 +28,8 @@ class XYSmartScanJavaWrapper(val scanner: XYSmartScan) {
 
     fun stop(promise: Promise<Boolean>? = null){
         GlobalScope.launch {
-            promise?.resolve(scanner.stop().await())
+            val result = scanner.stop().await()
+            promise?.resolve(result)
         }
     }
 }
