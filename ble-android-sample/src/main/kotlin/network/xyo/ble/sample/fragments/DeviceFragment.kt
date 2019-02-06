@@ -35,7 +35,7 @@ class DeviceFragment : XYDeviceFragment() {
     override fun onResume() {
         super.onResume()
 
-        if (deviceData?.systemId.isNullOrEmpty() && progressListener?.isInProgress() == false) {
+        if (deviceData?.systemId.isNullOrEmpty()) {
             setDeviceValues()
         } else {
             updateUI()
@@ -44,7 +44,7 @@ class DeviceFragment : XYDeviceFragment() {
 
     private fun updateUI() {
         ui {
-            progressListener?.hideProgress()
+            throbber?.show()
 
             text_system_id?.text = deviceData?.systemId
             text_model_number?.text = deviceData?.modelNumberString
@@ -55,13 +55,13 @@ class DeviceFragment : XYDeviceFragment() {
             text_mfg_name?.text = deviceData?.manufacturerNameString
             text_ieee?.text = deviceData?.ieeeRegulatoryCertificationDataList
             text_pnp_id?.text = deviceData?.pnpId
+
+            throbber?.hide()
         }
     }
 
     private fun setDeviceValues() {
-        ui {
-            progressListener?.showProgress()
-        }
+        throbber?.show()
 
         when (device) {
             is XY4BluetoothDevice -> {
@@ -80,6 +80,8 @@ class DeviceFragment : XYDeviceFragment() {
                 text_system_id.text = getString(R.string.unknown_device)
             }
         }
+
+        throbber?.hide()
     }
 
     private fun getInformationValues(device: XY4BluetoothDevice) {

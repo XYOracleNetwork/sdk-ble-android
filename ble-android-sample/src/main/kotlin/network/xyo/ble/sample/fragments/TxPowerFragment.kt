@@ -37,7 +37,7 @@ class TxPowerFragment : XYDeviceFragment() {
     override fun onResume() {
         super.onResume()
 
-        if (deviceData?.txPowerLevel.isNullOrEmpty() && progressListener?.isInProgress() == false) {
+        if (deviceData?.txPowerLevel.isNullOrEmpty()) {
             setTxValues()
         } else {
             updateUI()
@@ -46,7 +46,7 @@ class TxPowerFragment : XYDeviceFragment() {
 
     private fun updateUI() {
         ui {
-            progressListener?.hideProgress()
+            throbber?.hide()
 
             text_tx_power?.text = deviceData?.txPowerLevel
         }
@@ -54,9 +54,11 @@ class TxPowerFragment : XYDeviceFragment() {
 
     private fun setTxValues() {
         ui {
-            progressListener?.showProgress()
+            throbber?.show()
 
             text_tx_power.text = ""
+
+            throbber?.hide()
         }
 
         when (device) {

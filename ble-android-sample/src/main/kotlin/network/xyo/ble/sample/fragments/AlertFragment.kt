@@ -35,7 +35,7 @@ class AlertFragment : XYDeviceFragment() {
     override fun onResume() {
         super.onResume()
 
-        if (deviceData?.controlPoint.isNullOrEmpty() && progressListener?.isInProgress() == false) {
+        if (deviceData?.controlPoint.isNullOrEmpty()) {
             setAlertValues()
         } else {
             updateUI()
@@ -44,9 +44,7 @@ class AlertFragment : XYDeviceFragment() {
     }
 
     private fun setAlertValues() {
-        ui {
-            progressListener?.showProgress()
-        }
+        throbber?.show()
 
         when (device) {
             is XY4BluetoothDevice -> {
@@ -65,12 +63,12 @@ class AlertFragment : XYDeviceFragment() {
             }
 
         }
+
+        throbber?.hide()
     }
 
     private fun updateUI() {
         ui {
-            progressListener?.hideProgress()
-
             text_control_point?.text = deviceData?.controlPoint
             text_unread_alert_status?.text = deviceData?.unreadAlertStatus
             text_new_alert?.text = deviceData?.newAlert

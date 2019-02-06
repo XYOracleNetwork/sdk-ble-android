@@ -119,7 +119,7 @@ class FirmwareUpdateFragment : XYDeviceFragment(), BackFragmentListener {
             log.info("updateListener: updated")
             updateInProgress = false
             ui {
-                progressListener?.hideProgress()
+                throbber?.hide()
                 showToast("Update complete. Rebooting device...")
                 activity?.onBackPressed()
             }
@@ -136,10 +136,11 @@ class FirmwareUpdateFragment : XYDeviceFragment(), BackFragmentListener {
                     promptRefreshAdapter()
                 }
 
-                progressListener?.showProgress()
+                throbber?.show()
                 button_update?.isEnabled = true
                 lv_files?.visibility = VISIBLE
                 tv_file_name?.visibility = VISIBLE
+                throbber?.hide()
             }
         }
 
@@ -168,13 +169,11 @@ class FirmwareUpdateFragment : XYDeviceFragment(), BackFragmentListener {
     }
 
     private fun refreshAdapter() {
-        progressListener?.showProgress()
-
         GlobalScope.launch {
+            throbber?.show()
             //need to connect before refreshing
             val result = device?.connect()?.await()
             // val result = device?.refreshGatt()?.await()
-            ui { progressListener?.showProgress() }
             if (result?.value as Boolean) {
                 ui { showToast("BLE adapter was reset, performing update") }
                 performUpdate()
@@ -182,6 +181,7 @@ class FirmwareUpdateFragment : XYDeviceFragment(), BackFragmentListener {
                 ui { showToast("Failed to refresh BLE adapter") }
             }
             showToast(result.toString())
+            throbber?.hide()
         }
     }
 
@@ -194,7 +194,6 @@ class FirmwareUpdateFragment : XYDeviceFragment(), BackFragmentListener {
                     tv_file_name?.visibility = GONE
                     tv_file_progress?.visibility = VISIBLE
                     button_update?.isEnabled = false
-                    progressListener?.showProgress()
                     tv_file_progress?.text = getString(R.string.update_started)
                 }
 

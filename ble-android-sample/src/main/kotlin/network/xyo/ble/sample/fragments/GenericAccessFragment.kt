@@ -36,7 +36,7 @@ class GenericAccessFragment : XYDeviceFragment() {
     override fun onResume() {
         super.onResume()
 
-        if (deviceData?.deviceName.isNullOrEmpty() && progressListener?.isInProgress() == false) {
+        if (deviceData?.deviceName.isNullOrEmpty()) {
             setGenericAccessValues()
         } else {
             updateUI()
@@ -45,7 +45,7 @@ class GenericAccessFragment : XYDeviceFragment() {
 
     private fun updateUI() {
         ui {
-            progressListener?.hideProgress()
+            throbber?.hide()
 
             text_device_name?.text = deviceData?.deviceName
             text_appearance?.text = deviceData?.appearance
@@ -56,9 +56,7 @@ class GenericAccessFragment : XYDeviceFragment() {
     }
 
     private fun setGenericAccessValues() {
-        ui {
-            progressListener?.showProgress()
-        }
+        throbber?.show()
 
         when (device) {
             is XY4BluetoothDevice -> {
@@ -77,6 +75,8 @@ class GenericAccessFragment : XYDeviceFragment() {
                 text_device_name.text = getString(R.string.unknown_device)
             }
         }
+
+        throbber?.hide()
     }
 
     private fun getXY4Values(device: XY4BluetoothDevice) {

@@ -37,7 +37,7 @@ class LinkLossFragment : XYDeviceFragment() {
     override fun onResume() {
         super.onResume()
 
-        if (deviceData?.alertLevel.isNullOrEmpty() && progressListener?.isInProgress() == false) {
+        if (deviceData?.alertLevel.isNullOrEmpty()) {
             initLinkLossValues()
         } else {
             updateUI()
@@ -46,16 +46,12 @@ class LinkLossFragment : XYDeviceFragment() {
 
     private fun updateUI() {
         ui {
-            progressListener?.isInProgress()
-
             text_alert_level?.text = deviceData?.alertLevel
         }
     }
 
     private fun initLinkLossValues() {
-        ui {
-            progressListener?.showProgress()
-        }
+        throbber?.show()
 
         when (device) {
             is XY4BluetoothDevice -> {
@@ -78,6 +74,8 @@ class LinkLossFragment : XYDeviceFragment() {
             }
 
         }
+
+        throbber?.hide()
     }
 
     private fun getXY4Values(device: XY4BluetoothDevice) {

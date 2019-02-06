@@ -69,6 +69,41 @@ open class XYIBeaconBluetoothDevice(context: Context, scanResult: XYScanResult?,
         }
     }
 
+    open val distance: Double?
+        get() {
+            val rssi = rssi ?: return null
+            val dist: Double
+            val ratio: Double = rssi*1.0/power
+            dist = if (ratio < 1.0) {
+                Math.pow(ratio, 10.0)
+            }
+            else {
+                (0.89976)*Math.pow(ratio,7.7095) + 0.111
+            }
+            return dist
+        }
+
+    override fun compareTo(other: XYBluetoothDevice): Int {
+        if (other is XYIBeaconBluetoothDevice) {
+            val d1 = distance
+            val d2 = other.distance
+            if (d1 == null) {
+                if (d2 == null) {
+                    return 0
+                }
+                return -1
+            }
+            return when {
+                d2 == null -> 1
+                d1 == d2 -> 0
+                d1 > d2 -> 1
+                else -> -1
+            }
+        } else {
+            return super.compareTo(other)
+        }
+    }
+
     companion object : XYBase() {
 
         const val APPLE_IBEACON_ID = 0x02.toByte()

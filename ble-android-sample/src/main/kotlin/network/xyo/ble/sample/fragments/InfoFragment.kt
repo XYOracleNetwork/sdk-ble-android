@@ -94,7 +94,7 @@ class InfoFragment : XYDeviceFragment(), View.OnClickListener, CompoundButton.On
     private fun updateUI() {
         ui {
             log.info("update")
-            progressListener?.showProgress()
+            throbber?.show()
 
             if (device != null) {
 
@@ -123,7 +123,7 @@ class InfoFragment : XYDeviceFragment(), View.OnClickListener, CompoundButton.On
                 button_connect?.visibility = VISIBLE
                 button_disconnect?.visibility = GONE
             }
-            progressListener?.hideProgress()
+            throbber?.hide()
         }
     }
 
@@ -320,8 +320,7 @@ class InfoFragment : XYDeviceFragment(), View.OnClickListener, CompoundButton.On
     private fun updateStayAwakeEnabledStates(): Deferred<Unit> {
         return GlobalScope.async {
             log.info("updateStayAwakeEnabledStates")
-            // val xy4 = device as? XY4BluetoothDevice
-            /*val xy4 = activity?.device as? XY4BluetoothDevice
+            val xy4 = device as? XY4BluetoothDevice
             if (xy4 != null) {
                 val stayAwake = xy4.primary.stayAwake.get().await()
                 log.info("updateStayAwakeEnabledStates: ${stayAwake.value}")
@@ -338,7 +337,7 @@ class InfoFragment : XYDeviceFragment(), View.OnClickListener, CompoundButton.On
                 }
             } else {
                 log.error("updateStayAwakeEnabledStates: Not an XY4!", false)
-            }*/
+            }
             return@async
         }
     }

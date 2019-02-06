@@ -72,28 +72,28 @@ open class XY3BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
 
     override val prefix = "xy:ibeacon"
 
-    override fun find(): Deferred<XYBluetoothResult<Int>> {
-        return controlService.buzzerSelect.set(2)
+    override fun find() = connection {
+        return@connection controlService.buzzerSelect.set(2).await()
     }
 
-    override fun stopFind(): Deferred<XYBluetoothResult<Int>> {
-        return controlService.buzzerSelect.set(-1)
+    override fun stopFind() = connection {
+        return@connection controlService.buzzerSelect.set(-1).await()
     }
 
-    override fun lock(): Deferred<XYBluetoothResult<ByteArray>> {
-        return basicConfigService.lock.set(DEFAULT_LOCK_CODE)
+    override fun lock() = connection {
+        return@connection basicConfigService.lock.set(DEFAULT_LOCK_CODE).await()
     }
 
-    override fun unlock(): Deferred<XYBluetoothResult<ByteArray>> {
-        return basicConfigService.unlock.set(DEFAULT_LOCK_CODE)
+    override fun unlock() = connection {
+        return@connection basicConfigService.unlock.set(DEFAULT_LOCK_CODE).await()
     }
 
-    override fun stayAwake(): Deferred<XYBluetoothResult<Int>> {
-        return extendedConfigService.registration.set(1)
+    override fun stayAwake() = connection {
+        return@connection extendedConfigService.registration.set(1).await()
     }
 
-    override fun fallAsleep(): Deferred<XYBluetoothResult<Int>> {
-        return extendedConfigService.registration.set(0)
+    override fun fallAsleep() = connection {
+        return@connection extendedConfigService.registration.set(0).await()
     }
 
     override fun onDetect(scanResult: XYScanResult?) {

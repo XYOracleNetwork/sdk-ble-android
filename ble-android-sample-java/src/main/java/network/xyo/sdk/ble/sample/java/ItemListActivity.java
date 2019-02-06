@@ -20,9 +20,6 @@ import android.widget.TextView;
 
 import org.jetbrains.annotations.NotNull;
 
-import kotlin.coroutines.Continuation;
-import kotlin.coroutines.CoroutineContext;
-import kotlin.coroutines.EmptyCoroutineContext;
 import network.xyo.ble.devices.XY2BluetoothDevice;
 import network.xyo.ble.devices.XY3BluetoothDevice;
 import network.xyo.ble.devices.XY4BluetoothDevice;
@@ -32,13 +29,12 @@ import network.xyo.ble.devices.XYFinderBluetoothDevice;
 import network.xyo.ble.devices.XYGpsBluetoothDevice;
 import network.xyo.ble.devices.XYIBeaconBluetoothDevice;
 import network.xyo.ble.scanner.XYSmartScan;
-import network.xyo.ble.scanner.XYSmartScanJavaWrapper;
+import network.xyo.ble.scanner.XYSmartScanPromiseWrapper;
 import network.xyo.ble.scanner.XYSmartScanLegacy;
 import network.xyo.ble.scanner.XYSmartScanModern;
 import network.xyo.sdk.ble.sample.java.dummy.DummyContent;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -100,15 +96,15 @@ public class ItemListActivity extends AppCompatActivity {
         recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(this, mTwoPane));
     }
 
-    private XYSmartScanJavaWrapper _scanner;
+    private XYSmartScanPromiseWrapper _scanner;
 
-    protected XYSmartScanJavaWrapper getScanner() {
+    protected XYSmartScanPromiseWrapper getScanner() {
         synchronized (this) {
             if (_scanner == null) {
                 if (Build.VERSION.SDK_INT >= 21) {
-                    _scanner = new XYSmartScanJavaWrapper(new XYSmartScanModern(this.getApplicationContext()));
+                    _scanner = new XYSmartScanPromiseWrapper(new XYSmartScanModern(this.getApplicationContext()));
                 } else {
-                    _scanner = new XYSmartScanJavaWrapper(new XYSmartScanLegacy(this.getApplicationContext()));
+                    _scanner = new XYSmartScanPromiseWrapper(new XYSmartScanLegacy(this.getApplicationContext()));
                 }
             }
             return _scanner;
@@ -168,6 +164,18 @@ public class ItemListActivity extends AppCompatActivity {
                 public void entered(@NotNull XYBluetoothDevice device) {
                     super.entered(device);
                     mValues.add(device);
+                    self.mParentActivity.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            self.notifyDataSetChanged();
+                        }
+                    });
+                }
+
+                @Override
+                public void exited(@NotNull XYBluetoothDevice device) {
+                    super.exited(device);
+                    mValues.remove(device);
                     self.mParentActivity.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
