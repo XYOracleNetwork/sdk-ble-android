@@ -6,7 +6,7 @@ import android.util.SparseArray
 import network.xyo.ble.bluetooth.ScanRecordLegacy
 
 @TargetApi(18)
-class XYScanRecordLegacy(private val scanRecord: ScanRecordLegacy) : XYScanRecord() {
+internal class XYScanRecordLegacy(private val scanRecord: ScanRecordLegacy) : XYScanRecord() {
 
     override val advertiseFlags: Int
         get() {

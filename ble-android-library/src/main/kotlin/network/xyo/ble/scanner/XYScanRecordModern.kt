@@ -6,7 +6,7 @@ import android.os.ParcelUuid
 import android.util.SparseArray
 
 @TargetApi(21)
-class XYScanRecordModern(private val scanRecord: ScanRecord) : XYScanRecord() {
+internal class XYScanRecordModern(private val scanRecord: ScanRecord) : XYScanRecord() {
     override val advertiseFlags: Int
         get() {
             return scanRecord.advertiseFlags

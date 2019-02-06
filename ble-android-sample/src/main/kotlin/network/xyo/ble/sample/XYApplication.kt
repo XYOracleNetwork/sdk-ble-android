@@ -27,14 +27,14 @@ class XYApplication : Application() {
     override fun onCreate() {
         super.onCreate()
 
-        /*XYAppleBluetoothDevice.enable(true)
+        XYAppleBluetoothDevice.enable(true)
         XYIBeaconBluetoothDevice.enable(true)
         XYFinderBluetoothDevice.enable(true)
         XY4BluetoothDevice.enable(true)
-        XY3BluetoothDevice.enable(true)*/
+        XY3BluetoothDevice.enable(true)
         XY2BluetoothDevice.enable(true)
-        /*XYGpsBluetoothDevice.enable(true)
-        XYBluetoothDevice.enable(true)*/
+        XYGpsBluetoothDevice.enable(true)
+        //XYBluetoothDevice.enable(true)
 
         Thread.setDefaultUncaughtExceptionHandler { t, e ->
             log.error("Exception Thread: $t")

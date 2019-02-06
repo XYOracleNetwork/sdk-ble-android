@@ -8,7 +8,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import network.xyo.ble.ads.XYBleAd
-import network.xyo.ble.gatt.XYBluetoothGattClient
+import network.xyo.ble.gatt.peripheral.XYBluetoothGattClient
 import network.xyo.ble.scanner.XYScanRecord
 import network.xyo.ble.scanner.XYScanResult
 import network.xyo.core.XYBase
