@@ -4,7 +4,7 @@ import android.bluetooth.*
 import android.content.Context
 import android.os.Handler
 import kotlinx.coroutines.*
-import network.xyo.ble.gatt.XYBluetoothBase
+import network.xyo.ble.XYBluetoothBase
 import network.xyo.ble.gatt.peripheral.actions.XYBluetoothGattConnect
 import network.xyo.ble.gatt.peripheral.actions.XYBluetoothGattReadCharacteristic
 import network.xyo.ble.gatt.peripheral.actions.XYBluetoothGattWriteCharacteristic

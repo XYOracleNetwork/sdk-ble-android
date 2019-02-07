@@ -3,7 +3,7 @@ package network.xyo.ble
 import android.os.Build
 import network.xyo.core.XYBase
 
-class CallByVersion : XYBase() {
+class XYCallByVersion : XYBase() {
 
     class Call(
             val version: Int,
@@ -16,7 +16,7 @@ class CallByVersion : XYBase() {
 
     private val calls = ArrayList<Call>()
 
-    fun add(version: Int, closure: () -> Unit): CallByVersion {
+    fun add(version: Int, closure: () -> Unit): XYCallByVersion {
         calls.add(Call(version, closure))
         return this
     }

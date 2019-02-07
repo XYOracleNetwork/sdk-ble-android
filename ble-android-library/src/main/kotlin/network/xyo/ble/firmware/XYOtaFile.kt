@@ -4,17 +4,13 @@ import android.os.Environment
 import android.util.Log
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
 import network.xyo.core.XYBase
 import java.io.*
-import java.net.HttpURLConnection
 import java.net.URL
-import java.nio.ByteBuffer
-import java.nio.CharBuffer
 import java.util.*
 import kotlin.experimental.xor
 
-class OtaFile(private val inputStream: InputStream?): XYBase() {
+class XYOtaFile(private val inputStream: InputStream?): XYBase() {
 
     private var bytes: ByteArray? = null
     private var blocks: Array<Array<ByteArray>>? = null
@@ -65,12 +61,12 @@ class OtaFile(private val inputStream: InputStream?): XYBase() {
             (arrayOfNulls<T>(size) as Array<T>)
 
 
-    //Chunk the OtaFile into correct block sizes.
+    //Chunk the XYOtaFile into correct block sizes.
     private fun initBlocksSuota() {
         totalChunkCount = 0
         blocks = fileEmptyArray(numberOfBlocks)
 
-        log.info("OtaFile", "initBlocksSuota numberOfBlocks: $numberOfBlocks")
+        log.info("XYOtaFile", "initBlocksSuota numberOfBlocks: $numberOfBlocks")
 
         var byteOffset = 0
         // Loop through all the bytes and split them into pieces the size of the default chunk size
@@ -94,7 +90,7 @@ class OtaFile(private val inputStream: InputStream?): XYBase() {
                     chunkSize = blockSize.rem(fileChunkSize)
                 }
 
-                //XYBase.log.info("OtaFile", "total bytes: " + bytes!!.size + ", offset: " + byteOffset + ", block: " + i + ", chunk: " + (chunkNumber + 1) + ", blockSize: " + blockSize + ", chunkSize: " + chunkSize)
+                //XYBase.log.info("XYOtaFile", "total bytes: " + bytes!!.size + ", offset: " + byteOffset + ", block: " + i + ", chunk: " + (chunkNumber + 1) + ", blockSize: " + blockSize + ", chunkSize: " + chunkSize)
                 val chunk = Arrays.copyOfRange(bytes!!, byteOffset, byteOffset + chunkSize)
                 blocks!![i][chunkNumber] = chunk
                 byteOffset += chunkSize
@@ -127,29 +123,38 @@ class OtaFile(private val inputStream: InputStream?): XYBase() {
             val intVal = byteValue.toInt()
             crcCode = crcCode xor intVal.toByte()
         }
-        //XYBase.log.info("OtaFile", String.format("Firmware CRC: %#04x", crc_code and 0xff.toByte()))
+        //XYBase.log.info("XYOtaFile", String.format("Firmware CRC: %#04x", crc_code and 0xff.toByte()))
 
         return crcCode
     }
 
     companion object {
-        private val filesDir = Environment.getExternalStorageDirectory().absolutePath + "/Xyo"
 
-        fun getByFileName(filename: String): OtaFile {
+        fun getByName(folderName: String, filename: String): XYOtaFile {
             // Get the file and store it in fileStream
 
-            val inputStream = FileInputStream("$filesDir/$filename")
-            return OtaFile(inputStream)
+            val inputStream = FileInputStream("${folderPath(folderName)}/$filename")
+            return XYOtaFile(inputStream)
         }
 
-        fun getByFileStream(stream: InputStream): OtaFile {
-            return OtaFile(stream)
+        fun getByStream(stream: InputStream): XYOtaFile {
+            return XYOtaFile(stream)
         }
 
-        fun list(): ArrayList<String>? {
-            val f = java.io.File(filesDir)
+        fun folderPath(folderName: String): String {
+            return "${Environment.getExternalStorageDirectory().absolutePath}/$folderName"
+        }
+
+        fun createFileDirectory(folderName: String): Boolean {
+            val directoryName = folderPath(folderName)
+            val directory: java.io.File
+            directory = java.io.File(directoryName)
+            return directory.exists() || directory.mkdirs()
+        }
+
+        fun list(folderName: String): ArrayList<String>? {
+            val f = java.io.File(folderPath(folderName))
             val file = f.listFiles() ?: return null
-            // Arrays.sort<OtaFileS>(file, Comparator<java.io.OtaFileS> { lhs, rhs -> lhs.path.compareTo(rhs.path, ignoreCase = true) })
             Log.d("Files", "Size: " + file.size)
             val names = ArrayList<String>()
             for (i in file.indices) {
@@ -157,30 +162,6 @@ class OtaFile(private val inputStream: InputStream?): XYBase() {
                 names.add(file[i].name)
             }
             return names
-        }
-
-        fun readFromServer() = GlobalScope.async {
-            createFileDirectory()
-            val url = URL("https://s3.amazonaws.com/xyfirmware.xyo.network/xy4_585-0-v56.img")
-            val connection = url.openConnection()
-            connection.connectTimeout = 60000
-            val inBuffer = BufferedInputStream(connection.getInputStream())
-            val outStream = FileOutputStream("$filesDir/xy4_585-0-v56.img")
-            val buffer = ByteArray(1024)
-            var len = inBuffer.read(buffer)
-            while (len > 0) {
-                outStream.write(buffer, 0, len)
-                len = inBuffer.read(buffer)
-            }
-            inBuffer.close()
-            outStream.close()
-        }
-
-        fun createFileDirectory(): Boolean {
-            val directoryName = filesDir
-            val directory: java.io.File
-            directory = java.io.File(directoryName)
-            return directory.exists() || directory.mkdirs()
         }
     }
 }

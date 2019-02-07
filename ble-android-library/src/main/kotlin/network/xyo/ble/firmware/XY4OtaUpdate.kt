@@ -2,13 +2,12 @@ package network.xyo.ble.firmware
 
 import kotlinx.coroutines.*
 import network.xyo.ble.devices.XY4BluetoothDevice
-import network.xyo.ble.devices.XYBluetoothDevice
 import network.xyo.ble.gatt.peripheral.XYBluetoothResult
 import network.xyo.core.XYBase
 
-class OtaUpdate(var device: XY4BluetoothDevice, private val otaFile: OtaFile?): XYBase() {
+internal class XY4OtaUpdate(var device: XY4BluetoothDevice, private val otaFile: XYOtaFile?): XYBase() {
 
-    private val listeners = HashMap<String, Listener>()
+    private val listeners = HashMap<String, XYOtaUpdate.Listener>()
     private var updateJob: Job? = null
     private var lastBlock = false
     private var lastBlockSent = false
@@ -48,7 +47,7 @@ class OtaUpdate(var device: XY4BluetoothDevice, private val otaFile: OtaFile?): 
 
     }
 
-    fun addListener(key: String, listener: Listener) {
+    fun addListener(key: String, listener: XYOtaUpdate.Listener) {
         GlobalScope.launch {
             synchronized(listeners) {
                 listeners.put(key, listener)
@@ -286,9 +285,8 @@ class OtaUpdate(var device: XY4BluetoothDevice, private val otaFile: OtaFile?): 
         }
     }
 
-
     companion object {
-        private const val TAG = "OtaUpdate"
+        private const val TAG = "XY4OtaUpdate"
 
         //const val MAX_RETRY_COUNT = 3
         const val END_SIGNAL = -0x2000000
@@ -296,9 +294,4 @@ class OtaUpdate(var device: XY4BluetoothDevice, private val otaFile: OtaFile?): 
         const val MEMORY_TYPE_EXTERNAL_SPI = 0x13
     }
 
-    open class Listener {
-        open fun updated(device: XYBluetoothDevice) {}
-        open fun failed(device: XYBluetoothDevice, error: String) {}
-        open fun progress(sent: Int, total: Int) {}
-    }
 }

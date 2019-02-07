@@ -4,6 +4,7 @@ import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothGatt
 import android.content.Context
 import android.os.ParcelUuid
+import android.util.SparseArray
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -24,7 +25,7 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, val has
     //is done based on device specific logic on "sameness"
 
     protected val listeners = HashMap<String, Listener>()
-    val ads = HashMap<Int, XYBleAd>()
+    val ads = SparseArray<XYBleAd>()
 
     var detectCount = 0
     var enterCount = 0
@@ -235,7 +236,7 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, val has
         val buffer = ByteBuffer.wrap(record.bytes)
         while (buffer.hasRemaining()) {
             val ad = XYBleAd(buffer)
-            ads[ad.hashCode()] = ad
+            ads.append(ad.hashCode(), ad)
         }
     }
 
@@ -267,7 +268,7 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, val has
         }
 
         internal var canCreate = false
-        val manufacturerToCreator = HashMap<Int, XYCreator>()
+        val manufacturerToCreator = SparseArray<XYCreator>()
 
         //Do not serviceToCreator this Private. It's called by other apps
         val serviceToCreator = HashMap<UUID, XYCreator>()
@@ -276,10 +277,11 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, val has
         var cancelNotifications: Boolean = false
 
         private fun getDevicesFromManufacturers(context: Context, scanResult: XYScanResult, globalDevices: ConcurrentHashMap<String, XYBluetoothDevice>, newDevices: HashMap<String, XYBluetoothDevice>) {
-            for ((manufacturerId, creator) in manufacturerToCreator) {
+            for (i in 0 until manufacturerToCreator.size()) {
+                val manufacturerId = manufacturerToCreator.keyAt(i)
                 val bytes = scanResult.scanRecord?.getManufacturerSpecificData(manufacturerId)
                 if (bytes != null) {
-                    creator.getDevicesFromScanResult(context, scanResult, globalDevices, newDevices)
+                    manufacturerToCreator.get(manufacturerId)?.getDevicesFromScanResult(context, scanResult, globalDevices, newDevices)
                 }
             }
         }

@@ -1,4 +1,4 @@
-package network.xyo.ble.gatt
+package network.xyo.ble
 
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothManager
@@ -11,7 +11,6 @@ import java.util.concurrent.Executors
 import kotlin.coroutines.AbstractCoroutineContextElement
 import kotlin.coroutines.Continuation
 import kotlin.coroutines.ContinuationInterceptor
-import kotlin.coroutines.CoroutineContext
 
 open class XYBluetoothBase(context: Context) : XYBase() {
 

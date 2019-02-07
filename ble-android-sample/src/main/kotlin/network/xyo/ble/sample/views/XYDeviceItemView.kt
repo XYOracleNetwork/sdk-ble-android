@@ -9,7 +9,6 @@ import kotlinx.android.synthetic.main.device_item.view.*
 import network.xyo.ble.devices.XYBluetoothDevice
 import network.xyo.ble.devices.XYFinderBluetoothDevice
 import network.xyo.ble.devices.XYIBeaconBluetoothDevice
-import network.xyo.ble.gatt.XYBluetoothGattBase
 import network.xyo.ble.sample.R
 import network.xyo.ble.sample.activities.XYODeviceActivity
 import network.xyo.core.XYBase

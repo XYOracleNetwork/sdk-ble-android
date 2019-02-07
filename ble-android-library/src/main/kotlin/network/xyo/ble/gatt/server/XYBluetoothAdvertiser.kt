@@ -6,9 +6,7 @@ import android.bluetooth.le.AdvertiseSettings
 import android.bluetooth.le.AdvertiseSettings.*
 import android.bluetooth.le.BluetoothLeAdvertiser
 import android.content.Context
-import android.os.ParcelUuid
-import kotlinx.coroutines.Deferred
-import network.xyo.ble.gatt.XYBluetoothBase
+import network.xyo.ble.XYBluetoothBase
 import network.xyo.ble.gatt.peripheral.XYBluetoothError
 import network.xyo.ble.gatt.peripheral.XYBluetoothResult
 import network.xyo.ble.gatt.peripheral.asyncBle

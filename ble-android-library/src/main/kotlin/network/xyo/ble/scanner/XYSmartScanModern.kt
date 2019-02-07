@@ -11,7 +11,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import network.xyo.ble.CallByVersion
+import network.xyo.ble.XYCallByVersion
 import network.xyo.ble.gatt.peripheral.XYBluetoothResult
 import network.xyo.ble.gatt.peripheral.asyncBle
 import java.util.*
@@ -103,7 +103,7 @@ class XYSmartScanModern(context: Context) : XYSmartScan(context) {
 
     private fun getSettings(): ScanSettings {
         var result: ScanSettings? = null
-        CallByVersion()
+        XYCallByVersion()
                 .add(Build.VERSION_CODES.O) {
                     result = getSettings26()
                 }

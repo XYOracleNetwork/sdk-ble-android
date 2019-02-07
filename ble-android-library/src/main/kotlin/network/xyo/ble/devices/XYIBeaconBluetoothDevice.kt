@@ -106,14 +106,14 @@ open class XYIBeaconBluetoothDevice(context: Context, scanResult: XYScanResult?,
 
     companion object : XYBase() {
 
-        const val APPLE_IBEACON_ID = 0x02.toByte()
+        const val APPLE_IBEACON_ID = 0x02
 
         var canCreate = false
 
         fun enable(enable: Boolean) {
             if (enable) {
                 XYAppleBluetoothDevice.enable(true)
-                XYAppleBluetoothDevice.typeToCreator[APPLE_IBEACON_ID] = creator
+                XYAppleBluetoothDevice.typeToCreator.append(APPLE_IBEACON_ID, creator)
             } else {
                 XYAppleBluetoothDevice.typeToCreator.remove(APPLE_IBEACON_ID)
             }

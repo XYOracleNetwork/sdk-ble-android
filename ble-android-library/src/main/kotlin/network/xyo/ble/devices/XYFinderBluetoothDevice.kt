@@ -1,11 +1,11 @@
 package network.xyo.ble.devices
 
 import android.content.Context
-import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
-import network.xyo.ble.firmware.OtaUpdate
+import network.xyo.ble.firmware.XY4OtaUpdate
+import network.xyo.ble.firmware.XYOtaUpdate
 import network.xyo.ble.gatt.peripheral.XYBluetoothError
 import network.xyo.ble.gatt.peripheral.XYBluetoothResult
 import network.xyo.ble.scanner.XYScanResult
@@ -150,11 +150,11 @@ open class XYFinderBluetoothDevice(context: Context, scanResult: XYScanResult, h
         return@async XYBluetoothResult<Int>(XYBluetoothError("Not Implemented"))
     }
 
-    open fun updateFirmware(stream: InputStream, listener: OtaUpdate.Listener) {
+    open fun updateFirmware(stream: InputStream, listener: XYOtaUpdate.Listener) {
 
     }
 
-    open fun updateFirmware(filename: String, listener: OtaUpdate.Listener) {
+    open fun updateFirmware(folderName: String, filename: String, listener: XYOtaUpdate.Listener) {
 
     }
 
