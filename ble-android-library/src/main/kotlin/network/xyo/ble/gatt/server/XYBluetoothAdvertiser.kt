@@ -39,7 +39,7 @@ open class XYBluetoothAdvertiser(context: Context) : XYBluetoothBase(context){
     open fun startAdvertising () = asyncBle {
         if (bleAdvertiser != null) {
 
-            if (isMultiAdvertisementSupported && advertisingResponse != null) {
+            if (!isMultiAdvertisementSupported && advertisingResponse != null) {
                 return@asyncBle  XYBluetoothResult(null, XYBluetoothError("Device does no support scan response advertising!"))
             }
 
