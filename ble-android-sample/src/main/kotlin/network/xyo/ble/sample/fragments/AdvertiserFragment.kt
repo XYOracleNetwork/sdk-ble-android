@@ -41,7 +41,6 @@ class AdvertiserFragment : XYBaseFragment() {
                 updateAdvertisingPower(view)
                 updateConnectible(view)
                 updateTimeout(view)
-                updateIncludeTxPowerLevel(view)
                 if(updateAdvertiserData(view)) {
                     restartAdvertiser()
                 }
@@ -120,20 +119,6 @@ class AdvertiserFragment : XYBaseFragment() {
         }
     }
 
-
-    private fun updateIncludeTxPowerLevel (view: View) {
-        val radioButtonGroup = view.include_tx_power_level_selector
-        val radioButtonID = radioButtonGroup.checkedRadioButtonId
-        val radioButton = radioButtonGroup.findViewById<RadioButton>(radioButtonID)
-        val idx = radioButtonGroup.indexOfChild(radioButton)
-
-        when(idx) {
-            0 -> advertiser?.changeIncludeTxPowerLevel(true)
-            1 -> advertiser?.changeIncludeTxPowerLevel(false)
-            2 -> advertiser?.changeIncludeTxPowerLevel(null)
-        }
-    }
-
     private fun getIncludeDeviceName (view: View) : Boolean {
         val radioButtonGroup = view.include_device_name_selector
         val radioButtonID = radioButtonGroup.checkedRadioButtonId
@@ -171,7 +156,7 @@ class AdvertiserFragment : XYBaseFragment() {
                     manufactorId,
                     getIncludeDeviceName(view))
 
-            advertiser?.advertisingData = data
+            advertiser?.advertisingData = data.build()
             return true
 
         } catch (e: NumberFormatException) {
@@ -209,6 +194,18 @@ class AdvertiserFragment : XYBaseFragment() {
             return false
         }
 
+        val radioButtonGroup = view.include_tx_power_level_selector
+        val radioButtonID = radioButtonGroup.checkedRadioButtonId
+        val radioButton = radioButtonGroup.findViewById<RadioButton>(radioButtonID)
+        val idx = radioButtonGroup.indexOfChild(radioButton)
+
+        val includeTx = when(idx) {
+            0 -> true
+            1 -> false
+            else -> false
+        }
+
+        builder.setIncludeTxPowerLevel(includeTx)
         builder.setIncludeDeviceName(getIncludeDeviceName(view))
         advertiser?.advertisingData = builder.build()
         return true
