@@ -176,39 +176,34 @@ class AdvertiserFragment : XYBaseFragment() {
             val uuid = ParcelUuid(UUID.fromString(view.standard_primary_service_input.toString()))
             builder.addServiceUuid(uuid)
             builder.addServiceData(uuid, view.standard_primary_service_data_input.toString().toByteArray())
-        } catch (e : IllegalArgumentException) {
-            ui {
-                showToast("Error Phrasing Primary Service UUID")
-            }
-            return false
-        }
-
-        try {
             val id = Integer.parseInt(view.standard_manufacturer_id_input.text.toString())
             val data = view.standard_manufacturer_data_input.text.toString().toByteArray()
             builder.addManufacturerData(id, data)
         } catch (e : NumberFormatException) {
-            ui {
-                showToast("Error Phrasing Malefactor ID")
-            }
+            ui { showToast("Error Phrasing Malefactor ID") }
+            return false
+        } catch (e : IllegalArgumentException) {
+            ui { showToast("Error Phrasing Primary Service UUID") }
             return false
         }
 
+        builder.setIncludeTxPowerLevel(getIncludeTx(view))
+        builder.setIncludeDeviceName(getIncludeDeviceName(view))
+        advertiser?.advertisingData = builder.build()
+        return true
+    }
+
+    private fun getIncludeTx (view: View) : Boolean {
         val radioButtonGroup = view.include_tx_power_level_selector
         val radioButtonID = radioButtonGroup.checkedRadioButtonId
         val radioButton = radioButtonGroup.findViewById<RadioButton>(radioButtonID)
         val idx = radioButtonGroup.indexOfChild(radioButton)
 
-        val includeTx = when(idx) {
+        return when(idx) {
             0 -> true
             1 -> false
             else -> false
         }
-
-        builder.setIncludeTxPowerLevel(includeTx)
-        builder.setIncludeDeviceName(getIncludeDeviceName(view))
-        advertiser?.advertisingData = builder.build()
-        return true
     }
 
 
