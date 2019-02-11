@@ -3,7 +3,7 @@ package network.xyo.ble.scanner
 import android.bluetooth.BluetoothDevice
 import android.os.Parcel
 
-class XYScanResultManual (
+internal class XYScanResultManual (
         val _device: BluetoothDevice?,
         val _rssi: Int,
         val _scanRecord: XYScanRecord?,

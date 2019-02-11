@@ -2,6 +2,7 @@ package network.xyo.ble.devices
 
 import android.bluetooth.BluetoothDevice
 import android.content.Context
+import android.util.SparseArray
 import network.xyo.ble.scanner.XYScanResult
 import network.xyo.core.XYBase
 import java.util.*
@@ -19,21 +20,23 @@ open class XYAppleBluetoothDevice(context: Context, device: BluetoothDevice, has
 
         fun enable(enable: Boolean) {
             if (enable) {
-                manufacturerToCreator[MANUFACTURER_ID] = creator
+                manufacturerToCreator.append(MANUFACTURER_ID, creator)
             } else {
                 manufacturerToCreator.remove(MANUFACTURER_ID)
             }
         }
 
-        internal val typeToCreator = HashMap<Byte, XYCreator>()
+        internal val typeToCreator = SparseArray<XYCreator>()
 
         internal val creator = object : XYCreator() {
             override fun getDevicesFromScanResult(context: Context, scanResult: XYScanResult, globalDevices: ConcurrentHashMap<String, XYBluetoothDevice>, foundDevices: HashMap<String, XYBluetoothDevice>) {
-                for ((typeId, creator) in typeToCreator) {
+
+                for (i in 0 until typeToCreator.size()) {
+                    val typeId = typeToCreator.keyAt(i)
                     val bytes = scanResult.scanRecord?.getManufacturerSpecificData(MANUFACTURER_ID)
                     if (bytes != null) {
-                        if (bytes[0] == typeId) {
-                            creator.getDevicesFromScanResult(context, scanResult, globalDevices, foundDevices)
+                        if (bytes[0] == typeId.toByte()) {
+                            typeToCreator.get(typeId)?.getDevicesFromScanResult(context, scanResult, globalDevices, foundDevices)
                             return
                         }
                     }

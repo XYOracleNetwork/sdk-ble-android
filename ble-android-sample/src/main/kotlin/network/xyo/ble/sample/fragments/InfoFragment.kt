@@ -13,7 +13,6 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import network.xyo.ble.devices.*
-import network.xyo.ble.gatt.XYBluetoothGattBase
 import network.xyo.ble.gatt.peripheral.XYBluetoothResult
 import network.xyo.ble.sample.R
 import network.xyo.ble.sample.XYDeviceData
@@ -94,7 +93,7 @@ class InfoFragment : XYDeviceFragment(), View.OnClickListener, CompoundButton.On
     private fun updateUI() {
         ui {
             log.info("update")
-            progressListener?.showProgress()
+            throbber?.show()
 
             if (device != null) {
 
@@ -123,7 +122,7 @@ class InfoFragment : XYDeviceFragment(), View.OnClickListener, CompoundButton.On
                 button_connect?.visibility = VISIBLE
                 button_disconnect?.visibility = GONE
             }
-            progressListener?.hideProgress()
+            throbber?.hide()
         }
     }
 
@@ -320,8 +319,7 @@ class InfoFragment : XYDeviceFragment(), View.OnClickListener, CompoundButton.On
     private fun updateStayAwakeEnabledStates(): Deferred<Unit> {
         return GlobalScope.async {
             log.info("updateStayAwakeEnabledStates")
-            // val xy4 = device as? XY4BluetoothDevice
-            /*val xy4 = activity?.device as? XY4BluetoothDevice
+            val xy4 = device as? XY4BluetoothDevice
             if (xy4 != null) {
                 val stayAwake = xy4.primary.stayAwake.get().await()
                 log.info("updateStayAwakeEnabledStates: ${stayAwake.value}")
@@ -338,7 +336,7 @@ class InfoFragment : XYDeviceFragment(), View.OnClickListener, CompoundButton.On
                 }
             } else {
                 log.error("updateStayAwakeEnabledStates: Not an XY4!", false)
-            }*/
+            }
             return@async
         }
     }
@@ -367,10 +365,13 @@ class InfoFragment : XYDeviceFragment(), View.OnClickListener, CompoundButton.On
     private fun updateAdList() {
         ui {
             var txt = ""
-            for ((_, ad) in device!!.ads) {
-                txt = txt + ad.data?.toHex() + "\r\n"
+            device?.let { device ->
+                for (i in 0 until device.ads.size()) {
+                    val key = device.ads.keyAt(i)
+                    txt = txt + device.ads[key].data?.toHex() + "\r\n"
+                }
+                adList?.text = txt
             }
-            adList?.text = txt
         }
     }
 

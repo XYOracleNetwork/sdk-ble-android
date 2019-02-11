@@ -1,0 +1,12 @@
+package network.xyo.ble.firmware
+
+import network.xyo.ble.devices.XYBluetoothDevice
+import network.xyo.core.XYBase
+
+open class XYOtaUpdate: XYBase() {
+    open class Listener {
+        open fun updated(device: XYBluetoothDevice) {}
+        open fun failed(device: XYBluetoothDevice, error: String) {}
+        open fun progress(sent: Int, total: Int) {}
+    }
+}

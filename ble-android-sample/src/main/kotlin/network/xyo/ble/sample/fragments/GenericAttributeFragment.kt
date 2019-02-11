@@ -35,7 +35,7 @@ class GenericAttributeFragment : XYDeviceFragment() {
     override fun onResume() {
         super.onResume()
 
-        if (deviceData?.serviceChanged.isNullOrEmpty() && progressListener?.isInProgress() == false) {
+        if (deviceData?.serviceChanged.isNullOrEmpty()) {
             setGattValues()
         } else {
             updateUI()
@@ -44,7 +44,7 @@ class GenericAttributeFragment : XYDeviceFragment() {
 
     private fun updateUI() {
         ui {
-            progressListener?.hideProgress()
+            throbber?.hide()
 
             text_service_changed?.text = deviceData?.serviceChanged
         }
@@ -52,7 +52,7 @@ class GenericAttributeFragment : XYDeviceFragment() {
 
     private fun setGattValues() {
         ui {
-            progressListener?.hideProgress()
+            throbber?.hide()
         }
 
         when (device) {

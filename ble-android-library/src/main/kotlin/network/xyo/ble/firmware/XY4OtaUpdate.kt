@@ -2,13 +2,12 @@ package network.xyo.ble.firmware
 
 import kotlinx.coroutines.*
 import network.xyo.ble.devices.XY4BluetoothDevice
-import network.xyo.ble.devices.XYBluetoothDevice
 import network.xyo.ble.gatt.peripheral.XYBluetoothResult
 import network.xyo.core.XYBase
 
-class OtaUpdate(var device: XY4BluetoothDevice, private val otaFile: OtaFile?): XYBase() {
+internal class XY4OtaUpdate(var device: XY4BluetoothDevice, private val otaFile: XYOtaFile?): XYBase() {
 
-    private val listeners = HashMap<String, Listener>()
+    private val listeners = HashMap<String, XYOtaUpdate.Listener>()
     private var updateJob: Job? = null
     private var lastBlock = false
     private var lastBlockSent = false
@@ -18,51 +17,19 @@ class OtaUpdate(var device: XY4BluetoothDevice, private val otaFile: OtaFile?): 
     private var chunkCount = -1
     private var blockCounter = 0
 
-    private var _imageBank = 0
-    var imageBank: Int
-        get() = _imageBank
-        set(value) {
-            _imageBank = value
-        }
+    var imageBank = 0
 
     //SPI_DI
-    private var _miso_gpio = 0x05
-    var MISO_GPIO: Int
-        get() = _miso_gpio
-        set(value) {
-            _miso_gpio = value
-        }
+    var miso_gpio = 0x05
 
     //SPI_DO
-    private var _mosi_gpio = 0x06
-    var MOSI_GPIO: Int
-        get() = _mosi_gpio
-        set(value) {
-            _mosi_gpio = value
-        }
+    var mosi_gpio = 0x06
 
     //SPI_EN
-    private var cs_gpio = 0x07
-    var CS_GPIO: Int
-        get() = cs_gpio
-        set(value) {
-            cs_gpio = value
-        }
+    var cs_gpio = 0x07
 
     //DPI_CLK
-    private var _sck_gpio = 0x00
-    var SCK_GPIO: Int
-        get() = _sck_gpio
-        set(value) {
-            _sck_gpio = value
-        }
-
-//    private var _allowRetry = true
-//    var allowRetry: Boolean
-//        get() = _allowRetry
-//        set(allow) {
-//            _allowRetry = allow
-//        }
+    var sck_gpio = 0x00
 
     /**
      * Starts the update
@@ -80,7 +47,7 @@ class OtaUpdate(var device: XY4BluetoothDevice, private val otaFile: OtaFile?): 
 
     }
 
-    fun addListener(key: String, listener: Listener) {
+    fun addListener(key: String, listener: XYOtaUpdate.Listener) {
         GlobalScope.launch {
             synchronized(listeners) {
                 listeners.put(key, listener)
@@ -108,80 +75,88 @@ class OtaUpdate(var device: XY4BluetoothDevice, private val otaFile: OtaFile?): 
 
     private fun startUpdate() {
         updateJob = GlobalScope.launch {
-            var hasError = false
 
-            //STEP 1 - memdev
-            val memResult = setMemDev().await()
-            memResult.error?.let { error ->
-                hasError = true
-                failUpdate(error.message.toString())
-                updateJob?.cancelAndJoin()
-                log.info( "startUpdate - MemDev ERROR: $error")
-            }
+            device.connection {
 
-            //STEP 2 - GpioMap
-            val gpioResult = setGpioMap().await()
-            gpioResult.error?.let { error ->
-                hasError = true
-                failUpdate(error.message.toString())
-                updateJob?.cancelAndJoin()
-                log.info( "startUpdate - GPIO ERROR: $error")
-            }
+                var hasError = false
 
-            //STEP 3 - Set patch length for the first and last block
-            val patchResult = setPatchLength().await()
-            patchResult.error?.let { error ->
-                hasError = true
-                failUpdate(error.message.toString())
-                updateJob?.cancelAndJoin()
-                log.info( "startUpdate - patch ERROR: $error")
-            }
-
-            //STEP 4 - send blocks
-            while (!lastBlockSent && !hasError) {
-                progressUpdate()
-                val blockResult = sendBlock().await()
-                blockResult.error?.let { error ->
+                //STEP 1 - memdev
+                val memResult = setMemDev().await()
+                memResult.error?.let { error ->
                     hasError = true
                     failUpdate(error.message.toString())
                     updateJob?.cancelAndJoin()
-                    log.info( "startUpdate - sendBlock ERROR: $error")
+                    log.info("startUpdate - MemDev ERROR: $error")
                 }
 
-                if (lastBlock) {
-                    if (!lastBlockReady && otaFile?.numberOfBytes?.rem(otaFile.fileBlockSize) != 0) {
-                        log.info( "startUpdate LAST BLOCK - SET PATCH LEN: $lastBlock")
-                        val finalPatchResult = setPatchLength().await()
+                //STEP 2 - GpioMap
+                val gpioResult = setGpioMap().await()
+                gpioResult.error?.let { error ->
+                    hasError = true
+                    failUpdate(error.message.toString())
+                    updateJob?.cancelAndJoin()
+                    log.info("startUpdate - GPIO ERROR: $error")
+                }
 
-                        finalPatchResult.error?.let { error ->
-                            hasError = true
-                            failUpdate(error.message.toString())
-                            updateJob?.cancelAndJoin()
-                            log.info( "startUpdate - finalPatchResult ERROR: $error")
+                //STEP 3 - Set patch length for the first and last block
+                val patchResult = setPatchLength().await()
+                patchResult.error?.let { error ->
+                    hasError = true
+                    failUpdate(error.message.toString())
+                    updateJob?.cancelAndJoin()
+                    log.info("startUpdate - patch ERROR: $error")
+                }
+
+                //STEP 4 - send blocks
+                while (!lastBlockSent && !hasError) {
+                    progressUpdate()
+                    val blockResult = sendBlock().await()
+                    blockResult.error?.let { error ->
+                        hasError = true
+                        failUpdate(error.message.toString())
+                        updateJob?.cancelAndJoin()
+                        log.info("startUpdate - sendBlock ERROR: $error")
+                    }
+
+                    if (lastBlock) {
+                        if (!lastBlockReady && otaFile?.numberOfBytes?.rem(otaFile.fileBlockSize) != 0) {
+                            log.info("startUpdate LAST BLOCK - SET PATCH LEN: $lastBlock")
+                            val finalPatchResult = setPatchLength().await()
+
+                            finalPatchResult.error?.let { error ->
+                                hasError = true
+                                failUpdate(error.message.toString())
+                                updateJob?.cancelAndJoin()
+                                log.info("startUpdate - finalPatchResult ERROR: $error")
+                            }
                         }
                     }
+
                 }
 
+                log.info("startUpdate done sending blocks")
+
+                //SEND END SIGNAL
+                val endResult = sendEndSignal().await()
+                endResult.error?.let { error ->
+                    hasError = true
+                    failUpdate(error.message.toString())
+                    updateJob?.cancelAndJoin()
+                    log.info("startUpdate - endSignal Result ERROR: $error")
+                }
+
+                //REBOOT
+                val reboot = sendReboot().await()
+                reboot.error?.let { error ->
+                    log.info("startUpdate - reboot ERROR: $error")
+                }
+
+                log.info("startUpdate - sent Reboot")
+
+                passUpdate()
+
+                return@connection XYBluetoothResult(true)
             }
-
-            log.info( "startUpdate done sending blocks")
-
-            //SEND END SIGNAL
-            val endResult = sendEndSignal().await()
-            endResult.error?.let { error ->
-                hasError = true
-                failUpdate(error.message.toString())
-                updateJob?.cancelAndJoin()
-                log.info( "startUpdate - endSignal Result ERROR: $error")
-            }
-
-            //REBOOT
-            val reboot = sendReboot().await()
-            reboot.error?.let { error ->
-                log.info( "startUpdate - reboot ERROR: $error")
-            }
-
-            passUpdate()
         }
     }
 
@@ -219,7 +194,7 @@ class OtaUpdate(var device: XY4BluetoothDevice, private val otaFile: OtaFile?): 
     //STEP 1
     private fun setMemDev(): Deferred<XYBluetoothResult<Int>> {
         return GlobalScope.async {
-            val memType = MEMORY_TYPE_EXTERNAL_SPI shl 24 or _imageBank
+            val memType = MEMORY_TYPE_EXTERNAL_SPI shl 24 or imageBank
             log.info("setMemDev: " + String.format("%#010x", memType))
             val result = device.spotaService.SPOTA_MEM_DEV.set(memType).await()
 
@@ -230,7 +205,7 @@ class OtaUpdate(var device: XY4BluetoothDevice, private val otaFile: OtaFile?): 
     //STEP 2
     private fun setGpioMap(): Deferred<XYBluetoothResult<Int>> {
         return GlobalScope.async {
-            val memInfo = _miso_gpio shl 24 or (_mosi_gpio shl 16) or (cs_gpio shl 8) or _sck_gpio
+            val memInfo = miso_gpio shl 24 or (mosi_gpio shl 16) or (cs_gpio shl 8) or sck_gpio
 
             val result = device.spotaService.SPOTA_GPIO_MAP.set(memInfo).await()
 
@@ -310,9 +285,8 @@ class OtaUpdate(var device: XY4BluetoothDevice, private val otaFile: OtaFile?): 
         }
     }
 
-
     companion object {
-        private const val TAG = "OtaUpdate"
+        private const val TAG = "XY4OtaUpdate"
 
         //const val MAX_RETRY_COUNT = 3
         const val END_SIGNAL = -0x2000000
@@ -320,9 +294,4 @@ class OtaUpdate(var device: XY4BluetoothDevice, private val otaFile: OtaFile?): 
         const val MEMORY_TYPE_EXTERNAL_SPI = 0x13
     }
 
-    open class Listener {
-        open fun updated(device: XYBluetoothDevice) {}
-        open fun failed(device: XYBluetoothDevice, error: String) {}
-        open fun progress(sent: Int, total: Int) {}
-    }
 }

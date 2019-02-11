@@ -9,8 +9,7 @@ import android.content.Context
 import android.os.Build
 import android.os.Handler
 import kotlinx.coroutines.*
-import network.xyo.ble.CallByVersion
-import network.xyo.ble.gatt.XYBluetoothGattBase
+import network.xyo.ble.XYCallByVersion
 import network.xyo.ble.gatt.peripheral.*
 import network.xyo.core.XYBase
 import kotlin.coroutines.resume
@@ -107,7 +106,7 @@ class XYBluetoothGattConnect(val device: BluetoothDevice): XYBase() {
 
         val result = asyncBle {
             var newGatt: XYThreadSafeBluetoothGatt? = null
-            CallByVersion()
+            XYCallByVersion()
                     .add(Build.VERSION_CODES.O) {
                         newGatt = XYThreadSafeBluetoothGatt(connectGatt26(context, device, autoConnect, transport, phy, handler))
                     }
@@ -226,11 +225,12 @@ class XYBluetoothGattConnect(val device: BluetoothDevice): XYBase() {
             }
         }
 
-        log.info("connect: Returning[$value]")
+        log.info("connect: Returning[$value][$error]")
         return@async XYBluetoothResult(value, error)
     }
 
     fun close() = GlobalScope.async {
+        log.info("disconnect:close")
         gatt?.disconnect()?.await()
         gatt?.close()?.await()
         gatt = null

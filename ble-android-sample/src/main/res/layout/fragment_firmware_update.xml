@@ -13,6 +13,12 @@
         android:layout_marginBottom="6dp"
         android:orientation="vertical">
 
+        <network.xyo.ui.views.XYButton
+            android:id="@+id/button_load_from_server"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/load_image_from_server" />
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

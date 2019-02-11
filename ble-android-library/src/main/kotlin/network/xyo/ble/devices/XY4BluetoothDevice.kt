@@ -4,12 +4,11 @@ import android.bluetooth.BluetoothGatt
 import android.bluetooth.BluetoothGattCallback
 import android.bluetooth.BluetoothGattCharacteristic
 import android.content.Context
-import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
-import network.xyo.ble.firmware.OtaFile
-import network.xyo.ble.firmware.OtaUpdate
+import network.xyo.ble.firmware.XY4OtaUpdate
+import network.xyo.ble.firmware.XYOtaFile
+import network.xyo.ble.firmware.XYOtaUpdate
 import network.xyo.ble.gatt.peripheral.XYBluetoothError
 import network.xyo.ble.gatt.peripheral.XYBluetoothResult
 import network.xyo.ble.scanner.XYScanResult
@@ -39,7 +38,7 @@ open class XY4BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
 
     private var lastButtonPressTime = 0L
 
-    private var updater: OtaUpdate? = null
+    private var updater: XY4OtaUpdate? = null
 
     private val buttonListener = object : BluetoothGattCallback() {
         override fun onCharacteristicChanged(gatt: BluetoothGatt?, characteristic: BluetoothGattCharacteristic?) {
@@ -108,18 +107,18 @@ open class XY4BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
         }
     }
 
-    override fun updateFirmware(filename: String, listener: OtaUpdate.Listener) {
-        val otaFile = OtaFile.getByFileName(filename)
-        val updater = OtaUpdate(this, otaFile)
+    override fun updateFirmware(folderName:String, filename: String, listener: XYOtaUpdate.Listener) {
+        val otaFile = XYOtaFile.getByName(folderName, filename)
+        val updater = XY4OtaUpdate(this, otaFile)
 
         updater.addListener("XY4BluetoothDevice", listener)
         updater.start()
     }
 
-    override fun updateFirmware(stream: InputStream, listener: OtaUpdate.Listener) {
+    override fun updateFirmware(stream: InputStream, listener: XYOtaUpdate.Listener) {
 
-        val otaFile = OtaFile.getByFileStream(stream)
-        updater = OtaUpdate(this, otaFile)
+        val otaFile = XYOtaFile.getByStream(stream)
+        updater = XY4OtaUpdate(this, otaFile)
 
         updater?.addListener("XY4BluetoothDevice", listener)
         updater?.start()

@@ -4,7 +4,7 @@ import android.bluetooth.*
 import android.content.Context
 import android.os.Handler
 import kotlinx.coroutines.*
-import network.xyo.ble.gatt.XYBluetoothBase
+import network.xyo.ble.XYBluetoothBase
 import network.xyo.ble.gatt.peripheral.actions.XYBluetoothGattConnect
 import network.xyo.ble.gatt.peripheral.actions.XYBluetoothGattReadCharacteristic
 import network.xyo.ble.gatt.peripheral.actions.XYBluetoothGattWriteCharacteristic
@@ -29,19 +29,15 @@ open class XYBluetoothGatt protected constructor(
         private val handler: Handler?
 ) : XYBluetoothBase(context) {
 
-    enum class BleConnectionStatus(val status: Short) {
-        Success (0),
-        Timeout(8),
-        RemoteDisconnect(19),
-        FailedToEstablish(62),
-        NoResources(128),
-        IntertnalError(129),
-        WrongState(130),
-        DBFull(131),
-        Busy(132),
-        GattError(133),
-        IllegalParameter(135),
-        AuthFail(137)
+    enum class Status(val status: Short) {
+        NoResources(0x80),
+        InternalError(0x81),
+        WrongState(0x82),
+        DBFull(0x83),
+        Busy(0x84),
+        Error(0x85),
+        IllegalParameter(0x87),
+        AuthFail(0x89)
     }
 
     val bluetoothQueue = Executors.newSingleThreadExecutor().asCoroutineDispatcher()

@@ -1,11 +1,11 @@
 package network.xyo.ble.devices
 
 import android.content.Context
-import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
-import network.xyo.ble.firmware.OtaUpdate
+import network.xyo.ble.firmware.XY4OtaUpdate
+import network.xyo.ble.firmware.XYOtaUpdate
 import network.xyo.ble.gatt.peripheral.XYBluetoothError
 import network.xyo.ble.gatt.peripheral.XYBluetoothResult
 import network.xyo.ble.scanner.XYScanResult
@@ -15,7 +15,7 @@ import java.nio.ByteBuffer
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 
-open class XYFinderBluetoothDevice(context: Context, scanResult: XYScanResult, hash: String) : XYIBeaconBluetoothDevice(context, scanResult, hash), Comparable<XYFinderBluetoothDevice> {
+open class XYFinderBluetoothDevice(context: Context, scanResult: XYScanResult, hash: String) : XYIBeaconBluetoothDevice(context, scanResult, hash) {
 
     enum class Family {
         Unknown,
@@ -45,23 +45,6 @@ open class XYFinderBluetoothDevice(context: Context, scanResult: XYScanResult, h
         Single(1),
         Double(2),
         Long(3)
-    }
-
-    override fun compareTo(other: XYFinderBluetoothDevice): Int {
-        val d1 = distance
-        val d2 = other.distance
-        if (d1 == null) {
-            if (d2 == null) {
-                return 0
-            }
-            return -1
-        }
-        return when {
-            d2 == null -> 1
-            d1 == d2 -> 0
-            d1 > d2 -> 1
-            else -> -1
-        }
     }
 
     override val id: String
@@ -167,31 +150,17 @@ open class XYFinderBluetoothDevice(context: Context, scanResult: XYScanResult, h
         return@async XYBluetoothResult<Int>(XYBluetoothError("Not Implemented"))
     }
 
-    open fun updateFirmware(stream: InputStream, listener: OtaUpdate.Listener) {
+    open fun updateFirmware(stream: InputStream, listener: XYOtaUpdate.Listener) {
 
     }
 
-    open fun updateFirmware(filename: String, listener: OtaUpdate.Listener) {
+    open fun updateFirmware(folderName: String, filename: String, listener: XYOtaUpdate.Listener) {
 
     }
 
     open fun cancelUpdateFirmware() {
 
     }
-
-    open val distance: Double?
-        get() {
-            val rssi = rssi ?: return null
-            val dist: Double
-            val ratio: Double = rssi*1.0/power
-            dist = if (ratio < 1.0) {
-                Math.pow(ratio, 10.0)
-            }
-            else {
-                (0.89976)*Math.pow(ratio,7.7095) + 0.111
-            }
-            return dist
-        }
 
     internal open fun reportButtonPressed(state: ButtonPress) {
         log.info("reportButtonPressed")
@@ -289,24 +258,5 @@ open class XYFinderBluetoothDevice(context: Context, scanResult: XYScanResult, h
             return XYIBeaconBluetoothDevice.hashFromScanResult(scanResult)
         }
 
-        val compareDistance = kotlin.Comparator<XYFinderBluetoothDevice> { o1, o2 ->
-            if (o1 == null || o2 == null) {
-                if (o1 != null && o2 == null) return@Comparator -1
-                if (o2 != null && o1 == null) return@Comparator 1
-                return@Comparator 0
-            }
-            o1.compareTo(o2)
-        }
-
-        fun sortedList(devices: ConcurrentHashMap<String, XYBluetoothDevice>): List<XYFinderBluetoothDevice> {
-            val result = ArrayList<XYFinderBluetoothDevice>()
-            for ((_, device) in devices) {
-                val deviceToAdd = device as? XYFinderBluetoothDevice
-                if (deviceToAdd != null) {
-                    result.add(deviceToAdd)
-                }
-            }
-            return result.sortedWith(compareDistance)
-        }
     }
 }

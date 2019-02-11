@@ -16,7 +16,7 @@ import network.xyo.ui.ui
 import java.util.*
 
 class XYDeviceAdapter(private val activity: Activity) : BaseAdapter() {
-    private var devices: List<XYFinderBluetoothDevice>
+    private var devices: List<XYBluetoothDevice>
     private var lastSort = System.currentTimeMillis()
 
     private val scanner: XYSmartScan
@@ -40,7 +40,7 @@ class XYDeviceAdapter(private val activity: Activity) : BaseAdapter() {
 
     fun refreshDevices() {
         if ((System.currentTimeMillis() - lastSort) > 5000) {
-            devices = XYFinderBluetoothDevice.sortedList(scanner.devices)
+            devices = XYBluetoothDevice.sortedList(scanner.devices)
             ui {
                 activity.progress_spinner_scanner.visibility = GONE
                 notifyDataSetChanged()

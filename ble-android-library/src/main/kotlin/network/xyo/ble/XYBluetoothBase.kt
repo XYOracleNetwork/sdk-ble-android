@@ -1,4 +1,4 @@
-package network.xyo.ble.gatt
+package network.xyo.ble
 
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothManager
@@ -11,9 +11,37 @@ import java.util.concurrent.Executors
 import kotlin.coroutines.AbstractCoroutineContextElement
 import kotlin.coroutines.Continuation
 import kotlin.coroutines.ContinuationInterceptor
-import kotlin.coroutines.CoroutineContext
 
 open class XYBluetoothBase(context: Context) : XYBase() {
+
+    enum class Status(val status: Short) {
+        Success (0x00),
+        UnknownBtLeCommand(0x01),
+        UnknownConnectionIdentifier(0x02),
+        AuthenticationFailure(0x03),
+        PinOrKeyMissing(0x06),
+        MemoryCapacityExceeded(0x07),
+        Timeout(0x08),
+        CommandDisallowed(0x0c),
+        InvalidBtLeCommandParameters(0x12),
+        RemoteUserTerminatedConnection(0x13),
+        RemoteDevTerminationFromLowResources(0x14),
+        RemoteDevTerminationFromPowerOff(0x15),
+        LocalHostTerminatedConnection(0x16),
+        UnsupportedRemoteFeature(0x1a),
+        InvalidLmpParameters(0x1e),
+        UnspecifiedError(0x1f),
+        LmpResponseTimeout(0x22),
+        LmpPduNotAllowed(0x24),
+        InstantPassed(0x28),
+        PairingWithUnitKeyUnsupported(0x29),
+        DifferentTransactionCollision(0x2a),
+        ControllerBusy(0x3a),
+        ConnIntervalUnacceptable(0x3b),
+        DirectedAdvertiserTimeout(0x3c),
+        TerminatedDueToMicFailure(0x3d),
+        FailedToEstablish(0x3e)
+    }
 
     //we store this since on initial creation, the applicationContext may not yet be available
     private val _context = context
@@ -82,16 +110,16 @@ open class XYBluetoothBase(context: Context) : XYBase() {
         get() = bluetoothAdapter?.isOffloadedScanBatchingSupported ?: false
 
 
-    companion object {
+    companion object: XYBase() {
         //this is the thread that all calls should happen on for gatt calls.
-        val BluetoothThread: CoroutineContext
-
-        init {
-            BluetoothThread = if (android.os.Build.VERSION.SDK_INT >= 26) {
+        internal val BluetoothThread = when {
+            (android.os.Build.VERSION.SDK_INT >= 26) -> {
                 Executors.newSingleThreadExecutor().asCoroutineDispatcher()
-            } else if (android.os.Build.VERSION.SDK_INT >= 21) {
+            }
+            (android.os.Build.VERSION.SDK_INT >= 21) -> {
                 Executors.newSingleThreadExecutor().asCoroutineDispatcher()
-            } else {
+            }
+            else -> {
                 //if the device is before 20, use the UI thread for the BLE calls
                 object : AbstractCoroutineContextElement(ContinuationInterceptor), ContinuationInterceptor {
                     override fun <T> interceptContinuation(continuation: Continuation<T>): Continuation<T> =

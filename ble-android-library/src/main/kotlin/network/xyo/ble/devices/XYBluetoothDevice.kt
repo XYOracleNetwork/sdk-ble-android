@@ -4,20 +4,20 @@ import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothGatt
 import android.content.Context
 import android.os.ParcelUuid
+import android.util.SparseArray
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import network.xyo.ble.ads.XYBleAd
-import network.xyo.ble.gatt.XYBluetoothGattClient
+import network.xyo.ble.gatt.peripheral.XYBluetoothGattClient
 import network.xyo.ble.scanner.XYScanRecord
 import network.xyo.ble.scanner.XYScanResult
 import network.xyo.core.XYBase
 import java.nio.ByteBuffer
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
-import kotlin.math.absoluteValue
 
-open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, val hash: String) : XYBluetoothGattClient(context, device, false, null, null, null, null) {
+open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, val hash: String) : XYBluetoothGattClient(context, device, false, null, null, null, null), Comparable<XYBluetoothDevice> {
 
     //hash - the reason for the hash system is that some devices rotate MAC addresses or polymorph in other ways
     //the user generally wants to treat a single physical device as a single logical device so the
@@ -25,7 +25,7 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, val has
     //is done based on device specific logic on "sameness"
 
     protected val listeners = HashMap<String, Listener>()
-    val ads = HashMap<Int, XYBleAd>()
+    val ads = SparseArray<XYBleAd>()
 
     var detectCount = 0
     var enterCount = 0
@@ -236,7 +236,24 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, val has
         val buffer = ByteBuffer.wrap(record.bytes)
         while (buffer.hasRemaining()) {
             val ad = XYBleAd(buffer)
-            ads[ad.hashCode()] = ad
+            ads.append(ad.hashCode(), ad)
+        }
+    }
+
+    override fun compareTo(other: XYBluetoothDevice): Int {
+        val d1 = rssi
+        val d2 = other.rssi
+        if (d1 == null) {
+            if (d2 == null) {
+                return 0
+            }
+            return -1
+        }
+        return when {
+            d2 == null -> 1
+            d1 == d2 -> 0
+            d1 > d2 -> -1
+            else -> 1
         }
     }
 
@@ -246,9 +263,12 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, val has
         //if we have not gotten any ads or been connected to it
         const val OUT_OF_RANGE_DELAY = 15000L
 
+        fun enable(enable: Boolean) {
+            canCreate = enable
+        }
 
         internal var canCreate = false
-        val manufacturerToCreator = HashMap<Int, XYCreator>()
+        val manufacturerToCreator = SparseArray<XYCreator>()
 
         //Do not serviceToCreator this Private. It's called by other apps
         val serviceToCreator = HashMap<UUID, XYCreator>()
@@ -257,10 +277,11 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, val has
         var cancelNotifications: Boolean = false
 
         private fun getDevicesFromManufacturers(context: Context, scanResult: XYScanResult, globalDevices: ConcurrentHashMap<String, XYBluetoothDevice>, newDevices: HashMap<String, XYBluetoothDevice>) {
-            for ((manufacturerId, creator) in manufacturerToCreator) {
+            for (i in 0 until manufacturerToCreator.size()) {
+                val manufacturerId = manufacturerToCreator.keyAt(i)
                 val bytes = scanResult.scanRecord?.getManufacturerSpecificData(manufacturerId)
                 if (bytes != null) {
-                    creator.getDevicesFromScanResult(context, scanResult, globalDevices, newDevices)
+                    manufacturerToCreator.get(manufacturerId)?.getDevicesFromScanResult(context, scanResult, globalDevices, newDevices)
                 }
             }
         }
@@ -297,6 +318,26 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, val has
 
         internal fun hashFromScanResult(scanResult: XYScanResult): String {
             return scanResult.address
+        }
+
+        val compareDistance = kotlin.Comparator<XYBluetoothDevice> { o1, o2 ->
+            if (o1 == null || o2 == null) {
+                if (o1 != null && o2 == null) return@Comparator -1
+                if (o2 != null && o1 == null) return@Comparator 1
+                return@Comparator 0
+            }
+            o1.compareTo(o2)
+        }
+
+        fun sortedList(devices: ConcurrentHashMap<String, XYBluetoothDevice>): List<XYBluetoothDevice> {
+            val result = ArrayList<XYBluetoothDevice>()
+            for ((_, device) in devices) {
+                val deviceToAdd = device as? XYBluetoothDevice
+                if (deviceToAdd != null) {
+                    result.add(deviceToAdd)
+                }
+            }
+            return result.sortedWith(compareDistance)
         }
 
     }

@@ -35,7 +35,7 @@ class CurrentTimeFragment : XYDeviceFragment() {
     override fun onResume() {
         super.onResume()
 
-        if (deviceData?.currentTime.isNullOrEmpty() && progressListener?.isInProgress() == false) {
+        if (deviceData?.currentTime.isNullOrEmpty()) {
             setTimeValues()
         } else {
             updateUI()
@@ -45,7 +45,7 @@ class CurrentTimeFragment : XYDeviceFragment() {
 
     private fun updateUI() {
         ui {
-            progressListener?.hideProgress()
+            throbber?.hide()
 
             text_currentTime?.text = deviceData?.currentTime
             text_localTimeInformation?.text = deviceData?.localTimeInformation
@@ -54,9 +54,7 @@ class CurrentTimeFragment : XYDeviceFragment() {
     }
 
     private fun setTimeValues() {
-        ui {
-            progressListener?.showProgress()
-        }
+        throbber?.show()
 
         when (device) {
             is XY4BluetoothDevice -> {
@@ -74,6 +72,8 @@ class CurrentTimeFragment : XYDeviceFragment() {
                 text_currentTime.text = getString(R.string.unknown_device)
             }
         }
+
+        throbber?.hide()
     }
 
     private fun getXY4Values(device: XY4BluetoothDevice) {

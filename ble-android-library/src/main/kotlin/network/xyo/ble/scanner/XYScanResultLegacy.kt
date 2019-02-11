@@ -6,7 +6,7 @@ import android.os.Parcel
 import network.xyo.ble.bluetooth.ScanResultLegacy
 
 @TargetApi(18)
-class XYScanResultLegacy(private val scanResult: ScanResultLegacy): XYScanResult() {
+internal class XYScanResultLegacy(private val scanResult: ScanResultLegacy): XYScanResult() {
 
     override val timestampNanos : Long
         get() {

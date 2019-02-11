@@ -3,7 +3,7 @@ package network.xyo.ble.gatt.server
 import android.bluetooth.*
 import android.content.Context
 import android.os.Build
-import network.xyo.ble.gatt.*
+import network.xyo.ble.XYBluetoothBase
 import network.xyo.ble.gatt.peripheral.XYBluetoothError
 import network.xyo.ble.gatt.peripheral.XYBluetoothResult
 import network.xyo.ble.gatt.peripheral.asyncBle
@@ -79,7 +79,7 @@ open class XYBluetoothGattServer(context: Context) : XYBluetoothBase(context) {
     fun addService(serviceToAdd: XYBluetoothService) = asyncBle {
         log.info("addService")
         if (androidGattServer == null) {
-            return@asyncBle XYBluetoothResult<XYGattStatus>(XYBluetoothError("No Gatt Server"))
+            return@asyncBle XYBluetoothResult<Int>(XYBluetoothError("No Gatt Server"))
         }
 
         val addCallback = suspendCoroutine<Int> { cont ->
@@ -97,7 +97,7 @@ open class XYBluetoothGattServer(context: Context) : XYBluetoothBase(context) {
         }
 
         services[serviceToAdd.uuid] = serviceToAdd
-        return@asyncBle XYBluetoothResult(XYGattStatus(addCallback))
+        return@asyncBle XYBluetoothResult(addCallback)
     }
 
     fun removeService(uuid: UUID) {

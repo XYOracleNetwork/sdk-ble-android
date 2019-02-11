@@ -1,17 +1,13 @@
-package network.xyo.ble.gatt
+package network.xyo.ble.gatt.peripheral
 
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothGattCharacteristic
 import android.bluetooth.BluetoothGattDescriptor
 import android.content.Context
 import android.os.Handler
-import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
-import network.xyo.ble.gatt.peripheral.*
-import unsigned.toBigInt
 import java.util.*
-import kotlin.math.absoluteValue
 
 open class XYBluetoothGattClient protected constructor(
         context:Context,

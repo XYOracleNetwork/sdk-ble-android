@@ -12,7 +12,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import network.xyo.ble.devices.XYBluetoothDevice
 import network.xyo.ble.devices.XYMobileBluetoothDevice
-import network.xyo.ble.gatt.XYBluetoothBase
+import network.xyo.ble.XYBluetoothBase
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 

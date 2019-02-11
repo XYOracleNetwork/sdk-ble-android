@@ -220,7 +220,7 @@ class SongFragment : XYDeviceFragment() {
     override fun onResume() {
         super.onResume()
 
-        if (deviceData?.level.isNullOrEmpty() && progressListener?.isInProgress() == false) {
+        if (deviceData?.level.isNullOrEmpty()) {
             readCurrentSong()
         } else {
             updateUI()
@@ -230,14 +230,12 @@ class SongFragment : XYDeviceFragment() {
     private fun updateUI() {
         ui {
             text_current_song.text = currentSong
-            progressListener?.hideProgress()
+            throbber?.hide()
         }
     }
 
     fun readCurrentSong() {
-        ui {
-            progressListener?.showProgress()
-        }
+        throbber?.show()
 
         when (device) {
             is XY4BluetoothDevice -> {
@@ -256,12 +254,11 @@ class SongFragment : XYDeviceFragment() {
                 text_battery_level.text = getString(R.string.unknown_device)
             }
         }
+        throbber?.hide()
     }
 
     fun setSongOne() {
-        ui {
-            progressListener?.showProgress()
-        }
+        throbber?.show()
 
         when (device) {
             is XY4BluetoothDevice -> {
@@ -302,6 +299,7 @@ class SongFragment : XYDeviceFragment() {
                 text_battery_level.text = getString(R.string.unknown_device)
             }
         }
+        throbber?.hide()
     }
 
     private fun getXY4Values(device: XY4BluetoothDevice) {
@@ -310,7 +308,7 @@ class SongFragment : XYDeviceFragment() {
 
             device.connection {
                 hasConnectionError = false
-                var data = device.primary.buzzerConfig.get().await()
+                val data = device.primary.buzzerConfig.get().await()
                 currentSong = "${data.value?.size}"
                 return@connection XYBluetoothResult(true)
             }.await()

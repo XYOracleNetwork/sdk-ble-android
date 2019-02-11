@@ -7,11 +7,10 @@ import network.xyo.ui.XYBaseFragment
 import network.xyo.ui.ui
 
 abstract class XYAppBaseFragment : XYBaseFragment() {
-    var progressListener : ProgressListener? = null
 
     override fun onPause() {
         super.onPause()
-        progressListener?.hideProgress()
+        throbber?.hide()
     }
 
     open fun update() {}
@@ -20,7 +19,6 @@ abstract class XYAppBaseFragment : XYBaseFragment() {
     fun checkConnectionError(hasConnectionError: Boolean) {
         if (hasConnectionError) {
             ui {
-                progressListener?.showProgress()
                 showToast("Connection failed. Try Refresh")
             }
 
