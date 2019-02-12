@@ -65,7 +65,7 @@ class XYOServerActivity : XYOAppBaseActivity() {
         serverPagerContainer.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(server_tabs))
         serverPagerContainer.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(server_tabs) as ViewPager.OnPageChangeListener)
         server_tabs.addOnTabSelectedListener(TabLayout.ViewPagerOnTabSelectedListener(server_pager_container))
-        bleAdvertiser = XYBluetoothAdvertiser(applicationContext, null)
+        bleAdvertiser = XYBluetoothAdvertiser(applicationContext)
 
         registerReceiver(bluetoothIntentReceiver, BluetoothIntentReceiver.bluetoothDeviceIntentFilter)
 

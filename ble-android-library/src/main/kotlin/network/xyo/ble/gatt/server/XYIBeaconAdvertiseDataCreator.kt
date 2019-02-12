@@ -6,7 +6,7 @@ import java.util.*
 
 object XYIBeaconAdvertiseDataCreator  {
 
-    fun create (major: ByteArray, minor: ByteArray, serviceUuid : UUID, manufacturerId: Int, includeDeviceName : Boolean) : AdvertiseData {
+    fun create (major: ByteArray, minor: ByteArray, serviceUuid : UUID, manufacturerId: Int, includeDeviceName : Boolean) : AdvertiseData.Builder {
         if (major.size != 2) throw Exception("IBeacon major must be 2 bytes!")
         if (minor.size != 2)  throw Exception("IBeacon major must be 2 bytes!")
 
@@ -21,8 +21,7 @@ object XYIBeaconAdvertiseDataCreator  {
 
         val builder = AdvertiseData.Builder()
         builder.addManufacturerData(manufacturerId, buffer.array())
-        builder.setIncludeDeviceName(includeDeviceName)
-        return builder.build()
+        return builder.setIncludeDeviceName(includeDeviceName)
 
     }
 

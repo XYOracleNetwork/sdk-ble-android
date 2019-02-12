@@ -85,6 +85,7 @@ class XYBluetoothGattConnect(val device: BluetoothDevice): XYBase() {
             phy: Int?,
             handler: Handler?): BluetoothGatt? {
         log.info("connectGatt26")
+
         return when {
             transport == null -> device.connectGatt(context, autoConnect, callback)
             phy == null -> device.connectGatt(context, autoConnect, callback, transport)

@@ -41,7 +41,6 @@ class AdvertiserFragment : XYBaseFragment() {
                 updateAdvertisingPower(view)
                 updateConnectible(view)
                 updateTimeout(view)
-                updateIncludeTxPowerLevel(view)
                 if(updateAdvertiserData(view)) {
                     restartAdvertiser()
                 }
@@ -120,20 +119,6 @@ class AdvertiserFragment : XYBaseFragment() {
         }
     }
 
-
-    private fun updateIncludeTxPowerLevel (view: View) {
-        val radioButtonGroup = view.include_tx_power_level_selector
-        val radioButtonID = radioButtonGroup.checkedRadioButtonId
-        val radioButton = radioButtonGroup.findViewById<RadioButton>(radioButtonID)
-        val idx = radioButtonGroup.indexOfChild(radioButton)
-
-        when(idx) {
-            0 -> advertiser?.changeIncludeTxPowerLevel(true)
-            1 -> advertiser?.changeIncludeTxPowerLevel(false)
-            2 -> advertiser?.changeIncludeTxPowerLevel(null)
-        }
-    }
-
     private fun getIncludeDeviceName (view: View) : Boolean {
         val radioButtonGroup = view.include_device_name_selector
         val radioButtonID = radioButtonGroup.checkedRadioButtonId
@@ -171,7 +156,7 @@ class AdvertiserFragment : XYBaseFragment() {
                     manufactorId,
                     getIncludeDeviceName(view))
 
-            advertiser?.advertisingData = data
+            advertiser?.advertisingData = data.build()
             return true
 
         } catch (e: NumberFormatException) {
@@ -191,27 +176,34 @@ class AdvertiserFragment : XYBaseFragment() {
             val uuid = ParcelUuid(UUID.fromString(view.standard_primary_service_input.toString()))
             builder.addServiceUuid(uuid)
             builder.addServiceData(uuid, view.standard_primary_service_data_input.toString().toByteArray())
-        } catch (e : IllegalArgumentException) {
-            ui {
-                showToast("Error Phrasing Primary Service UUID")
-            }
-            return false
-        }
-
-        try {
             val id = Integer.parseInt(view.standard_manufacturer_id_input.text.toString())
             val data = view.standard_manufacturer_data_input.text.toString().toByteArray()
             builder.addManufacturerData(id, data)
         } catch (e : NumberFormatException) {
-            ui {
-                showToast("Error Phrasing Malefactor ID")
-            }
+            ui { showToast("Error Phrasing Malefactor ID") }
+            return false
+        } catch (e : IllegalArgumentException) {
+            ui { showToast("Error Phrasing Primary Service UUID") }
             return false
         }
 
+        builder.setIncludeTxPowerLevel(getIncludeTx(view))
         builder.setIncludeDeviceName(getIncludeDeviceName(view))
         advertiser?.advertisingData = builder.build()
         return true
+    }
+
+    private fun getIncludeTx (view: View) : Boolean {
+        val radioButtonGroup = view.include_tx_power_level_selector
+        val radioButtonID = radioButtonGroup.checkedRadioButtonId
+        val radioButton = radioButtonGroup.findViewById<RadioButton>(radioButtonID)
+        val idx = radioButtonGroup.indexOfChild(radioButton)
+
+        return when(idx) {
+            0 -> true
+            1 -> false
+            else -> false
+        }
     }
 
 
