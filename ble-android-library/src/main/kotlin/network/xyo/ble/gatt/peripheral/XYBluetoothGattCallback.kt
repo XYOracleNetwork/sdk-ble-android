@@ -31,16 +31,18 @@ open class XYBluetoothGattCallback: BluetoothGattCallback() {
     override fun onCharacteristicChanged(gatt: BluetoothGatt?, characteristic: BluetoothGattCharacteristic?) {
         super.onCharacteristicChanged(gatt, characteristic)
         log.info("onCharacteristicChanged: $characteristic")
+
+        // there is a possible race condition when getting the value from a characteristic that is
+        // changing quickly, so we copy the characteristic
+        // https://bugs.chromium.org/p/chromium/issues/detail?id=647673&desc=2
+        val copyCharacteristic = BluetoothGattCharacteristic(characteristic?.uuid, characteristic?.permissions ?: 0, characteristic?.properties ?: 0)
+        copyCharacteristic.value = characteristic?.value
+
         synchronized(gattListeners) {
             for ((key, listener) in gattListeners) {
                 GlobalScope.launch {
                     log.info("onCharacteristicChanged: $key")
-                    
-                    // todo
-                    // there is a possible race condition when getting the value from a characteristic that is
-                    // changing quickly
-                    // https://bugs.chromium.org/p/chromium/issues/detail?id=647673&desc=2
-                    listener.onCharacteristicChanged(gatt, characteristic)
+                    listener.onCharacteristicChanged(gatt, copyCharacteristic)
                 }
             }
         }
