@@ -136,7 +136,7 @@ open class XYBluetoothGatt protected constructor(
     val closed: Boolean
         get() = (connection == null)
 
-    internal open fun onDetect(scanResult: XYScanResult?) {
+    open fun onDetect(scanResult: XYScanResult?) {
 
     }
 
