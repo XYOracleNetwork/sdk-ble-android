@@ -33,16 +33,18 @@ open class XYBluetoothGattCallback: BluetoothGattCallback() {
         log.info("onCharacteristicChanged: $characteristic")
 
         // there is a possible race condition when getting the value from a characteristic that is
-        // changing quickly, so we copy the characteristic
+        // changing quickly, so there is a flag to change this. If blockNotificationCallback is set to true,
+        // all of the notifications callbacks will be blocking, preventing the race condition
         // https://bugs.chromium.org/p/chromium/issues/detail?id=647673&desc=2
-        val copyCharacteristic = BluetoothGattCharacteristic(characteristic?.uuid, characteristic?.permissions ?: 0, characteristic?.properties ?: 0)
-        copyCharacteristic.value = characteristic?.value
-
         synchronized(gattListeners) {
             for ((key, listener) in gattListeners) {
-                GlobalScope.launch {
-                    log.info("onCharacteristicChanged: $key")
-                    listener.onCharacteristicChanged(gatt, copyCharacteristic)
+                log.info("onCharacteristicChanged: $key")
+                if (blockNotificationCallback) {
+                    listener.onCharacteristicChanged(gatt, characteristic)
+                } else {
+                    GlobalScope.launch {
+                        listener.onCharacteristicChanged(gatt, characteristic)
+                    }
                 }
             }
         }
@@ -187,5 +189,7 @@ open class XYBluetoothGattCallback: BluetoothGattCallback() {
         }
     }
 
-    companion object: XYBase()
+    companion object: XYBase() {
+        var blockNotificationCallback = false
+    }
 }
