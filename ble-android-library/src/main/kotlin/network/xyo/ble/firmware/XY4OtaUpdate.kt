@@ -5,7 +5,7 @@ import network.xyo.ble.devices.XY4BluetoothDevice
 import network.xyo.ble.gatt.peripheral.XYBluetoothResult
 import network.xyo.core.XYBase
 
-internal class XY4OtaUpdate(var device: XY4BluetoothDevice, private val otaFile: XYOtaFile?): XYBase() {
+class XY4OtaUpdate(var device: XY4BluetoothDevice, private val otaFile: XYOtaFile?): XYBase() {
 
     private val listeners = HashMap<String, XYOtaUpdate.Listener>()
     private var updateJob: Job? = null
