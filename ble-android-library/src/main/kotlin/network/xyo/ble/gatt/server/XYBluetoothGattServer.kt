@@ -265,7 +265,7 @@ open class XYBluetoothGattServer(context: Context) : XYBluetoothBase(context) {
         }
 
         override fun onCharacteristicWriteRequest(device: BluetoothDevice?, requestId: Int, characteristic: BluetoothGattCharacteristic?, preparedWrite: Boolean, responseNeeded: Boolean, offset: Int, value: ByteArray?) {
-           log.info("onCharacteristicWriteRequest")
+           log.info("onCharacteristicWriteRequest $device, $characteristic")
             super.onCharacteristicWriteRequest(device, requestId, characteristic, preparedWrite, responseNeeded, offset, value)
             val service = services[characteristic?.service?.uuid]
             if (service != null && characteristic != null && device != null) {
