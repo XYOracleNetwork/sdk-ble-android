@@ -39,7 +39,9 @@ class XYBluetoothGattWriteCharacteristic(val gatt: XYThreadSafeBluetoothGatt, va
                                 } else {
                                     error = XYBluetoothError("writeCharacteristic: onCharacteristicWrite failed: $status")
                                     gattCallback.removeListener(listenerName)
-                                    cont.resume(null)
+                                    if(isActive) {
+                                        cont.resume(null)
+                                    }
                                 }
                             }
                         }
@@ -50,7 +52,9 @@ class XYBluetoothGattWriteCharacteristic(val gatt: XYThreadSafeBluetoothGatt, va
                             if (newState != BluetoothGatt.STATE_CONNECTED) {
                                 error = XYBluetoothError("writeCharacteristic: connection dropped")
                                 gattCallback.removeListener(listenerName)
-                                cont.resume(null)
+                                if(isActive) {
+                                    cont.resume(null)
+                                }
                             }
                         }
                     }
@@ -60,7 +64,9 @@ class XYBluetoothGattWriteCharacteristic(val gatt: XYThreadSafeBluetoothGatt, va
                         if (writeStarted != true) {
                             error = XYBluetoothError("writeCharacteristic: gatt.writeCharacteristic failed to start")
                             gattCallback.removeListener(listenerName)
-                            cont.resume(null)
+                           if(isActive) {
+                               cont.resume(null)
+                           }
                         }
                     }
                 }
