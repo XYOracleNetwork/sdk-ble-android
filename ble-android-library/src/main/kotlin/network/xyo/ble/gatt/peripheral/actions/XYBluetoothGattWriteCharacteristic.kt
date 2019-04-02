@@ -27,7 +27,7 @@ class XYBluetoothGattWriteCharacteristic(val gatt: XYThreadSafeBluetoothGatt, va
         var value: ByteArray? = null
 
         try {
-            withTimeout(_timeout) {
+            withTimeoutOrNull(_timeout) {
                 value = suspendCancellableCoroutine { cont ->
                     val listener = object : BluetoothGattCallback() {
                         override fun onCharacteristicWrite(gatt: BluetoothGatt?, characteristic: BluetoothGattCharacteristic?, status: Int) {
@@ -42,7 +42,7 @@ class XYBluetoothGattWriteCharacteristic(val gatt: XYThreadSafeBluetoothGatt, va
                                 } else {
                                     error = XYBluetoothError("writeCharacteristic: onCharacteristicWrite failed: $status")
                                     gattCallback.removeListener(listenerName)
-                                    if (cont.isCancelled) {
+                                    if (!isActive) {
                                         return
                                     }
 
@@ -57,7 +57,7 @@ class XYBluetoothGattWriteCharacteristic(val gatt: XYThreadSafeBluetoothGatt, va
                             if (newState != BluetoothGatt.STATE_CONNECTED) {
                                 error = XYBluetoothError("writeCharacteristic: connection dropped")
                                 gattCallback.removeListener(listenerName)
-                                if (cont.isCancelled) {
+                                if (!isActive) {
                                     return
                                 }
 
@@ -71,7 +71,7 @@ class XYBluetoothGattWriteCharacteristic(val gatt: XYThreadSafeBluetoothGatt, va
                         if (writeStarted != true) {
                             error = XYBluetoothError("writeCharacteristic: gatt.writeCharacteristic failed to start")
                             gattCallback.removeListener(listenerName)
-                            if (cont.isCancelled) {
+                            if (!isActive) {
                                 return@launch
                             }
 
