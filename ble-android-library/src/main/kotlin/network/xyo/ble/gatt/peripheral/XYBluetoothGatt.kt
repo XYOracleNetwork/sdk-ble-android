@@ -3,6 +3,7 @@ package network.xyo.ble.gatt.peripheral
 import android.bluetooth.*
 import android.content.Context
 import android.os.Handler
+import android.util.Log
 import kotlinx.coroutines.*
 import network.xyo.ble.XYBluetoothBase
 import network.xyo.ble.gatt.peripheral.actions.XYBluetoothGattConnect
@@ -228,7 +229,7 @@ open class XYBluetoothGatt protected constructor(
         if (connection == null) {
             connection = XYBluetoothGattConnect(device)
         }
-        val connectionResult = connection.start(context).await()
+        val connectionResult = connection.start(context, transport).await()
         if (connectionResult.error != null) {
             close()
             return@queueBle XYBluetoothResult(false, connectionResult.error)

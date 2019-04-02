@@ -8,6 +8,7 @@ import android.bluetooth.BluetoothGattService
 import android.content.Context
 import android.os.Build
 import android.os.Handler
+import android.util.Log
 import kotlinx.coroutines.*
 import network.xyo.ble.XYCallByVersion
 import network.xyo.ble.gatt.peripheral.*
@@ -87,19 +88,18 @@ class XYBluetoothGattConnect(val device: BluetoothDevice): XYBase() {
         log.info("connectGatt26")
 
         return when {
-            transport == null -> device.connectGatt(context, autoConnect, callback)
+            transport == null -> device.connectGatt(context, autoConnect,  callback)
             phy == null -> device.connectGatt(context, autoConnect, callback, transport)
             handler == null -> device.connectGatt(context, autoConnect, callback, transport, phy)
             else -> device.connectGatt(context, autoConnect, callback, transport, phy, handler)
         }
     }
 
-    private fun connectGatt(context: Context) = GlobalScope.async {
+    private fun connectGatt(context: Context, transport: Int? = null) = GlobalScope.async {
         log.info("connectGatt")
         var error: XYBluetoothError? = null
         var value: XYThreadSafeBluetoothGatt? = null
         val autoConnect = false
-        val transport = null
         val phy = null
         val handler = null
 
@@ -145,7 +145,7 @@ class XYBluetoothGattConnect(val device: BluetoothDevice): XYBase() {
         }
     }
 
-    fun start(context: Context) = GlobalScope.async {
+    fun start(context: Context, transport: Int? = null) = GlobalScope.async {
         log.info("connect: start")
 
         var error: XYBluetoothError? = null
@@ -154,7 +154,7 @@ class XYBluetoothGattConnect(val device: BluetoothDevice): XYBase() {
         var connectStartSuccess = false
 
         if (gatt == null) {
-            val gattConnectResult = connectGatt(context).await()
+            val gattConnectResult = connectGatt(context, transport).await()
             if (gattConnectResult.error != null) {
                 error = gattConnectResult.error
             } else {
