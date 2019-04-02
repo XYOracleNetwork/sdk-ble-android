@@ -9,11 +9,8 @@ import java.nio.ByteBuffer
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 
-open class XYIBeaconBluetoothDevice : XYBluetoothDevice {
-
-    constructor(context: Context, scanResult: XYScanResult?, hash: String): super (context, scanResult?.device, hash)
-
-    constructor(context: Context, scanResult: XYScanResult?, hash: String, transport: Int): super (context, scanResult?.device, hash, transport)
+open class XYIBeaconBluetoothDevice(context: Context, val scanResult: XYScanResult?, hash: String, transport: Int? = null)
+    : XYBluetoothDevice(context, scanResult?.device, hash, transport) {
 
     protected val _uuid: UUID
     open val uuid: UUID

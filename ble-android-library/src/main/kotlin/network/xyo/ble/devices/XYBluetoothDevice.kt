@@ -17,8 +17,7 @@ import java.nio.ByteBuffer
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 
-open class XYBluetoothDevice : XYBluetoothGattClient, Comparable<XYBluetoothDevice> {
-    val hash : String
+open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, val hash: String, transport: Int? = null) : XYBluetoothGattClient(context, device, false, null, transport, null, null), Comparable<XYBluetoothDevice> {
 
     //hash - the reason for the hash system is that some devices rotate MAC addresses or polymorph in other ways
     //the user generally wants to treat a single physical device as a single logical device so the
@@ -26,13 +25,6 @@ open class XYBluetoothDevice : XYBluetoothGattClient, Comparable<XYBluetoothDevi
     //is done based on device specific logic on "sameness"
 
 
-    constructor(context: Context, device: BluetoothDevice?, hash: String): super(context, device, false, null, null, null, null) {
-        this.hash = hash
-    }
-
-    constructor(context: Context, device: BluetoothDevice?, hash: String, transport: Int): super(context, device, false, null, transport, null, null) {
-        this.hash = hash
-    }
 
     protected val listeners = HashMap<String, Listener>()
     val ads = SparseArray<XYBleAd>()
