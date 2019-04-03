@@ -15,15 +15,16 @@ import java.util.HashMap
 
 open class XYBluetoothGattCallback: BluetoothGattCallback() {
     private val gattListeners = HashMap<String, BluetoothGattCallback>()
+    private val _lock = Any()
 
     fun addListener(key: String, listener: BluetoothGattCallback) {
-        synchronized(gattListeners) {
+        synchronized(_lock) {
             gattListeners[key] = listener
         }
     }
 
     fun removeListener(key: String) {
-        synchronized(gattListeners) {
+        synchronized(_lock) {
             gattListeners.remove(key)
         }
     }
@@ -36,7 +37,7 @@ open class XYBluetoothGattCallback: BluetoothGattCallback() {
         // changing quickly, so there is a flag to change this. If blockNotificationCallback is set to true,
         // all of the notifications callbacks will be blocking, preventing the race condition
         // https://bugs.chromium.org/p/chromium/issues/detail?id=647673&desc=2
-        synchronized(gattListeners) {
+        synchronized(_lock) {
             for ((key, listener) in gattListeners) {
                 log.info("onCharacteristicChanged: $key")
                 if (blockNotificationCallback) {
@@ -53,7 +54,7 @@ open class XYBluetoothGattCallback: BluetoothGattCallback() {
     override fun onCharacteristicRead(gatt: BluetoothGatt?, characteristic: BluetoothGattCharacteristic?, status: Int) {
         super.onCharacteristicRead(gatt, characteristic, status)
         log.info("onCharacteristicRead: $characteristic : $status")
-        synchronized(gattListeners) {
+        synchronized(_lock) {
             for ((_, listener) in gattListeners) {
                 GlobalScope.launch {
                     listener.onCharacteristicRead(gatt, characteristic, status)
@@ -65,7 +66,7 @@ open class XYBluetoothGattCallback: BluetoothGattCallback() {
     override fun onCharacteristicWrite(gatt: BluetoothGatt?, characteristic: BluetoothGattCharacteristic?, status: Int) {
         super.onCharacteristicWrite(gatt, characteristic, status)
         log.info("onCharacteristicWrite: $status")
-        synchronized(gattListeners) {
+        synchronized(_lock) {
             for ((_, listener) in gattListeners) {
                 GlobalScope.launch {
                     listener.onCharacteristicWrite(gatt, characteristic, status)
@@ -77,7 +78,7 @@ open class XYBluetoothGattCallback: BluetoothGattCallback() {
     override fun onConnectionStateChange(gatt: BluetoothGatt?, status: Int, newState: Int) {
         super.onConnectionStateChange(gatt, status, newState)
         log.info("onConnectionStateChange: ${gatt?.device?.address} $newState : $status")
-        synchronized(gattListeners) {
+        synchronized(_lock) {
             for ((tag, listener) in gattListeners) {
                 GlobalScope.launch {
                     log.info("onConnectionStateChange: $tag")
@@ -90,7 +91,7 @@ open class XYBluetoothGattCallback: BluetoothGattCallback() {
     override fun onDescriptorRead(gatt: BluetoothGatt?, descriptor: BluetoothGattDescriptor?, status: Int) {
         super.onDescriptorRead(gatt, descriptor, status)
         log.info("onDescriptorRead: $descriptor : $status")
-        synchronized(gattListeners) {
+        synchronized(_lock) {
             for ((_, listener) in gattListeners) {
                 GlobalScope.launch {
                     listener.onDescriptorRead(gatt, descriptor, status)
@@ -102,7 +103,7 @@ open class XYBluetoothGattCallback: BluetoothGattCallback() {
     override fun onDescriptorWrite(gatt: BluetoothGatt?, descriptor: BluetoothGattDescriptor?, status: Int) {
         super.onDescriptorWrite(gatt, descriptor, status)
         log.info("onDescriptorWrite: $descriptor : $status")
-        synchronized(gattListeners) {
+        synchronized(_lock) {
             for ((_, listener) in gattListeners) {
                 GlobalScope.launch {
                     listener.onDescriptorWrite(gatt, descriptor, status)
@@ -114,7 +115,7 @@ open class XYBluetoothGattCallback: BluetoothGattCallback() {
     override fun onMtuChanged(gatt: BluetoothGatt?, mtu: Int, status: Int) {
         super.onMtuChanged(gatt, mtu, status)
         log.info("onMtuChanged: $mtu : $status")
-        synchronized(gattListeners) {
+        synchronized(_lock) {
             for ((_, listener) in gattListeners) {
                 GlobalScope.launch {
                     listener.onMtuChanged(gatt, mtu, status)
@@ -129,7 +130,7 @@ open class XYBluetoothGattCallback: BluetoothGattCallback() {
         super.onPhyRead(gatt, txPhy, rxPhy, status)
         log.info("onPhyRead: $txPhy : $rxPhy : $status")
 
-        synchronized(gattListeners) {
+        synchronized(_lock) {
             for ((_, listener) in gattListeners) {
                 GlobalScope.launch {
                     listener.onPhyRead(gatt, txPhy, rxPhy, status)
@@ -142,7 +143,7 @@ open class XYBluetoothGattCallback: BluetoothGattCallback() {
     override fun onPhyUpdate(gatt: BluetoothGatt?, txPhy: Int, rxPhy: Int, status: Int) {
         super.onPhyUpdate(gatt, txPhy, rxPhy, status)
         log.info("onPhyUpdate: $txPhy : $rxPhy : $status")
-        synchronized(gattListeners) {
+        synchronized(_lock) {
             for ((_, listener) in gattListeners) {
                 GlobalScope.launch {
                     listener.onPhyUpdate(gatt, txPhy, rxPhy, status)
@@ -156,7 +157,7 @@ open class XYBluetoothGattCallback: BluetoothGattCallback() {
         log.info("onReadRemoteRssi: $rssi : $status")
         //AT:this@XYBluetoothGatt.rssi = rssi
         //AT:onDetect(null)
-        synchronized(gattListeners) {
+        synchronized(_lock) {
             for ((_, listener) in gattListeners) {
                 GlobalScope.launch {
                     listener.onReadRemoteRssi(gatt, rssi, status)
@@ -168,7 +169,7 @@ open class XYBluetoothGattCallback: BluetoothGattCallback() {
     override fun onReliableWriteCompleted(gatt: BluetoothGatt?, status: Int) {
         super.onReliableWriteCompleted(gatt, status)
         log.info("onReliableWriteCompleted: $status")
-        synchronized(gattListeners) {
+        synchronized(_lock) {
             for ((_, listener) in gattListeners) {
                 GlobalScope.launch {
                     listener.onReliableWriteCompleted(gatt, status)
@@ -180,7 +181,7 @@ open class XYBluetoothGattCallback: BluetoothGattCallback() {
     override fun onServicesDiscovered(gatt: BluetoothGatt?, status: Int) {
         super.onServicesDiscovered(gatt, status)
         log.info("onServicesDiscovered: $status")
-        synchronized(gattListeners) {
+        synchronized(_lock) {
             for ((_, listener) in gattListeners) {
                 GlobalScope.launch {
                     listener.onServicesDiscovered(gatt, status)

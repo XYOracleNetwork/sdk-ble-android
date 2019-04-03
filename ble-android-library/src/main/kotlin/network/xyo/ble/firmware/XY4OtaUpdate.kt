@@ -17,6 +17,14 @@ class XY4OtaUpdate(var device: XY4BluetoothDevice, private val otaFile: XYOtaFil
     private var chunkCount = -1
     private var blockCounter = 0
 
+    /**
+     * Send REBOOT_SIGNAL after flashing. Default is true.
+     */
+    var sendRebootOnComplete = true
+
+    /**
+     * Image Bank to flash to - default is 0
+     */
     var imageBank = 0
 
     //SPI_DI
@@ -146,12 +154,14 @@ class XY4OtaUpdate(var device: XY4BluetoothDevice, private val otaFile: XYOtaFil
                 }
 
                 //REBOOT
-                val reboot = sendReboot().await()
-                reboot.error?.let { error ->
-                    log.info("startUpdate - reboot ERROR: $error")
-                }
+                if (sendRebootOnComplete) {
+                    val reboot = sendReboot().await()
+                    reboot.error?.let { error ->
+                        log.info("startUpdate - reboot ERROR: $error")
+                    }
 
-                log.info("startUpdate - sent Reboot")
+                    log.info("startUpdate - sent Reboot")
+                }
 
                 passUpdate()
 

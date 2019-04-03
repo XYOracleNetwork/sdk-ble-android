@@ -4,7 +4,10 @@ import android.bluetooth.BluetoothGatt
 import android.bluetooth.BluetoothGattCallback
 import android.bluetooth.BluetoothGattCharacteristic
 import kotlinx.coroutines.*
-import network.xyo.ble.gatt.peripheral.*
+import network.xyo.ble.gatt.peripheral.XYBluetoothError
+import network.xyo.ble.gatt.peripheral.XYBluetoothGattCallback
+import network.xyo.ble.gatt.peripheral.XYBluetoothResult
+import network.xyo.ble.gatt.peripheral.XYThreadSafeBluetoothGatt
 import network.xyo.core.XYBase
 import kotlin.coroutines.resume
 
@@ -24,7 +27,7 @@ class XYBluetoothGattWriteCharacteristic(val gatt: XYThreadSafeBluetoothGatt, va
         var value: ByteArray? = null
 
         try {
-            withTimeout(_timeout) {
+            withTimeoutOrNull(_timeout) {
                 value = suspendCancellableCoroutine { cont ->
                     val listener = object : BluetoothGattCallback() {
                         override fun onCharacteristicWrite(gatt: BluetoothGatt?, characteristic: BluetoothGattCharacteristic?, status: Int) {
@@ -39,6 +42,10 @@ class XYBluetoothGattWriteCharacteristic(val gatt: XYThreadSafeBluetoothGatt, va
                                 } else {
                                     error = XYBluetoothError("writeCharacteristic: onCharacteristicWrite failed: $status")
                                     gattCallback.removeListener(listenerName)
+                                    if (!isActive) {
+                                        return
+                                    }
+
                                     cont.resume(null)
                                 }
                             }
@@ -50,6 +57,10 @@ class XYBluetoothGattWriteCharacteristic(val gatt: XYThreadSafeBluetoothGatt, va
                             if (newState != BluetoothGatt.STATE_CONNECTED) {
                                 error = XYBluetoothError("writeCharacteristic: connection dropped")
                                 gattCallback.removeListener(listenerName)
+                                if (!isActive) {
+                                    return
+                                }
+
                                 cont.resume(null)
                             }
                         }
@@ -60,6 +71,10 @@ class XYBluetoothGattWriteCharacteristic(val gatt: XYThreadSafeBluetoothGatt, va
                         if (writeStarted != true) {
                             error = XYBluetoothError("writeCharacteristic: gatt.writeCharacteristic failed to start")
                             gattCallback.removeListener(listenerName)
+                            if (!isActive) {
+                                return@launch
+                            }
+
                             cont.resume(null)
                         }
                     }
@@ -74,5 +89,5 @@ class XYBluetoothGattWriteCharacteristic(val gatt: XYThreadSafeBluetoothGatt, va
         return@async XYBluetoothResult(value, error)
     }
 
-    companion object: XYBase()
+    companion object : XYBase()
 }
