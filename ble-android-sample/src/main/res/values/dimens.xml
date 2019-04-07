@@ -2,6 +2,5 @@
 <resources>
     <dimen name="pad_device_item">0dp</dimen>
     <dimen name="pad_device_item_tv">4dp</dimen>
-    <dimen name="pad_text_normal">2dp</dimen>
     <dimen name="layout_margin_normal">2dp</dimen>
 </resources>

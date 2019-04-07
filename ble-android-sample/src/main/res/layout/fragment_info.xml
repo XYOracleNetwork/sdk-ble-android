@@ -1,15 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:tag="0"
     android:theme="@style/XYTheme">
-
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -45,7 +41,6 @@
                     android:id="@+id/button_connect"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
                     android:text="@string/btn_connect" />
 
                 <network.xyo.ui.views.XYButton
@@ -279,6 +274,7 @@
                     android:layout_height="wrap_content"
                     android:width="120dp"
                     android:focusable="false"
+                    android:inputType="text"
                     tools:text="1234567890" />
             </LinearLayout>
 
@@ -375,6 +371,4 @@
 
         </LinearLayout>
 
-    </ScrollView>
-
-</RelativeLayout>
+</ScrollView>
