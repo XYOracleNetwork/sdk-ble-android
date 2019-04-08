@@ -16,6 +16,13 @@
             android:layout_marginTop="6dp"
             android:orientation="vertical">
 
+            <network.xyo.ui.views.XYButton
+                android:id="@+id/button_startTest"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/btn_start_test"
+                android:visibility="gone" />
+
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -23,34 +30,28 @@
                 android:orientation="horizontal">
 
                 <network.xyo.ui.views.XYButton
-                    android:id="@+id/button_startTest"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentStart="true"
-                    android:text="@string/btn_start_test"
-                    android:visibility="gone" />
-
-                <Switch
-                    android:id="@+id/button_stayConnected"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentStart="true"
-                    android:text="@string/btn_stay_connected" />
-
-                <network.xyo.ui.views.XYButton
                     android:id="@+id/button_connect"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
                     android:text="@string/btn_connect" />
 
                 <network.xyo.ui.views.XYButton
                     android:id="@+id/button_disconnect"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
                     android:text="@string/btn_disconnect"
+                    android:layout_alignParentStart="true"
                     android:visibility="gone"
                     />
+
+                <Switch
+                    android:id="@+id/button_stayConnected"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:text="@string/btn_stay_connected" />
+
             </RelativeLayout>
 
             <LinearLayout

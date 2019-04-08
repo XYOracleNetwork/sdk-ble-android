@@ -54,31 +54,27 @@ class TxPowerFragment : XYDeviceFragment() {
 
     private fun setTxValues() {
         ui {
-            throbber?.show()
-
             text_tx_power.text = ""
 
-            throbber?.hide()
-        }
-
-        when (device) {
-            is XY4BluetoothDevice -> {
-                val x4 = (device as? XY4BluetoothDevice)
-                x4?.let {
-                    getXY4Values(x4)
+            when (device) {
+                is XY4BluetoothDevice -> {
+                    val x4 = (device as? XY4BluetoothDevice)
+                    x4?.let {
+                        getXY4Values(x4)
+                    }
                 }
-            }
-            is XY3BluetoothDevice -> {
-                val x3 = (device as? XY3BluetoothDevice)
-                x3?.let {
-                    getXY3Values(x3)
+                is XY3BluetoothDevice -> {
+                    val x3 = (device as? XY3BluetoothDevice)
+                    x3?.let {
+                        getXY3Values(x3)
+                    }
                 }
-            }
-            is XY2BluetoothDevice -> {
-                text_tx_power.text = getString(R.string.not_supported_x2)
-            }
-            else -> {
-                text_tx_power.text = getString(R.string.unknown_device)
+                is XY2BluetoothDevice -> {
+                    text_tx_power.text = getString(R.string.not_supported_x2)
+                }
+                else -> {
+                    text_tx_power.text = getString(R.string.unknown_device)
+                }
             }
         }
     }
