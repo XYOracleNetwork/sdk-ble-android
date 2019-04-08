@@ -33,7 +33,6 @@ android {
 
     lintOptions {
         htmlReport true
-        htmlOutput file("lint-report.html")
         abortOnError true
         warningsAsErrors true
     }
@@ -57,6 +56,7 @@ android {
         exclude 'META-INF/atomicfu.kotlin_module'
     }
 }
+
 
 buildscript {
     repositories {

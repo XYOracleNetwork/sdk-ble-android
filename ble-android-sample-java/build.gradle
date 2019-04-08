@@ -20,6 +20,12 @@ android {
         }
     }
 
+    lintOptions {
+        htmlReport true
+        abortOnError true
+        warningsAsErrors true
+    }
+
     buildTypes {
         release {
             minifyEnabled false
