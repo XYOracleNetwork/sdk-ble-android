@@ -23,7 +23,8 @@ android {
     lintOptions {
         htmlReport true
         abortOnError true
-        warningsAsErrors true
+        warningsAsErrors false
+        lintConfig file('lint.xml')
     }
 
     buildTypes {
