@@ -4,7 +4,6 @@ import android.content.Context
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
-import network.xyo.ble.firmware.XY4OtaUpdate
 import network.xyo.ble.firmware.XYOtaUpdate
 import network.xyo.ble.gatt.peripheral.XYBluetoothError
 import network.xyo.ble.gatt.peripheral.XYBluetoothResult
