@@ -9,7 +9,6 @@ import network.xyo.ble.gatt.peripheral.XYBluetoothGattCallback
 import network.xyo.ble.gatt.peripheral.XYBluetoothResult
 import network.xyo.ble.gatt.peripheral.XYThreadSafeBluetoothGatt
 import network.xyo.core.XYBase
-import kotlin.coroutines.resume
 
 class XYBluetoothGattWriteCharacteristic(val gatt: XYThreadSafeBluetoothGatt, val gattCallback: XYBluetoothGattCallback) {
 
@@ -21,6 +20,7 @@ class XYBluetoothGattWriteCharacteristic(val gatt: XYThreadSafeBluetoothGatt, va
 
     var listenerName = "XYBluetoothGattWriteCharacteristic${hashCode()}"
 
+    @UseExperimental(InternalCoroutinesApi::class)
     fun start(characteristicToWrite: BluetoothGattCharacteristic) = GlobalScope.async {
         log.info("writeCharacteristic")
         var error: XYBluetoothError? = null
@@ -38,7 +38,7 @@ class XYBluetoothGattWriteCharacteristic(val gatt: XYThreadSafeBluetoothGatt, va
                             if (characteristicToWrite.uuid == characteristic?.uuid) {
                                 if (status == BluetoothGatt.GATT_SUCCESS) {
                                     gattCallback.removeListener(listenerName)
-                                    cont.resume(characteristicToWrite.value)
+                                    cont.tryResume(characteristicToWrite.value)
                                 } else {
                                     error = XYBluetoothError("writeCharacteristic: onCharacteristicWrite failed: $status")
                                     gattCallback.removeListener(listenerName)
@@ -46,7 +46,7 @@ class XYBluetoothGattWriteCharacteristic(val gatt: XYThreadSafeBluetoothGatt, va
                                         return
                                     }
 
-                                    cont.resume(null)
+                                    cont.tryResume(null)
                                 }
                             }
                         }
@@ -61,7 +61,7 @@ class XYBluetoothGattWriteCharacteristic(val gatt: XYThreadSafeBluetoothGatt, va
                                     return
                                 }
 
-                                cont.resume(null)
+                                cont.tryResume(null)
                             }
                         }
                     }
@@ -75,7 +75,7 @@ class XYBluetoothGattWriteCharacteristic(val gatt: XYThreadSafeBluetoothGatt, va
                                 return@launch
                             }
 
-                            cont.resume(null)
+                            cont.tryResume(null)
                         }
                     }
                 }
