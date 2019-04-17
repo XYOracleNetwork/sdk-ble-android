@@ -1,15 +1,15 @@
 package network.xyo.ble.firmware
 
 import kotlinx.coroutines.*
-import network.xyo.ble.devices.XY4BluetoothDevice
 import network.xyo.ble.devices.XYBluetoothDevice
 import network.xyo.ble.gatt.peripheral.XYBluetoothResult
 import network.xyo.ble.services.dialog.SpotaService
 import network.xyo.core.XYBase
 
-class XYBluetoothDeviceUpdate(private var spotaService: SpotaService, var device: XYBluetoothDevice, private val otaFile: XYOtaFile?): XYBase() {
+class XYBluetoothDeviceUpdate(private var spotaService: SpotaService, var device: XYBluetoothDevice, private val otaFile: XYOtaFile?) : XYBase() {
 
     private val listeners = HashMap<String, XYOtaUpdate.Listener>()
+    private val _lock = Any()
     private var updateJob: Job? = null
     private var lastBlock = false
     private var lastBlockSent = false
@@ -59,7 +59,7 @@ class XYBluetoothDeviceUpdate(private var spotaService: SpotaService, var device
 
     fun addListener(key: String, listener: XYOtaUpdate.Listener) {
         GlobalScope.launch {
-            synchronized(listeners) {
+            synchronized(_lock) {
                 listeners.put(key, listener)
             }
         }
@@ -67,7 +67,7 @@ class XYBluetoothDeviceUpdate(private var spotaService: SpotaService, var device
 
     fun removeListener(key: String) {
         GlobalScope.launch {
-            synchronized(listeners) {
+            synchronized(_lock) {
                 listeners.remove(key)
             }
         }
@@ -86,7 +86,7 @@ class XYBluetoothDeviceUpdate(private var spotaService: SpotaService, var device
     private fun startUpdate() {
         updateJob = GlobalScope.launch {
 
-            device.connection {
+            val conn = device.connection {
 
                 var hasError = false
 
@@ -168,13 +168,17 @@ class XYBluetoothDeviceUpdate(private var spotaService: SpotaService, var device
                 passUpdate()
 
                 return@connection XYBluetoothResult(true)
+            }.await()
+
+            if (conn.hasError()) {
+                failUpdate(conn.error?.message ?: "Failed to connect to device")
             }
         }
     }
 
     private fun progressUpdate() {
         val chunkNumber = blockCounter * (otaFile?.chunksPerBlockCount ?: 0) + chunkCount + 1
-        synchronized(listeners) {
+        synchronized(_lock) {
             for ((_, listener) in listeners) {
                 GlobalScope.launch {
                     otaFile?.totalChunkCount?.let { listener.progress(chunkNumber, it) }
@@ -184,7 +188,7 @@ class XYBluetoothDeviceUpdate(private var spotaService: SpotaService, var device
     }
 
     private fun passUpdate() {
-        synchronized(listeners) {
+        synchronized(_lock) {
             for ((_, listener) in listeners) {
                 GlobalScope.launch {
                     listener.updated(device)
@@ -194,7 +198,7 @@ class XYBluetoothDeviceUpdate(private var spotaService: SpotaService, var device
     }
 
     private fun failUpdate(error: String) {
-        synchronized(listeners) {
+        synchronized(_lock) {
             for ((_, listener) in listeners) {
                 GlobalScope.launch {
                     listener.failed(device, error)
@@ -279,7 +283,7 @@ class XYBluetoothDeviceUpdate(private var spotaService: SpotaService, var device
 
 
     private fun sendEndSignal(): Deferred<XYBluetoothResult<Int>> {
-        log.info( "sendEndSignal...")
+        log.info("sendEndSignal...")
         return GlobalScope.async {
             val result = spotaService.SPOTA_MEM_DEV.set(END_SIGNAL).await()
             log.info("sendEndSignal result: $result")
@@ -290,7 +294,7 @@ class XYBluetoothDeviceUpdate(private var spotaService: SpotaService, var device
 
     //DONE
     private fun sendReboot(): Deferred<XYBluetoothResult<Int>> {
-        log.info( "sendReboot...")
+        log.info("sendReboot...")
         return GlobalScope.async {
             val result = spotaService.SPOTA_MEM_DEV.set(REBOOT_SIGNAL).await()
             return@async XYBluetoothResult(result.value, result.error)
