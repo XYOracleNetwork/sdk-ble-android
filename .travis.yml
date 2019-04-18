@@ -12,4 +12,6 @@ cache:
     - $HOME/.gradle/wrapper/
     - $HOME/.android/build-cache
 notifications:
-  slack: xycompany:KDkOEN2OK9MCGXJmjqPEMDaH
+  slack:
+    on_success: change
+    on_failure: change
