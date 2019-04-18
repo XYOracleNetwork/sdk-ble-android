@@ -11,3 +11,5 @@ cache:
     - $HOME/.gradle/caches/
     - $HOME/.gradle/wrapper/
     - $HOME/.android/build-cache
+notifications:
+  slack: xycompany:KDkOEN2OK9MCGXJmjqPEMDaH
