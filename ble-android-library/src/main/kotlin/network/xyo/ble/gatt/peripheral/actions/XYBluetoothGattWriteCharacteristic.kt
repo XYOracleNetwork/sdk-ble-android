@@ -30,10 +30,11 @@ class XYBluetoothGattWriteCharacteristic(val gatt: XYThreadSafeBluetoothGatt, va
             withTimeoutOrNull(_timeout) {
                 value = suspendCancellableCoroutine { cont ->
                     val listener = object : BluetoothGattCallback() {
+
                         override fun onCharacteristicWrite(gatt: BluetoothGatt?, characteristic: BluetoothGattCharacteristic?, status: Int) {
                             log.info("onCharacteristicWrite: $status")
                             super.onCharacteristicWrite(gatt, characteristic, status)
-                            //since it is always possible to have a rogue callback from a previously timedout call,
+                            //since it is always possible to have a rogue callback from a previously timeout call,
                             //make sure it is the one we are looking for
                             if (characteristicToWrite.uuid == characteristic?.uuid) {
                                 if (status == BluetoothGatt.GATT_SUCCESS) {
@@ -42,11 +43,13 @@ class XYBluetoothGattWriteCharacteristic(val gatt: XYThreadSafeBluetoothGatt, va
                                 } else {
                                     error = XYBluetoothError("writeCharacteristic: onCharacteristicWrite failed: $status")
                                     gattCallback.removeListener(listenerName)
-                                    if (!isActive) {
-                                        return
+
+                                    try {
+                                        cont.tryResume(null)
+                                    } catch (ex: Exception) {
+                                        log.info("onCharacteristicWrite catch: ${ex.message.toString()}")
                                     }
 
-                                    cont.tryResume(null)
                                 }
                             }
                         }
@@ -57,11 +60,12 @@ class XYBluetoothGattWriteCharacteristic(val gatt: XYThreadSafeBluetoothGatt, va
                             if (newState != BluetoothGatt.STATE_CONNECTED) {
                                 error = XYBluetoothError("writeCharacteristic: connection dropped")
                                 gattCallback.removeListener(listenerName)
-                                if (!isActive) {
-                                    return
-                                }
 
-                                cont.tryResume(null)
+                                try {
+                                    cont.tryResume(null)
+                                } catch (ex: Exception) {
+                                    log.info("onConnectionStateChange catch: ${ex.message.toString()}")
+                                }
                             }
                         }
                     }
@@ -71,22 +75,18 @@ class XYBluetoothGattWriteCharacteristic(val gatt: XYThreadSafeBluetoothGatt, va
                         if (writeStarted != true) {
                             error = XYBluetoothError("writeCharacteristic: gatt.writeCharacteristic failed to start")
                             gattCallback.removeListener(listenerName)
-                            if (!isActive) {
-                                return@launch
-                            }
 
-                            cont.tryResume(null)
+                            try {
+                                cont.tryResume(null)
+                            } catch (ex: Exception) {
+                                log.info("onCharacteristicWrite catch: ${ex.message.toString()}")
+                            }
                         }
                     }
                 }
             }
         } catch (ex: TimeoutCancellationException) {
             error = XYBluetoothError("start: Timeout")
-            gattCallback.removeListener(listenerName)
-            XYBluetoothGattDiscover.log.error(ex)
-        } catch (ex: Exception) {
-            // java.lang.IllegalStateException: Already resumed, but proposed with update null
-            error = XYBluetoothError("onCharacteristicWrite: ${ex.message.toString()}")
             gattCallback.removeListener(listenerName)
             XYBluetoothGattDiscover.log.error(ex)
         }
