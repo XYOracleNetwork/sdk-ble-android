@@ -84,6 +84,11 @@ class XYBluetoothGattWriteCharacteristic(val gatt: XYThreadSafeBluetoothGatt, va
             error = XYBluetoothError("start: Timeout")
             gattCallback.removeListener(listenerName)
             XYBluetoothGattDiscover.log.error(ex)
+        } catch (ex: Exception) {
+            // java.lang.IllegalStateException: Already resumed, but proposed with update null
+            error = XYBluetoothError("onCharacteristicWrite: ${ex.message.toString()}")
+            gattCallback.removeListener(listenerName)
+            XYBluetoothGattDiscover.log.error(ex)
         }
 
         return@async XYBluetoothResult(value, error)
