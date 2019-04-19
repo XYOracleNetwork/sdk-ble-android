@@ -28,4 +28,9 @@ open class XYBluetoothResult<T> {
     open fun format(): String {
         return (value ?: error?.message ?: "Error").toString()
     }
+
+    fun hasError(): Boolean {
+        return error?.message != null
+    }
+
 }
