@@ -123,7 +123,7 @@ class XYBluetoothDeviceUpdate(private var spotaService: SpotaService, var device
                     if (blockError != null) {
                         log.info(TAG, "startUpdate:sendBlock ERROR: ${blockError.message.toString()}")
                         //failUpdate(blockError.message.toString())
-                        return@connection XYBluetoothResult(false, error)
+                        return@connection XYBluetoothResult(false, blockError)
                     }
 
                     if (lastBlock) {
@@ -135,7 +135,7 @@ class XYBluetoothDeviceUpdate(private var spotaService: SpotaService, var device
                             if (blockError != null) {
                                 log.info(TAG, "startUpdate:finalPatchResult ERROR: ${blockError.message.toString()}")
                                 //failUpdate(blockError.message.toString())
-                                return@connection XYBluetoothResult(false, error)
+                                return@connection XYBluetoothResult(false, blockError)
                             }
                         }
                     }
