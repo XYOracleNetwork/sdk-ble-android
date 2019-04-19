@@ -159,7 +159,7 @@ class XYBluetoothDeviceUpdate(private var spotaService: SpotaService, var device
                     error = reboot.error
                     if (error != null) {
                         // May loose connection after calling reboot - this is normal - don't fail it.
-                        log.info(TAG, "startUpdate:reboot ERROR: ${error.message.toString()}")
+                        log.info(TAG, "startUpdate:reboot sent: ${error.message.toString()}")
                     }
                 }
 
@@ -262,13 +262,8 @@ class XYBluetoothDeviceUpdate(private var spotaService: SpotaService, var device
             }
 
             val chunk = block[i]
-            val msg = "Sending block " + (blockCounter + 1) + ", chunk " + (i + 1) + " of " + block.size + ", size " + chunk.size
-            log.info(msg)
-
-
 
             if (lastChunk) {
-                log.info(TAG, "sendBlock... lastChunk")
                 if (!lastBlock) {
                     blockCounter++
                 } else {
