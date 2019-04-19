@@ -83,6 +83,9 @@ class XYBluetoothDeviceUpdate(private var spotaService: SpotaService, var device
         endSignalSent = false
     }
 
+    val handler = CoroutineExceptionHandler { _, exception ->
+        println("Caught $exception")
+    }
     private fun startUpdate() {
         updateJob = GlobalScope.launch {
 
@@ -95,7 +98,7 @@ class XYBluetoothDeviceUpdate(private var spotaService: SpotaService, var device
                 memResult.error?.let { error ->
                     hasError = true
                     failUpdate(error.message.toString())
-                    updateJob?.cancelAndJoin()
+                    updateJob?.cancel()
                     log.info("startUpdate - MemDev ERROR: $error")
                 }
 
@@ -104,7 +107,7 @@ class XYBluetoothDeviceUpdate(private var spotaService: SpotaService, var device
                 gpioResult.error?.let { error ->
                     hasError = true
                     failUpdate(error.message.toString())
-                    updateJob?.cancelAndJoin()
+                    updateJob?.cancel()
                     log.info("startUpdate - GPIO ERROR: $error")
                 }
 
@@ -113,7 +116,7 @@ class XYBluetoothDeviceUpdate(private var spotaService: SpotaService, var device
                 patchResult.error?.let { error ->
                     hasError = true
                     failUpdate(error.message.toString())
-                    updateJob?.cancelAndJoin()
+                    updateJob?.cancel()
                     log.info("startUpdate - patch ERROR: $error")
                 }
 
@@ -124,7 +127,7 @@ class XYBluetoothDeviceUpdate(private var spotaService: SpotaService, var device
                     blockResult.error?.let { error ->
                         hasError = true
                         failUpdate(error.message.toString())
-                        updateJob?.cancelAndJoin()
+                        updateJob?.cancel()
                         log.info("startUpdate - sendBlock ERROR: $error")
                     }
 
@@ -136,7 +139,7 @@ class XYBluetoothDeviceUpdate(private var spotaService: SpotaService, var device
                             finalPatchResult.error?.let { error ->
                                 hasError = true
                                 failUpdate(error.message.toString())
-                                updateJob?.cancelAndJoin()
+                                updateJob?.cancel()
                                 log.info("startUpdate - finalPatchResult ERROR: $error")
                             }
                         }
@@ -151,7 +154,7 @@ class XYBluetoothDeviceUpdate(private var spotaService: SpotaService, var device
                 endResult.error?.let { error ->
                     hasError = true
                     failUpdate(error.message.toString())
-                    updateJob?.cancelAndJoin()
+                    updateJob?.cancel()
                     log.info("startUpdate - endSignal Result ERROR: $error")
                 }
 
