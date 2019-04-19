@@ -19,10 +19,11 @@ class XYBluetoothGattWriteCharacteristic(val gatt: XYThreadSafeBluetoothGatt, va
         _timeout = timeout
     }
 
-    var listenerName = "XYBluetoothGattWriteCharacteristic${hashCode()}"
+
 
     fun start(characteristicToWrite: BluetoothGattCharacteristic) = GlobalScope.async {
         log.info("writeCharacteristic")
+        val listenerName = "XYBluetoothGattWriteCharacteristic${hashCode()}"
         var error: XYBluetoothError? = null
         var value: ByteArray? = null
 

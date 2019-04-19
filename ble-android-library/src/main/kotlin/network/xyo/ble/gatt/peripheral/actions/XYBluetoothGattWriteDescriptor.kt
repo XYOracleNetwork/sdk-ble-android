@@ -17,10 +17,9 @@ class XYBluetoothGattWriteDescriptor(val gatt: XYThreadSafeBluetoothGatt, val ga
         _timeout = timeout
     }
 
-    var listenerName = "XYBluetoothGattWriteDescriptor${hashCode()}"
-
     fun start(descriptorToWrite: BluetoothGattDescriptor) = GlobalScope.async {
         log.info("writeDescriptor")
+        val listenerName = "XYBluetoothGattWriteDescriptor${hashCode()}"
         var error: XYBluetoothError? = null
         var value: ByteArray? = null
 

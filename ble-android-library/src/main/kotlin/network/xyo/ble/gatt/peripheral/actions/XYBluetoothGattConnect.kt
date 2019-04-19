@@ -23,8 +23,6 @@ class XYBluetoothGattConnect(val device: BluetoothDevice): XYBase() {
         _timeout = timeout
     }
 
-    var listenerName = "XYBluetoothGattConnect${hashCode()}"
-
     var gatt: XYThreadSafeBluetoothGatt? = null
     var services: List<BluetoothGattService>? = null
 
@@ -148,6 +146,7 @@ class XYBluetoothGattConnect(val device: BluetoothDevice): XYBase() {
     fun start(context: Context, transport: Int? = null) = GlobalScope.async {
         log.info("connect: start")
 
+        val listenerName = "XYBluetoothGattConnect${hashCode()}"
         var error: XYBluetoothError? = null
         var value: Boolean? = null
 
