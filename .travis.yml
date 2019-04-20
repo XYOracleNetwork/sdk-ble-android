@@ -19,3 +19,6 @@ notifications:
     rooms: $SLACK_TOKEN
     on_success: change # default: always
     on_failure: always # default: always
+script:
+  - ./gradlew build
+  - sonar-scanner
