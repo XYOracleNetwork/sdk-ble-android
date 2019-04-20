@@ -144,6 +144,7 @@ class XYBluetoothDeviceUpdate(private var spotaService: SpotaService, var device
                 log.info(TAG, "startUpdate:done sending blocks")
 
                 //step 5 - send end signal
+                delay(500)
                 val endResult = sendEndSignal().await()
                 error = endResult.error
                 if (error != null) {
@@ -285,6 +286,7 @@ class XYBluetoothDeviceUpdate(private var spotaService: SpotaService, var device
         log.info(TAG, "sendEndSignal...")
         return GlobalScope.async {
             val result = spotaService.SPOTA_MEM_DEV.set(END_SIGNAL).await()
+            log.info(TAG, "sendEndSignal result: $result")
             endSignalSent = true
             return@async XYBluetoothResult(result.value, result.error)
         }
