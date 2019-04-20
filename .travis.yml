@@ -11,7 +11,12 @@ cache:
     - $HOME/.gradle/caches/
     - $HOME/.gradle/wrapper/
     - $HOME/.android/build-cache
+addons:
+  sonarcloud:
+    organization: xyo-network
 notifications:
-  slack:
+  slack: xycompany:KDkOEN2OK9MCGXJmjqPEMDaH
     on_success: change
-    on_failure: change
+    on_failure: always
+script:
+  - sonar-scanner
