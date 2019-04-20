@@ -15,14 +15,14 @@
         android:id="@+id/service_type"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Service Type" />
+        android:text="@string/service_type" />
 
     <TextView
         android:id="@+id/textView3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textAppearance="@style/Base.TextAppearance.AppCompat.Title"
-        android:text="Characteristics" />
+        android:text="@string/characteristics" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/characteristic_list"

@@ -3,8 +3,14 @@ package network.xyo.ble.gatt.peripheral.actions
 import android.bluetooth.BluetoothGatt
 import android.bluetooth.BluetoothGattCallback
 import android.bluetooth.BluetoothGattCharacteristic
-import kotlinx.coroutines.*
-import network.xyo.ble.gatt.peripheral.*
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.suspendCancellableCoroutine
+import network.xyo.ble.gatt.peripheral.XYBluetoothError
+import network.xyo.ble.gatt.peripheral.XYBluetoothGattCallback
+import network.xyo.ble.gatt.peripheral.XYBluetoothResult
+import network.xyo.ble.gatt.peripheral.XYThreadSafeBluetoothGatt
 import network.xyo.core.XYBase
 import kotlin.coroutines.resume
 
@@ -16,10 +22,9 @@ class XYBluetoothGattReadCharacteristic(val gatt: XYThreadSafeBluetoothGatt, val
         _timeout = timeout
     }
 
-    var listenerName = "XYBluetoothGattReadCharacteristic${hashCode()}"
-
     fun start(characteristicToRead: BluetoothGattCharacteristic) = GlobalScope.async {
         log.info("readCharacteristic")
+        val listenerName = "XYBluetoothGattReadCharacteristic${hashCode()}"
         var error: XYBluetoothError? = null
         val value: BluetoothGattCharacteristic?
 
@@ -63,5 +68,5 @@ class XYBluetoothGattReadCharacteristic(val gatt: XYThreadSafeBluetoothGatt, val
         return@async XYBluetoothResult(value, error)
     }
 
-    companion object: XYBase()
+    companion object : XYBase()
 }

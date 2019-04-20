@@ -12,8 +12,8 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.3.2'
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.3.21"
+        classpath 'com.android.tools.build:gradle:3.4.0'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.3.30"
         classpath "com.github.dcendents:android-maven-gradle-plugin:$mavenVersion"
     }
 }
@@ -48,9 +48,9 @@ android {
 
     lintOptions {
         htmlReport true
-        htmlOutput file("lint-report.html")
         abortOnError true
-        warningsAsErrors true
+        warningsAsErrors false
+        lintConfig file('lint.xml')
     }
 
     sourceSets {
@@ -73,14 +73,19 @@ android {
             debuggable true
         }
     }
+
+    packagingOptions {
+        exclude 'META-INF/build.kotlin_module'
+        exclude 'META-INF/atomicfu.kotlin_module'
+    }
 }
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    api "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.21"
-    api "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.0.1"
-    api "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.0.1"
-    api "androidx.annotation:annotation:1.0.2"
+    api 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.30'
+    api 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.2.0'
+    api "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.1.1"
+    implementation 'org.jetbrains:annotations:17.0.0'
 
     api 'com.github.XYOracleNetwork:sdk-core-android:1.2.5'
 

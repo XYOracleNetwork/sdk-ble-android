@@ -16,12 +16,11 @@ class XYBluetoothGattDiscover(val gatt: XYThreadSafeBluetoothGatt, val gattCallb
         _timeout = timeout
     }
 
-    var listenerName = "XYBluetoothGattDiscover${hashCode()}"
-
     var services: List<BluetoothGattService>? = null
 
     fun start() = GlobalScope.async {
         log.info("discover")
+        val listenerName = "XYBluetoothGattDiscover${hashCode()}"
         var error: XYBluetoothError? = null
         var value: List<BluetoothGattService>? = null
 
