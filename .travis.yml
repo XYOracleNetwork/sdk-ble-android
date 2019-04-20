@@ -27,10 +27,10 @@ stages:
 jobs:
   include:
     - stage: build
-      - script: ./gradlew build
+      script: ./gradlew build
     - stage: test
-      - script: sonar-scanner
+      script: sonar-scanner
     - stage: deploy 
       if: branch = master
-        - script: echo Deploy
+      script: echo Hello
 
