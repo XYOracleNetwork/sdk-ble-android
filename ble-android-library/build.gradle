@@ -1,6 +1,7 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'com.github.dcendents.android-maven'
+apply plugin: 'org.sonarqube'
 group = 'com.github.XYOracleNetwork'
 
 buildscript {
@@ -13,7 +14,7 @@ buildscript {
 
     dependencies {
         classpath 'com.android.tools.build:gradle:3.4.0'
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.3.21"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.3.30"
         classpath "com.github.dcendents:android-maven-gradle-plugin:$mavenVersion"
     }
 }
