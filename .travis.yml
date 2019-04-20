@@ -21,4 +21,7 @@ notifications:
     on_failure: always # default: always
 script:
   - ./gradlew build
-  - sonar-scanner
+script:
+  if: branch = master
+    - sonar-scanner
+
