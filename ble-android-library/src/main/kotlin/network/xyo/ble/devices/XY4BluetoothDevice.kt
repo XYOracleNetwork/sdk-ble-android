@@ -143,7 +143,7 @@ open class XY4BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
         super.reportButtonPressed(state)
         //every time a notify fires, we have to re-enable it
         enableButtonNotifyIfConnected()
-        XY4BluetoothDevice.reportGlobalButtonPressed(this, state)
+        reportGlobalButtonPressed(this, state)
     }
 
     override val minor: Ushort
