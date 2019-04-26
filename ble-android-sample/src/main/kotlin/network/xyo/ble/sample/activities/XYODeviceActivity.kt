@@ -3,8 +3,6 @@ package network.xyo.ble.sample.activities
 import android.content.Intent
 import android.os.Bundle
 import android.util.SparseArray
-import android.view.View.GONE
-import android.view.View.VISIBLE
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -19,7 +17,6 @@ import network.xyo.ble.sample.R
 import network.xyo.ble.sample.XYDeviceData
 import network.xyo.ble.sample.fragments.*
 import network.xyo.ble.sample.fragments.core.BackFragmentListener
-import network.xyo.ble.sample.fragments.core.ProgressListener
 import network.xyo.ui.XYBaseFragment
 import network.xyo.ui.ui
 

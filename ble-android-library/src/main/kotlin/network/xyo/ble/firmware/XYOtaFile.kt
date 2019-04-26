@@ -2,11 +2,11 @@ package network.xyo.ble.firmware
 
 import android.os.Environment
 import android.util.Log
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
 import network.xyo.core.XYBase
-import java.io.*
-import java.net.URL
+import java.io.File
+import java.io.FileInputStream
+import java.io.IOException
+import java.io.InputStream
 import java.util.*
 import kotlin.experimental.xor
 
@@ -147,13 +147,13 @@ class XYOtaFile(private val inputStream: InputStream?): XYBase() {
 
         fun createFileDirectory(folderName: String): Boolean {
             val directoryName = folderPath(folderName)
-            val directory: java.io.File
-            directory = java.io.File(directoryName)
+            val directory: File
+            directory = File(directoryName)
             return directory.exists() || directory.mkdirs()
         }
 
         fun list(folderName: String): ArrayList<String>? {
-            val f = java.io.File(folderPath(folderName))
+            val f = File(folderPath(folderName))
             val file = f.listFiles() ?: return null
             Log.d("Files", "Size: " + file.size)
             val names = ArrayList<String>()
