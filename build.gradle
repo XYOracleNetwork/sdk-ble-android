@@ -6,6 +6,11 @@ buildscript {
         androidSupportVersion = '28.0.3'
         mavenVersion = '2.1'
         androidToolsVersion = '26.2.1'
+        experimentalsEnabled = [
+                "-Xuse-experimental=kotlin.Experimental",
+                "-Xuse-experimental=kotlinx.coroutines.ExperimentalCoroutinesApi",
+                "-Xuse-experimental=kotlinx.coroutines.InternalCoroutinesApi"
+        ]
     }
 
     repositories {

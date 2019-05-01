@@ -10,6 +10,9 @@ import java.io.InputStream
 import java.util.*
 import kotlin.experimental.xor
 
+/**
+ * File format for Over-the-air images
+ */
 class XYOtaFile(private val inputStream: InputStream?): XYBase() {
 
     private var bytes: ByteArray? = null
