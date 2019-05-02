@@ -5,8 +5,10 @@ import android.bluetooth.BluetoothGatt
 import android.bluetooth.BluetoothGattCallback
 import android.bluetooth.BluetoothGattCharacteristic
 import android.content.Context
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import network.xyo.ble.gatt.peripheral.XYBluetoothResult
 import network.xyo.ble.scanner.XYScanResult
 import network.xyo.ble.services.standard.*
 import network.xyo.ble.services.xy3.*
@@ -116,7 +118,7 @@ open class XY3BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
         super.reportButtonPressed(state)
         //every time a notify fires, we have to re-enable it
         //enableButtonNotifyIfConnected()
-        reportGlobalButtonPressed(this, state)
+        XY3BluetoothDevice.reportGlobalButtonPressed(this, state)
     }
 
     open class Listener : XYFinderBluetoothDevice.Listener()

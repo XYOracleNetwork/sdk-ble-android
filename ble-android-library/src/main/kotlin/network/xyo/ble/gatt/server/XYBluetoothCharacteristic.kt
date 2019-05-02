@@ -11,7 +11,7 @@ import kotlin.collections.HashMap
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
-open class XYBluetoothCharacteristic(uuid: UUID, properties: Int, permissions: Int) : BluetoothGattCharacteristic(uuid, properties, permissions) {
+open class XYBluetoothCharacteristic(uuid: UUID, properties : Int, permissions : Int) : BluetoothGattCharacteristic(uuid, properties, permissions) {
     private val listeners = HashMap<String, XYBluetoothCharacteristicListener>()
     private val readResponders = HashMap<String, XYBluetoothReadResponder>()
     private val writeResponders = HashMap<String, XYBluetoothWriteResponder>()
@@ -40,17 +40,17 @@ open class XYBluetoothCharacteristic(uuid: UUID, properties: Int, permissions: I
         return super.setValue(mantissa, exponent, formatType, offset)
     }
 
-    protected fun onChange() {
+    protected fun onChange () {
         for ((_, listener) in listeners) {
             listener.onChange()
         }
     }
 
-    fun addListener(key: String, listener: XYBluetoothCharacteristicListener) {
+    fun addListener(key : String, listener: XYBluetoothCharacteristicListener) {
         listeners[key] = listener
     }
 
-    fun removeListiner(key: String) {
+    fun removeListiner (key: String) {
         listeners.remove(key)
     }
 

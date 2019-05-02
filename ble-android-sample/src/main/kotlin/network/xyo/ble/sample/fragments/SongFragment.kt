@@ -284,7 +284,7 @@ class SongFragment : XYDeviceFragment() {
                                         songData[offset * 2 + 7]
                                 )
 
-                                log.info("setSongOne: $offset:${data.contentToString()} ")
+                                log.info("setSongOne: ${offset}:${data.contentToString()} ")
                                 it.primary.buzzerConfig.set(data).await()
                                 offset += 4
                             }

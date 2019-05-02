@@ -3,6 +3,7 @@ package network.xyo.ble.gatt.peripheral
 import android.bluetooth.*
 import android.content.Context
 import android.os.Handler
+import android.util.Log
 import kotlinx.coroutines.*
 import network.xyo.ble.XYBluetoothBase
 import network.xyo.ble.gatt.peripheral.actions.XYBluetoothGattConnect

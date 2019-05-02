@@ -5,6 +5,7 @@ import android.bluetooth.BluetoothGatt
 import android.bluetooth.BluetoothGattCharacteristic
 import android.bluetooth.BluetoothGattDescriptor
 import android.bluetooth.BluetoothGattService
+import kotlinx.coroutines.Deferred
 import network.xyo.core.XYBase
 import java.lang.ref.WeakReference
 import java.util.*

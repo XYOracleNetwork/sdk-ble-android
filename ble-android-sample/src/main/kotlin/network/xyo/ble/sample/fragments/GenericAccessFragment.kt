@@ -86,24 +86,24 @@ class GenericAccessFragment : XYDeviceFragment() {
             val conn = device.connection {
                 hasConnectionError = false
 
-                device.genericAccessService.deviceName.get().await().let {
+                device.genericAccessService.deviceName.get().await().let { it ->
                     deviceData?.deviceName = "${it.value ?: it.error?.message ?: "Error"}"
                 }
 
-                device.genericAccessService.appearance.get().await().let {
+                device.genericAccessService.appearance.get().await().let { it ->
                     deviceData?.appearance = "${it.value ?: it.error?.message ?: "Error"}"
                 }
 
-                device.genericAccessService.privacyFlag.get().await().let {
+                device.genericAccessService.privacyFlag.get().await().let { it ->
                     deviceData?.privacyFlag = "${it.value ?: it.error?.message ?: "Error"}"
                 }
 
-                device.genericAccessService.reconnectionAddress.get().await().let {
+                device.genericAccessService.reconnectionAddress.get().await().let { it ->
                     deviceData?.reconnectionAddress = "${it.value ?: it.error?.message
                     ?: "Error"}"
                 }
 
-                device.genericAccessService.peripheralPreferredConnectionParameters.get().await().let {
+                device.genericAccessService.peripheralPreferredConnectionParameters.get().await().let { it ->
                     deviceData?.peripheralPreferredConnectionParameters = "${it.value
                             ?: it.error?.message ?: "Error"}"
                 }
@@ -125,24 +125,24 @@ class GenericAccessFragment : XYDeviceFragment() {
             val conn = device.connection {
                 hasConnectionError = false
 
-                device.genericAccessService.deviceName.get().await().let {
+                device.genericAccessService.deviceName.get().await().let { it ->
                     deviceData?.deviceName = "${it.value ?: it.error?.message ?: "Error"}"
                 }
 
-                device.genericAccessService.appearance.get().await().let {
+                device.genericAccessService.appearance.get().await().let { it ->
                     deviceData?.appearance = "${it.value ?: it.error?.message ?: "Error"}"
                 }
 
-                device.genericAccessService.privacyFlag.get().await().let {
+                device.genericAccessService.privacyFlag.get().await().let { it ->
                     deviceData?.privacyFlag = "${it.value ?: it.error?.message ?: "Error"}"
                 }
 
-                device.genericAccessService.reconnectionAddress.get().await().let {
+                device.genericAccessService.reconnectionAddress.get().await().let { it ->
                     deviceData?.reconnectionAddress = "${it.value ?: it.error?.message
                     ?: "Error"}"
                 }
 
-                device.genericAccessService.peripheralPreferredConnectionParameters.get().await().let {
+                device.genericAccessService.peripheralPreferredConnectionParameters.get().await().let { it ->
                     deviceData?.peripheralPreferredConnectionParameters = "${it.value
                             ?: it.error?.message ?: "Error"}"
                 }
@@ -164,24 +164,24 @@ class GenericAccessFragment : XYDeviceFragment() {
             val conn = device.connection {
                 hasConnectionError = false
 
-                device.genericAccessService.deviceName.get().await().let {
+                device.genericAccessService.deviceName.get().await().let { it ->
                     deviceData?.deviceName = "${it.value ?: it.error?.message ?: "Error"}"
                 }
 
-                device.genericAccessService.appearance.get().await().let {
+                device.genericAccessService.appearance.get().await().let { it ->
                     deviceData?.appearance = "${it.value ?: it.error?.message ?: "Error"}"
                 }
 
-                device.genericAccessService.privacyFlag.get().await().let {
+                device.genericAccessService.privacyFlag.get().await().let { it ->
                     deviceData?.privacyFlag = "${it.value ?: it.error?.message ?: "Error"}"
                 }
 
-                device.genericAccessService.reconnectionAddress.get().await().let {
+                device.genericAccessService.reconnectionAddress.get().await().let { it ->
                     deviceData?.reconnectionAddress = "${it.value ?: it.error?.message
                     ?: "Error"}"
                 }
 
-                device.genericAccessService.peripheralPreferredConnectionParameters.get().await().let {
+                device.genericAccessService.peripheralPreferredConnectionParameters.get().await().let { it ->
                     deviceData?.peripheralPreferredConnectionParameters = "${it.value
                             ?: it.error?.message ?: "Error"}"
                 }

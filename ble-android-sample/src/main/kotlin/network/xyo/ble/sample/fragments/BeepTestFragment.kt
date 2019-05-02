@@ -5,11 +5,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import kotlinx.android.synthetic.main.fragment_test.*
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import network.xyo.ble.devices.XY3BluetoothDevice
 import network.xyo.ble.devices.XY4BluetoothDevice
+import network.xyo.ble.devices.XYFinderBluetoothDevice
 import network.xyo.ble.gatt.peripheral.XYBluetoothResult
 import network.xyo.ble.sample.R
 import network.xyo.ble.sample.XYApplication
@@ -17,6 +16,7 @@ import network.xyo.ble.scanner.XYSmartScan
 import network.xyo.core.XYBase
 import network.xyo.ui.XYBaseFragment
 import network.xyo.ui.ui
+import java.lang.Exception
 
 class BeepTestFragment : XYBaseFragment() {
 

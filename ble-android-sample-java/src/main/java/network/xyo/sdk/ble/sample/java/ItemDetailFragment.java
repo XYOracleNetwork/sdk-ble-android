@@ -1,15 +1,17 @@
 package network.xyo.sdk.ble.sample.java;
 
 import android.app.Activity;
+
+import com.google.android.material.appbar.CollapsingToolbarLayout;
+
 import android.os.Bundle;
+
+import androidx.fragment.app.Fragment;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
-import androidx.fragment.app.Fragment;
-
-import com.google.android.material.appbar.CollapsingToolbarLayout;
 
 import network.xyo.sdk.ble.sample.java.dummy.DummyContent;
 
@@ -49,7 +51,7 @@ public class ItemDetailFragment extends Fragment {
             mItem = DummyContent.ITEM_MAP.get(getArguments().getString(ARG_ITEM_ID));
 
             Activity activity = this.getActivity();
-            CollapsingToolbarLayout appBarLayout = activity.findViewById(R.id.toolbar_layout);
+            CollapsingToolbarLayout appBarLayout = (CollapsingToolbarLayout) activity.findViewById(R.id.toolbar_layout);
             if (appBarLayout != null) {
                 appBarLayout.setTitle(mItem.content);
             }
