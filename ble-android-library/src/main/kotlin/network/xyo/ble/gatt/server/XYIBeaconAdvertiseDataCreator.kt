@@ -4,11 +4,11 @@ import android.bluetooth.le.AdvertiseData
 import java.nio.ByteBuffer
 import java.util.*
 
-object XYIBeaconAdvertiseDataCreator  {
+object XYIBeaconAdvertiseDataCreator {
 
-    fun create (major: ByteArray, minor: ByteArray, serviceUuid : UUID, manufacturerId: Int, includeDeviceName : Boolean) : AdvertiseData.Builder {
+    fun create(major: ByteArray, minor: ByteArray, serviceUuid: UUID, manufacturerId: Int, includeDeviceName: Boolean): AdvertiseData.Builder {
         if (major.size != 2) throw Exception("IBeacon major must be 2 bytes!")
-        if (minor.size != 2)  throw Exception("IBeacon major must be 2 bytes!")
+        if (minor.size != 2) throw Exception("IBeacon major must be 2 bytes!")
 
         val buffer = ByteBuffer.allocate(23)
         buffer.put(byteArrayOf(0x02.toByte(), 0x15.toByte()))

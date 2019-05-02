@@ -4,7 +4,6 @@ import android.bluetooth.le.AdvertiseData
 import android.bluetooth.le.AdvertiseSettings
 import android.os.Bundle
 import android.os.ParcelUuid
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -72,9 +71,8 @@ class AdvertiserFragment : XYBaseFragment() {
         val radioButtonGroup = view.advertising_mode_selector
         val radioButtonID = radioButtonGroup.checkedRadioButtonId
         val radioButton = radioButtonGroup.findViewById<RadioButton>(radioButtonID)
-        val idx = radioButtonGroup.indexOfChild(radioButton)
 
-        when(idx) {
+        when(radioButtonGroup.indexOfChild(radioButton)) {
             0 -> advertiser?.changeAdvertisingMode(AdvertiseSettings.ADVERTISE_MODE_LOW_LATENCY)
             1 -> advertiser?.changeAdvertisingMode(AdvertiseSettings.ADVERTISE_MODE_BALANCED)
             2 -> advertiser?.changeAdvertisingMode(AdvertiseSettings.ADVERTISE_MODE_LOW_POWER)

@@ -108,7 +108,7 @@ open class XYBluetoothGattServer(context: Context) : XYBluetoothBase(context) {
         }
     }
 
-    private fun addServiceChildren (serviceToAdd: XYBluetoothService) {
+    private fun addServiceChildren(serviceToAdd: XYBluetoothService) {
         for (characteristic in serviceToAdd.characteristics) {
             if (characteristic is XYBluetoothCharacteristic) {
                 characteristics[characteristic.uuid] = characteristic
@@ -122,10 +122,11 @@ open class XYBluetoothGattServer(context: Context) : XYBluetoothBase(context) {
         }
     }
 
-    private fun sendResponseWithSuccess(byteArray: ByteArray?, requestId: Int, device: BluetoothDevice?, offset : Int?) {
+    private fun sendResponseWithSuccess(byteArray: ByteArray?, requestId: Int, device: BluetoothDevice?, offset: Int?) {
         if (androidGattServer != null && device != null) {
             if (isDeviceConnected(device)) {
-                androidGattServer?.sendResponse(device, requestId, BluetoothGatt.GATT_SUCCESS, offset ?: 0, byteArray)
+                androidGattServer?.sendResponse(device, requestId, BluetoothGatt.GATT_SUCCESS, offset
+                        ?: 0, byteArray)
             }
         }
     }
@@ -207,7 +208,7 @@ open class XYBluetoothGattServer(context: Context) : XYBluetoothBase(context) {
     }
 
 
-    open fun onBluetoothCharacteristicWrite (characteristic: BluetoothGattCharacteristic, device: BluetoothDevice?, value : ByteArray?) : Boolean? {
+    open fun onBluetoothCharacteristicWrite(characteristic: BluetoothGattCharacteristic, device: BluetoothDevice?, value: ByteArray?): Boolean? {
         val characteristicHandler = characteristics[characteristic.uuid]
         if (characteristicHandler is XYBluetoothCharacteristic) {
             return characteristicHandler.onWriteRequest(value, device)
@@ -215,7 +216,7 @@ open class XYBluetoothGattServer(context: Context) : XYBluetoothBase(context) {
         return null
     }
 
-    open fun onBluetoothCharacteristicReadRequest (characteristic: BluetoothGattCharacteristic, device: BluetoothDevice?, offset : Int) : XYBluetoothGattServer.XYReadRequest? {
+    open fun onBluetoothCharacteristicReadRequest(characteristic: BluetoothGattCharacteristic, device: BluetoothDevice?, offset: Int): XYReadRequest? {
         val characteristicHandler = characteristics[characteristic.uuid]
         if (characteristicHandler is XYBluetoothCharacteristic) {
             return characteristicHandler.onReadRequest(device, offset)
@@ -223,7 +224,7 @@ open class XYBluetoothGattServer(context: Context) : XYBluetoothBase(context) {
         return null
     }
 
-    open fun onBluetoothDescriptorWrite (descriptor: BluetoothGattDescriptor, device: BluetoothDevice?, value : ByteArray?) : Boolean? {
+    open fun onBluetoothDescriptorWrite(descriptor: BluetoothGattDescriptor, device: BluetoothDevice?, value: ByteArray?): Boolean? {
         val descriptorHandler = descriptors[descriptor.uuid]
         if (descriptorHandler is XYBluetoothDescriptor) {
             return descriptorHandler.onWriteRequest(value, device)
@@ -231,7 +232,7 @@ open class XYBluetoothGattServer(context: Context) : XYBluetoothBase(context) {
         return null
     }
 
-    open fun onBluetoothDescriptorReadRequest (descriptor: BluetoothGattDescriptor, device: BluetoothDevice?, offset : Int) : XYBluetoothGattServer.XYReadRequest? {
+    open fun onBluetoothDescriptorReadRequest(descriptor: BluetoothGattDescriptor, device: BluetoothDevice?, offset: Int): XYReadRequest? {
         val descriptorHandler = descriptors[descriptor.uuid]
         if (descriptorHandler is XYBluetoothDescriptor) {
             return descriptorHandler.onReadRequest(device, offset)
@@ -239,7 +240,7 @@ open class XYBluetoothGattServer(context: Context) : XYBluetoothBase(context) {
         return null
     }
 
-    class XYReadRequest (val byteArray: ByteArray, val offset: Int)
+    class XYReadRequest(val byteArray: ByteArray, val offset: Int)
 
     private val primaryCallback = object : BluetoothGattServerCallback() {
         override fun onCharacteristicReadRequest(device: BluetoothDevice?, requestId: Int, offset: Int, characteristic: BluetoothGattCharacteristic?) {
@@ -265,7 +266,7 @@ open class XYBluetoothGattServer(context: Context) : XYBluetoothBase(context) {
         }
 
         override fun onCharacteristicWriteRequest(device: BluetoothDevice?, requestId: Int, characteristic: BluetoothGattCharacteristic?, preparedWrite: Boolean, responseNeeded: Boolean, offset: Int, value: ByteArray?) {
-           log.info("onCharacteristicWriteRequest $device, $characteristic")
+            log.info("onCharacteristicWriteRequest $device, $characteristic")
             super.onCharacteristicWriteRequest(device, requestId, characteristic, preparedWrite, responseNeeded, offset, value)
             val service = services[characteristic?.service?.uuid]
             if (service != null && characteristic != null && device != null) {

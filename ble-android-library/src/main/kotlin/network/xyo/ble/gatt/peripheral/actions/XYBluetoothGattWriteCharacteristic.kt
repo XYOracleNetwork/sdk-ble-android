@@ -9,7 +9,6 @@ import network.xyo.ble.gatt.peripheral.XYBluetoothGattCallback
 import network.xyo.ble.gatt.peripheral.XYBluetoothResult
 import network.xyo.ble.gatt.peripheral.XYThreadSafeBluetoothGatt
 import network.xyo.core.XYBase
-import kotlin.coroutines.resume
 
 class XYBluetoothGattWriteCharacteristic(val gatt: XYThreadSafeBluetoothGatt, val gattCallback: XYBluetoothGattCallback) {
 
@@ -18,8 +17,6 @@ class XYBluetoothGattWriteCharacteristic(val gatt: XYThreadSafeBluetoothGatt, va
     fun timeout(timeout: Long) {
         _timeout = timeout
     }
-
-
 
     fun start(characteristicToWrite: BluetoothGattCharacteristic) = GlobalScope.async {
         log.info("writeCharacteristic")
@@ -39,7 +36,10 @@ class XYBluetoothGattWriteCharacteristic(val gatt: XYThreadSafeBluetoothGatt, va
                             if (characteristicToWrite.uuid == characteristic?.uuid) {
                                 if (status == BluetoothGatt.GATT_SUCCESS) {
                                     gattCallback.removeListener(listenerName)
-                                    cont.resume(characteristicToWrite.value)
+                                    val idempotent = cont.tryResume(characteristicToWrite.value)
+                                    idempotent?.let {
+                                        cont.completeResume(it)
+                                    }
                                 } else {
                                     error = XYBluetoothError("writeCharacteristic: onCharacteristicWrite failed: $status")
                                     gattCallback.removeListener(listenerName)
@@ -47,7 +47,10 @@ class XYBluetoothGattWriteCharacteristic(val gatt: XYThreadSafeBluetoothGatt, va
                                         return
                                     }
 
-                                    cont.resume(null)
+                                    val idempotent = cont.tryResume(null)
+                                    idempotent?.let {
+                                        cont.completeResume(it)
+                                    }
                                 }
                             }
                         }
@@ -62,7 +65,10 @@ class XYBluetoothGattWriteCharacteristic(val gatt: XYThreadSafeBluetoothGatt, va
                                     return
                                 }
 
-                                cont.resume(null)
+                                val idempotent = cont.tryResume(null)
+                                idempotent?.let {
+                                    cont.completeResume(it)
+                                }
                             }
                         }
                     }
@@ -76,7 +82,10 @@ class XYBluetoothGattWriteCharacteristic(val gatt: XYThreadSafeBluetoothGatt, va
                                 return@launch
                             }
 
-                            cont.resume(null)
+                            val idempotent = cont.tryResume(null)
+                            idempotent?.let {
+                                cont.completeResume(it)
+                            }
                         }
                     }
                 }

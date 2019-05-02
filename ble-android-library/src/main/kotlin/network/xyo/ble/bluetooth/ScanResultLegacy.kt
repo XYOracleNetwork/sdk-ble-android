@@ -3,10 +3,9 @@ package network.xyo.ble.bluetooth
 import android.bluetooth.BluetoothDevice
 import android.os.Parcel
 import android.os.Parcelable
-
-import java.util.Objects
-
-import androidx.annotation.*
+import androidx.annotation.NonNull
+import androidx.annotation.Nullable
+import java.util.*
 
 // This is a copy of ScanResult from Android Marshmallow+ to be used with Android versions earlier than Marshmallow
 
