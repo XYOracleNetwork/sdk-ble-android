@@ -280,14 +280,14 @@ class XYBluetoothDeviceUpdate(private var spotaService: SpotaService, var device
     private fun sendEndSignal(): Deferred<XYBluetoothResult<Int>> {
         log.info(TAG, "sendEndSignal...")
         return GlobalScope.async {
-            delay(1_000)
+            delay(2_000)
             var result = spotaService.SPOTA_MEM_DEV.set(END_SIGNAL).await()
 
             if (result.hasError()) {
                 log.info(TAG, "sendEndSignal error delay and retry")
-                delay(2_000)
+                delay(5_000)
                 result = spotaService.SPOTA_MEM_DEV.set(END_SIGNAL).await()
-
+                log.info(TAG, "sendEndSignal post-delay error: ${result.error.toString()}")
             }
 
             return@async XYBluetoothResult(result.value, result.error)
