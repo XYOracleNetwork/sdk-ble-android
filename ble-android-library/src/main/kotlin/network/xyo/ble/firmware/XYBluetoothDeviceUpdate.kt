@@ -13,7 +13,6 @@ class XYBluetoothDeviceUpdate(private var spotaService: SpotaService, var device
     private var lastBlock = false
     private var lastBlockSent = false
     private var lastBlockReady = false
-    private var endSignalSent = false
     private var retryCount = 0
     private var chunkCount = -1
     private var blockCounter = 0
@@ -79,7 +78,6 @@ class XYBluetoothDeviceUpdate(private var spotaService: SpotaService, var device
         lastBlock = false
         lastBlockSent = false
         lastBlockReady = false
-        endSignalSent = false
     }
 
     private fun startUpdate() {
@@ -116,6 +114,7 @@ class XYBluetoothDeviceUpdate(private var spotaService: SpotaService, var device
 
 
                 //STEP 4 - send blocks
+                log.info(TAG, "startUpdate: Start sending blocks")
                 while (!lastBlockSent) {
                     progressUpdate()
                     val blockResult = sendBlock().await()
@@ -141,7 +140,7 @@ class XYBluetoothDeviceUpdate(private var spotaService: SpotaService, var device
                     }
                 }
 
-                log.info(TAG, "startUpdate:done sending blocks")
+                log.info(TAG, "startUpdate:Done sending blocks")
 
                 //step 5 - send end signal
                 val endResult = sendEndSignal().await()
@@ -284,8 +283,15 @@ class XYBluetoothDeviceUpdate(private var spotaService: SpotaService, var device
     private fun sendEndSignal(): Deferred<XYBluetoothResult<Int>> {
         log.info(TAG, "sendEndSignal...")
         return GlobalScope.async {
-            val result = spotaService.SPOTA_MEM_DEV.set(END_SIGNAL).await()
-            endSignalSent = true
+            //A small delay to prevent a write failure.
+            delay(2_000)
+            var result = spotaService.SPOTA_MEM_DEV.set(END_SIGNAL).await()
+
+            if (result.hasError()) {
+                delay(1_000)
+                result = spotaService.SPOTA_MEM_DEV.set(END_SIGNAL).await()
+            }
+
             return@async XYBluetoothResult(result.value, result.error)
         }
     }
