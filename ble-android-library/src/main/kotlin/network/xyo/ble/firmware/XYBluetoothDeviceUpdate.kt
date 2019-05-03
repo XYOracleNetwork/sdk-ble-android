@@ -284,11 +284,12 @@ class XYBluetoothDeviceUpdate(private var spotaService: SpotaService, var device
         log.info(TAG, "sendEndSignal...")
         return GlobalScope.async {
             //A small delay to prevent a write failure.
-            delay(2_000)
+            //delay(2_000)
             var result = spotaService.SPOTA_MEM_DEV.set(END_SIGNAL).await()
 
             if (result.hasError()) {
-                delay(1_000)
+                delay(2_000)
+                log.info(TAG, "sendEndSignal-second attempt")
                 result = spotaService.SPOTA_MEM_DEV.set(END_SIGNAL).await()
             }
 
