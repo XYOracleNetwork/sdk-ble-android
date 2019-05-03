@@ -2,15 +2,18 @@ package network.xyo.ble.firmware
 
 import android.os.Environment
 import android.util.Log
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
 import network.xyo.core.XYBase
-import java.io.*
-import java.net.URL
+import java.io.FileInputStream
+import java.io.IOException
+import java.io.InputStream
 import java.util.*
 import kotlin.experimental.xor
 
-class XYOtaFile(private val inputStream: InputStream?): XYBase() {
+/**
+ * File format for Over-the-air images
+ */
+
+class XYOtaFile(private val inputStream: InputStream?) : XYBase() {
 
     private var bytes: ByteArray? = null
     private var blocks: Array<Array<ByteArray>>? = null
