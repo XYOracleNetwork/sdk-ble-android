@@ -2,17 +2,14 @@ package network.xyo.ble.firmware
 
 import android.os.Environment
 import android.util.Log
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
 import network.xyo.core.XYBase
-import java.io.File
-import java.io.FileInputStream
-import java.io.IOException
-import java.io.InputStream
+import java.io.*
+import java.net.URL
 import java.util.*
 import kotlin.experimental.xor
 
-/**
- * File format for Over-the-air images
- */
 class XYOtaFile(private val inputStream: InputStream?): XYBase() {
 
     private var bytes: ByteArray? = null
@@ -150,13 +147,13 @@ class XYOtaFile(private val inputStream: InputStream?): XYBase() {
 
         fun createFileDirectory(folderName: String): Boolean {
             val directoryName = folderPath(folderName)
-            val directory: File
-            directory = File(directoryName)
+            val directory: java.io.File
+            directory = java.io.File(directoryName)
             return directory.exists() || directory.mkdirs()
         }
 
         fun list(folderName: String): ArrayList<String>? {
-            val f = File(folderPath(folderName))
+            val f = java.io.File(folderPath(folderName))
             val file = f.listFiles() ?: return null
             Log.d("Files", "Size: " + file.size)
             val names = ArrayList<String>()

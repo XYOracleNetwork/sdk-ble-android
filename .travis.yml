@@ -19,6 +19,18 @@ notifications:
     rooms: $SLACK_TOKEN
     on_success: change # default: always
     on_failure: always # default: always
-script:
-  - ./gradlew build
-  - sonar-scanner
+stages:
+  - name: build
+  - name: test
+  - name: deploy
+    if: branch = master
+jobs:
+  include:
+    - stage: build
+      script: ./gradlew build
+    - stage: test
+      script: sonar-scanner
+    - stage: deploy 
+      if: branch = master
+      script: echo Hello
+

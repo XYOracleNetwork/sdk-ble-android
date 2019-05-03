@@ -118,7 +118,7 @@ open class XYBluetoothAdvertiser(context: Context) : XYBluetoothBase(context){
 
 
     protected open fun buildAdvertisingSettings () : AdvertiseSettings {
-        val builder = Builder()
+        val builder = AdvertiseSettings.Builder()
 
         advertisingMode?.let { builder.setAdvertiseMode(it) }
         connectible?.let { builder.setConnectable(it) }

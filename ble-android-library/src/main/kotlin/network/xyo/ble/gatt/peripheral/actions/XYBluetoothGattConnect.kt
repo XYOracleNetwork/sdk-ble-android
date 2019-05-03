@@ -8,10 +8,8 @@ import android.bluetooth.BluetoothGattService
 import android.content.Context
 import android.os.Build
 import android.os.Handler
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.suspendCancellableCoroutine
+import android.util.Log
+import kotlinx.coroutines.*
 import network.xyo.ble.XYCallByVersion
 import network.xyo.ble.gatt.peripheral.*
 import network.xyo.core.XYBase
@@ -129,7 +127,7 @@ class XYBluetoothGattConnect(val device: BluetoothDevice): XYBase() {
         return@async XYBluetoothResult(value, error)
     }
 
-    private fun discover() = GlobalScope.async {
+    private fun discover() = GlobalScope.async() {
         log.info("discover")
         assert(state != BluetoothGatt.STATE_CONNECTED)
         val gatt = this@XYBluetoothGattConnect.gatt //make thread safe

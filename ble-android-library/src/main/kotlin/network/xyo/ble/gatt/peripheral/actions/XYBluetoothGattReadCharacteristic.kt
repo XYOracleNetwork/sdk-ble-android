@@ -12,6 +12,7 @@ import network.xyo.ble.gatt.peripheral.XYBluetoothGattCallback
 import network.xyo.ble.gatt.peripheral.XYBluetoothResult
 import network.xyo.ble.gatt.peripheral.XYThreadSafeBluetoothGatt
 import network.xyo.core.XYBase
+import kotlin.coroutines.resume
 
 class XYBluetoothGattReadCharacteristic(val gatt: XYThreadSafeBluetoothGatt, val gattCallback: XYBluetoothGattCallback) {
 
@@ -20,7 +21,6 @@ class XYBluetoothGattReadCharacteristic(val gatt: XYThreadSafeBluetoothGatt, val
     fun timeout(timeout: Long) {
         _timeout = timeout
     }
-
 
     fun start(characteristicToRead: BluetoothGattCharacteristic) = GlobalScope.async {
         log.info("readCharacteristic")
@@ -37,19 +37,11 @@ class XYBluetoothGattReadCharacteristic(val gatt: XYThreadSafeBluetoothGatt, val
                     if (characteristicToRead == characteristic) {
                         if (status == BluetoothGatt.GATT_SUCCESS) {
                             gattCallback.removeListener(listenerName)
-
-                            val idempotent = cont.tryResume(characteristic)
-                            idempotent?.let {
-                                cont.completeResume(it)
-                            }
+                            cont.resume(characteristic)
                         } else {
                             error = XYBluetoothError("readCharacteristic: onCharacteristicRead failed: $status")
                             gattCallback.removeListener(listenerName)
-
-                            val idempotent = cont.tryResume(null)
-                            idempotent?.let {
-                                cont.completeResume(it)
-                            }
+                            cont.resume(null)
                         }
                     }
                 }
@@ -59,11 +51,7 @@ class XYBluetoothGattReadCharacteristic(val gatt: XYThreadSafeBluetoothGatt, val
                     if (newState != BluetoothGatt.STATE_CONNECTED) {
                         error = XYBluetoothError("readCharacteristic: connection dropped")
                         gattCallback.removeListener(listenerName)
-
-                        val idempotent = cont.tryResume(null)
-                        idempotent?.let {
-                            cont.completeResume(it)
-                        }
+                        cont.resume(null)
                     }
                 }
             }
@@ -72,11 +60,7 @@ class XYBluetoothGattReadCharacteristic(val gatt: XYThreadSafeBluetoothGatt, val
                 if (gatt.readCharacteristic(characteristicToRead).await() != true) {
                     error = XYBluetoothError("readCharacteristic: gatt.readCharacteristic failed to start")
                     gattCallback.removeListener(listenerName)
-
-                    val idempotent = cont.tryResume(null)
-                    idempotent?.let {
-                        cont.completeResume(it)
-                    }
+                    cont.resume(null)
                 }
             }
         }
