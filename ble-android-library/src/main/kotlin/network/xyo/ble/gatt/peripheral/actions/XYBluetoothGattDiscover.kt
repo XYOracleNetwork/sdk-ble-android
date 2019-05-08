@@ -4,9 +4,11 @@ import android.bluetooth.BluetoothGatt
 import android.bluetooth.BluetoothGattCallback
 import android.bluetooth.BluetoothGattService
 import kotlinx.coroutines.*
-import network.xyo.ble.gatt.peripheral.*
+import network.xyo.ble.gatt.peripheral.XYBluetoothError
+import network.xyo.ble.gatt.peripheral.XYBluetoothGattCallback
+import network.xyo.ble.gatt.peripheral.XYBluetoothResult
+import network.xyo.ble.gatt.peripheral.XYThreadSafeBluetoothGatt
 import network.xyo.core.XYBase
-import kotlin.coroutines.resume
 
 class XYBluetoothGattDiscover(val gatt: XYThreadSafeBluetoothGatt, val gattCallback: XYBluetoothGattCallback) {
 
@@ -40,12 +42,20 @@ class XYBluetoothGattDiscover(val gatt: XYThreadSafeBluetoothGatt, val gattCallb
                                 gattCallback.removeListener(listenerName)
                                 if (status != BluetoothGatt.GATT_SUCCESS) {
                                     error = XYBluetoothError("discover: discoverStatus: $status")
-                                    cont.resume(null)
+
+                                    val idempotent = cont.tryResume(null)
+                                    idempotent?.let {
+                                        cont.completeResume(it)
+                                    }
                                 } else {
                                     //success - send back the services
                                     log.info("discover: Returning new services")
                                     this@XYBluetoothGattDiscover.services = gatt?.services
-                                    cont.resume(this@XYBluetoothGattDiscover.services)
+
+                                    val idempotent = cont.tryResume(this@XYBluetoothGattDiscover.services)
+                                    idempotent?.let {
+                                        cont.completeResume(it)
+                                    }
                                 }
                             }
 
@@ -54,7 +64,10 @@ class XYBluetoothGattDiscover(val gatt: XYThreadSafeBluetoothGatt, val gattCallb
                                 if (newState != BluetoothGatt.STATE_CONNECTED) {
                                     error = XYBluetoothError("asyncDiscover: connection dropped")
                                     gattCallback.removeListener(listenerName)
-                                    cont.resume(null)
+                                    val idempotent = cont.tryResume(null)
+                                    idempotent?.let {
+                                        cont.completeResume(it)
+                                    }
                                 }
                             }
                         }
@@ -64,7 +77,11 @@ class XYBluetoothGattDiscover(val gatt: XYThreadSafeBluetoothGatt, val gattCallb
                             if (discoverStarted != true) {
                                 error = XYBluetoothError("start: gatt.discoverServices failed to start")
                                 gattCallback.removeListener(listenerName)
-                                cont.resume(null)
+
+                                val idempotent = cont.tryResume(null)
+                                idempotent?.let {
+                                    cont.completeResume(it)
+                                }
                             }
                         }
                     }
@@ -78,5 +95,5 @@ class XYBluetoothGattDiscover(val gatt: XYThreadSafeBluetoothGatt, val gattCallb
         return@async XYBluetoothResult(value, error)
     }
 
-    companion object: XYBase()
+    companion object : XYBase()
 }

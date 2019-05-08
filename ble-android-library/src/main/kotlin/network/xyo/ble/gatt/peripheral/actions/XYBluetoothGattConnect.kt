@@ -8,14 +8,15 @@ import android.bluetooth.BluetoothGattService
 import android.content.Context
 import android.os.Build
 import android.os.Handler
-import android.util.Log
-import kotlinx.coroutines.*
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.suspendCancellableCoroutine
 import network.xyo.ble.XYCallByVersion
 import network.xyo.ble.gatt.peripheral.*
 import network.xyo.core.XYBase
-import kotlin.coroutines.resume
 
-class XYBluetoothGattConnect(val device: BluetoothDevice): XYBase() {
+class XYBluetoothGattConnect(val device: BluetoothDevice) : XYBase() {
 
     private var _timeout = 1500000L
 
@@ -86,7 +87,7 @@ class XYBluetoothGattConnect(val device: BluetoothDevice): XYBase() {
         log.info("connectGatt26")
 
         return when {
-            transport == null -> device.connectGatt(context, autoConnect,  callback)
+            transport == null -> device.connectGatt(context, autoConnect, callback)
             phy == null -> device.connectGatt(context, autoConnect, callback, transport)
             handler == null -> device.connectGatt(context, autoConnect, callback, transport, phy)
             else -> device.connectGatt(context, autoConnect, callback, transport, phy, handler)
@@ -101,7 +102,7 @@ class XYBluetoothGattConnect(val device: BluetoothDevice): XYBase() {
         val phy = null
         val handler = null
 
-        assert (gatt == null)
+        assert(gatt == null)
 
         val result = asyncBle {
             var newGatt: XYThreadSafeBluetoothGatt? = null
@@ -183,7 +184,11 @@ class XYBluetoothGattConnect(val device: BluetoothDevice): XYBase() {
                                 callback.removeListener(listenerName)
                                 GlobalScope.launch {
                                     close().await()
-                                    cont.resume(null)
+
+                                    val idempotent = cont.tryResume(null)
+                                    idempotent?.let {
+                                        cont.completeResume(it)
+                                    }
                                 }
                             }
                             newState == BluetoothGatt.STATE_CONNECTED -> {
@@ -191,11 +196,17 @@ class XYBluetoothGattConnect(val device: BluetoothDevice): XYBase() {
                                 callback.removeListener(listenerName)
                                 GlobalScope.launch {
                                     if (discover().await().error == null) {
-                                        cont.resume(true)
+                                        val idempotent = cont.tryResume(true)
+                                        idempotent?.let {
+                                            cont.completeResume(it)
+                                        }
                                     } else {
                                         GlobalScope.launch {
                                             close().await()
-                                            cont.resume(null)
+                                            val idempotent = cont.tryResume(null)
+                                            idempotent?.let {
+                                                cont.completeResume(it)
+                                            }
                                         }
                                     }
                                 }
@@ -208,7 +219,10 @@ class XYBluetoothGattConnect(val device: BluetoothDevice): XYBase() {
                                 callback.removeListener(listenerName)
                                 GlobalScope.launch {
                                     close().await()
-                                    cont.resume(null)
+                                    val idempotent = cont.tryResume(null)
+                                    idempotent?.let {
+                                        cont.completeResume(it)
+                                    }
                                 }
                             }
                         }
@@ -220,7 +234,10 @@ class XYBluetoothGattConnect(val device: BluetoothDevice): XYBase() {
                 if (state == BluetoothGatt.STATE_CONNECTED) {
                     log.info("connect:already connected")
                     callback.removeListener(listenerName)
-                    cont.resume(true)
+                    val idempotent = cont.tryResume(true)
+                    idempotent?.let {
+                        cont.completeResume(it)
+                    }
                 }
             }
         }
@@ -236,5 +253,5 @@ class XYBluetoothGattConnect(val device: BluetoothDevice): XYBase() {
         gatt = null
     }
 
-    companion object: XYBase()
+    companion object : XYBase()
 }
