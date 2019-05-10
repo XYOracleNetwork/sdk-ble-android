@@ -87,7 +87,7 @@ dependencies {
     api "com.nabinbhandari.android:permissions:3.8"
     api 'com.github.XYOracleNetwork:sdk-core-android:1.2.6'
     api 'com.github.XYOracleNetwork:sdk-ui-android:1.2.2'
-    api 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.2.0'
+    api 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.2.1'
     implementation project(':ble-android-library')
     api "androidx.legacy:legacy-support-v4:1.0.0"
 
