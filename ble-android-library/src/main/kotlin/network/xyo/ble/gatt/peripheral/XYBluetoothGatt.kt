@@ -298,12 +298,18 @@ open class XYBluetoothGatt protected constructor(
         }
     }
 
-    protected fun writeCharacteristic(characteristicToWrite: BluetoothGattCharacteristic, timeout: Long = 10000) = queueBle(timeout, "writeCharacteristic") {
+    protected fun writeCharacteristic(
+            characteristicToWrite: BluetoothGattCharacteristic,
+            timeout: Long = 10000,
+            writeType: Int? = null
+    ) = queueBle(timeout, "writeCharacteristic") {
+
         log.info("writeCharacteristic")
         assert(connection?.state == BluetoothGatt.STATE_CONNECTED)
         val gatt = connection?.gatt
         if (gatt != null) {
-            val writeCharacteristic = XYBluetoothGattWriteCharacteristic(gatt, centralCallback)
+            val writeCharacteristic = XYBluetoothGattWriteCharacteristic(gatt, centralCallback, writeType)
+
             return@queueBle writeCharacteristic.start(characteristicToWrite).await()
         } else {
             return@queueBle XYBluetoothResult<ByteArray>(XYBluetoothError("Null Gatt"))
