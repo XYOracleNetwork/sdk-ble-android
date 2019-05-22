@@ -2,7 +2,7 @@
 
 buildscript {
     ext {
-        androidPluginVersion = '3.4.0'
+        androidPluginVersion = '3.4.1'
         androidSupportVersion = '28.0.3'
         mavenVersion = '2.1'
         androidToolsVersion = '26.2.1'
@@ -36,7 +36,8 @@ buildscript {
 allprojects {
     repositories {
         jcenter()
-        maven { url 'https://jitpack.io' }
         google()
+        maven { url "https://dl.bintray.com/xyoraclenetwork/xyo" }
+        maven { url "https://jitpack.io" }
     }
 }
