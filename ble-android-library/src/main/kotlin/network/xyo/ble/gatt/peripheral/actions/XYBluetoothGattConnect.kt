@@ -40,7 +40,7 @@ class XYBluetoothGattConnect(val device: BluetoothDevice) : XYBase() {
     var state = BluetoothGatt.STATE_DISCONNECTED
     var status = BluetoothGatt.GATT_SUCCESS
 
-    //make suire we always close connections
+    //make sure we always close connections
     protected fun finalize() {
         val gatt = this.gatt
         if (gatt != null) {

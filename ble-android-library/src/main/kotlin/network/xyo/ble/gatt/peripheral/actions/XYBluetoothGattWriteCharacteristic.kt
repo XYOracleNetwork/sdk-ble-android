@@ -10,7 +10,12 @@ import network.xyo.ble.gatt.peripheral.XYBluetoothResult
 import network.xyo.ble.gatt.peripheral.XYThreadSafeBluetoothGatt
 import network.xyo.core.XYBase
 
-class XYBluetoothGattWriteCharacteristic(val gatt: XYThreadSafeBluetoothGatt, val gattCallback: XYBluetoothGattCallback) {
+
+class XYBluetoothGattWriteCharacteristic(
+        val gatt: XYThreadSafeBluetoothGatt,
+        val gattCallback: XYBluetoothGattCallback,
+        private val writeType: Int? = null
+) {
 
     private var _timeout = 15000L
 
@@ -20,6 +25,11 @@ class XYBluetoothGattWriteCharacteristic(val gatt: XYThreadSafeBluetoothGatt, va
 
     fun start(characteristicToWrite: BluetoothGattCharacteristic) = GlobalScope.async {
         log.info("writeCharacteristic")
+        if (writeType != null) {
+            // BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT
+            characteristicToWrite.writeType = writeType
+        }
+
         val listenerName = "XYBluetoothGattWriteCharacteristic${hashCode()}"
         var error: XYBluetoothError? = null
         var value: ByteArray? = null

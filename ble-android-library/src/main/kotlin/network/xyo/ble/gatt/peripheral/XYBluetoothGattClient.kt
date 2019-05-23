@@ -272,7 +272,11 @@ open class XYBluetoothGattClient protected constructor(
         return@async XYBluetoothResult(value, error)
     }
 
-    fun findAndWriteCharacteristic(service: UUID, characteristic: UUID, bytes: ByteArray) = GlobalScope.async {
+    fun findAndWriteCharacteristic(service: UUID,
+                                   characteristic: UUID,
+                                   bytes: ByteArray,
+                                   writeType: Int? = null
+    ) = GlobalScope.async {
         //this prevents a queued close from closing while we run
         lastAccessTime = now
 
@@ -284,7 +288,9 @@ open class XYBluetoothGattClient protected constructor(
         if (error == null) {
             if (characteristicToWrite != null) {
                 characteristicToWrite.value = bytes
-                val writeResult = writeCharacteristic(characteristicToWrite).await()
+                val writeResult = writeCharacteristic(
+                        characteristicToWrite = characteristicToWrite,
+                        writeType = writeType).await()
                 value = writeResult.value
                 error = writeResult.error
             } else {

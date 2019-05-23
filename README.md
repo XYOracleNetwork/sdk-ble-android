@@ -2,10 +2,22 @@
 
 [![logo]](https://xy.company)
 
-# XY/XYO Bluetooth SDK (sdk-ble-android)
+# XYO Bluetooth SDK
 
-[![](https://jitpack.io/v/XYOracleNetwork/sdk-ble-android.svg)](https://jitpack.io/#XYOracleNetwork/sdk-ble-android) [![Maintainability](https://api.codeclimate.com/v1/badges/da919183c3fe8a4fdbe3/maintainability)](https://codeclimate.com/github/XYOracleNetwork/sdk-ble-android/maintainability) [![Known Vulnerabilities](https://snyk.io/test/github/XYOracleNetwork/sdk-ble-android/badge.svg)](https://snyk.io/test/github/XYOracleNetwork/sdk-ble-android) [![BCH compliance](https://bettercodehub.com/edge/badge/XYOracleNetwork/sdk-ble-android?branch=master)](https://bettercodehub.com/results/XYOracleNetwork/sdk-ble-android) [![Sonarcloud Status](https://sonarcloud.io/api/project_badges/measure?project=XYOracleNetwork_sdk-ble-android&metric=alert_status)](https://sonarcloud.io/dashboard?id=XYOracleNetwork_sdk-ble-android) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/b14446847e614a2fae7152892765dac1)](https://www.codacy.com/app/arietrouw/sdk-ble-android?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=XYOracleNetwork/sdk-ble-android&amp;utm_campaign=Badge_Grade)
+[![](https://jitpack.io/v/XYOracleNetwork/sdk-ble-android.svg)](https://jitpack.io/#XYOracleNetwork/sdk-ble-android) [![Maintainability](https://api.codeclimate.com/v1/badges/da919183c3fe8a4fdbe3/maintainability)](https://codeclimate.com/github/XYOracleNetwork/sdk-ble-android/maintainability) [![Known Vulnerabilities](https://snyk.io/test/github/XYOracleNetwork/sdk-ble-android/badge.svg)](https://snyk.io/test/github/XYOracleNetwork/sdk-ble-android) [![BCH compliance](https://bettercodehub.com/edge/badge/XYOracleNetwork/sdk-ble-android?branch=master)](https://bettercodehub.com/results/XYOracleNetwork/sdk-ble-android) [![Sonarcloud Status](https://sonarcloud.io/api/project_badges/measure?project=XYOracleNetwork_sdk-ble-android&metric=alert_status)](https://sonarcloud.io/dashboard?id=XYOracleNetwork_sdk-ble-android) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/b14446847e614a2fae7152892765dac1)](https://www.codacy.com/app/arietrouw/sdk-ble-android?utm_source=github.com&utm_medium=referral&utm_content=XYOracleNetwork/sdk-ble-android&utm_campaign=Badge_Grade)
 [![Build Status](https://travis-ci.com/XYOracleNetwork/sdk-ble-android.svg?branch=master)](https://travis-ci.com/XYOracleNetwork/sdk-ble-android)
+
+## Table of Contents
+
+-   [Title](#xyo-bluetooth-sdk)
+-   [Description](#description)
+-   [Prerequisites](#prerequisites)
+-   [Install](#install)
+-   [Usage](#usage)
+-   [License](#license)
+-   [Credits](#credits)
+
+## Description
 
 A robust Bluetooth solution for Android. This BLE SDK was written from ground-up, in Kotlin,
  to help developers with the agonizing issues with Android the BLE stack.
@@ -13,12 +25,13 @@ Not only will this SDK make XYO apps better, but bring XYO functionality to exis
 
 ## Prerequisites
 
-* JDK 1.8
-* Android SDK
-  * Kotlin
-  * Build Tools 27+
-  
-## Installing
+-   JDK 1.8
+-   Android SDK
+
+    -   Kotlin
+    -   Build Tools 27+
+
+## Install
 
 You can add sdk-ble-android to your existing app by cloning the project and manually adding it
 to your build.gradle:
@@ -27,12 +40,12 @@ to your build.gradle:
 git clone git@github.com:XYOracleNetwork/sdk-ble-android.git
 ```
 
-or by using jitPack:
+or by using maven:
 
 ```gradle
 allprojects {
     repositories {
-        maven { url "https://jitpack.io" }
+        maven { url "https://dl.bintray.com/xyoraclenetwork/xyo" }
     }
 }
 ```
@@ -43,7 +56,7 @@ dependencies {
 }
 ```
 
-## Using the SDK
+## Usage
 
 A full Working example is included in the project. Look at the ble-android-sample folder for more information.
 
@@ -164,6 +177,7 @@ fun connectXY4Device(device: XY4BluetoothDevice) {
 ```
 
 Basic callback server use
+
 ```kotlin
 val myAwesomeReadCharacteristic = XYBluetoothReadCharacteristic(UUID.fromString("01ef8f90-e99f-48ae-87bb-f683b93c692f"))
 val myAwesomeWriteCharacteristic = XYBluetoothWriteCharacteristic(UUID.fromString("01ef8f90-e99f-48ae-87bb-f683b93c692f"))
@@ -195,8 +209,8 @@ server.addService(myAwesomeService).await()
 server.startServer()
 ```
 
-
 Basic await server use
+
 ```kotlin
 val myAwesomeReadCharacteristic = XYBluetoothReadCharacteristic(UUID.fromString("01ef8f90-e99f-48ae-87bb-f683b93c692f"))
 val myAwesomeWriteCharacteristic = XYBluetoothWriteCharacteristic(UUID.fromString("01ef8f90-e99f-48ae-87bb-f683b93c692f"))
@@ -231,8 +245,8 @@ scanner.stop()
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
+See the [LICENSE.md](LICENSE) file for license details.
 
 ## Credits
 
-<p align="center">Made with  ❤️  by [<b>XY - The Persistent Company</b>] (https://xy.company)</p>
+Made with 🔥and ❄️ by [XY - The Persistent Company](https://www.xy.company)
