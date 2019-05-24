@@ -11,7 +11,7 @@ import network.xyo.ble.devices.XYFinderBluetoothDevice
 import network.xyo.ble.devices.XYIBeaconBluetoothDevice
 import network.xyo.ble.sample.R
 import network.xyo.ble.sample.activities.XYODeviceActivity
-import network.xyo.core.XYBase
+import network.xyo.base.XYBase
 
 /**
  * Created by arietrouw on 12/27/17.

@@ -11,7 +11,7 @@ import network.xyo.ble.gatt.peripheral.XYBluetoothError
 import network.xyo.ble.gatt.peripheral.XYBluetoothGattCallback
 import network.xyo.ble.gatt.peripheral.XYBluetoothResult
 import network.xyo.ble.gatt.peripheral.XYThreadSafeBluetoothGatt
-import network.xyo.core.XYBase
+import network.xyo.base.XYBase
 
 class XYBluetoothGattReadCharacteristic(val gatt: XYThreadSafeBluetoothGatt, val gattCallback: XYBluetoothGattCallback) {
 

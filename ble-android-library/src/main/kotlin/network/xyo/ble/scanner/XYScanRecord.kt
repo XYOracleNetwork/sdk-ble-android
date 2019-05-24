@@ -2,7 +2,7 @@ package network.xyo.ble.scanner
 
 import android.os.ParcelUuid
 import android.util.SparseArray
-import network.xyo.core.XYBase
+import network.xyo.base.XYBase
 
 abstract class XYScanRecord: XYBase() {
 
