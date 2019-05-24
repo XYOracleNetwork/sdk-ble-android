@@ -8,7 +8,7 @@ import network.xyo.ble.firmware.XYOtaUpdate
 import network.xyo.ble.gatt.peripheral.XYBluetoothError
 import network.xyo.ble.gatt.peripheral.XYBluetoothResult
 import network.xyo.ble.scanner.XYScanResult
-import network.xyo.core.XYBase
+import network.xyo.base.XYBase
 import java.io.InputStream
 import java.nio.ByteBuffer
 import java.util.*

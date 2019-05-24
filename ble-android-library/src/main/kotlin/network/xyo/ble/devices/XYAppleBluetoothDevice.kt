@@ -4,7 +4,7 @@ import android.bluetooth.BluetoothDevice
 import android.content.Context
 import android.util.SparseArray
 import network.xyo.ble.scanner.XYScanResult
-import network.xyo.core.XYBase
+import network.xyo.base.XYBase
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 

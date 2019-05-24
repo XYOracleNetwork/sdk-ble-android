@@ -14,7 +14,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
 import network.xyo.ble.XYCallByVersion
 import network.xyo.ble.gatt.peripheral.*
-import network.xyo.core.XYBase
+import network.xyo.base.XYBase
 
 class XYBluetoothGattConnect(val device: BluetoothDevice) : XYBase() {
 

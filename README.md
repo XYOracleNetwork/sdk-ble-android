@@ -1,6 +1,6 @@
 [logo]: https://cdn.xy.company/img/brand/XY_Logo_GitHub.png
 
-[![logo]](https://xy.company)
+# [![logo]](https://xy.company)
 
 # XY/XYO Bluetooth SDK (sdk-ble-android)
 
