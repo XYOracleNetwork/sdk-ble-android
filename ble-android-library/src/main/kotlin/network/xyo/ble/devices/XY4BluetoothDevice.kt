@@ -15,7 +15,7 @@ import network.xyo.ble.scanner.XYScanResult
 import network.xyo.ble.services.dialog.SpotaService
 import network.xyo.ble.services.standard.*
 import network.xyo.ble.services.xy4.PrimaryService
-import network.xyo.core.XYBase
+import network.xyo.base.XYBase
 import unsigned.Ushort
 import java.io.InputStream
 import java.nio.ByteBuffer

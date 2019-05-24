@@ -8,7 +8,7 @@ import android.bluetooth.BluetoothGattDescriptor
 import android.os.Build
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import network.xyo.core.XYBase
+import network.xyo.base.XYBase
 import java.util.HashMap
 
 // This class is just a callback broadcast version of the standard BluetoothGattCallback

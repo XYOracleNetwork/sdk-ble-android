@@ -3,7 +3,6 @@ package network.xyo.ble.gatt.peripheral
 import android.bluetooth.*
 import android.content.Context
 import android.os.Handler
-import android.util.Log
 import kotlinx.coroutines.*
 import network.xyo.ble.XYBluetoothBase
 import network.xyo.ble.gatt.peripheral.actions.XYBluetoothGattConnect
@@ -11,7 +10,7 @@ import network.xyo.ble.gatt.peripheral.actions.XYBluetoothGattReadCharacteristic
 import network.xyo.ble.gatt.peripheral.actions.XYBluetoothGattWriteCharacteristic
 import network.xyo.ble.gatt.peripheral.actions.XYBluetoothGattWriteDescriptor
 import network.xyo.ble.scanner.XYScanResult
-import network.xyo.core.XYBase
+import network.xyo.base.XYBase
 import java.util.*
 import java.util.concurrent.Executors
 import kotlin.coroutines.CoroutineContext
@@ -43,13 +42,14 @@ open class XYBluetoothGatt protected constructor(
 
     val bluetoothQueue = Executors.newSingleThreadExecutor().asCoroutineDispatcher()
 
-    protected val centralCallback = object: XYBluetoothGattCallback() {
+    protected val centralCallback = object : XYBluetoothGattCallback() {
         override fun onConnectionStateChange(gatt: BluetoothGatt?, status: Int, newState: Int) {
             super.onConnectionStateChange(gatt, status, newState)
             if (newState == BluetoothGatt.STATE_DISCONNECTED) {
                 close()
             }
         }
+
         override fun onReadRemoteRssi(gatt: BluetoothGatt?, rssi: Int, status: Int) {
             super.onReadRemoteRssi(gatt, rssi, status)
             this@XYBluetoothGatt.rssi = rssi
@@ -117,7 +117,7 @@ open class XYBluetoothGatt protected constructor(
 
     protected var _stayConnected = false
 
-    fun getStayConnected() : Boolean {
+    fun getStayConnected(): Boolean {
         return _stayConnected
     }
 
@@ -145,7 +145,7 @@ open class XYBluetoothGatt protected constructor(
 
     }
 
-    fun requestMtu (mtu : Int) : Deferred<XYBluetoothResult<Int>> = GlobalScope.async {
+    fun requestMtu(mtu: Int): Deferred<XYBluetoothResult<Int>> = GlobalScope.async {
         return@async suspendCancellableCoroutine<XYBluetoothResult<Int>> { cont ->
             val key = "$mtu requestMtu $nowNano"
 
@@ -172,7 +172,7 @@ open class XYBluetoothGatt protected constructor(
         }
     }
 
-    fun waitForNotification (characteristicToWaitFor: UUID): Deferred<XYBluetoothResult<Any?>> = GlobalScope.async {
+    fun waitForNotification(characteristicToWaitFor: UUID): Deferred<XYBluetoothResult<Any?>> = GlobalScope.async {
         log.info("waitForNotification")
         return@async suspendCancellableCoroutine<XYBluetoothResult<Any?>> { cont ->
             val listenerName = "waitForNotification$nowNano"
@@ -223,7 +223,8 @@ open class XYBluetoothGatt protected constructor(
 
     fun connect(timeout: Long = 60000) = queueBle(timeout, "connect") {
         log.info("connect: start")
-        val device = this@XYBluetoothGatt.device ?: return@queueBle XYBluetoothResult(false, XYBluetoothError("No Device"))
+        val device = this@XYBluetoothGatt.device
+                ?: return@queueBle XYBluetoothResult(false, XYBluetoothError("No Device"))
         var connection = this@XYBluetoothGatt.connection //make it thread safe by putting it on the stack
         lastAccessTime = now
         if (connection == null) {
@@ -257,7 +258,7 @@ open class XYBluetoothGatt protected constructor(
     }
 
     //this can only be called after a successful discover
-    protected fun findCharacteristic(service: UUID, characteristic: UUID, timeout:Long = 1500) = queueBle(timeout, "findCharacteristic") {
+    protected fun findCharacteristic(service: UUID, characteristic: UUID, timeout: Long = 1500) = queueBle(timeout, "findCharacteristic") {
 
         log.info("findCharacteristic")
         var error: XYBluetoothError? = null
@@ -297,12 +298,18 @@ open class XYBluetoothGatt protected constructor(
         }
     }
 
-    protected fun writeCharacteristic(characteristicToWrite: BluetoothGattCharacteristic, timeout: Long = 10000) = queueBle(timeout, "writeCharacteristic") {
+    protected fun writeCharacteristic(
+            characteristicToWrite: BluetoothGattCharacteristic,
+            timeout: Long = 10000,
+            writeType: Int? = null
+    ) = queueBle(timeout, "writeCharacteristic") {
+
         log.info("writeCharacteristic")
         assert(connection?.state == BluetoothGatt.STATE_CONNECTED)
         val gatt = connection?.gatt
         if (gatt != null) {
-            val writeCharacteristic = XYBluetoothGattWriteCharacteristic(gatt, centralCallback)
+            val writeCharacteristic = XYBluetoothGattWriteCharacteristic(gatt, centralCallback, writeType)
+
             return@queueBle writeCharacteristic.start(characteristicToWrite).await()
         } else {
             return@queueBle XYBluetoothResult<ByteArray>(XYBluetoothError("Null Gatt"))
@@ -362,7 +369,7 @@ open class XYBluetoothGatt protected constructor(
         return@async XYBluetoothResult(value, error)
     }
 
-    companion object: XYBase() {
+    companion object : XYBase() {
         //gap after last connection that we wait to close the connection
         private const val CLEANUP_DELAY = 5000L
     }

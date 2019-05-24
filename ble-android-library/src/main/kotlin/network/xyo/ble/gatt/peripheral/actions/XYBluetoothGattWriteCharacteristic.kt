@@ -8,10 +8,14 @@ import network.xyo.ble.gatt.peripheral.XYBluetoothError
 import network.xyo.ble.gatt.peripheral.XYBluetoothGattCallback
 import network.xyo.ble.gatt.peripheral.XYBluetoothResult
 import network.xyo.ble.gatt.peripheral.XYThreadSafeBluetoothGatt
-import network.xyo.core.XYBase
-import kotlin.coroutines.resume
+import network.xyo.base.XYBase
 
-class XYBluetoothGattWriteCharacteristic(val gatt: XYThreadSafeBluetoothGatt, val gattCallback: XYBluetoothGattCallback) {
+
+class XYBluetoothGattWriteCharacteristic(
+        val gatt: XYThreadSafeBluetoothGatt,
+        val gattCallback: XYBluetoothGattCallback,
+        private val writeType: Int? = null
+) {
 
     private var _timeout = 15000L
 
@@ -19,10 +23,13 @@ class XYBluetoothGattWriteCharacteristic(val gatt: XYThreadSafeBluetoothGatt, va
         _timeout = timeout
     }
 
-
-
     fun start(characteristicToWrite: BluetoothGattCharacteristic) = GlobalScope.async {
         log.info("writeCharacteristic")
+        if (writeType != null) {
+            // BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT
+            characteristicToWrite.writeType = writeType
+        }
+
         val listenerName = "XYBluetoothGattWriteCharacteristic${hashCode()}"
         var error: XYBluetoothError? = null
         var value: ByteArray? = null
@@ -39,7 +46,10 @@ class XYBluetoothGattWriteCharacteristic(val gatt: XYThreadSafeBluetoothGatt, va
                             if (characteristicToWrite.uuid == characteristic?.uuid) {
                                 if (status == BluetoothGatt.GATT_SUCCESS) {
                                     gattCallback.removeListener(listenerName)
-                                    cont.resume(characteristicToWrite.value)
+                                    val idempotent = cont.tryResume(characteristicToWrite.value)
+                                    idempotent?.let {
+                                        cont.completeResume(it)
+                                    }
                                 } else {
                                     error = XYBluetoothError("writeCharacteristic: onCharacteristicWrite failed: $status")
                                     gattCallback.removeListener(listenerName)
@@ -47,7 +57,10 @@ class XYBluetoothGattWriteCharacteristic(val gatt: XYThreadSafeBluetoothGatt, va
                                         return
                                     }
 
-                                    cont.resume(null)
+                                    val idempotent = cont.tryResume(null)
+                                    idempotent?.let {
+                                        cont.completeResume(it)
+                                    }
                                 }
                             }
                         }
@@ -62,7 +75,10 @@ class XYBluetoothGattWriteCharacteristic(val gatt: XYThreadSafeBluetoothGatt, va
                                     return
                                 }
 
-                                cont.resume(null)
+                                val idempotent = cont.tryResume(null)
+                                idempotent?.let {
+                                    cont.completeResume(it)
+                                }
                             }
                         }
                     }
@@ -76,7 +92,10 @@ class XYBluetoothGattWriteCharacteristic(val gatt: XYThreadSafeBluetoothGatt, va
                                 return@launch
                             }
 
-                            cont.resume(null)
+                            val idempotent = cont.tryResume(null)
+                            idempotent?.let {
+                                cont.completeResume(it)
+                            }
                         }
                     }
                 }

@@ -92,7 +92,7 @@ public class ItemListActivity extends AppCompatActivity {
         XYGpsBluetoothDevice.Companion.enable(true);
     }
 
-    private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
+    private void setupRecyclerView(@NotNull RecyclerView recyclerView) {
         recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(this, mTwoPane));
     }
 

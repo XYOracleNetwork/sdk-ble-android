@@ -3,10 +3,11 @@ package network.xyo.ble.bluetooth
 import android.bluetooth.BluetoothDevice
 import android.os.Parcel
 import android.os.Parcelable
+import org.jetbrains.annotations.NotNull
 
 import java.util.Objects
 
-import androidx.annotation.*
+import org.jetbrains.annotations.Nullable
 
 // This is a copy of ScanResult from Android Marshmallow+ to be used with Android versions earlier than Marshmallow
 
@@ -54,11 +55,11 @@ class ScanResultLegacy : Parcelable {
         this.timestampNanos = timestampNanos
     }
 
-    private constructor(@NonNull `in`: Parcel) {
+    private constructor(@NotNull `in`: Parcel) {
         readFromParcel(`in`)
     }
 
-    override fun writeToParcel(@NonNull dest: Parcel, flags: Int) {
+    override fun writeToParcel(@NotNull dest: Parcel, flags: Int) {
         if (device != null) {
             dest.writeInt(1)
             device?.writeToParcel(dest, flags)
@@ -75,7 +76,7 @@ class ScanResultLegacy : Parcelable {
         dest.writeLong(timestampNanos)
     }
 
-    private fun readFromParcel(@NonNull parcel: Parcel) {
+    private fun readFromParcel(@NotNull parcel: Parcel) {
         if (parcel.readInt() == 1) {
             device = BluetoothDevice.CREATOR.createFromParcel(parcel)
         }
@@ -108,7 +109,7 @@ class ScanResultLegacy : Parcelable {
         return false
     }
 
-    @NonNull
+    @NotNull
     override fun toString(): String {
         return ("ScanResultLegacy{" + "mDevice=" + device + ", mScanRecord="
                 + Objects.toString(scanRecord) + ", mRssi=" + rssi + ", mTimestampNanos="
@@ -119,12 +120,12 @@ class ScanResultLegacy : Parcelable {
 
         @JvmField
         val CREATOR: Parcelable.Creator<ScanResultLegacy> = object : Parcelable.Creator<ScanResultLegacy> {
-            @NonNull
-            override fun createFromParcel(@NonNull source: Parcel): ScanResultLegacy {
+            @NotNull
+            override fun createFromParcel(@NotNull source: Parcel): ScanResultLegacy {
                 return ScanResultLegacy(source)
             }
 
-            @NonNull
+            @NotNull
             override fun newArray(size: Int): Array<ScanResultLegacy?> {
                 return arrayOfNulls(size)
             }

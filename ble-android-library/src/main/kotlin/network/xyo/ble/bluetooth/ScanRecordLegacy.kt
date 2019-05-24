@@ -3,8 +3,8 @@ package network.xyo.ble.bluetooth
 import android.os.ParcelUuid
 import android.util.ArrayMap
 import android.util.SparseArray
-import androidx.annotation.NonNull
-import androidx.annotation.Nullable
+import org.jetbrains.annotations.NotNull
+import org.jetbrains.annotations.Nullable
 import unsigned.Ubyte
 import java.util.*
 
@@ -72,7 +72,7 @@ class ScanRecordLegacy private constructor(@param:Nullable @field:Nullable
         } else serviceData[serviceDataUuid]
     }
 
-    @NonNull
+    @NotNull
     override fun toString(): String {
         return ("ScanRecord [mAdvertiseFlags=" + advertiseFlags + ", mServiceUuids=" + serviceUuids
                 + ", mManufacturerSpecificData=" + BluetoothLeUtils.toString(manufacturerSpecificData)
@@ -184,8 +184,8 @@ class ScanRecordLegacy private constructor(@param:Nullable @field:Nullable
         }
 
         // Parse service UUIDs.
-        private fun parseServiceUuid(@NonNull scanRecord: ByteArray, currentPos: Int, dataLength: Int,
-                                     uuidLength: Int, @NonNull serviceUuids: MutableList<ParcelUuid>): Int {
+        private fun parseServiceUuid(@NotNull scanRecord: ByteArray, currentPos: Int, dataLength: Int,
+                                     uuidLength: Int, @NotNull serviceUuids: MutableList<ParcelUuid>): Int {
             var currentPosCounter = currentPos
             var dataLengthCounter = dataLength
             while (dataLengthCounter > 0) {
@@ -199,8 +199,8 @@ class ScanRecordLegacy private constructor(@param:Nullable @field:Nullable
         }
 
         // Helper method to extract bytes from byte array.
-        @NonNull
-        private fun extractBytes(@NonNull scanRecord: ByteArray, start: Int, length: Int): ByteArray {
+        @NotNull
+        private fun extractBytes(@NotNull scanRecord: ByteArray, start: Int, length: Int): ByteArray {
             val bytes = ByteArray(length)
             System.arraycopy(scanRecord, start, bytes, 0, length)
             return bytes
