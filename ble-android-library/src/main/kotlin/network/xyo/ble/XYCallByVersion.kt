@@ -1,7 +1,7 @@
 package network.xyo.ble
 
 import android.os.Build
-import network.xyo.core.XYBase
+import network.xyo.base.XYBase
 
 class XYCallByVersion : XYBase() {
 

@@ -15,7 +15,7 @@ import kotlinx.coroutines.launch
 import network.xyo.ble.gatt.server.XYBluetoothAdvertiser
 import network.xyo.ble.gatt.server.XYIBeaconAdvertiseDataCreator
 import network.xyo.ble.sample.R
-import network.xyo.core.XYBase
+import network.xyo.base.XYBase
 import network.xyo.ui.XYBaseFragment
 import network.xyo.ui.ui
 import java.nio.ByteBuffer

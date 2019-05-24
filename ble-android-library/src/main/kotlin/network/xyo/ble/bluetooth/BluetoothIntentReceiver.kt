@@ -5,7 +5,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import network.xyo.core.XYBase
+import network.xyo.base.XYBase
 
 class BluetoothIntentReceiver : BroadcastReceiver() {
     private val listeners = HashMap<String, BluetoothIntentReceiverListener>()

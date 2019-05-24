@@ -6,7 +6,7 @@ import android.util.SparseArray
 import java.util.Arrays
 import java.util.Objects
 
-import androidx.annotation.*
+import org.jetbrains.annotations.Nullable
 
 // This is a copy of BluetoothLeUtils from Android Marshmallow+ to be used with Android versions earlier than Marshmallow
 

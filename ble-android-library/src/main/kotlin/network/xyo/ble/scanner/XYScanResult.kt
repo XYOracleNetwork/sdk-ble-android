@@ -2,7 +2,7 @@ package network.xyo.ble.scanner
 
 import android.bluetooth.BluetoothDevice
 import android.os.Parcel
-import network.xyo.core.XYBase
+import network.xyo.base.XYBase
 
 //kotlin wrapper and way for us to treat pre 5.0 Android the same
 

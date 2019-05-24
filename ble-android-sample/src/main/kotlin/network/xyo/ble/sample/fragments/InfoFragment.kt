@@ -16,7 +16,7 @@ import network.xyo.ble.devices.*
 import network.xyo.ble.gatt.peripheral.XYBluetoothResult
 import network.xyo.ble.sample.R
 import network.xyo.ble.sample.XYDeviceData
-import network.xyo.core.XYBase
+import network.xyo.base.XYBase
 import network.xyo.ui.ui
 
 class InfoFragment : XYDeviceFragment(), View.OnClickListener, CompoundButton.OnCheckedChangeListener {

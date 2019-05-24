@@ -2,7 +2,7 @@ package network.xyo.ble.firmware
 
 import android.os.Environment
 import android.util.Log
-import network.xyo.core.XYBase
+import network.xyo.base.XYBase
 import java.io.FileInputStream
 import java.io.IOException
 import java.io.InputStream

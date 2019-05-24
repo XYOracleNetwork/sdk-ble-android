@@ -8,7 +8,8 @@ import java.util.Arrays
 import java.util.HashSet
 import java.util.UUID
 
-import androidx.annotation.*
+import org.jetbrains.annotations.NotNull
+import org.jetbrains.annotations.Nullable
 import unsigned.Ubyte
 
 // This is a copy of BluetoothUuid from Android Marshmallow+ to be used with Android versions earlier than Marshmallow
@@ -60,63 +61,63 @@ object BluetoothUuid {
 
     val RESERVED_UUIDS = arrayOf(AudioSink, AudioSource, AdvAudioDist, HSP, Handsfree, AvrcpController, AvrcpTarget, ObexObjectPush, PANU, NAP, MAP, MNS, MAS, SAP)
 
-    fun isAudioSource(@NonNull uuid: ParcelUuid): Boolean {
+    fun isAudioSource(@NotNull uuid: ParcelUuid): Boolean {
         return uuid == AudioSource
     }
 
-    fun isAudioSink(@NonNull uuid: ParcelUuid): Boolean {
+    fun isAudioSink(@NotNull uuid: ParcelUuid): Boolean {
         return uuid == AudioSink
     }
 
-    fun isAdvAudioDist(@NonNull uuid: ParcelUuid): Boolean {
+    fun isAdvAudioDist(@NotNull uuid: ParcelUuid): Boolean {
         return uuid == AdvAudioDist
     }
 
-    fun isHandsfree(@NonNull uuid: ParcelUuid): Boolean {
+    fun isHandsfree(@NotNull uuid: ParcelUuid): Boolean {
         return uuid == Handsfree
     }
 
-    fun isHeadset(@NonNull uuid: ParcelUuid): Boolean {
+    fun isHeadset(@NotNull uuid: ParcelUuid): Boolean {
         return uuid == HSP
     }
 
-    fun isAvrcpController(@NonNull uuid: ParcelUuid): Boolean {
+    fun isAvrcpController(@NotNull uuid: ParcelUuid): Boolean {
         return uuid == AvrcpController
     }
 
-    fun isAvrcpTarget(@NonNull uuid: ParcelUuid): Boolean {
+    fun isAvrcpTarget(@NotNull uuid: ParcelUuid): Boolean {
         return uuid == AvrcpTarget
     }
 
-    fun isInputDevice(@NonNull uuid: ParcelUuid): Boolean {
+    fun isInputDevice(@NotNull uuid: ParcelUuid): Boolean {
         return uuid == Hid
     }
 
-    fun isPanu(@NonNull uuid: ParcelUuid): Boolean {
+    fun isPanu(@NotNull uuid: ParcelUuid): Boolean {
         return uuid == PANU
     }
 
-    fun isNap(@NonNull uuid: ParcelUuid): Boolean {
+    fun isNap(@NotNull uuid: ParcelUuid): Boolean {
         return uuid == NAP
     }
 
-    fun isBnep(@NonNull uuid: ParcelUuid): Boolean {
+    fun isBnep(@NotNull uuid: ParcelUuid): Boolean {
         return uuid == BNEP
     }
 
-    fun isMap(@NonNull uuid: ParcelUuid): Boolean {
+    fun isMap(@NotNull uuid: ParcelUuid): Boolean {
         return uuid == MAP
     }
 
-    fun isMns(@NonNull uuid: ParcelUuid): Boolean {
+    fun isMns(@NotNull uuid: ParcelUuid): Boolean {
         return uuid == MNS
     }
 
-    fun isMas(@NonNull uuid: ParcelUuid): Boolean {
+    fun isMas(@NotNull uuid: ParcelUuid): Boolean {
         return uuid == MAS
     }
 
-    fun isSap(@NonNull uuid: ParcelUuid): Boolean {
+    fun isSap(@NotNull uuid: ParcelUuid): Boolean {
         return uuid == SAP
     }
 
@@ -194,7 +195,7 @@ object BluetoothUuid {
      * @param parcelUuid - UUID
      * @return the service identifier.
      */
-    fun getServiceIdentifierFromParcelUuid(@NonNull parcelUuid: ParcelUuid): Int {
+    fun getServiceIdentifierFromParcelUuid(@NotNull parcelUuid: ParcelUuid): Int {
         val uuid = parcelUuid.uuid
         val value = (uuid.mostSignificantBits and 0x0000FFFF00000000L).ushr(32)
         return value.toInt()
@@ -209,7 +210,7 @@ object BluetoothUuid {
      * @return [ParcelUuid] parsed from bytes.
      * @throws IllegalArgumentException If the `uuidBytes` cannot be parsed.
      */
-    @NonNull
+    @NotNull
     fun parseUuidFrom(@Nullable uuidBytes: ByteArray?): ParcelUuid {
         if (uuidBytes == null) {
             throw IllegalArgumentException("uuidBytes cannot be null")
@@ -253,7 +254,7 @@ object BluetoothUuid {
      * @return shortest representation of `uuid` as bytes.
      * @throws IllegalArgumentException If the `uuid` is null.
      */
-    @NonNull
+    @NotNull
     fun uuidToBytes(@Nullable uuid: ParcelUuid?): ByteArray {
         if (uuid == null) {
             throw IllegalArgumentException("uuid cannot be null")
@@ -294,7 +295,7 @@ object BluetoothUuid {
      * @param parcelUuid - UUID
      * @return true if the parcelUuid can be converted to 16 bit uuid, false otherwise.
      */
-    fun is16BitUuid(@NonNull parcelUuid: ParcelUuid): Boolean {
+    fun is16BitUuid(@NotNull parcelUuid: ParcelUuid): Boolean {
         val uuid = parcelUuid.uuid
         return uuid.leastSignificantBits == BASE_UUID.uuid.leastSignificantBits && uuid.mostSignificantBits and -0xffff00000001L == 0x1000L
     }
@@ -306,7 +307,7 @@ object BluetoothUuid {
      * @param parcelUuid - UUID
      * @return true if the parcelUuid can be converted to 32 bit uuid, false otherwise.
      */
-    fun is32BitUuid(@NonNull parcelUuid: ParcelUuid): Boolean {
+    fun is32BitUuid(@NotNull parcelUuid: ParcelUuid): Boolean {
         val uuid = parcelUuid.uuid
         return uuid.leastSignificantBits == BASE_UUID.uuid.leastSignificantBits && !is16BitUuid(parcelUuid) && uuid.mostSignificantBits and 0xFFFFFFFFL == 0x1000L
     }

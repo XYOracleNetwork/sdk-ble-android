@@ -22,7 +22,7 @@ import network.xyo.ble.sample.R
 import network.xyo.ble.sample.XYDeviceData
 import network.xyo.ui.ui
 import network.xyo.ble.sample.fragments.core.BackFragmentListener
-import network.xyo.core.XYBase
+import network.xyo.base.XYBase
 import java.io.BufferedInputStream
 import java.io.FileOutputStream
 import java.net.URL

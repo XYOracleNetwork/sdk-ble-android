@@ -12,7 +12,7 @@ import network.xyo.ble.gatt.peripheral.XYBluetoothResult
 import network.xyo.ble.scanner.XYScanResult
 import network.xyo.ble.services.standard.*
 import network.xyo.ble.services.xy3.*
-import network.xyo.core.XYBase
+import network.xyo.base.XYBase
 import unsigned.Ushort
 import java.nio.ByteBuffer
 import java.util.*
