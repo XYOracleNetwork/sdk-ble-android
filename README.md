@@ -4,7 +4,12 @@
 
 # XYO Bluetooth SDK
 
-[![](https://jitpack.io/v/XYOracleNetwork/sdk-ble-android.svg)](https://jitpack.io/#XYOracleNetwork/sdk-ble-android) [![Maintainability](https://api.codeclimate.com/v1/badges/da919183c3fe8a4fdbe3/maintainability)](https://codeclimate.com/github/XYOracleNetwork/sdk-ble-android/maintainability) [![Known Vulnerabilities](https://snyk.io/test/github/XYOracleNetwork/sdk-ble-android/badge.svg)](https://snyk.io/test/github/XYOracleNetwork/sdk-ble-android) [![BCH compliance](https://bettercodehub.com/edge/badge/XYOracleNetwork/sdk-ble-android?branch=master)](https://bettercodehub.com/results/XYOracleNetwork/sdk-ble-android) [![Sonarcloud Status](https://sonarcloud.io/api/project_badges/measure?project=XYOracleNetwork_sdk-ble-android&metric=alert_status)](https://sonarcloud.io/dashboard?id=XYOracleNetwork_sdk-ble-android) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/b14446847e614a2fae7152892765dac1)](https://www.codacy.com/app/arietrouw/sdk-ble-android?utm_source=github.com&utm_medium=referral&utm_content=XYOracleNetwork/sdk-ble-android&utm_campaign=Badge_Grade)
+[![](https://jitpack.io/v/XYOracleNetwork/sdk-ble-android.svg)](https://jitpack.io/#XYOracleNetwork/sdk-ble-android)
+[![Maintainability](https://api.codeclimate.com/v1/badges/da919183c3fe8a4fdbe3/maintainability)](https://codeclimate.com/github/XYOracleNetwork/sdk-ble-android/maintainability)
+[![Known Vulnerabilities](https://snyk.io/test/github/XYOracleNetwork/sdk-ble-android/badge.svg)](https://snyk.io/test/github/XYOracleNetwork/sdk-ble-android)
+[![BCH compliance](https://bettercodehub.com/edge/badge/XYOracleNetwork/sdk-ble-android?branch=master)](https://bettercodehub.com/results/XYOracleNetwork/sdk-ble-android)
+[![Sonarcloud Status](https://sonarcloud.io/api/project_badges/measure?project=XYOracleNetwork_sdk-ble-android&metric=alert_status)](https://sonarcloud.io/dashboard?id=XYOracleNetwork_sdk-ble-android)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/b14446847e614a2fae7152892765dac1)](https://www.codacy.com/app/arietrouw/sdk-ble-android?utm_source=github.com&utm_medium=referral&utm_content=XYOracleNetwork/sdk-ble-android&utm_campaign=Badge_Grade)
 [![Build Status](https://travis-ci.com/XYOracleNetwork/sdk-ble-android.svg?branch=master)](https://travis-ci.com/XYOracleNetwork/sdk-ble-android)
 
 ## Table of Contents
