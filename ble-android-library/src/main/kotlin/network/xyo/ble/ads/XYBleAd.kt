@@ -1,6 +1,6 @@
 package network.xyo.ble.ads
 
-import network.xyo.core.XYBase
+import network.xyo.base.XYBase
 import java.nio.ByteBuffer
 
 open class XYBleAd(buffer: ByteBuffer) : XYBase() {

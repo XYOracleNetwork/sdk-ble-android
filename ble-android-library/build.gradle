@@ -1,7 +1,10 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
-apply plugin: 'com.github.dcendents.android-maven'
-group = 'com.github.XYOracleNetwork'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'com.jfrog.bintray'
+apply plugin: 'maven-publish'
+
+group = 'network.xyo'
 
 buildscript {
     repositories {
@@ -10,28 +13,28 @@ buildscript {
         jcenter()
         google()
     }
-
-    dependencies {
-        classpath 'com.android.tools.build:gradle:3.3.2'
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.3.21"
-        classpath "com.github.dcendents:android-maven-gradle-plugin:$mavenVersion"
-    }
-}
-
-
-repositories {
-    mavenCentral()
-    maven { url 'https://jitpack.io' }
 }
 
 configurations {
     localImplementation
-    jitpackApi
 }
+
+def majorVersion = 2
+def minorVersion = 0
+
+Properties versionProps = new Properties()
+def versionPropsFile = file('version.properties')
+if (versionPropsFile.exists())
+    versionProps.load(new FileInputStream(versionPropsFile))
+def code = (versionProps['VERSION_CODE'] ?: "0").toInteger() + 1
+def verString = majorVersion + '.' + minorVersion + '.' + code
 
 android {
     compileSdkVersion 28
     buildToolsVersion "28.0.3"
+
+    versionProps['VERSION_CODE'] = code.toString()
+    versionProps.store(versionPropsFile.newWriter(), null)
 
     compileOptions {
         kotlinOptions {
@@ -42,6 +45,9 @@ android {
     defaultConfig {
         minSdkVersion 21
         targetSdkVersion 28
+        defaultPublishConfig 'release'
+        versionCode majorVersion * 100000000 + minorVersion * 1000000 + code
+        versionName majorVersion + "." + minorVersion + "." + code
     }
 
     defaultPublishConfig "release"
@@ -80,14 +86,64 @@ android {
     }
 }
 
+publishing {
+    publications {
+        Production(MavenPublication) {
+            artifact("$buildDir/outputs/aar/ble-android-library-release.aar")
+            groupId 'network.xyo'
+            artifactId 'base'
+            version verString
+
+            //The publication doesn't know about our dependencies, so we have to manually add them to the pom
+            pom.withXml {
+                //def dependenciesNode = asNode().appendNode('dependencies')
+                //Iterate over the compile dependencies (we don't want the test ones), adding a <dependency> node for each
+                configurations.compile.allDependencies.each {
+                    if (it.name != 'unspecified') {
+                        def dependencyNode = dependenciesNode.appendNode('dependency')
+                        dependencyNode.appendNode('groupId', it.group)
+                        dependencyNode.appendNode('artifactId', it.name)
+                        dependencyNode.appendNode('version', it.version)
+                    }
+                }
+            }
+        }
+    }
+}
+
+bintray {
+    user = System.getenv('BINTRAY_USER')
+    key = System.getenv('BINTRAY_KEY')
+    dryRun = false
+    override = false
+    publish = true
+    pkg {
+        repo = 'xyo'
+        name = 'sdk-ble-android'
+        userOrg = 'xyoraclenetwork'
+        licenses = ['LGPL-3.0']
+        desc = 'Android Base Classes'
+        vcsUrl = 'https://github.com/xyoraclenetwork/sdk-ble-android.git'
+
+        version {
+            name = verString
+            vcsTag = verString
+        }
+    }
+    publications = ['Production']
+}
+
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    api 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.30'
-    api 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.2.0'
-    api "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.1.1"
-    implementation 'org.jetbrains:annotations:17.0.0'
+    api 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.31'
+    api 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.2.1'
+    api 'org.jetbrains.kotlin:kotlin-reflect:1.3.31'
+    api 'network.xyo:base:2.0.74'
+    api 'org.jetbrains:annotations:17.0.0'
+    implementation 'com.github.kotlin-graphics:kotlin-unsigned:3.2.0'
+}
 
-    api 'com.github.XYOracleNetwork:sdk-core-android:1.2.5'
-
-    implementation 'com.github.kotlin-graphics:kotlin-unsigned:3.1.9'
+//allows experimentals we are using - ignore in lint
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.AbstractKotlinCompile).all { task ->
+    task.kotlinOptions.freeCompilerArgs += experimentalsEnabled
 }

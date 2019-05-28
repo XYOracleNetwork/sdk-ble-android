@@ -6,7 +6,7 @@ import android.content.Context
 import android.os.Handler
 import android.os.Looper
 import kotlinx.coroutines.asCoroutineDispatcher
-import network.xyo.core.XYBase
+import network.xyo.base.XYBase
 import java.util.concurrent.Executors
 import kotlin.coroutines.AbstractCoroutineContextElement
 import kotlin.coroutines.Continuation

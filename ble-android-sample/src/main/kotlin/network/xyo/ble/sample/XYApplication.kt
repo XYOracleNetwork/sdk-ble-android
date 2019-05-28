@@ -8,7 +8,7 @@ import network.xyo.ble.devices.*
 import network.xyo.ble.scanner.XYSmartScan
 import network.xyo.ble.scanner.XYSmartScanLegacy
 import network.xyo.ble.scanner.XYSmartScanModern
-import network.xyo.core.XYBase
+import network.xyo.base.XYBase
 
 class XYApplication : Application() {
     private var _scanner: XYSmartScan? = null

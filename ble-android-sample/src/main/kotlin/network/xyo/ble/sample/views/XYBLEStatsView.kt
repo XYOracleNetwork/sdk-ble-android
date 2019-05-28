@@ -7,7 +7,7 @@ import kotlinx.android.synthetic.main.blestats_view.view.*
 import network.xyo.ble.devices.XYBluetoothDevice
 import network.xyo.ble.sample.XYApplication
 import network.xyo.ble.scanner.XYSmartScan
-import network.xyo.core.XYBase
+import network.xyo.base.XYBase
 
 /**
  * Created by arietrouw on 12/28/17.

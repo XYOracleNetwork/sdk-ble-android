@@ -12,7 +12,7 @@ import network.xyo.ble.ads.XYBleAd
 import network.xyo.ble.gatt.peripheral.XYBluetoothGattClient
 import network.xyo.ble.scanner.XYScanRecord
 import network.xyo.ble.scanner.XYScanResult
-import network.xyo.core.XYBase
+import network.xyo.base.XYBase
 import java.nio.ByteBuffer
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
