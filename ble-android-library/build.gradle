@@ -91,7 +91,7 @@ publishing {
         Production(MavenPublication) {
             artifact("$buildDir/outputs/aar/ble-android-library-release.aar")
             groupId 'network.xyo'
-            artifactId 'base'
+            artifactId 'ble'
             version verString
 
             //The publication doesn't know about our dependencies, so we have to manually add them to the pom
