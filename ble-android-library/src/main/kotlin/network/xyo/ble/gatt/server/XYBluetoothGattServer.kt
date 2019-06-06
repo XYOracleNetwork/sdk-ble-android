@@ -26,11 +26,9 @@ open class XYBluetoothGattServer(context: Context) : XYBluetoothBase(context) {
     fun startServer(): Boolean {
         var result = false
         synchronized(this) {
-            if (androidGattServer == null) {
-                androidGattServer = bluetoothManager?.openGattServer(context, primaryCallback)
-                if (androidGattServer != null) {
-                    result = true
-                }
+            androidGattServer = bluetoothManager?.openGattServer(context, primaryCallback)
+            if (androidGattServer != null) {
+                result = true
             }
         }
         return result
