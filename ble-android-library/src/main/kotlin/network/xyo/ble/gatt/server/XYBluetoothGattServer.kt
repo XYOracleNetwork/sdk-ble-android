@@ -2,6 +2,7 @@ package network.xyo.ble.gatt.server
 
 import android.bluetooth.*
 import android.content.Context
+import android.location.LocationManager
 import android.os.Build
 import network.xyo.ble.XYBluetoothBase
 import network.xyo.ble.gatt.peripheral.XYBluetoothError
@@ -25,10 +26,13 @@ open class XYBluetoothGattServer(context: Context) : XYBluetoothBase(context) {
 
     fun startServer(): Boolean {
         var result = false
-        synchronized(this) {
-            androidGattServer = bluetoothManager?.openGattServer(context, primaryCallback)
-            if (androidGattServer != null) {
-                result = true
+        val bluetoothManager = this.bluetoothManager
+        if (bluetoothManager?.adapter != null) {
+            synchronized(this) {
+                androidGattServer = bluetoothManager.openGattServer(context, primaryCallback)
+                if (androidGattServer != null) {
+                    result = true
+                }
             }
         }
         return result
