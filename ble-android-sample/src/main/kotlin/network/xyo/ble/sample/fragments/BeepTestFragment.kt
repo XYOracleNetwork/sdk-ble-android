@@ -8,7 +8,6 @@ import kotlinx.android.synthetic.main.fragment_test.*
 import kotlinx.coroutines.*
 import network.xyo.ble.devices.XY3BluetoothDevice
 import network.xyo.ble.devices.XY4BluetoothDevice
-import network.xyo.ble.devices.XYFinderBluetoothDevice
 import network.xyo.ble.gatt.peripheral.XYBluetoothResult
 import network.xyo.ble.sample.R
 import network.xyo.ble.sample.XYApplication

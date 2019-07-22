@@ -1,7 +1,5 @@
 package network.xyo.ble.sample.fragments
 
-
-import network.xyo.ble.sample.fragments.core.ProgressListener
 import network.xyo.base.XYBase
 import network.xyo.ui.XYBaseFragment
 import network.xyo.ui.ui

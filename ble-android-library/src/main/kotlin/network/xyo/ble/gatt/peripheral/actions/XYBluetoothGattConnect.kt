@@ -128,7 +128,7 @@ class XYBluetoothGattConnect(val device: BluetoothDevice) : XYBase() {
         return@async XYBluetoothResult(value, error)
     }
 
-    private fun discover() = GlobalScope.async() {
+    private fun discover() = GlobalScope.async {
         log.info("discover")
         assert(state != BluetoothGatt.STATE_CONNECTED)
         val gatt = this@XYBluetoothGattConnect.gatt //make thread safe

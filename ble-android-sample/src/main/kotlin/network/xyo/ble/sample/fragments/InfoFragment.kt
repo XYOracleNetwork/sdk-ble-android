@@ -279,7 +279,7 @@ class InfoFragment : XYDeviceFragment(), View.OnClickListener, CompoundButton.On
                 locked == null -> showToast("Device does not support Lock")
                 locked.error == null -> {
                     showToast("Locked: ${locked.value}")
-                    updateStayAwakeEnabledStates() //TODO
+                    updateStayAwakeEnabledStates().await()
                 }
                 else -> showToast("Lock Error: ${locked.error}")
             }
@@ -302,7 +302,7 @@ class InfoFragment : XYDeviceFragment(), View.OnClickListener, CompoundButton.On
                 unlocked.error == null -> {
                     ui {
                         showToast("Unlocked: ${unlocked.value}")
-                        updateStayAwakeEnabledStates() //TODO
+                        updateStayAwakeEnabledStates().await()
                     }
                 }
                 else -> ui {
@@ -426,7 +426,7 @@ class InfoFragment : XYDeviceFragment(), View.OnClickListener, CompoundButton.On
                     }
                 }
                 return@connection XYBluetoothResult(true)
-            }
+            }?.await()
         }
     }
 

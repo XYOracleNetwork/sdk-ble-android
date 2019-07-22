@@ -42,14 +42,14 @@ class XYApplication : Application() {
         }
 
         GlobalScope.launch {
-            scanner.start()
+            scanner.start().await()
         }
     }
 
     override fun onTerminate() {
         log.info("onTerminate")
         GlobalScope.launch {
-            scanner.stop()
+            scanner.stop().await()
         }
         super.onTerminate()
     }

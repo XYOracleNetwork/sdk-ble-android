@@ -25,10 +25,13 @@ open class XYBluetoothGattServer(context: Context) : XYBluetoothBase(context) {
 
     fun startServer(): Boolean {
         var result = false
-        synchronized(this) {
-            androidGattServer = bluetoothManager?.openGattServer(context, primaryCallback)
-            if (androidGattServer != null) {
-                result = true
+        val bluetoothManager = this.bluetoothManager
+        if (bluetoothManager?.adapter != null) {
+            synchronized(this) {
+                androidGattServer = bluetoothManager.openGattServer(context, primaryCallback)
+                if (androidGattServer != null) {
+                    result = true
+                }
             }
         }
         return result
@@ -213,7 +216,7 @@ open class XYBluetoothGattServer(context: Context) : XYBluetoothBase(context) {
         return null
     }
 
-    open fun onBluetoothCharacteristicReadRequest (characteristic: BluetoothGattCharacteristic, device: BluetoothDevice?, offset : Int) : XYBluetoothGattServer.XYReadRequest? {
+    open fun onBluetoothCharacteristicReadRequest (characteristic: BluetoothGattCharacteristic, device: BluetoothDevice?, offset : Int) : XYReadRequest? {
         val characteristicHandler = characteristics[characteristic.uuid]
         if (characteristicHandler is XYBluetoothCharacteristic) {
             return characteristicHandler.onReadRequest(device, offset)
@@ -229,7 +232,7 @@ open class XYBluetoothGattServer(context: Context) : XYBluetoothBase(context) {
         return null
     }
 
-    open fun onBluetoothDescriptorReadRequest (descriptor: BluetoothGattDescriptor, device: BluetoothDevice?, offset : Int) : XYBluetoothGattServer.XYReadRequest? {
+    open fun onBluetoothDescriptorReadRequest (descriptor: BluetoothGattDescriptor, device: BluetoothDevice?, offset : Int) : XYReadRequest? {
         val descriptorHandler = descriptors[descriptor.uuid]
         if (descriptorHandler is XYBluetoothDescriptor) {
             return descriptorHandler.onReadRequest(device, offset)
