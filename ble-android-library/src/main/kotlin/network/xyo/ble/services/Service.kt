@@ -1,6 +1,8 @@
 package network.xyo.ble.services
 
 import android.bluetooth.BluetoothGattCharacteristic
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
 import network.xyo.base.XYBase
 import network.xyo.ble.devices.XYBluetoothDevice
 import java.util.*
@@ -36,8 +38,8 @@ abstract class Service(val device: XYBluetoothDevice) : XYBase() {
         fun set(value: ByteArray) = service.writeBytes(uuid, value)
     }
 
-    private fun readInt(characteristic: UUID, formatType: Int = BluetoothGattCharacteristic.FORMAT_UINT8, offset:Int = 0) = device.connection {
-        return@connection device.findAndReadCharacteristicInt(
+    private fun readInt(characteristic: UUID, formatType: Int = BluetoothGattCharacteristic.FORMAT_UINT8, offset:Int = 0) = GlobalScope.async {
+        return@async device.findAndReadCharacteristicInt(
                 serviceUuid,
                 characteristic,
                 formatType,

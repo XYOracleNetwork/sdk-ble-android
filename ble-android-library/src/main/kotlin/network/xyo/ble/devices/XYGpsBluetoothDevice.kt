@@ -57,7 +57,7 @@ open class XYGpsBluetoothDevice(context: Context, scanResult: XYScanResult, hash
 
     override fun reportButtonPressed(state: ButtonPress) {
         super.reportButtonPressed(state)
-        XYGpsBluetoothDevice.reportGlobalButtonPressed(this, state)
+        reportGlobalButtonPressed(this, state)
     }
 
 //    fun reportButtonPressed(state: Int) {

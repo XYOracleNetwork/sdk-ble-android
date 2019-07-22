@@ -164,15 +164,15 @@ class XYODeviceListActivity : XYOAppBaseActivity() {
     private fun onBluetoothDisabled() {
         ll_disabled.visibility = VISIBLE
         GlobalScope.launch {
-            scanner.stop()
+            scanner.stop().await()
         }
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
-        GlobalScope.launch {
-            //scanner.start()
-        }
+        /*GlobalScope.launch {
+            scanner.start()
+        }*/
     }
 }

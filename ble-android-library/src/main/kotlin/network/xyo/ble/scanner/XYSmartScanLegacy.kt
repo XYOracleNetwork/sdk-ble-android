@@ -6,12 +6,12 @@ import kotlinx.coroutines.async
 
 class XYSmartScanLegacy(context: Context) : XYSmartScan(context) {
     override fun start() = GlobalScope.async {
-        super.start()
+        super.start().await()
         return@async true
     }
 
     override fun stop() = GlobalScope.async {
-        super.stop()
+        super.stop().await()
         return@async true
     }
 }

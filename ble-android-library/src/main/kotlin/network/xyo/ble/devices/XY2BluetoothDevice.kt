@@ -1,8 +1,6 @@
 package network.xyo.ble.devices
 
 import android.content.Context
-import kotlinx.coroutines.Deferred
-import network.xyo.ble.gatt.peripheral.XYBluetoothResult
 import network.xyo.ble.scanner.XYScanResult
 import network.xyo.ble.services.standard.*
 import network.xyo.ble.services.xy3.*
@@ -13,18 +11,18 @@ import java.util.concurrent.ConcurrentHashMap
 
 open class XY2BluetoothDevice(context: Context, scanResult: XYScanResult, hash: String) : XYFinderBluetoothDevice(context, scanResult, hash) {
 
-    val batteryService = BatteryService(this)
-    val deviceInformationService = DeviceInformationService(this)
-    val genericAccessService = GenericAccessService(this)
-    val genericAttributeService = GenericAttributeService(this)
-    val txPowerService = TxPowerService(this)
+    val batteryService:BatteryService by lazy { BatteryService(this) }
+    val deviceInformationService by lazy { DeviceInformationService(this) }
+    val genericAccessService by lazy { GenericAccessService(this) }
+    val genericAttributeService by lazy { GenericAttributeService(this) }
+    val txPowerService by lazy { TxPowerService(this) }
 
-    val basicConfigService = BasicConfigService(this)
-    val controlService = ControlService(this)
-    val csrOtaService = CsrOtaService(this)
-    val extendedConfigService = ExtendedConfigService(this)
-    val extendedControlService = ExtendedControlService(this)
-    val sensorService = SensorService(this)
+    val basicConfigService by lazy { BasicConfigService(this) }
+    val controlService by lazy { ControlService(this) }
+    val csrOtaService by lazy { CsrOtaService(this) }
+    val extendedConfigService by lazy { ExtendedConfigService(this) }
+    val extendedControlService by lazy { ExtendedControlService(this) }
+    val sensorService by lazy { SensorService(this) }
 
     override fun find() = connection {
         return@connection controlService.buzzerSelect.set(2).await()

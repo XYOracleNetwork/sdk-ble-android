@@ -85,7 +85,7 @@ class XYSmartScanModern(context: Context) : XYSmartScan(context) {
         override fun onScanFailed(errorCode: Int) {
             super.onScanFailed(errorCode)
             log.error("onScanFailed: $errorCode, ${codeToScanFailed(errorCode)}", false)
-            if (ScanCallback.SCAN_FAILED_APPLICATION_REGISTRATION_FAILED == errorCode && !restartingBluetooth) {
+            if (SCAN_FAILED_APPLICATION_REGISTRATION_FAILED == errorCode && !restartingBluetooth) {
                 restartBluetooth()
             }
         }
@@ -119,7 +119,7 @@ class XYSmartScanModern(context: Context) : XYSmartScan(context) {
     //Android 5 and 6
     private fun getSettings21(): ScanSettings {
         return ScanSettings.Builder()
-                .setScanMode(android.bluetooth.le.ScanSettings.SCAN_MODE_LOW_POWER)
+                .setScanMode(ScanSettings.SCAN_MODE_LOW_POWER)
                 .setReportDelay(500)
                 .build()
     }
@@ -128,9 +128,9 @@ class XYSmartScanModern(context: Context) : XYSmartScan(context) {
     @TargetApi(Build.VERSION_CODES.M)
     private fun getSettings23(): ScanSettings {
         return ScanSettings.Builder()
-                .setScanMode(android.bluetooth.le.ScanSettings.SCAN_MODE_LOW_POWER)
-                .setCallbackType(android.bluetooth.le.ScanSettings.CALLBACK_TYPE_ALL_MATCHES)
-                .setMatchMode(android.bluetooth.le.ScanSettings.MATCH_MODE_STICKY)
+                .setScanMode(ScanSettings.SCAN_MODE_LOW_POWER)
+                .setCallbackType(ScanSettings.CALLBACK_TYPE_ALL_MATCHES)
+                .setMatchMode(ScanSettings.MATCH_MODE_STICKY)
                 .build()
     }
 
@@ -138,9 +138,9 @@ class XYSmartScanModern(context: Context) : XYSmartScan(context) {
     @TargetApi(Build.VERSION_CODES.O)
     private fun getSettings26(): ScanSettings {
         return ScanSettings.Builder()
-                .setScanMode(android.bluetooth.le.ScanSettings.SCAN_MODE_BALANCED)
-                .setCallbackType(android.bluetooth.le.ScanSettings.CALLBACK_TYPE_ALL_MATCHES)
-                .setMatchMode(android.bluetooth.le.ScanSettings.MATCH_MODE_STICKY)
+                .setScanMode(ScanSettings.SCAN_MODE_BALANCED)
+                .setCallbackType(ScanSettings.CALLBACK_TYPE_ALL_MATCHES)
+                .setMatchMode(ScanSettings.MATCH_MODE_STICKY)
                 .build()
     }
 

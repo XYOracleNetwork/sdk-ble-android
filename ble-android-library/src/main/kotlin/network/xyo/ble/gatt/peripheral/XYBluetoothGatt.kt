@@ -172,7 +172,7 @@ open class XYBluetoothGatt protected constructor(
         }
     }
 
-    fun waitForNotification(characteristicToWaitFor: UUID): Deferred<XYBluetoothResult<Any?>> = GlobalScope.async {
+    fun waitForNotification(characteristicToWaitFor: UUID) = GlobalScope.async {
         log.info("waitForNotification")
         return@async suspendCancellableCoroutine<XYBluetoothResult<Any?>> { cont ->
             val listenerName = "waitForNotification$nowNano"
@@ -181,7 +181,7 @@ open class XYBluetoothGatt protected constructor(
                     super.onCharacteristicChanged(gatt, characteristic)
                     if (characteristicToWaitFor == characteristic?.uuid) {
                         centralCallback.removeListener(listenerName)
-                        cont.resume<XYBluetoothResult<Any?>>(XYBluetoothResult(null, null))
+                        cont.resume(XYBluetoothResult<Any?>(null, null))
                     }
                 }
 
@@ -189,7 +189,7 @@ open class XYBluetoothGatt protected constructor(
                     super.onConnectionStateChange(gatt, status, newState)
                     if (newState != BluetoothGatt.STATE_CONNECTED) {
                         centralCallback.removeListener(listenerName)
-                        cont.resume<XYBluetoothResult<Any?>>(XYBluetoothResult(null, XYBluetoothError("Device disconnected!")))
+                        cont.resume(XYBluetoothResult<Any?>(null, XYBluetoothError("Device disconnected!")))
                     }
                 }
             }
@@ -366,7 +366,7 @@ open class XYBluetoothGatt protected constructor(
             references--
         }
 
-        return@async XYBluetoothResult(value, error)
+        return@async XYBluetoothResult<T>(value, error)
     }
 
     companion object : XYBase() {

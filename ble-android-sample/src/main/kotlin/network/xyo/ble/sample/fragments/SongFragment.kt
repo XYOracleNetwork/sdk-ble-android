@@ -161,7 +161,7 @@ class SongFragment : XYDeviceFragment() {
          MAX	(Ushort(10000))
     }
 
-    val song1 = ByteBuffer.allocate(32 * 4) //Sweet Child of Mine
+    private val song1: ByteBuffer = ByteBuffer.allocate(32 * 4) //Sweet Child of Mine
 
     init {
         song1.put(Note(Notes.D5.note, 0x01, 0x100).value)
@@ -284,7 +284,7 @@ class SongFragment : XYDeviceFragment() {
                                         songData[offset * 2 + 7]
                                 )
 
-                                log.info("setSongOne: ${offset}:${data.contentToString()} ")
+                                log.info("setSongOne: $offset:${data.contentToString()} ")
                                 it.primary.buzzerConfig.set(data).await()
                                 offset += 4
                             }

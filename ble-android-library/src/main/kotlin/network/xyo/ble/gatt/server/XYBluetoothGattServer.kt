@@ -2,7 +2,6 @@ package network.xyo.ble.gatt.server
 
 import android.bluetooth.*
 import android.content.Context
-import android.location.LocationManager
 import android.os.Build
 import network.xyo.ble.XYBluetoothBase
 import network.xyo.ble.gatt.peripheral.XYBluetoothError
@@ -217,7 +216,7 @@ open class XYBluetoothGattServer(context: Context) : XYBluetoothBase(context) {
         return null
     }
 
-    open fun onBluetoothCharacteristicReadRequest (characteristic: BluetoothGattCharacteristic, device: BluetoothDevice?, offset : Int) : XYBluetoothGattServer.XYReadRequest? {
+    open fun onBluetoothCharacteristicReadRequest (characteristic: BluetoothGattCharacteristic, device: BluetoothDevice?, offset : Int) : XYReadRequest? {
         val characteristicHandler = characteristics[characteristic.uuid]
         if (characteristicHandler is XYBluetoothCharacteristic) {
             return characteristicHandler.onReadRequest(device, offset)
@@ -233,7 +232,7 @@ open class XYBluetoothGattServer(context: Context) : XYBluetoothBase(context) {
         return null
     }
 
-    open fun onBluetoothDescriptorReadRequest (descriptor: BluetoothGattDescriptor, device: BluetoothDevice?, offset : Int) : XYBluetoothGattServer.XYReadRequest? {
+    open fun onBluetoothDescriptorReadRequest (descriptor: BluetoothGattDescriptor, device: BluetoothDevice?, offset : Int) : XYReadRequest? {
         val descriptorHandler = descriptors[descriptor.uuid]
         if (descriptorHandler is XYBluetoothDescriptor) {
             return descriptorHandler.onReadRequest(device, offset)
