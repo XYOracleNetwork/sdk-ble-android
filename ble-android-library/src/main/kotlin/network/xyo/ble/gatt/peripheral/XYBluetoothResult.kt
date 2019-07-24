@@ -1,6 +1,9 @@
 package network.xyo.ble.gatt.peripheral
 
-open class XYBluetoothResult<T> {
+//we have the interface here to allow for returning any generic implementation
+interface IXYBluetoothResult
+
+open class XYBluetoothResult<T>: IXYBluetoothResult {
 
     var value: T? = null
     var error: XYBluetoothError? = null
