@@ -3,6 +3,7 @@ package network.xyo.ble.gatt.peripheral
 //we have the interface here to allow for returning any generic implementation
 interface IXYBluetoothResult {
     fun getValueString(): String
+    fun getBluetoothError(): XYBluetoothError?
 }
 
 open class XYBluetoothResult<T>: IXYBluetoothResult {
@@ -27,6 +28,10 @@ open class XYBluetoothResult<T>: IXYBluetoothResult {
 
     override fun getValueString(): String {
         return value.toString()
+    }
+
+    override fun getBluetoothError(): XYBluetoothError? {
+        return error
     }
 
     override fun toString(): String {
