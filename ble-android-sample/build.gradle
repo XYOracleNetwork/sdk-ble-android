@@ -30,6 +30,8 @@ android {
     }
 
     compileOptions {
+        sourceCompatibility = 1.8
+        targetCompatibility = 1.8
         kotlinOptions {
             allWarningsAsErrors = true
         }
@@ -68,10 +70,10 @@ configurations {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    api 'com.google.android.material:material:1.1.0-alpha06'
-    api 'androidx.coordinatorlayout:coordinatorlayout:1.1.0-alpha01'
+    api 'com.google.android.material:material:1.1.0-alpha09'
+    api 'androidx.coordinatorlayout:coordinatorlayout:1.1.0-beta01'
     api "com.nabinbhandari.android:permissions:3.8"
-    api 'network.xyo:sdk-base-android:2.0.81'
+    api 'network.xyo:sdk-base-android:2.0.91'
     api 'com.github.XYOracleNetwork:sdk-ui-android:1.2.2'
     api 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.2.1'
     implementation project(':ble-android-library')

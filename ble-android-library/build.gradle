@@ -37,6 +37,8 @@ android {
     versionProps.store(versionPropsFile.newWriter(), null)
 
     compileOptions {
+        sourceCompatibility = 1.8
+        targetCompatibility = 1.8
         kotlinOptions {
             allWarningsAsErrors = true
         }

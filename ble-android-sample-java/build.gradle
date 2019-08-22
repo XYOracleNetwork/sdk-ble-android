@@ -29,6 +29,11 @@ android {
         exclude 'META-INF/build.kotlin_module'
         exclude 'META-INF/atomicfu.kotlin_module'
     }
+    compileOptions {
+        sourceCompatibility = 1.8
+        targetCompatibility = 1.8
+    }
+    buildToolsVersion = '28.0.3'
 }
 
 dependencies {
