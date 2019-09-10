@@ -3,7 +3,6 @@ package network.xyo.ble.devices
 import android.content.Context
 import network.xyo.ble.scanner.XYScanResult
 import network.xyo.base.XYBase
-import unsigned.Ushort
 import java.nio.BufferUnderflowException
 import java.nio.ByteBuffer
 import java.util.*
@@ -18,14 +17,14 @@ open class XYIBeaconBluetoothDevice(context: Context, val scanResult: XYScanResu
             return _uuid
         }
 
-    protected var _major: Ushort
-    open val major: Ushort
+    protected var _major: UShort
+    open val major: UShort
         get() {
             return _major
         }
 
-    protected var _minor: Ushort
-    open val minor: Ushort
+    protected var _minor: UShort
+    open val minor: UShort
         get() {
             return _minor
         }
@@ -52,19 +51,19 @@ open class XYIBeaconBluetoothDevice(context: Context, val scanResult: XYScanResu
             val low = buffer.long
             _uuid = UUID(high, low)
 
-            _major = Ushort(buffer.short)
-            _minor = Ushort(buffer.short)
+            _major = buffer.short.toUShort()
+            _minor = buffer.short.toUShort()
             _power = buffer.get()
         } else {
             _uuid = UUID(0, 0)
-            _major = Ushort(0)
-            _minor = Ushort(0)
+            _major = 0.toUShort()
+            _minor = 0.toUShort()
             _power = 0
         }
     }
 
     open class Listener : XYAppleBluetoothDevice.Listener() {
-        open fun onIBeaconDetect(uuid: String, major: Ushort, minor: Ushort) {
+        open fun onIBeaconDetect(uuid: String, major: UShort, minor: UShort) {
 
         }
     }
@@ -168,21 +167,21 @@ open class XYIBeaconBluetoothDevice(context: Context, val scanResult: XYScanResu
             }
         }
 
-        private fun majorFromScanResult(scanResult: XYScanResult): Ushort? {
+        private fun majorFromScanResult(scanResult: XYScanResult): UShort? {
             val bytes = scanResult.scanRecord?.getManufacturerSpecificData(XYAppleBluetoothDevice.MANUFACTURER_ID)
             return if (bytes != null) {
                 val buffer = ByteBuffer.wrap(bytes)
-                Ushort(buffer.getShort(18).toInt())
+                buffer.getShort(18).toUShort()
             } else {
                 null
             }
         }
 
-        private fun minorFromScanResult(scanResult: XYScanResult): Ushort? {
+        private fun minorFromScanResult(scanResult: XYScanResult): UShort? {
             val bytes = scanResult.scanRecord?.getManufacturerSpecificData(XYAppleBluetoothDevice.MANUFACTURER_ID)
             return if (bytes != null) {
                 val buffer = ByteBuffer.wrap(bytes)
-                Ushort(buffer.getShort(20).toInt())
+                buffer.getShort(20).toUShort()
             } else {
                 null
             }

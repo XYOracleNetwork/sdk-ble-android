@@ -5,11 +5,12 @@ import android.util.ArrayMap
 import android.util.SparseArray
 import org.jetbrains.annotations.NotNull
 import org.jetbrains.annotations.Nullable
-import unsigned.Ubyte
 import java.util.*
 
 // This is a copy of ScanRecord from Android Marshmallow+ to be used with Android versions earlier than Marshmallow
 
+@kotlin.ExperimentalUnsignedTypes
+@kotlin.ExperimentalStdlibApi
 class ScanRecordLegacy private constructor(@param:Nullable @field:Nullable
                                            /**
                                             * Returns a list of service UUIDs within the advertisement that are used to identify the
@@ -86,18 +87,18 @@ class ScanRecordLegacy private constructor(@param:Nullable @field:Nullable
 
         // The following data type values are assigned by Bluetooth SIG.
         // For more add refer to Bluetooth 4.1 specification, Volume 3, Part C, Section 18.
-        private val DATA_TYPE_FLAGS = Ubyte(0x01)
-        private val DATA_TYPE_SERVICE_UUIDS_16_BIT_PARTIAL = Ubyte(0x02)
-        private val DATA_TYPE_SERVICE_UUIDS_16_BIT_COMPLETE = Ubyte(0x03)
-        private val DATA_TYPE_SERVICE_UUIDS_32_BIT_PARTIAL = Ubyte(0x04)
-        private val DATA_TYPE_SERVICE_UUIDS_32_BIT_COMPLETE = Ubyte(0x05)
-        private val DATA_TYPE_SERVICE_UUIDS_128_BIT_PARTIAL = Ubyte(0x06)
-        private val DATA_TYPE_SERVICE_UUIDS_128_BIT_COMPLETE = Ubyte(0x07)
-        private val DATA_TYPE_LOCAL_NAME_SHORT = Ubyte(0x08)
-        private val DATA_TYPE_LOCAL_NAME_COMPLETE = Ubyte(0x09)
-        private val DATA_TYPE_TX_POWER_LEVEL = Ubyte(0x0A)
-        private val DATA_TYPE_SERVICE_DATA = Ubyte(0x16)
-        private val DATA_TYPE_MANUFACTURER_SPECIFIC_DATA = Ubyte(0xFF)
+        private val DATA_TYPE_FLAGS = 0x01.toUByte()
+        private val DATA_TYPE_SERVICE_UUIDS_16_BIT_PARTIAL = 0x02.toUByte()
+        private val DATA_TYPE_SERVICE_UUIDS_16_BIT_COMPLETE = 0x03.toUByte()
+        private val DATA_TYPE_SERVICE_UUIDS_32_BIT_PARTIAL = 0x04.toUByte()
+        private val DATA_TYPE_SERVICE_UUIDS_32_BIT_COMPLETE = 0x05.toUByte()
+        private val DATA_TYPE_SERVICE_UUIDS_128_BIT_PARTIAL = 0x06.toUByte()
+        private val DATA_TYPE_SERVICE_UUIDS_128_BIT_COMPLETE = 0x07.toUByte()
+        private val DATA_TYPE_LOCAL_NAME_SHORT = 0x08.toUByte()
+        private val DATA_TYPE_LOCAL_NAME_COMPLETE = 0x09.toUByte()
+        private val DATA_TYPE_TX_POWER_LEVEL = 0x0A.toUByte()
+        private val DATA_TYPE_SERVICE_DATA = 0x16.toUByte()
+        private val DATA_TYPE_MANUFACTURER_SPECIFIC_DATA = 0xFF.toUByte()
 
         /**
          * Parse scan record bytes to [android.bluetooth.le.ScanRecord].
@@ -119,7 +120,7 @@ class ScanRecordLegacy private constructor(@param:Nullable @field:Nullable
             }
 
             var currentPos = 0
-            var advertiseFlag = Ubyte(0xff)
+            var advertiseFlag = 0xff.toUByte()
             var serviceUuids: MutableList<ParcelUuid>? = ArrayList()
             var localName: String? = null
             var txPowerLevel = Integer.MIN_VALUE
@@ -129,16 +130,16 @@ class ScanRecordLegacy private constructor(@param:Nullable @field:Nullable
 
             while (currentPos < scanRecord.size) {
                 // length is unsigned int.
-                val length = Ubyte(scanRecord[currentPos++])
-                if (length == Ubyte(0)) {
+                val length = scanRecord[currentPos++].toUByte()
+                if (length == 0.toUByte()) {
                     break
                 }
                 // Note the length includes the length of the field type itself.
                 val dataLength = length.toInt() - 1
                 // fieldType is unsigned int.
-                val fieldType = Ubyte(scanRecord[currentPos++])
+                val fieldType = scanRecord[currentPos++].toUByte()
                 when (fieldType) {
-                    DATA_TYPE_FLAGS -> advertiseFlag = Ubyte(scanRecord[currentPos])
+                    DATA_TYPE_FLAGS -> advertiseFlag = scanRecord[currentPos].toUByte()
                     DATA_TYPE_SERVICE_UUIDS_16_BIT_PARTIAL, DATA_TYPE_SERVICE_UUIDS_16_BIT_COMPLETE -> parseServiceUuid(scanRecord, currentPos,
                             dataLength, BluetoothUuid.UUID_BYTES_16_BIT, serviceUuids
                             ?: ArrayList())
@@ -164,7 +165,7 @@ class ScanRecordLegacy private constructor(@param:Nullable @field:Nullable
                     DATA_TYPE_MANUFACTURER_SPECIFIC_DATA -> {
                         // The first two bytes of the manufacturer specific data are
                         // manufacturer ids in little endian.
-                        val manufacturerId = (Ubyte(scanRecord[currentPos + 1]).toInt() shl 8) + Ubyte(scanRecord[currentPos]).toInt()
+                        val manufacturerId = (scanRecord[currentPos + 1].toUByte().toInt() shl 8) + scanRecord[currentPos].toUByte().toInt()
                         val manufacturerDataBytes = extractBytes(scanRecord, currentPos + 2,
                                 dataLength - 2)
                         manufacturerData.put(manufacturerId, manufacturerDataBytes)

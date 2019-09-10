@@ -14,6 +14,8 @@ import network.xyo.ble.scanner.XYSmartScan
 import network.xyo.ui.ui
 import java.util.*
 
+@kotlin.ExperimentalStdlibApi
+@kotlin.ExperimentalUnsignedTypes
 class XYDeviceAdapter(private val activity: Activity) : BaseAdapter() {
     private var devices: List<XYBluetoothDevice>
     private var lastSort = System.currentTimeMillis()

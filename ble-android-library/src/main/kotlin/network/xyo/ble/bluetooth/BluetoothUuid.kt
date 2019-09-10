@@ -10,7 +10,6 @@ import java.util.UUID
 
 import org.jetbrains.annotations.NotNull
 import org.jetbrains.annotations.Nullable
-import unsigned.Ubyte
 
 // This is a copy of BluetoothUuid from Android Marshmallow+ to be used with Android versions earlier than Marshmallow
 
@@ -210,6 +209,8 @@ object BluetoothUuid {
      * @return [ParcelUuid] parsed from bytes.
      * @throws IllegalArgumentException If the `uuidBytes` cannot be parsed.
      */
+    @ExperimentalUnsignedTypes
+    @ExperimentalStdlibApi
     @NotNull
     fun parseUuidFrom(@Nullable uuidBytes: ByteArray?): ParcelUuid {
         if (uuidBytes == null) {
@@ -231,17 +232,17 @@ object BluetoothUuid {
 
         // For 16 bit and 32 bit UUID we need to convert them to 128 bit value.
         // 128_bit_value = uuid * 2^96 + BASE_UUID
-        var shortUuid: Long
+        var shortUuid: ULong
         if (length == UUID_BYTES_16_BIT) {
-            shortUuid = Ubyte(uuidBytes[0]).toLong()
-            shortUuid += (Ubyte(uuidBytes[1]) shl 8).toLong()
+            shortUuid = uuidBytes[0].toULong()
+            shortUuid += uuidBytes[1].toULong().rotateLeft(8)
         } else {
-            shortUuid = Ubyte(uuidBytes[0]).toLong()
-            shortUuid += (Ubyte(uuidBytes[1]) shl 8).toLong()
-            shortUuid += (Ubyte(uuidBytes[2]) shl 16).toLong()
-            shortUuid += (Ubyte(uuidBytes[3]) shl 24).toLong()
+            shortUuid = uuidBytes[0].toULong()
+            shortUuid += uuidBytes[1].toULong().rotateLeft(8)
+            shortUuid += uuidBytes[2].toULong().rotateLeft(16)
+            shortUuid += uuidBytes[3].toULong().rotateLeft(24)
         }
-        val msb = BASE_UUID.uuid.mostSignificantBits + (shortUuid shl 32)
+        val msb = BASE_UUID.uuid.mostSignificantBits + (shortUuid.rotateLeft(32)).toLong()
         val lsb = BASE_UUID.uuid.leastSignificantBits
         return ParcelUuid(UUID(msb, lsb))
     }

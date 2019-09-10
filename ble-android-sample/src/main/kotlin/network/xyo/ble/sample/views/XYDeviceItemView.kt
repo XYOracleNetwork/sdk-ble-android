@@ -17,6 +17,8 @@ import network.xyo.base.XYBase
  * Created by arietrouw on 12/27/17.
  */
 
+@kotlin.ExperimentalStdlibApi
+@kotlin.ExperimentalUnsignedTypes
 class XYDeviceItemView(context: Context, attrs: AttributeSet) : RelativeLayout(context, attrs) {
 
     private var device: XYBluetoothDevice? = null
