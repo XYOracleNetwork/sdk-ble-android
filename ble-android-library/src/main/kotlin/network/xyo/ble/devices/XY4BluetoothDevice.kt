@@ -16,7 +16,6 @@ import network.xyo.ble.services.dialog.SpotaService
 import network.xyo.ble.services.standard.*
 import network.xyo.ble.services.xy4.PrimaryService
 import network.xyo.base.XYBase
-import unsigned.Ushort
 import java.io.InputStream
 import java.nio.ByteBuffer
 import java.util.*
@@ -148,10 +147,10 @@ open class XY4BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
         reportGlobalButtonPressed(this, state)
     }
 
-    override val minor: Ushort
+    override val minor: UShort
         get() {
             //we have to mask the low nibble for the power level
-            return _minor.and(0xfff0).or(0x0004)
+            return _minor.and(0xfff0.toUShort()).or(0x0004.toUShort())
         }
 
     open class Listener : XYFinderBluetoothDevice.Listener()
@@ -227,33 +226,35 @@ open class XY4BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
             }
         }
 
-        private fun majorFromScanResult(scanResult: XYScanResult): Ushort? {
+        private fun majorFromScanResult(scanResult: XYScanResult): UShort? {
             val bytes = scanResult.scanRecord?.getManufacturerSpecificData(XYAppleBluetoothDevice.MANUFACTURER_ID)
             return if (bytes != null) {
                 val buffer = ByteBuffer.wrap(bytes)
-                Ushort(buffer.getShort(18).toInt())
+                buffer.getShort(18).toUShort()
             } else {
                 null
             }
         }
 
+        @kotlin.ExperimentalUnsignedTypes
         internal fun pressFromScanResult(scanResult: XYScanResult): Boolean {
             val bytes = scanResult.scanRecord?.getManufacturerSpecificData(XYAppleBluetoothDevice.MANUFACTURER_ID)
             return if (bytes != null) {
                 val buffer = ByteBuffer.wrap(bytes)
-                val minor = Ushort(buffer.getShort(20))
-                val buttonBit = minor.and(0x0008)
-                buttonBit == Ushort(0x0008)
+                val minor = buffer.getShort(20).toUShort()
+                val buttonBit = 0x0008.toUShort()
+                buttonBit == 0x0008.toUShort()
             } else {
                 false
             }
         }
 
-        private fun minorFromScanResult(scanResult: XYScanResult): Ushort? {
+        @kotlin.ExperimentalUnsignedTypes
+        private fun minorFromScanResult(scanResult: XYScanResult): UShort? {
             val bytes = scanResult.scanRecord?.getManufacturerSpecificData(XYAppleBluetoothDevice.MANUFACTURER_ID)
             return if (bytes != null) {
                 val buffer = ByteBuffer.wrap(bytes)
-                Ushort(buffer.getShort(20).toInt()).and(0xfff0).or(0x0004)
+                buffer.getShort(20).toUShort().and(0xfff0.toUShort()).or(0x0004.toUShort())
             } else {
                 null
             }

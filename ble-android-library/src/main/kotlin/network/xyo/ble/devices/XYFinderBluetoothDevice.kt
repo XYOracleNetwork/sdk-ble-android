@@ -47,7 +47,7 @@ open class XYFinderBluetoothDevice(context: Context, scanResult: XYScanResult, h
 
     override val id: String
         get() {
-            return "$prefix:$uuid.${major.toInt()}.${minor.and(0xfff0).or(0x0004).toInt()}"
+            return "$prefix:$uuid.${major.toInt()}.${minor.and(0xfff0.toUShort()).or(0x0004.toUShort()).toInt()}"
         }
 
     internal open val prefix = "xy:finder"

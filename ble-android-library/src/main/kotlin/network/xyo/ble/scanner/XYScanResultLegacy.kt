@@ -5,6 +5,8 @@ import android.bluetooth.BluetoothDevice
 import android.os.Parcel
 import network.xyo.ble.bluetooth.ScanResultLegacy
 
+@kotlin.ExperimentalUnsignedTypes
+@kotlin.ExperimentalStdlibApi
 @TargetApi(18)
 internal class XYScanResultLegacy(private val scanResult: ScanResultLegacy): XYScanResult() {
 

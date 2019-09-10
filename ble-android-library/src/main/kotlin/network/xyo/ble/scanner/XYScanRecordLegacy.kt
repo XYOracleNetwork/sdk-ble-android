@@ -5,6 +5,8 @@ import android.os.ParcelUuid
 import android.util.SparseArray
 import network.xyo.ble.bluetooth.ScanRecordLegacy
 
+@kotlin.ExperimentalUnsignedTypes
+@kotlin.ExperimentalStdlibApi
 @TargetApi(18)
 internal class XYScanRecordLegacy(private val scanRecord: ScanRecordLegacy) : XYScanRecord() {
 

@@ -11,7 +11,6 @@ import network.xyo.ble.scanner.XYScanResult
 import network.xyo.ble.services.standard.*
 import network.xyo.ble.services.xy3.*
 import network.xyo.base.XYBase
-import unsigned.Ushort
 import java.nio.ByteBuffer
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
@@ -62,10 +61,10 @@ open class XY3BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
         lastAdTime = now
     }
 
-    override val minor: Ushort
+    override val minor: UShort
         get() {
             //we have to mask the low nibble for the power level
-            return _minor.and(0xfff0).or(0x0004)
+            return _minor.and(0xfff0.toUShort()).or(0x0004.toUShort())
         }
 
     override val prefix = "xy:ibeacon"
@@ -161,13 +160,14 @@ open class XY3BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
             }
         }
 
+        @kotlin.ExperimentalUnsignedTypes
         internal fun pressFromScanResult(scanResult: XYScanResult): Boolean {
             val bytes = scanResult.scanRecord?.getManufacturerSpecificData(XYAppleBluetoothDevice.MANUFACTURER_ID)
             return if (bytes != null) {
                 val buffer = ByteBuffer.wrap(bytes)
-                val minor = Ushort(buffer.getShort(20))
-                val buttonBit = minor.and(0x0008)
-                buttonBit == Ushort(0x0008)
+                val minor = buffer.getShort(20).toUShort()
+                val buttonBit = minor.and(0x0008.toUShort())
+                buttonBit == 0x0008.toUShort()
             } else {
                 false
             }

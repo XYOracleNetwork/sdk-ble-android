@@ -21,6 +21,8 @@ import network.xyo.ble.sample.adapters.XYDeviceAdapter
 import network.xyo.ble.scanner.XYSmartScan
 import network.xyo.ui.ui
 
+@kotlin.ExperimentalStdlibApi
+@kotlin.ExperimentalUnsignedTypes
 class XYODeviceListActivity : XYOAppBaseActivity() {
     private var adapter: BaseAdapter? = null
 

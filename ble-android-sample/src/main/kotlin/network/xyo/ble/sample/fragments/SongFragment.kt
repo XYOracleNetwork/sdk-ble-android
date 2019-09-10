@@ -15,11 +15,10 @@ import network.xyo.ble.gatt.peripheral.XYBluetoothResult
 import network.xyo.ble.sample.R
 import network.xyo.ble.sample.XYDeviceData
 import network.xyo.ui.ui
-import unsigned.Ubyte
-import unsigned.Ushort
-import unsigned.toUbyte
 import java.nio.ByteBuffer
 
+@kotlin.ExperimentalUnsignedTypes
+@kotlin.ExperimentalStdlibApi
 class SongFragment : XYDeviceFragment() {
 
     var currentSong = ""
@@ -32,13 +31,13 @@ class SongFragment : XYDeviceFragment() {
     /**  VVPP PPPP PPPP PPPP DDDD DDDD DDDD DDDD **/
     /**********************************************/
 
-    class Note(val pitch: Ushort, val volume: Short, val duration: Short): SlotItem {
+    class Note(val pitch: UShort, val volume: Short, val duration: Short): SlotItem {
         override val value: ByteBuffer
             get() {
-                val byte1 = pitch.and(0x3fff).shr(8).toUbyte().or(Ubyte(volume).and(0x03).shl(6)).toByte()
-                val byte0 = pitch.and(0xff).or(Ubyte(volume).and(0x03).toUshort()).toByte()
-                val byte3 = Ushort(duration).shr(8).toByte()
-                val byte2 = Ubyte(duration).and(0xff).toByte()
+                val byte1 = pitch.and(0x3fff.toUShort()).rotateRight(8).toUByte().or(volume.toUByte()).and(0x03.toUByte().rotateLeft(6)).toByte()
+                val byte0 = pitch.and(0xff.toUShort()).or(volume.toUShort()).and(0x03.toUShort()).toByte()
+                val byte3 = duration.toUShort().rotateRight(8).toByte()
+                val byte2 = duration.toUByte().and(0xff.toUByte()).toByte()
                 return ByteBuffer.wrap(byteArrayOf(byte0, byte1, byte2, byte3))
             }
     }
@@ -47,11 +46,11 @@ class SongFragment : XYDeviceFragment() {
     /**  1111 1111 AAAA AAAA DDDD DDDD DDDD DDDD **/
     /**********************************************/
 
-    class Action(val action: Ushort, val data: Int): SlotItem {
+    class Action(val action: UShort, val data: Int): SlotItem {
         override val value: ByteBuffer
             get() {
-                val byte1 = action.shr(8).toByte()
-                val byte0 = action.and(0xff).toByte()
+                val byte1 = action.rotateRight(8).toByte()
+                val byte0 = action.and(0xff.toUShort()).toByte()
                 val byte3 = data.shr(8).toByte()
                 val byte2 = data.and(0xff).toByte()
 
@@ -59,15 +58,15 @@ class SongFragment : XYDeviceFragment() {
             }
     }
 
-    enum class Actions(val action: Ushort) {
-        Stop(Ushort(0xf100)),
-        Loop(Ushort(0xf101)),
-        Volume(Ushort(0xf102)),
-        VolumePlus(Ushort(0xf103)),
-        VolumeMinus(Ushort(0xf104))
+    enum class Actions(val action: UShort) {
+        Stop(0xf100U),
+        Loop(0xf101U),
+        Volume(0xf102U),
+        VolumePlus(0xf103U),
+        VolumeMinus(0xf104U)
     }
 
-    enum class Notes(val note: Ushort) {
+    /*enum class Notes(val note: UShort) {
          MIN	(Ushort(0)),
          B0		(Ushort(31)),
          C1 	(Ushort(33)),
@@ -159,12 +158,12 @@ class SongFragment : XYDeviceFragment() {
          D8 	(Ushort(4699)),
          DS8	(Ushort(4978)),
          MAX	(Ushort(10000))
-    }
+    }*/
 
     private val song1: ByteBuffer = ByteBuffer.allocate(32 * 4) //Sweet Child of Mine
 
     init {
-        song1.put(Note(Notes.D5.note, 0x01, 0x100).value)
+        /*song1.put(Note(Notes.D5.note, 0x01, 0x100).value)
         song1.put(Note(Notes.D6.note, 0x01, 0x100).value)
         song1.put(Note(Notes.A5.note, 0x01, 0x100).value)
         song1.put(Note(Notes.G5.note, 0x01, 0x100).value)
@@ -196,7 +195,7 @@ class SongFragment : XYDeviceFragment() {
         song1.put(Note(Notes.A5.note, 0x01, 0x100).value)
         song1.put(Note(Notes.FS5.note, 0x01, 0x100).value)
         //song1.put(Note(Notes.A5.note, 0x01, 0x100).value)
-        song1.put(Action(Actions.Stop.action, 0x0).value)
+        song1.put(Action(Actions.Stop.action, 0x0).value)*/
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,

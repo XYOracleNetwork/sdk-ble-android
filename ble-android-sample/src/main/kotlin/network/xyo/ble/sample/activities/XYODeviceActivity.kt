@@ -24,6 +24,8 @@ import network.xyo.ui.ui
  * Created by arietrouw on 12/28/17.
  */
 
+@kotlin.ExperimentalStdlibApi
+@kotlin.ExperimentalUnsignedTypes
 class XYODeviceActivity : XYOAppBaseActivity() {
 
     var device: XYBluetoothDevice? = null

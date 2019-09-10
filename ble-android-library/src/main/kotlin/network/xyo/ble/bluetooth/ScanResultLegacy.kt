@@ -11,6 +11,8 @@ import org.jetbrains.annotations.Nullable
 
 // This is a copy of ScanResult from Android Marshmallow+ to be used with Android versions earlier than Marshmallow
 
+@kotlin.ExperimentalUnsignedTypes
+@kotlin.ExperimentalStdlibApi
 class ScanResultLegacy : Parcelable {
     // Remote bluetooth device.
     /**

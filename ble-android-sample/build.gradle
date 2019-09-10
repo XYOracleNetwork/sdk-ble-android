@@ -78,6 +78,4 @@ dependencies {
     api 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.2.1'
     implementation project(':ble-android-library')
     api "androidx.legacy:legacy-support-v4:1.0.0"
-
-    implementation 'com.github.kotlin-graphics:kotlin-unsigned:3.2.0'
 }
