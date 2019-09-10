@@ -34,7 +34,7 @@ class XYApplication : Application() {
         XY3BluetoothDevice.enable(true)
         XY2BluetoothDevice.enable(true)
         XYGpsBluetoothDevice.enable(true)
-        //XYBluetoothDevice.enable(true)
+        XYBluetoothDevice.enable(true)
 
         Thread.setDefaultUncaughtExceptionHandler { t, e ->
             log.error("Exception Thread: $t")

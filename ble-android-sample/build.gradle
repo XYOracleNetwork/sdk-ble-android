@@ -5,7 +5,7 @@ apply plugin: 'com.github.dcendents.android-maven'
 
 android {
     compileSdkVersion 28
-    buildToolsVersion "28.0.3"
+    buildToolsVersion '28.0.3'
     defaultConfig {
         applicationId "network.xyo.ble.sample"
         minSdkVersion 21
@@ -33,7 +33,7 @@ android {
         sourceCompatibility = 1.8
         targetCompatibility = 1.8
         kotlinOptions {
-            allWarningsAsErrors = true
+            allWarningsAsErrors = false
         }
     }
 
@@ -58,8 +58,8 @@ buildscript {
         google()
     }
     dependencies {
-        classpath "com.android.tools.build:gradle:$androidPluginVersion"
-        classpath "com.github.dcendents:android-maven-gradle-plugin:$mavenVersion"
+        classpath 'com.android.tools.build:gradle:3.5.0'
+        classpath "com.github.dcendents:android-maven-gradle-plugin:2.1"
     }
 }
 
@@ -70,7 +70,7 @@ configurations {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    api 'com.google.android.material:material:1.1.0-alpha09'
+    api 'com.google.android.material:material:1.1.0-alpha10'
     api 'androidx.coordinatorlayout:coordinatorlayout:1.1.0-beta01'
     api "com.nabinbhandari.android:permissions:3.8"
     api 'network.xyo:sdk-base-android:2.0.91'
