@@ -20,7 +20,7 @@ configurations {
 }
 
 def majorVersion = 2
-def minorVersion = 1
+def minorVersion = 2
 
 Properties versionProps = new Properties()
 def versionPropsFile = file('version.properties')
