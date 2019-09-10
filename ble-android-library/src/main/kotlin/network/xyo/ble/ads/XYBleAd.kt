@@ -63,7 +63,7 @@ open class XYBleAd(buffer: ByteBuffer) : XYBase() {
             type = buffer.get()
             if (size > 0) {
                 data = ByteArray(size - 1)
-                buffer.get(data, 0, size - 1)
+                buffer.get(data!!, 0, size - 1)
             } else {
                 //if size is zero, we hit the end
                 while (buffer.hasRemaining()) {
