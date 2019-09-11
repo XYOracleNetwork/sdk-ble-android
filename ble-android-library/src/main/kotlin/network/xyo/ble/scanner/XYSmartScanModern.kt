@@ -14,6 +14,7 @@ import kotlinx.coroutines.launch
 import network.xyo.ble.XYCallByVersion
 import network.xyo.ble.gatt.peripheral.XYBluetoothResult
 import network.xyo.ble.gatt.peripheral.asyncBle
+import java.lang.IllegalStateException
 import java.util.*
 
 @TargetApi(21)
@@ -37,7 +38,11 @@ class XYSmartScanModern(context: Context) : XYSmartScan(context) {
                         while (started()) {
                             if (status != Status.BluetoothDisabled && status != Status.BluetoothUnavailable) {
                                 val filters = ArrayList<ScanFilter>()
-                                scanner.startScan(filters, getSettings(), callback)
+                                try {
+                                    scanner.startScan(filters, getSettings(), callback)
+                                } catch(ex: IllegalStateException) {
+                                    log.info("Turning Scanner on after BT disable")
+                                }
                                 //prevent the pause after a restart from being 5 minutes
                                 //15 minutes
                                 for (i in 0..180) {
@@ -46,7 +51,11 @@ class XYSmartScanModern(context: Context) : XYSmartScan(context) {
                                         break
                                     }
                                 }
-                                scanner.stopScan(callback)
+                                try {
+                                    scanner.stopScan(callback)
+                                } catch(ex: IllegalStateException) {
+                                    log.info("Turning Scanner off after BT disable")
+                                }
                                 delay(1000)
                             } else {
                                 //wait for enabled status
