@@ -9,6 +9,7 @@ import android.content.IntentFilter
 import android.location.LocationManager
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import network.xyo.ble.devices.XYBluetoothDevice
 import network.xyo.ble.devices.XYMobileBluetoothDevice
@@ -57,6 +58,8 @@ abstract class XYSmartScan(context: Context) : XYBluetoothBase(context) {
 
     var restartingBluetooth = false
 
+    var oldStatus = Status.None
+
     private val recevier = object: BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             if (BluetoothAdapter.ACTION_STATE_CHANGED == intent?.action) {
@@ -69,6 +72,7 @@ abstract class XYSmartScan(context: Context) : XYBluetoothBase(context) {
                 } else {
                     log.info(">>>> Bluetooth Adapter Enabled <<<<")
                 }
+                reportStatusChanged()
             }
         }
     }
@@ -76,6 +80,18 @@ abstract class XYSmartScan(context: Context) : XYBluetoothBase(context) {
     init {
         devices[hostDevice.hash] = hostDevice
         context.registerReceiver(recevier, IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED))
+        startStatusChecker()
+    }
+
+    fun startStatusChecker() {
+        GlobalScope.launch {
+            while(true) {
+                if (status != oldStatus) {
+                    reportStatusChanged()
+                }
+                delay(1000)
+            }
+        }
     }
 
     val status: Status
@@ -126,10 +142,13 @@ abstract class XYSmartScan(context: Context) : XYBluetoothBase(context) {
     }
 
     private fun reportStatusChanged() {
-        GlobalScope.launch {
-            synchronized(listeners) {
-                for (listener in listeners) {
-                    listener.value.statusChanged(status)
+        if (status != oldStatus) {
+            oldStatus = status
+            GlobalScope.launch {
+                synchronized(listeners) {
+                    for (listener in listeners) {
+                        listener.value.statusChanged(status)
+                    }
                 }
             }
         }
