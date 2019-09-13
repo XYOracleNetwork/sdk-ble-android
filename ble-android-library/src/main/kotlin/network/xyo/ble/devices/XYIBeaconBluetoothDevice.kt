@@ -42,6 +42,7 @@ open class XYIBeaconBluetoothDevice(context: Context, val scanResult: XYScanResu
 
     init {
         val bytes = scanResult?.scanRecord?.getManufacturerSpecificData(XYAppleBluetoothDevice.MANUFACTURER_ID)
+        rssi = scanResult?.rssi ?: -999
         if (bytes != null && bytes.size >= 23) {
             val buffer = ByteBuffer.wrap(bytes)
             buffer.position(2) //skip the type and size
