@@ -10,6 +10,7 @@ import network.xyo.ble.scanner.XYScanResultManual
 import java.util.*
 
 //this is a "fake" device that represents the device that is doing the scanning
+@kotlin.ExperimentalUnsignedTypes
 open class XYMobileBluetoothDevice(context: Context, scanResult: XYScanResult, hash:String) : XYFinderBluetoothDevice(context, scanResult, hash) {
 
     init {

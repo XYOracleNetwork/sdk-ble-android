@@ -7,6 +7,7 @@ import network.xyo.ble.gatt.peripheral.XYBluetoothResult
 
 //We add explicit parameterless functions since java does not like optionals
 
+@kotlin.ExperimentalUnsignedTypes
 class XYFinderBluetoothDevicePromiseWrapper(val device: XYFinderBluetoothDevice) {
     fun find() {
         find(null)

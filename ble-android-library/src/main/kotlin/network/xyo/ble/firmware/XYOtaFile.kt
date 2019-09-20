@@ -145,7 +145,7 @@ class XYOtaFile(private val inputStream: InputStream?) : XYBase() {
         }
 
         fun folderPath(folderName: String): String {
-            return "${Environment.getExternalStorageDirectory().absolutePath}/$folderName"
+            return folderName //""${Environment.getExternalStorageDirectory().absolutePath}/$folderName"
         }
 
         fun createFileDirectory(folderName: String): Boolean {

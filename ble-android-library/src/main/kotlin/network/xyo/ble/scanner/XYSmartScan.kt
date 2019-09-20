@@ -17,6 +17,7 @@ import network.xyo.ble.XYBluetoothBase
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 
+@kotlin.ExperimentalUnsignedTypes
 abstract class XYSmartScan(context: Context) : XYBluetoothBase(context) {
 
     var startTime = 0L

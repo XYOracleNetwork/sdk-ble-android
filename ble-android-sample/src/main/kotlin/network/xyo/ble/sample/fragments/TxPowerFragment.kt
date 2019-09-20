@@ -18,6 +18,7 @@ import network.xyo.ble.sample.XYDeviceData
 import network.xyo.ui.ui
 
 
+@kotlin.ExperimentalUnsignedTypes
 class TxPowerFragment : XYDeviceFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,

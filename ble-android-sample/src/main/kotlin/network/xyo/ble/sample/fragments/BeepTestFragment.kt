@@ -17,6 +17,7 @@ import network.xyo.ui.XYBaseFragment
 import network.xyo.ui.ui
 import java.lang.Exception
 
+@kotlin.ExperimentalUnsignedTypes
 class BeepTestFragment : XYBaseFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

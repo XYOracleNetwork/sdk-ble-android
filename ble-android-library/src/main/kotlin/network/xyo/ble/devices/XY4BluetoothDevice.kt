@@ -21,6 +21,7 @@ import java.nio.ByteBuffer
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 
+@kotlin.ExperimentalUnsignedTypes
 open class XY4BluetoothDevice(context: Context, scanResult: XYScanResult, hash: String) : XYFinderBluetoothDevice(context, scanResult, hash) {
 
     val alertNotification = AlertNotificationService(this)
@@ -241,9 +242,9 @@ open class XY4BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
             val bytes = scanResult.scanRecord?.getManufacturerSpecificData(XYAppleBluetoothDevice.MANUFACTURER_ID)
             return if (bytes != null) {
                 val buffer = ByteBuffer.wrap(bytes)
-                val minor = buffer.getShort(20).toUShort()
                 val buttonBit = 0x0008.toUShort()
-                buttonBit == 0x0008.toUShort()
+                val minor = buffer.getShort(20).toUShort() and buttonBit
+                minor == buttonBit
             } else {
                 false
             }

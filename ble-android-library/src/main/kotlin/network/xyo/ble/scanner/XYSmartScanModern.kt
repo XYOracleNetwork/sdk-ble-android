@@ -18,6 +18,7 @@ import java.lang.IllegalStateException
 import java.util.*
 
 @TargetApi(21)
+@kotlin.ExperimentalUnsignedTypes
 class XYSmartScanModern(context: Context) : XYSmartScan(context) {
     override fun start() = GlobalScope.async {
         log.info("start")

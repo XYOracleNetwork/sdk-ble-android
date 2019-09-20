@@ -35,7 +35,7 @@ class XYODeviceActivity : XYOAppBaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val deviceHash = intent.getStringExtra(EXTRA_DEVICEHASH)
+        val deviceHash = intent.getStringExtra(EXTRA_DEVICEHASH)!!
         log.info("onCreate: $deviceHash")
         device = scanner.devices[deviceHash]
         if (device == null) {
@@ -219,7 +219,7 @@ class XYODeviceActivity : XYOAppBaseActivity() {
     }
 
 
-    inner class SectionsPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
+    inner class SectionsPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
         private val size = 11
         private var fragments: SparseArray<XYBaseFragment> = SparseArray(size)
 

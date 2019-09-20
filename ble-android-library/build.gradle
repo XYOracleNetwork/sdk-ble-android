@@ -30,8 +30,8 @@ def code = (versionProps['VERSION_CODE'] ?: "0").toInteger() + 1
 def verString = majorVersion + '.' + minorVersion + '.' + code
 
 android {
-    compileSdkVersion 28
-    buildToolsVersion '28.0.3'
+    compileSdkVersion 29
+    buildToolsVersion '29.0.2'
 
     versionProps['VERSION_CODE'] = code.toString()
     versionProps.store(versionPropsFile.newWriter(), null)
@@ -40,13 +40,13 @@ android {
         sourceCompatibility = 1.8
         targetCompatibility = 1.8
         kotlinOptions {
-            allWarningsAsErrors = false
+            allWarningsAsErrors = true
         }
     }
 
     defaultConfig {
         minSdkVersion 21
-        targetSdkVersion 28
+        targetSdkVersion 29
         defaultPublishConfig 'release'
         versionCode = majorVersion * 100000000 + minorVersion * 1000000 + code
         versionName majorVersion + "." + minorVersion + "." + code
@@ -57,7 +57,7 @@ android {
     lintOptions {
         htmlReport true
         abortOnError true
-        warningsAsErrors false
+        warningsAsErrors true
         lintConfig file('lint.xml')
     }
 

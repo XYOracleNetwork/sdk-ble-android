@@ -27,6 +27,7 @@ import java.io.BufferedInputStream
 import java.io.FileOutputStream
 import java.net.URL
 
+@kotlin.ExperimentalUnsignedTypes
 class FirmwareUpdateFragment : XYDeviceFragment(), BackFragmentListener {
 
     private var firmwareFileName: String? = null
