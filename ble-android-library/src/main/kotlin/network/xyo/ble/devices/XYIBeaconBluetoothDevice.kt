@@ -8,6 +8,7 @@ import java.nio.ByteBuffer
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 
+@kotlin.ExperimentalUnsignedTypes
 open class XYIBeaconBluetoothDevice(context: Context, val scanResult: XYScanResult?, hash: String, transport: Int? = null)
     : XYBluetoothDevice(context, scanResult?.device, hash, transport) {
 

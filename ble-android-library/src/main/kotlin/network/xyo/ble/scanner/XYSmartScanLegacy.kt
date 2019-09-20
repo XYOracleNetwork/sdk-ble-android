@@ -4,6 +4,7 @@ import android.content.Context
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 
+@kotlin.ExperimentalUnsignedTypes
 class XYSmartScanLegacy(context: Context) : XYSmartScan(context) {
     override fun start() = GlobalScope.async {
         super.start().await()

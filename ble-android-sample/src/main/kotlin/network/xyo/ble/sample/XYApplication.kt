@@ -10,6 +10,7 @@ import network.xyo.ble.scanner.XYSmartScanLegacy
 import network.xyo.ble.scanner.XYSmartScanModern
 import network.xyo.base.XYBase
 
+@kotlin.ExperimentalUnsignedTypes
 class XYApplication : Application() {
     private var _scanner: XYSmartScan? = null
     val scanner: XYSmartScan

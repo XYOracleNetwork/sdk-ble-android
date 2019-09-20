@@ -4,6 +4,7 @@ import network.xyo.ble.sample.XYApplication
 import network.xyo.ble.scanner.XYSmartScan
 import network.xyo.ui.XYBaseActivity
 
+@kotlin.ExperimentalUnsignedTypes
 abstract class XYOAppBaseActivity : XYBaseActivity() {
 
     val scanner: XYSmartScan

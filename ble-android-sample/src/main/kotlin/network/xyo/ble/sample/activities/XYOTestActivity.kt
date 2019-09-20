@@ -13,6 +13,7 @@ import network.xyo.ble.sample.R
 import network.xyo.ble.sample.fragments.BeepTestFragment
 import network.xyo.ui.XYBaseFragment
 
+@kotlin.ExperimentalUnsignedTypes
 class XYOTestActivity : XYOAppBaseActivity() {
     private lateinit var pagerAdapter: SectionsPagerAdapter
 
@@ -31,7 +32,7 @@ class XYOTestActivity : XYOAppBaseActivity() {
     }
 
 
-    inner class SectionsPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
+    inner class SectionsPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
         private val size = 1
         private val fragments: SparseArray<XYBaseFragment> = SparseArray(size)
 

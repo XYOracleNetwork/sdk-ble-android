@@ -15,6 +15,7 @@ import java.nio.ByteBuffer
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 
+@kotlin.ExperimentalUnsignedTypes
 open class XY3BluetoothDevice(context: Context, scanResult: XYScanResult, hash: String) : XYFinderBluetoothDevice(context, scanResult, hash) {
 
     val alertNotification by lazy { AlertNotificationService(this) }

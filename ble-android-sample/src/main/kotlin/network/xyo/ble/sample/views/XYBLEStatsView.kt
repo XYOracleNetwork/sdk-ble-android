@@ -13,6 +13,7 @@ import network.xyo.base.XYBase
  * Created by arietrouw on 12/28/17.
  */
 
+@kotlin.ExperimentalUnsignedTypes
 class XYBLEStatsView(context: Context, attrs: AttributeSet) : LinearLayout(context, attrs) {
 
     private val scanner = (context.applicationContext as XYApplication).scanner

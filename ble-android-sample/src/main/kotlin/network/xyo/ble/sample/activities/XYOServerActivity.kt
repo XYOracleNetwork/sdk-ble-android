@@ -28,6 +28,7 @@ import java.nio.ByteBuffer
 import java.nio.charset.Charset
 import java.util.*
 
+@kotlin.ExperimentalUnsignedTypes
 class XYOServerActivity : XYOAppBaseActivity() {
     var bleServer : XYBluetoothGattServer? = null
     var bleAdvertiser : XYBluetoothAdvertiser? = null
@@ -101,7 +102,7 @@ class XYOServerActivity : XYOAppBaseActivity() {
      */
     private val logResponder = object : XYBluetoothWriteResponder {
         override fun onWriteRequest(writeRequestValue: ByteArray?, device: BluetoothDevice?): Boolean? {
-            Log.v("BluetoothGattServer", writeRequestValue?.toString(Charset.defaultCharset()))
+            Log.v("BluetoothGattServer", writeRequestValue?.toString(Charset.defaultCharset())!!)
             return true
         }
     }
@@ -118,7 +119,7 @@ class XYOServerActivity : XYOAppBaseActivity() {
         }
     }
 
-    inner class SectionsPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
+    inner class SectionsPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
         private val size = 3
         private val fragments: SparseArray<XYBaseFragment> = SparseArray(size)
 
