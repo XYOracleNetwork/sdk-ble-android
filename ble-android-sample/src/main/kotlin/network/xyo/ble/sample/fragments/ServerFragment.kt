@@ -1,4 +1,4 @@
-package network.xyo.ble.sample.activities
+package network.xyo.ble.sample.fragments
 
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothGattCharacteristic
@@ -6,13 +6,15 @@ import android.bluetooth.BluetoothGattService
 import android.os.Bundle
 import android.util.Log
 import android.util.SparseArray
+import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
-import kotlinx.android.synthetic.main.activity_server.*
+import kotlinx.android.synthetic.main.fragment_peripheral.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
@@ -21,15 +23,13 @@ import network.xyo.ble.gatt.server.*
 import network.xyo.ble.gatt.server.responders.XYBluetoothReadResponder
 import network.xyo.ble.gatt.server.responders.XYBluetoothWriteResponder
 import network.xyo.ble.sample.R
-import network.xyo.ble.sample.fragments.AdvertiserFragment
-import network.xyo.ble.sample.fragments.RootServicesFragment
 import network.xyo.ui.XYBaseFragment
 import java.nio.ByteBuffer
 import java.nio.charset.Charset
 import java.util.*
 
 @kotlin.ExperimentalUnsignedTypes
-class XYOServerActivity : XYOAppBaseActivity() {
+class ServerFragment : XYDeviceFragment() {
     var bleServer : XYBluetoothGattServer? = null
     var bleAdvertiser : XYBluetoothAdvertiser? = null
     val bluetoothIntentReceiver = BluetoothIntentReceiver()
@@ -56,20 +56,26 @@ class XYOServerActivity : XYOAppBaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_server)
+    }
 
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
+                              savedInstanceState: Bundle?): View? {
 
-        val tabAdapter = SectionsPagerAdapter(supportFragmentManager)
+        return inflater.inflate(R.layout.fragment_peripheral, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        val tabAdapter = SectionsPagerAdapter(this.childFragmentManager)
         pagerAdapter = tabAdapter
-        val serverPagerContainer = findViewById<ViewPager>(R.id.server_pager_container)
-        serverPagerContainer.adapter = pagerAdapter
-        serverPagerContainer.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(server_tabs))
-        serverPagerContainer.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(server_tabs) as ViewPager.OnPageChangeListener)
+        server_pager_container.adapter = pagerAdapter
+        server_pager_container.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(server_tabs))
+        server_pager_container.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(server_tabs) as ViewPager.OnPageChangeListener)
         server_tabs.addOnTabSelectedListener(TabLayout.ViewPagerOnTabSelectedListener(server_pager_container))
-        bleAdvertiser = XYBluetoothAdvertiser(applicationContext)
+        bleAdvertiser = XYBluetoothAdvertiser(context!!.applicationContext)
 
-        registerReceiver(bluetoothIntentReceiver, BluetoothIntentReceiver.bluetoothDeviceIntentFilter)
-
+        activity!!.registerReceiver(bluetoothIntentReceiver, BluetoothIntentReceiver.bluetoothDeviceIntentFilter)
 
         GlobalScope.launch {
             spinUpServer().await()
@@ -78,12 +84,12 @@ class XYOServerActivity : XYOAppBaseActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        unregisterReceiver(bluetoothIntentReceiver)
+        activity!!.unregisterReceiver(bluetoothIntentReceiver)
         bleServer?.stopServer()
     }
 
     private fun createTestServer() = GlobalScope.async {
-        val server = XYBluetoothGattServer(applicationContext)
+        val server = XYBluetoothGattServer(context!!.applicationContext)
         server.startServer()
         bleServer = server
         return@async server.addService(simpleService).await()
@@ -120,7 +126,7 @@ class XYOServerActivity : XYOAppBaseActivity() {
     }
 
     inner class SectionsPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
-        private val size = 3
+        private val size = 2
         private val fragments: SparseArray<XYBaseFragment> = SparseArray(size)
 
         override fun getItem(position: Int): Fragment {
@@ -144,6 +150,13 @@ class XYOServerActivity : XYOAppBaseActivity() {
 
         fun getFragmentByPosition(position: Int): XYBaseFragment? {
             return fragments.get(position)
+        }
+    }
+
+    companion object {
+        fun newInstance () : ServerFragment {
+            val frag = ServerFragment()
+            return frag
         }
     }
 }

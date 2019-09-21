@@ -120,7 +120,6 @@ public class ItemListActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        getScanner().start();
     }
 
     public static class SimpleItemRecyclerViewAdapter

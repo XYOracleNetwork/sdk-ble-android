@@ -1,15 +1,19 @@
-package network.xyo.ble.sample.activities
+package network.xyo.ble.sample.fragments
 
 import android.Manifest
 import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
+import android.view.ViewGroup
 import android.widget.BaseAdapter
+import android.widget.CompoundButton
 import com.nabinbhandari.android.permissions.PermissionHandler
 import com.nabinbhandari.android.permissions.Permissions
-import kotlinx.android.synthetic.main.activity_device_list.*
+import kotlinx.android.synthetic.main.fragment_central.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import network.xyo.ble.devices.XY3BluetoothDevice
@@ -17,38 +21,46 @@ import network.xyo.ble.devices.XY4BluetoothDevice
 import network.xyo.ble.devices.XYBluetoothDevice
 import network.xyo.ble.devices.XYFinderBluetoothDevice
 import network.xyo.ble.sample.R
-import network.xyo.ble.sample.adapters.XYDeviceAdapter
+import network.xyo.ble.sample.activities.XYODeviceActivity
+import network.xyo.ble.sample.activities.XYOTestActivity
 import network.xyo.ble.scanner.XYSmartScan
 import network.xyo.ui.ui
 
 @kotlin.ExperimentalStdlibApi
 @kotlin.ExperimentalUnsignedTypes
-class XYODeviceListActivity : XYOAppBaseActivity() {
-    private var adapter: BaseAdapter? = null
+class CentralFragment : XYDeviceFragment() {
+    var adapter: BaseAdapter? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        log.info("onCreate")
-        super.onCreate(savedInstanceState)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
+                              savedInstanceState: Bundle?): View? {
 
-        setContentView(R.layout.activity_device_list)
+        return inflater.inflate(R.layout.fragment_central, container, false)
+    }
 
-        progress_spinner_scanner.visibility = VISIBLE
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-        adapter = XYDeviceAdapter(this)
+        active.setOnCheckedChangeListener {_, isChecked ->
+            if (isChecked) {
+                scanner.start()
+            } else {
+                scanner.stop()
+            }
+        }
+
         listview!!.adapter = adapter
 
-        launchServer.setOnClickListener { startActivity(Intent(this@XYODeviceListActivity, XYOServerActivity::class.java)) }
-        launchTest.setOnClickListener { startActivity(Intent(this@XYODeviceListActivity, XYOTestActivity::class.java)) }
+        launchTest.setOnClickListener { startActivity(Intent(this@CentralFragment.context, XYOTestActivity::class.java)) }
     }
 
     private fun openDevice(device: XYBluetoothDevice) {
-        val intent = Intent(this, XYODeviceActivity::class.java)
+        val intent = Intent(this.context, XYODeviceActivity::class.java)
         intent.putExtra(XYODeviceActivity.EXTRA_DEVICEHASH, device.hash)
         this.startActivity(intent)
     }
 
     private fun connectListeners() {
-        XY4BluetoothDevice.addGlobalListener(tag, object : XY4BluetoothDevice.Listener() {
+        XY4BluetoothDevice.addGlobalListener(tag!!, object : XY4BluetoothDevice.Listener() {
             override fun buttonSinglePressed(device: XYFinderBluetoothDevice) {
                 super.buttonSinglePressed(device)
                 showToast("XY4 Button Single Pressed: ${device.address}")
@@ -65,7 +77,7 @@ class XYODeviceListActivity : XYOAppBaseActivity() {
                 showToast("XY4 Button Long Pressed")
             }
         })
-        XY3BluetoothDevice.addGlobalListener(tag, object : XY3BluetoothDevice.Listener() {
+        XY3BluetoothDevice.addGlobalListener(tag!!, object : XY3BluetoothDevice.Listener() {
             override fun buttonSinglePressed(device: XYFinderBluetoothDevice) {
                 super.buttonSinglePressed(device)
                 showToast("XY3 Button Single Pressed: ${device.address}")
@@ -90,8 +102,7 @@ class XYODeviceListActivity : XYOAppBaseActivity() {
             }
             XYSmartScan.Status.BluetoothDisabled -> {
                 onBluetoothDisabled()
-                progress_spinner_scanner.visibility = GONE
-                val alertDialog = AlertDialog.Builder(this).create()
+                val alertDialog = AlertDialog.Builder(this.context).create()
                 alertDialog.setTitle("Bluetooth Disabled")
                 alertDialog.setMessage("Please enable Bluetooth to see a list of devices.")
                 alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK") { dialog, _ ->
@@ -101,8 +112,7 @@ class XYODeviceListActivity : XYOAppBaseActivity() {
             }
             XYSmartScan.Status.BluetoothUnavailable -> {
                 onBluetoothDisabled()
-                progress_spinner_scanner.visibility = GONE
-                val alertDialog = AlertDialog.Builder(this).create()
+                val alertDialog = AlertDialog.Builder(this.context).create()
                 alertDialog.setTitle("Bluetooth Unavailable")
                 alertDialog.setMessage("It seems like your device may not support Bluetooth, or you are using an emulator")
                 alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK") { dialog, _ ->
@@ -118,7 +128,7 @@ class XYODeviceListActivity : XYOAppBaseActivity() {
     }
 
     private fun disconnectListeners() {
-        XY4BluetoothDevice.removeGlobalListener(tag)
+        XY4BluetoothDevice.removeGlobalListener(tag!!)
     }
 
     override fun onResume() {
@@ -127,7 +137,7 @@ class XYODeviceListActivity : XYOAppBaseActivity() {
         connectListeners()
 
         Permissions.check(
-                this,
+                this.context,
                 Manifest.permission.ACCESS_FINE_LOCATION,
                 "Location services are needed to connection and track your finders.",
                 object : PermissionHandler() {
@@ -137,7 +147,7 @@ class XYODeviceListActivity : XYOAppBaseActivity() {
         )
 
         Permissions.check(
-                this,
+                this.context,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE,
                 "Allow app to access your storage in order to load firmware files?",
                 object : PermissionHandler() {
@@ -158,23 +168,27 @@ class XYODeviceListActivity : XYOAppBaseActivity() {
 
     private fun onBluetoothEnabled() {
         ll_disabled.visibility = GONE
-        GlobalScope.launch {
-            //scanner.start()
+        if (active.isChecked && !scanner.started()) {
+            scanner.start()
         }
     }
 
     private fun onBluetoothDisabled() {
         ll_disabled.visibility = VISIBLE
-        GlobalScope.launch {
-            scanner.stop().await()
+        if (!active.isChecked && scanner.started()) {
+            scanner.stop()
         }
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+    }
 
-        /*GlobalScope.launch {
-            scanner.start()
-        }*/
+    companion object {
+        fun newInstance (adapter: BaseAdapter) : CentralFragment {
+            val frag = CentralFragment()
+            frag.adapter = adapter
+            return frag
+        }
     }
 }

@@ -5,7 +5,7 @@ import android.view.View
 import android.view.View.GONE
 import android.view.ViewGroup
 import android.widget.BaseAdapter
-import kotlinx.android.synthetic.main.activity_device_list.*
+import kotlinx.android.synthetic.main.fragment_central.*
 import network.xyo.ble.devices.XYBluetoothDevice
 import network.xyo.ble.sample.R
 import network.xyo.ble.sample.XYApplication
@@ -43,7 +43,6 @@ class XYDeviceAdapter(private val activity: Activity) : BaseAdapter() {
         if ((System.currentTimeMillis() - lastSort) > 5000) {
             devices = XYBluetoothDevice.sortedList(scanner.devices)
             ui {
-                activity.progress_spinner_scanner.visibility = GONE
                 notifyDataSetChanged()
             }
             lastSort = System.currentTimeMillis()

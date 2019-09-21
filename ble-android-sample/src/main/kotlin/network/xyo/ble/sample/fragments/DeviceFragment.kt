@@ -33,8 +33,22 @@ class DeviceFragment : XYDeviceFragment() {
         }
     }
 
+    internal class DeviceListener: XYBluetoothDevice.Listener() {
+        override fun detected(device: XYBluetoothDevice) {
+            super.detected(device)
+            updateUI()
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        device?.removeListener("DeviceFragment")
+    }
+
     override fun onResume() {
         super.onResume()
+
+        device?.addListener("DeviceFragment", this)
 
         if (deviceData?.systemId.isNullOrEmpty()) {
             setDeviceValues()

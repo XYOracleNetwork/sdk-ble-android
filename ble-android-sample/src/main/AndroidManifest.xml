@@ -16,7 +16,7 @@
         android:allowBackup="false"
         android:supportsRtl="true">
         <activity
-            android:name="network.xyo.ble.sample.activities.XYODeviceListActivity">
+            android:name="network.xyo.ble.sample.activities.XYOAppActivity" android:theme="@style/XYTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.intent.action.VIEW" />
@@ -24,13 +24,15 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="network.xyo.ble.sample.activities.XYODeviceActivity"/>
+            android:name="network.xyo.ble.sample.fragments.CentralFragment" android:theme="@style/XYTheme" />
+        <activity
+            android:name="network.xyo.ble.sample.activities.XYODeviceActivity" android:theme="@style/XYTheme" />
 
         <activity
-            android:name="network.xyo.ble.sample.activities.XYOServerActivity"/>
+            android:name="network.xyo.ble.sample.fragments.ServerFragment" android:theme="@style/XYTheme" />
 
         <activity
-            android:name="network.xyo.ble.sample.activities.XYOTestActivity"/>
+            android:name="network.xyo.ble.sample.activities.XYOTestActivity" android:theme="@style/XYTheme" />
 
     </application>
 

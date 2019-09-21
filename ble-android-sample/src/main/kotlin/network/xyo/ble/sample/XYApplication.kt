@@ -41,10 +41,6 @@ class XYApplication : Application() {
             log.error("Exception Thread: $t")
             log.error(e)
         }
-
-        GlobalScope.launch {
-            scanner.start().await()
-        }
     }
 
     override fun onTerminate() {

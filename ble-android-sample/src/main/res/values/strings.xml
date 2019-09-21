@@ -133,4 +133,8 @@
     <string name="service_type">Service Type</string>
     <string name="characteristics">Characteristics</string>
 
+    <string name="central">Central</string>
+    <string name="peripheral">Peripheral</string>
+    <string name="active">Active</string>
+
 </resources>
