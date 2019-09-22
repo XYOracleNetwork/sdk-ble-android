@@ -39,7 +39,7 @@ class CentralFragment : XYDeviceFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        active.setOnCheckedChangeListener {_, isChecked ->
+        /*active.setOnCheckedChangeListener {_, isChecked ->
             GlobalScope.launch {
                 if (isChecked) {
                     scanner.start()
@@ -52,7 +52,7 @@ class CentralFragment : XYDeviceFragment() {
 
         list_view!!.adapter = adapter
 
-        launchTest.setOnClickListener { startActivity(Intent(this@CentralFragment.context, XYOTestActivity::class.java)) }
+        launchTest.setOnClickListener { startActivity(Intent(this@CentralFragment.context, XYOTestActivity::class.java)) }*/
     }
 
     private fun openDevice(device: XYBluetoothDevice) {
@@ -170,20 +170,20 @@ class CentralFragment : XYDeviceFragment() {
 
     private fun onBluetoothEnabled() {
         ll_disabled.visibility = GONE
-        if (active.isChecked && !scanner.started()) {
+        /*if (active.isChecked && !scanner.started()) {
             GlobalScope.launch {
                 scanner.start()
             }
-        }
+        }*/
     }
 
     private fun onBluetoothDisabled() {
         ll_disabled.visibility = VISIBLE
-        if (!active.isChecked && scanner.started()) {
+        /*if (!active.isChecked && scanner.started()) {
             GlobalScope.launch {
                 scanner.stop()
             }
-        }
+        }*/
     }
 
     companion object {

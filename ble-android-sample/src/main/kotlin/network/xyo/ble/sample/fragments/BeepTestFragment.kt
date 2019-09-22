@@ -1,5 +1,6 @@
 package network.xyo.ble.sample.fragments
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -34,6 +35,7 @@ class BeepTestFragment : XYBaseFragment() {
     private var unlockCount = 0
     private var beepCount = 0
 
+    @SuppressLint("SetTextI18n")
     fun updateUI() {
         ui {
             start_count?.text = "Starts: $startCount"

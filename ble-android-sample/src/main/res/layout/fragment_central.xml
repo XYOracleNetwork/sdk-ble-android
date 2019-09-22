@@ -16,38 +16,37 @@
         android:layout_alignParentTop="true"
         >
 
-    <include
-        android:id="@+id/include_stats"
-        layout="@layout/ble_stats_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        <include
+            android:id="@+id/include_stats"
+            layout="@layout/ble_stats_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:background="@color/material_on_primary_emphasis_medium"
-        android:layout_gravity="center"
-        android:padding="8dp"
-        >
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="center"
+            android:padding="8dp"
+            >
 
-        <network.xyo.ui.views.XYButton
-            android:id="@+id/launchTest"
-            android:layout_width="160dp"
-            android:layout_height="wrap_content"
-            android:padding="8dp"
-            android:textAlignment="center"
-            android:text="@string/test" />
-        <Switch
-            android:id="@+id/active"
-            android:layout_width="160dp"
-            android:layout_height="wrap_content"
-            android:textAlignment="textEnd"
-            android:textColor="@color/xy_text_light"
-            android:padding="8dp"
-            android:checked="false"
-            android:text="@string/active" />
-    </LinearLayout>
+            <network.xyo.ui.views.XYButton
+                android:id="@+id/launchTest"
+                android:layout_width="160dp"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:textAlignment="center"
+                android:text="@string/test" />
+            <Switch
+                android:id="@+id/active"
+                android:layout_width="160dp"
+                android:layout_height="wrap_content"
+                android:textAlignment="textEnd"
+                android:textColor="@color/xy_text_light"
+                android:padding="8dp"
+                android:checked="false"
+                android:text="@string/active" />
+        </LinearLayout>
     </LinearLayout>
 
     <ListView

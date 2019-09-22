@@ -46,6 +46,7 @@ class XYBLEStatsView(context: Context, attrs: AttributeSet) : LinearLayout(conte
 
     fun update() {
         post {
+            text_start_time.text = scanner.startTime.toString()
             text_uptime.text = ("%.2f").format(scanner.uptimeSeconds)
             text_pulses.text = scanner.scanResultCount.toString()
             text_pulses_per_second.text = ("%.2f").format(scanner.resultsPerSecond)

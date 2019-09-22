@@ -136,4 +136,6 @@
     <string name="peripheral">Peripheral</string>
     <string name="active">Active</string>
 
+    <string name="start_time">Start:</string>
+
 </resources>
