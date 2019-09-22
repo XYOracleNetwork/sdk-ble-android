@@ -211,7 +211,7 @@ class XYBluetoothDeviceUpdate(private var spotaService: SpotaService, var device
         return GlobalScope.async {
             val memType = MEMORY_TYPE_EXTERNAL_SPI shl 24 or imageBank
             log.info(TAG, "setMemDev: " + String.format("%#010x", memType))
-            val result = spotaService.SPOTA_MEM_DEV.set(memType)
+            val result = spotaService.spotaMemDev.set(memType)
 
             return@async XYBluetoothResult(result.value, result.error)
         }.await()
@@ -222,7 +222,7 @@ class XYBluetoothDeviceUpdate(private var spotaService: SpotaService, var device
         return GlobalScope.async {
             val memInfo = misoGpio shl 24 or (mosiGpio shl 16) or (csGpio shl 8) or sckGpio
 
-            val result = spotaService.SPOTA_GPIO_MAP.set(memInfo)
+            val result = spotaService.spotaGpioMap.set(memInfo)
 
             return@async XYBluetoothResult(result.value, result.error)
         }.await()
@@ -239,7 +239,7 @@ class XYBluetoothDeviceUpdate(private var spotaService: SpotaService, var device
 
             log.info(TAG, "setPatchLength blockSize: $blockSize - ${String.format("%#06x", blockSize)}")
 
-            val result = spotaService.SPOTA_PATCH_LEN.set(blockSize!!)
+            val result = spotaService.spotaPatchLen.set(blockSize!!)
 
             return@async XYBluetoothResult(result, result.error)
         }.await()
@@ -269,7 +269,7 @@ class XYBluetoothDeviceUpdate(private var spotaService: SpotaService, var device
                     lastBlock = true
                 }
             }
-            val result = spotaService.SPOTA_PATCH_DATA.set(chunk)
+            val result = spotaService.spotaPatchData.set(chunk)
 
             return@async XYBluetoothResult(result.value, result.error)
         }.await()
@@ -279,7 +279,7 @@ class XYBluetoothDeviceUpdate(private var spotaService: SpotaService, var device
     private suspend fun sendEndSignal(): XYBluetoothResult<Int> {
         log.info(TAG, "sendEndSignal...")
         return GlobalScope.async {
-            val result = spotaService.SPOTA_MEM_DEV.set(END_SIGNAL)
+            val result = spotaService.spotaMemDev.set(END_SIGNAL)
             endSignalSent = true
             return@async XYBluetoothResult(result.value, result.error)
         }.await()
@@ -289,7 +289,7 @@ class XYBluetoothDeviceUpdate(private var spotaService: SpotaService, var device
     private suspend fun sendReboot(): XYBluetoothResult<Int> {
         log.info(TAG, "sendReboot...")
         return GlobalScope.async {
-            val result = spotaService.SPOTA_MEM_DEV.set(REBOOT_SIGNAL)
+            val result = spotaService.spotaMemDev.set(REBOOT_SIGNAL)
             return@async XYBluetoothResult(result.value, result.error)
         }.await()
     }

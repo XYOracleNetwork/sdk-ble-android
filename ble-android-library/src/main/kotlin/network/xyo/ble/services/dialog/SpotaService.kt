@@ -12,12 +12,12 @@ class SpotaService(device: XYBluetoothDevice) : Service(device) {
             return uuid
         }
 
-    val SPOTA_MEM_DEV = IntegerCharacteristic(this, Characteristics.MEM_DEV.uuid, BluetoothGattCharacteristic.FORMAT_UINT32)
-    val SPOTA_GPIO_MAP = IntegerCharacteristic(this, Characteristics.GPIO_MAP.uuid, BluetoothGattCharacteristic.FORMAT_UINT32)
-    val SPOTA_MEM_INFO = IntegerCharacteristic(this, Characteristics.MEM_INFO.uuid, BluetoothGattCharacteristic.FORMAT_UINT32)
-    val SPOTA_PATCH_LEN = IntegerCharacteristic(this, Characteristics.PATCH_LEN.uuid, BluetoothGattCharacteristic.FORMAT_UINT16)
-    val SPOTA_PATCH_DATA = BytesCharacteristic(this, Characteristics.PATCH_DATA.uuid )
-    val SPOTA_SERV_STATUS = IntegerCharacteristic(this, Characteristics.SERV_STATUS.uuid, BluetoothGattCharacteristic.FORMAT_UINT32)
+    val spotaMemDev = IntegerCharacteristic(this, Characteristics.MEM_DEV.uuid, BluetoothGattCharacteristic.FORMAT_UINT32)
+    val spotaGpioMap = IntegerCharacteristic(this, Characteristics.GPIO_MAP.uuid, BluetoothGattCharacteristic.FORMAT_UINT32)
+    val spotaMemInfo = IntegerCharacteristic(this, Characteristics.MEM_INFO.uuid, BluetoothGattCharacteristic.FORMAT_UINT32)
+    val spotaPatchLen = IntegerCharacteristic(this, Characteristics.PATCH_LEN.uuid, BluetoothGattCharacteristic.FORMAT_UINT16)
+    val spotaPatchData = BytesCharacteristic(this, Characteristics.PATCH_DATA.uuid )
+    val spotaServStatus = IntegerCharacteristic(this, Characteristics.SERV_STATUS.uuid, BluetoothGattCharacteristic.FORMAT_UINT32)
 
     companion object {
 

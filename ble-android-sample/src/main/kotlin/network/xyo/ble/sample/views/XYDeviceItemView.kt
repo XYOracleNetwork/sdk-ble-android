@@ -32,7 +32,7 @@ class XYDeviceItemView(context: Context, attrs: AttributeSet) : RelativeLayout(c
         }
     }
 
-    fun openDevice(device: XYBluetoothDevice) {
+    private fun openDevice(device: XYBluetoothDevice) {
         val intent = Intent(context, XYODeviceActivity::class.java)
         intent.putExtra(XYODeviceActivity.EXTRA_DEVICEHASH, device.hash)
         context.startActivity(intent)

@@ -5,6 +5,8 @@ import kotlinx.coroutines.launch
 import network.xyo.ble.XYPromise
 import network.xyo.base.XYBase
 
+//we use this to allow java code to access our coroutines
+
 @kotlin.ExperimentalUnsignedTypes
 class XYSmartScanPromiseWrapper(val scanner: XYSmartScan): XYBase() {
 

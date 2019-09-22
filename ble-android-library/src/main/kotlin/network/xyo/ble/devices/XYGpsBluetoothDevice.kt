@@ -16,23 +16,42 @@ import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 
 @kotlin.ExperimentalUnsignedTypes
-open class XYGpsBluetoothDevice(context: Context, scanResult: XYScanResult, hash: String) : XYFinderBluetoothDevice(context, scanResult, hash) {
+open class XYGpsBluetoothDevice protected constructor (context: Context, scanResult: XYScanResult, hash: String) : XYFinderBluetoothDevice(context, scanResult, hash) {
 
-    val alertNotification = AlertNotificationService(this)
-    val batteryService = BatteryService(this)
-    val currentTimeService = CurrentTimeService(this)
-    val deviceInformationService = DeviceInformationService(this)
-    val genericAccessService = GenericAccessService(this)
-    val genericAttributeService = GenericAttributeService(this)
-    val linkLossService = LinkLossService(this)
-    val txPowerService = TxPowerService(this)
+    lateinit var alertNotification: AlertNotificationService
+    lateinit var batteryService: BatteryService
+    lateinit var currentTimeService: CurrentTimeService
+    lateinit var deviceInformationService: DeviceInformationService
+    lateinit var genericAccessService: GenericAccessService
+    lateinit var genericAttributeService: GenericAttributeService
+    lateinit var linkLossService: LinkLossService
+    lateinit var txPowerService: TxPowerService
 
-    val basicConfigService = BasicConfigService(this)
-    val controlService = ControlService(this)
-    val csrOtaService = CsrOtaService(this)
-    val extendedConfigService = ExtendedConfigService(this)
-    val extendedControlService = ExtendedControlService(this)
-    val sensorService = SensorService(this)
+    lateinit var basicConfigService: BasicConfigService
+    lateinit var controlService: ControlService
+    lateinit var csrOtaService: CsrOtaService
+    lateinit var extendedConfigService: ExtendedConfigService
+    lateinit var extendedControlService: ExtendedControlService
+    lateinit var sensorService: SensorService
+
+    fun initServices(): XYGpsBluetoothDevice {
+        alertNotification = AlertNotificationService(this)
+        batteryService = BatteryService(this)
+        currentTimeService = CurrentTimeService(this)
+        deviceInformationService = DeviceInformationService(this)
+        genericAccessService = GenericAccessService(this)
+        genericAttributeService = GenericAttributeService(this)
+        linkLossService = LinkLossService(this)
+        txPowerService = TxPowerService(this)
+
+        basicConfigService = BasicConfigService(this)
+        controlService = ControlService(this)
+        csrOtaService = CsrOtaService(this)
+        extendedConfigService = ExtendedConfigService(this)
+        extendedControlService = ExtendedControlService(this)
+        sensorService = SensorService(this)
+        return this
+    }
 
     private val buttonListener = object: BluetoothGattCallback() {
         override fun onCharacteristicChanged(gatt: BluetoothGatt?, characteristic: BluetoothGattCharacteristic?) {
@@ -77,6 +96,11 @@ open class XYGpsBluetoothDevice(context: Context, scanResult: XYScanResult, hash
     open class Listener : XYFinderBluetoothDevice.Listener()
 
     companion object : XYBase() {
+
+        fun create(context: Context, scanResult: XYScanResult, hash: String): XYGpsBluetoothDevice {
+            val obj = XYGpsBluetoothDevice(context, scanResult, hash)
+            return obj.initServices()
+        }
 
         private val FAMILY_UUID: UUID = UUID.fromString("9474f7c6-47a4-11e6-beb8-9e71128cae77")
         val DEFAULT_LOCK_CODE = byteArrayOf(0x2f.toByte(), 0xbe.toByte(), 0xa2.toByte(), 0x07.toByte(), 0x52.toByte(), 0xfe.toByte(), 0xbf.toByte(), 0x31.toByte(), 0x1d.toByte(), 0xac.toByte(), 0x5d.toByte(), 0xfa.toByte(), 0x7d.toByte(), 0x77.toByte(), 0x76.toByte(), 0x80.toByte())

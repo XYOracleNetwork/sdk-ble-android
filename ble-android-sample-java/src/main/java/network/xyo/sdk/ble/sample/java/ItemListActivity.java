@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.appcompat.widget.Toolbar;
@@ -58,11 +57,11 @@ public class ItemListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_item_list);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         toolbar.setTitle(getTitle());
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -98,7 +97,7 @@ public class ItemListActivity extends AppCompatActivity {
 
     private XYSmartScanPromiseWrapper _scanner;
 
-    protected XYSmartScanPromiseWrapper getScanner() {
+    private XYSmartScanPromiseWrapper getScanner() {
         synchronized (this) {
             if (_scanner == null) {
                 if (Build.VERSION.SDK_INT >= 21) {
@@ -115,11 +114,6 @@ public class ItemListActivity extends AppCompatActivity {
     protected void onPause() {
         getScanner().stop();
         super.onPause();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
     }
 
     public static class SimpleItemRecyclerViewAdapter
@@ -153,7 +147,7 @@ public class ItemListActivity extends AppCompatActivity {
 
         SimpleItemRecyclerViewAdapter(final ItemListActivity parent,
                                       boolean twoPane) {
-            mValues = new ArrayList<XYBluetoothDevice>();
+            mValues = new ArrayList<>();
             mParentActivity = parent;
             mTwoPane = twoPane;
             self = this;
@@ -185,6 +179,7 @@ public class ItemListActivity extends AppCompatActivity {
             });
         }
 
+        @NotNull
         @Override
         public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             View view = LayoutInflater.from(parent.getContext())
@@ -212,8 +207,8 @@ public class ItemListActivity extends AppCompatActivity {
 
             ViewHolder(View view) {
                 super(view);
-                mIdView = (TextView) view.findViewById(R.id.id_text);
-                mContentView = (TextView) view.findViewById(R.id.content);
+                mIdView = view.findViewById(R.id.id_text);
+                mContentView = view.findViewById(R.id.content);
             }
         }
     }

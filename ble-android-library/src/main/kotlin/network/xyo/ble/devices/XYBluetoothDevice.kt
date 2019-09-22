@@ -43,19 +43,22 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, val has
     //with rotating MAC addresses
     var exitAfterDisconnect = false
 
-    protected var _address: String? = null
-    open val address: String
+    private var addressValue: String? = null
+    var address: String
         get() {
-            return device?.address ?: _address ?: "00:00:00:00:00:00"
+            return device?.address ?: addressValue ?: "00:00:00:00:00:00"
+        }
+        set(address) {
+            addressValue = address
         }
 
-    protected var _name: String = ""
-    open var name: String?
+    private var nameValue: String = ""
+    var name: String?
         get() {
-            return device?.name ?: _name
+            return device?.name ?: nameValue
         }
         set(name) {
-            _name = name ?: _name
+            nameValue = name ?: nameValue
         }
 
     open val connected: Boolean

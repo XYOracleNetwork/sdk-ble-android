@@ -17,20 +17,13 @@ open class XYMobileBluetoothDevice(context: Context, scanResult: XYScanResult, h
         //we use this since the user would prefer for it to survice a resinstall.  DO NOT USE for advertising!
         val uniqueId = Settings.Secure.getString(context.contentResolver,
                 Settings.Secure.ANDROID_ID).hashCode().toUInt()
-        _major = uniqueId.and(0xffff0000.toUInt()).shr(16).toUShort()
-        _minor = uniqueId.and(0xffff.toUInt()).toUShort()
-        _name = "Mobile Device"
-
-        var address = device?.address
-        if (address == null) {
-            val bluetoothManager = context.applicationContext.getSystemService(Context.BLUETOOTH_SERVICE) as? BluetoothManager
-            address = bluetoothManager?.adapter?.address
-        }
-        _address = address ?: "00:00:00:00:00:00"
+        majorValue = uniqueId.and(0xffff0000.toUInt()).shr(16).toUShort()
+        minorValue = uniqueId.and(0xffff.toUInt()).toUShort()
+        name = "Mobile Device"
+        address = device?.address ?: (context.applicationContext.getSystemService(Context.BLUETOOTH_SERVICE) as? BluetoothManager)?.adapter?.address ?: "00:00:00:00:00:00"
     }
 
     override val prefix = "xy:mobile"
-
 
     override val uuid: UUID
         get() = FAMILY_UUID

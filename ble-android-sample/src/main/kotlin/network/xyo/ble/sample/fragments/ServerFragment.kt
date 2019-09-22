@@ -30,9 +30,9 @@ import java.util.*
 
 @kotlin.ExperimentalUnsignedTypes
 class ServerFragment : XYDeviceFragment() {
-    var bleServer : XYBluetoothGattServer? = null
+    private var bleServer : XYBluetoothGattServer? = null
     var bleAdvertiser : XYBluetoothAdvertiser? = null
-    val bluetoothIntentReceiver = BluetoothIntentReceiver()
+    private val bluetoothIntentReceiver = BluetoothIntentReceiver()
     private lateinit var pagerAdapter: SectionsPagerAdapter
 
     private val simpleService = XYBluetoothService(

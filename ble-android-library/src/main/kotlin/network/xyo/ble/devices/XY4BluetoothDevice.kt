@@ -22,19 +22,36 @@ import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 
 @kotlin.ExperimentalUnsignedTypes
-open class XY4BluetoothDevice(context: Context, scanResult: XYScanResult, hash: String) : XYFinderBluetoothDevice(context, scanResult, hash) {
+open class XY4BluetoothDevice protected constructor(
+        context: Context,
+        scanResult: XYScanResult,
+        hash: String
+        ) : XYFinderBluetoothDevice(context, scanResult, hash) {
 
-    val alertNotification = AlertNotificationService(this)
-    val batteryService = BatteryService(this)
-    val currentTimeService = CurrentTimeService(this)
-    val deviceInformationService = DeviceInformationService(this)
-    val genericAccessService = GenericAccessService(this)
-    val genericAttributeService = GenericAttributeService(this)
-    val linkLossService = LinkLossService(this)
-    val txPowerService = TxPowerService(this)
+    lateinit var alertNotification: AlertNotificationService
+    lateinit var batteryService: BatteryService
+    lateinit var currentTimeService: CurrentTimeService
+    lateinit var deviceInformationService: DeviceInformationService
+    lateinit var genericAccessService: GenericAccessService
+    lateinit var genericAttributeService: GenericAttributeService
+    lateinit var linkLossService: LinkLossService
+    lateinit var txPowerService: TxPowerService
+    lateinit var primary: PrimaryService
+    lateinit var spotaService: SpotaService
 
-    val primary = PrimaryService(this)
-    val spotaService = SpotaService(this)
+    private fun initServices(): XY4BluetoothDevice {
+        alertNotification = AlertNotificationService(this)
+        batteryService = BatteryService(this)
+        currentTimeService = CurrentTimeService(this)
+        deviceInformationService = DeviceInformationService(this)
+        genericAccessService = GenericAccessService(this)
+        genericAttributeService = GenericAttributeService(this)
+        linkLossService = LinkLossService(this)
+        txPowerService = TxPowerService(this)
+        primary = PrimaryService(this)
+        spotaService = SpotaService(this)
+        return this
+    }
 
     private var lastButtonPressTime = 0L
 
@@ -151,12 +168,19 @@ open class XY4BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
     override val minor: UShort
         get() {
             //we have to mask the low nibble for the power level
-            return _minor.and(0xfff0.toUShort()).or(0x0004.toUShort())
+            return minorValue.and(0xfff0.toUShort()).or(0x0004.toUShort())
         }
 
     open class Listener : XYFinderBluetoothDevice.Listener()
 
     companion object : XYBase() {
+
+        fun create(context: Context,
+                   scanResult: XYScanResult,
+                   hash: String): XY4BluetoothDevice {
+            val obj = XY4BluetoothDevice(context, scanResult, hash)
+            return obj.initServices()
+        }
 
         private val FAMILY_UUID = UUID.fromString("a44eacf4-0104-0000-0000-5f784c9977b5")!!
 

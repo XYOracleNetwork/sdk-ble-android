@@ -130,7 +130,7 @@ class InfoFragment : XYDeviceFragment(), View.OnClickListener, CompoundButton.On
         when (buttonView?.id) {
             R.id.button_stayConnected -> {
                 GlobalScope.launch {
-                    device?.setStayConnected(isChecked)
+                    device?.stayConnected = isChecked
                     updateUI()
                 }
             }
@@ -316,7 +316,7 @@ class InfoFragment : XYDeviceFragment(), View.OnClickListener, CompoundButton.On
     }
 
 
-    private suspend fun updateStayAwakeEnabledStates(): Unit {
+    private suspend fun updateStayAwakeEnabledStates() {
         return GlobalScope.async {
             log.info("updateStayAwakeEnabledStates")
             val xy4 = device as? XY4BluetoothDevice
@@ -376,7 +376,7 @@ class InfoFragment : XYDeviceFragment(), View.OnClickListener, CompoundButton.On
     }
 
     //it is possible that reading the lock value is not implemented in the firmware
-    private suspend fun updateLockValue(): Unit {
+    private suspend fun updateLockValue() {
         return withContext(Dispatchers.Default) {
             log.info("updateLockValue")
             val xy4 = device as? XY4BluetoothDevice

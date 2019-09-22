@@ -24,15 +24,15 @@ class BeepTestFragment : XYBaseFragment() {
         return inflater.inflate(R.layout.fragment_test, container, false)
     }
 
-    val scanner: XYSmartScan?
+    private val scanner: XYSmartScan?
         get() {
             return (activity?.applicationContext as? XYApplication)?.scanner
         }
 
-    var startCount = 0
-    var connectCount = 0
-    var unlockCount = 0
-    var beepCount = 0
+    private var startCount = 0
+    private var connectCount = 0
+    private var unlockCount = 0
+    private var beepCount = 0
 
     fun updateUI() {
         ui {

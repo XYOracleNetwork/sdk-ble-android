@@ -21,7 +21,7 @@ import java.nio.ByteBuffer
 @kotlin.ExperimentalStdlibApi
 class SongFragment : XYDeviceFragment() {
 
-    var currentSong = ""
+    private var currentSong = ""
 
     interface SlotItem {
         val value: ByteBuffer
@@ -31,7 +31,7 @@ class SongFragment : XYDeviceFragment() {
     /**  VVPP PPPP PPPP PPPP DDDD DDDD DDDD DDDD **/
     /**********************************************/
 
-    class Note(val pitch: UShort, val volume: Short, val duration: Short): SlotItem {
+    class Note(private val pitch: UShort, private val volume: Short, private val duration: Short): SlotItem {
         override val value: ByteBuffer
             get() {
                 val byte1 = pitch.and(0x3fff.toUShort()).rotateRight(8).toUByte().or(volume.toUByte()).and(0x03.toUByte().rotateLeft(6)).toByte()
@@ -46,7 +46,7 @@ class SongFragment : XYDeviceFragment() {
     /**  1111 1111 AAAA AAAA DDDD DDDD DDDD DDDD **/
     /**********************************************/
 
-    class Action(val action: UShort, val data: Int): SlotItem {
+    class Action(private val action: UShort, private val data: Int): SlotItem {
         override val value: ByteBuffer
             get() {
                 val byte1 = action.rotateRight(8).toByte()
@@ -233,7 +233,7 @@ class SongFragment : XYDeviceFragment() {
         }
     }
 
-    fun readCurrentSong() {
+    private fun readCurrentSong() {
         throbber?.show()
 
         when (device) {
@@ -256,7 +256,7 @@ class SongFragment : XYDeviceFragment() {
         throbber?.hide()
     }
 
-    fun setSongOne() {
+    private fun setSongOne() {
         throbber?.show()
 
         when (device) {

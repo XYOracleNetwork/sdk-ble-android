@@ -7,34 +7,32 @@ import java.nio.BufferUnderflowException
 import java.nio.ByteBuffer
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
+import kotlin.math.pow
 
 @kotlin.ExperimentalUnsignedTypes
 open class XYIBeaconBluetoothDevice(context: Context, val scanResult: XYScanResult?, hash: String, transport: Int? = null)
     : XYBluetoothDevice(context, scanResult?.device, hash, transport) {
 
-    protected val _uuid: UUID
+    protected var uuidValue: UUID
     open val uuid: UUID
         get() {
-            return _uuid
+            return uuidValue
         }
 
-    protected var _major: UShort
+
+    protected var majorValue: UShort
     open val major: UShort
-        get() {
-            return _major
-        }
+    get() {
+        return majorValue
+    }
 
-    protected var _minor: UShort
+    protected var minorValue: UShort
     open val minor: UShort
-        get() {
-            return _minor
-        }
+    get() {
+        return minorValue
+    }
 
-    protected val _power: Byte
-    open val power: Byte
-        get() {
-            return _power
-        }
+    val power: Byte
 
     override val id: String
         get() {
@@ -51,16 +49,16 @@ open class XYIBeaconBluetoothDevice(context: Context, val scanResult: XYScanResu
             //get uuid
             val high = buffer.long
             val low = buffer.long
-            _uuid = UUID(high, low)
+            uuidValue = UUID(high, low)
 
-            _major = buffer.short.toUShort()
-            _minor = buffer.short.toUShort()
-            _power = buffer.get()
+            majorValue = buffer.short.toUShort()
+            minorValue = buffer.short.toUShort()
+            power = buffer.get()
         } else {
-            _uuid = UUID(0, 0)
-            _major = 0.toUShort()
-            _minor = 0.toUShort()
-            _power = 0
+            uuidValue = UUID(0, 0)
+            majorValue = 0.toUShort()
+            minorValue = 0.toUShort()
+            power = 0
         }
     }
 
@@ -76,10 +74,10 @@ open class XYIBeaconBluetoothDevice(context: Context, val scanResult: XYScanResu
             val dist: Double
             val ratio: Double = rssi*1.0/power
             dist = if (ratio < 1.0) {
-                Math.pow(ratio, 10.0)
+                ratio.pow(10.0)
             }
             else {
-                (0.89976)*Math.pow(ratio,7.7095) + 0.111
+                (0.89976)* ratio.pow(7.7095) + 0.111
             }
             return dist
         }

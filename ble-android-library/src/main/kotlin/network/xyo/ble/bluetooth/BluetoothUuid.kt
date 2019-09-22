@@ -6,7 +6,6 @@ import android.os.ParcelUuid
 
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
-import java.util.Arrays
 import java.util.HashSet
 import java.util.UUID
 
@@ -158,7 +157,7 @@ object BluetoothUuid {
             return uuidA.isEmpty()
         }
 
-        val uuidSet = HashSet(Arrays.asList(*uuidA))
+        val uuidSet = HashSet(listOf(*uuidA))
         for (uuid in uuidB) {
             if (uuidSet.contains(uuid)) return true
         }
@@ -181,7 +180,7 @@ object BluetoothUuid {
 
         if (uuidB == null) return true
 
-        val uuidSet = HashSet(Arrays.asList(*uuidA))
+        val uuidSet = HashSet(listOf(*uuidA))
         for (uuid in uuidB) {
             if (!uuidSet.contains(uuid)) return false
         }

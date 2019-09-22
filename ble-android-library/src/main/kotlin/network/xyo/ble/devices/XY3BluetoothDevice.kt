@@ -65,7 +65,7 @@ open class XY3BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
     override val minor: UShort
         get() {
             //we have to mask the low nibble for the power level
-            return _minor.and(0xfff0.toUShort()).or(0x0004.toUShort())
+            return minorValue.and(0xfff0.toUShort()).or(0x0004.toUShort())
         }
 
     override val prefix = "xy:ibeacon"

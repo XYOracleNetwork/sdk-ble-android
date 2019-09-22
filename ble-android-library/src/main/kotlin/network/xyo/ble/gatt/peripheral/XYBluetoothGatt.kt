@@ -82,22 +82,23 @@ open class XYBluetoothGatt protected constructor(
 
     protected var connection: XYBluetoothGattConnect? = null
 
-    val _timeout = 15000L
+    val defaultTimeout = 15000L
 
     //force ble functions for this gatt to run in order
     suspend fun <T> queueBle(
-            timeout: Long = _timeout,
+            timeout: Long? = null,
             action: String = "Unknown",
             context: CoroutineContext = bluetoothQueue,
             start: CoroutineStart = CoroutineStart.DEFAULT,
             block: suspend CoroutineScope.() -> XYBluetoothResult<T>
     ) = GlobalScope.async(context, start) {
         log.info("queueBle: $action: started")
+        val timeoutToUse = timeout ?: defaultTimeout
         return@async runBlocking {
             lastAccessTime = now
             log.info("queueBle: $action: runBlocking")
             try {
-                return@runBlocking withTimeout(timeout) {
+                return@runBlocking withTimeout(timeoutToUse) {
                     lastAccessTime = now
                     log.info("queueBle: $action: withTimeout")
                     val r = block()
@@ -114,24 +115,24 @@ open class XYBluetoothGatt protected constructor(
         }
     }.await()
 
-    protected var _stayConnected = false
+    private var stayConnectedValue = false
 
-    fun getStayConnected(): Boolean {
-        return _stayConnected
-    }
-
-    fun setStayConnected(value: Boolean) {
-        synchronized(_stayConnected) {
-            if (value != _stayConnected) {
-                _stayConnected = value
-                if (!_stayConnected) {
-                    references--
-                } else {
-                    references++
+    var stayConnected: Boolean
+        get() {
+            return stayConnectedValue
+        }
+        set(value) {
+            synchronized(value) {
+                if (stayConnectedValue != value) {
+                    stayConnectedValue = value
+                    if (!stayConnectedValue) {
+                        references--
+                    } else {
+                        references++
+                    }
                 }
             }
         }
-    }
 
     val closed: Boolean
         get() = (connection == null)

@@ -2,6 +2,7 @@ package network.xyo.ble.ads
 
 import network.xyo.base.XYBase
 import java.nio.ByteBuffer
+import kotlin.math.pow
 
 open class XYBleAd(buffer: ByteBuffer) : XYBase() {
 
@@ -83,14 +84,14 @@ open class XYBleAd(buffer: ByteBuffer) : XYBase() {
         val p = 16777619
         var hash = 216613626
 
-        hash = (Math.pow(hash.toDouble(), size.toDouble()) * p).toInt()
+        hash = (hash.toDouble().pow(size.toDouble()) * p).toInt()
         hash += hash.shl(13)
         hash = hash.xor(hash.shr(7))
         hash += hash.shl(3)
         hash = hash.xor(hash.shr(17))
         hash += hash.shl(5)
 
-        hash = (Math.pow(hash.toDouble(), type.toDouble()) * p).toInt()
+        hash = (hash.toDouble().pow(type.toDouble()) * p).toInt()
         hash += hash.shl(13)
         hash = hash.xor(hash.shr(7))
         hash += hash.shl(3)
@@ -100,7 +101,7 @@ open class XYBleAd(buffer: ByteBuffer) : XYBase() {
         if (data != null) {
 
             for (byte in data!!) {
-                hash = (Math.pow(hash.toDouble(), byte.toDouble()) * p).toInt()
+                hash = (hash.toDouble().pow(byte.toDouble()) * p).toInt()
                 hash += hash.shl(13)
                 hash = hash.xor(hash.shr(7))
                 hash += hash.shl(3)

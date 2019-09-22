@@ -20,7 +20,7 @@ class DeviceInformationService(device: XYBluetoothDevice) : Service(device) {
     val hardwareRevisionString = StringCharacteristic(this, Characteristics.HardwareRevisionString.uuid)
     val softwareRevisionString = StringCharacteristic(this, Characteristics.SoftwareRevisionString.uuid)
     val manufacturerNameString = StringCharacteristic(this, Characteristics.ManufacturerNameString.uuid)
-    val ieeeRegulatoryCertificationDataList = IntegerCharacteristic(this, Characteristics.IEEE11073_20601RegulatoryCertificationDataList.uuid)
+    val ieeeRegulatoryCertificationDataList = IntegerCharacteristic(this, Characteristics.Ieee11073x20601RegulatoryCertificationDataList.uuid)
     val pnpId = IntegerCharacteristic(this, Characteristics.PnPId.uuid)
 
     companion object {
@@ -34,7 +34,7 @@ class DeviceInformationService(device: XYBluetoothDevice) : Service(device) {
             HardwareRevisionString(                         UUID.fromString("00002a27-0000-1000-8000-00805f9b34fb")),
             SoftwareRevisionString(                         UUID.fromString("00002a28-0000-1000-8000-00805f9b34fb")),
             ManufacturerNameString(                         UUID.fromString("00002a29-0000-1000-8000-00805f9b34fb")),
-            IEEE11073_20601RegulatoryCertificationDataList( UUID.fromString("00002a2a-0000-1000-8000-00805f9b34fb")),
+            Ieee11073x20601RegulatoryCertificationDataList( UUID.fromString("00002a2a-0000-1000-8000-00805f9b34fb")),
             PnPId(                                          UUID.fromString("00002a50-0000-1000-8000-00805f9b34fb"))
 
         }

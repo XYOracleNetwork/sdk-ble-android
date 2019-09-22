@@ -7,6 +7,7 @@ import java.io.IOException
 import java.io.InputStream
 import java.util.*
 import kotlin.experimental.xor
+import kotlin.math.max
 
 /**
  * File format for Over-the-air images
@@ -50,7 +51,7 @@ class XYOtaFile(private val inputStream: InputStream?) : XYBase() {
 
     // Set the file blockSize and ChunkSize if not using the default 128/20 values
     fun setFileBlockSize(blockSize: Int, chunkSize: Int) {
-        fileBlockSize = Math.max(blockSize, chunkSize)
+        fileBlockSize = max(blockSize, chunkSize)
         fileChunkSize = chunkSize
         chunksPerBlockCount = fileBlockSize / fileChunkSize + if (fileBlockSize.rem(fileChunkSize) != 0) 1 else 0
         numberOfBlocks = bytes!!.size / fileBlockSize + if (bytes!!.size.rem(fileBlockSize) != 0) 1 else 0
@@ -93,7 +94,7 @@ class XYOtaFile(private val inputStream: InputStream?) : XYBase() {
                 }
 
                 //XYBase.log.info("XYOtaFile", "total bytes: " + bytes!!.size + ", offset: " + byteOffset + ", block: " + i + ", chunk: " + (chunkNumber + 1) + ", blockSize: " + blockSize + ", chunkSize: " + chunkSize)
-                val chunk = Arrays.copyOfRange(bytes!!, byteOffset, byteOffset + chunkSize)
+                val chunk = (bytes!!).copyOfRange(byteOffset, byteOffset + chunkSize)
                 blocks!![i][chunkNumber] = chunk
                 byteOffset += chunkSize
                 chunkNumber++
