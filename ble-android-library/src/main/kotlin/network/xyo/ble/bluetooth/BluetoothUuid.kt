@@ -215,14 +215,10 @@ object BluetoothUuid {
     @ExperimentalStdlibApi
     @NotNull
     fun parseUuidFrom(@Nullable uuidBytes: ByteArray?): ParcelUuid {
-        if (uuidBytes == null) {
-            throw IllegalArgumentException("uuidBytes cannot be null")
-        }
+        requireNotNull(uuidBytes) { "uuidBytes cannot be null" }
         val length = uuidBytes.size
-        if (length != UUID_BYTES_16_BIT && length != UUID_BYTES_32_BIT &&
-                length != UUID_BYTES_128_BIT) {
-            throw IllegalArgumentException("uuidBytes length invalid - $length")
-        }
+        require(!(length != UUID_BYTES_16_BIT && length != UUID_BYTES_32_BIT &&
+                length != UUID_BYTES_128_BIT)) { "uuidBytes length invalid - $length" }
 
         // Construct a 128 bit UUID.
         if (length == UUID_BYTES_128_BIT) {
@@ -259,9 +255,7 @@ object BluetoothUuid {
      */
     @NotNull
     fun uuidToBytes(@Nullable uuid: ParcelUuid?): ByteArray {
-        if (uuid == null) {
-            throw IllegalArgumentException("uuid cannot be null")
-        }
+        requireNotNull(uuid) { "uuid cannot be null" }
 
         if (is16BitUuid(uuid)) {
             val uuidBytes = ByteArray(UUID_BYTES_16_BIT)

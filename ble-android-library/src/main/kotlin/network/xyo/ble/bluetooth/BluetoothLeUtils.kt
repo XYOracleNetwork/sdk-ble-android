@@ -111,9 +111,7 @@ object BluetoothLeUtils {
      * [BluetoothAdapter.STATE_ON].
      */
     internal fun checkAdapterStateOn(@Nullable adapter: BluetoothAdapter?) {
-        if (adapter == null || adapter.state != BluetoothAdapter.STATE_ON) {
-            throw IllegalStateException("BT Adapter is not turned ON")
-        }
+        check(!(adapter == null || adapter.state != BluetoothAdapter.STATE_ON)) { "BT Adapter is not turned ON" }
     }
 
 }

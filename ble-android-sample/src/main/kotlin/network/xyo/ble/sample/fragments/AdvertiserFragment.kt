@@ -71,9 +71,8 @@ class AdvertiserFragment : XYBaseFragment() {
         val radioButtonGroup = view.advertising_mode_selector
         val radioButtonID = radioButtonGroup.checkedRadioButtonId
         val radioButton = radioButtonGroup.findViewById<RadioButton>(radioButtonID)
-        val idx = radioButtonGroup.indexOfChild(radioButton)
 
-        when(idx) {
+        when(radioButtonGroup.indexOfChild(radioButton)) {
             0 -> advertiser?.changeAdvertisingMode(AdvertiseSettings.ADVERTISE_MODE_LOW_LATENCY)
             1 -> advertiser?.changeAdvertisingMode(AdvertiseSettings.ADVERTISE_MODE_BALANCED)
             2 -> advertiser?.changeAdvertisingMode(AdvertiseSettings.ADVERTISE_MODE_LOW_POWER)
@@ -86,9 +85,8 @@ class AdvertiserFragment : XYBaseFragment() {
         val radioButtonGroup = view.advertising_power_selector
         val radioButtonID = radioButtonGroup.checkedRadioButtonId
         val radioButton = radioButtonGroup.findViewById<RadioButton>(radioButtonID)
-        val idx = radioButtonGroup.indexOfChild(radioButton)
 
-        when(idx) {
+        when(radioButtonGroup.indexOfChild(radioButton)) {
             0 -> advertiser?.changeAdvertisingTxLevel(AdvertiseSettings.ADVERTISE_TX_POWER_HIGH)
             1 -> advertiser?.changeAdvertisingTxLevel(AdvertiseSettings.ADVERTISE_TX_POWER_MEDIUM)
             2 -> advertiser?.changeAdvertisingTxLevel(AdvertiseSettings.ADVERTISE_TX_POWER_HIGH)
@@ -101,9 +99,8 @@ class AdvertiserFragment : XYBaseFragment() {
         val radioButtonGroup = view.connectable_selector
         val radioButtonID = radioButtonGroup.checkedRadioButtonId
         val radioButton = radioButtonGroup.findViewById<RadioButton>(radioButtonID)
-        val idx = radioButtonGroup.indexOfChild(radioButton)
 
-        when(idx) {
+        when(radioButtonGroup.indexOfChild(radioButton)) {
             0 -> advertiser?.changeContactable(true)
             1 -> advertiser?.changeContactable(false)
         }
@@ -122,9 +119,8 @@ class AdvertiserFragment : XYBaseFragment() {
         val radioButtonGroup = view.include_device_name_selector
         val radioButtonID = radioButtonGroup.checkedRadioButtonId
         val radioButton = radioButtonGroup.findViewById<RadioButton>(radioButtonID)
-        val idx = radioButtonGroup.indexOfChild(radioButton)
 
-        when(idx) {
+        when(radioButtonGroup.indexOfChild(radioButton)) {
             0 -> return true
         }
 
@@ -196,9 +192,8 @@ class AdvertiserFragment : XYBaseFragment() {
         val radioButtonGroup = view.include_tx_power_level_selector
         val radioButtonID = radioButtonGroup.checkedRadioButtonId
         val radioButton = radioButtonGroup.findViewById<RadioButton>(radioButtonID)
-        val idx = radioButtonGroup.indexOfChild(radioButton)
 
-        return when(idx) {
+        return when(radioButtonGroup.indexOfChild(radioButton)) {
             0 -> true
             1 -> false
             else -> false

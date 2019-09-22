@@ -137,8 +137,7 @@ class ScanRecordLegacy private constructor(@param:Nullable @field:Nullable
                 // Note the length includes the length of the field type itself.
                 val dataLength = length.toInt() - 1
                 // fieldType is unsigned int.
-                val fieldType = scanRecord[currentPos++].toUByte()
-                when (fieldType) {
+                when (scanRecord[currentPos++].toUByte()) {
                     DATA_TYPE_FLAGS -> advertiseFlag = scanRecord[currentPos].toUByte()
                     DATA_TYPE_SERVICE_UUIDS_16_BIT_PARTIAL, DATA_TYPE_SERVICE_UUIDS_16_BIT_COMPLETE -> parseServiceUuid(scanRecord, currentPos,
                             dataLength, BluetoothUuid.UUID_BYTES_16_BIT, serviceUuids

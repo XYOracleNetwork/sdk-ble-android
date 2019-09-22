@@ -10,7 +10,6 @@ import network.xyo.ble.gatt.peripheral.actions.XYBluetoothGattReadCharacteristic
 import network.xyo.ble.gatt.peripheral.actions.XYBluetoothGattWriteCharacteristic
 import network.xyo.ble.gatt.peripheral.actions.XYBluetoothGattWriteDescriptor
 import network.xyo.ble.scanner.XYScanResult
-import network.xyo.base.XYBase
 import java.util.*
 import java.util.concurrent.Executors
 import kotlin.coroutines.CoroutineContext

@@ -1,8 +1,6 @@
 package network.xyo.ble.services
 
 import android.bluetooth.BluetoothGattCharacteristic
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
 import network.xyo.base.XYBase
 import network.xyo.ble.devices.XYBluetoothDevice
 import java.util.*
