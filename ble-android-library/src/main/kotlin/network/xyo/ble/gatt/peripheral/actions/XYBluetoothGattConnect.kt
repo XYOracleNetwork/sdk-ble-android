@@ -8,13 +8,10 @@ import android.bluetooth.BluetoothGattService
 import android.content.Context
 import android.os.Build
 import android.os.Handler
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlinx.coroutines.*
+import network.xyo.base.XYBase
 import network.xyo.ble.XYCallByVersion
 import network.xyo.ble.gatt.peripheral.*
-import network.xyo.base.XYBase
 
 class XYBluetoothGattConnect(val device: BluetoothDevice) : XYBase() {
 
@@ -47,7 +44,7 @@ class XYBluetoothGattConnect(val device: BluetoothDevice) : XYBase() {
             log.error("finalize: Finalize closing up connection!!!!")
             GlobalScope.launch {
                 log.info("finalize: launch")
-                close().await()
+                close()
             }
             this.gatt = null
         }
@@ -94,7 +91,7 @@ class XYBluetoothGattConnect(val device: BluetoothDevice) : XYBase() {
         }
     }
 
-    private fun connectGatt(context: Context, transport: Int? = null) = GlobalScope.async {
+    private suspend fun connectGatt(context: Context, transport: Int? = null) = GlobalScope.async {
         log.info("connectGatt")
         var error: XYBluetoothError? = null
         var value: XYThreadSafeBluetoothGatt? = null
@@ -117,7 +114,7 @@ class XYBluetoothGattConnect(val device: BluetoothDevice) : XYBase() {
                         newGatt = XYThreadSafeBluetoothGatt(connectGatt19(context, device, autoConnect))
                     }.call()
             return@asyncBle XYBluetoothResult(newGatt)
-        }.await()
+        }
 
         if (result?.value == null) {
             error = XYBluetoothError("connectGatt: Failed to connect gatt")
@@ -126,15 +123,15 @@ class XYBluetoothGattConnect(val device: BluetoothDevice) : XYBase() {
         }
 
         return@async XYBluetoothResult(value, error)
-    }
+    }.await()
 
-    private fun discover() = GlobalScope.async {
+    private suspend fun discover() = GlobalScope.async {
         log.info("discover")
         assert(state != BluetoothGatt.STATE_CONNECTED)
         val gatt = this@XYBluetoothGattConnect.gatt //make thread safe
         if (gatt != null) {
             val discover = XYBluetoothGattDiscover(gatt, callback)
-            val discoverResult = discover.start().await()
+            val discoverResult = discover.start()
             if (discoverResult.error == null) {
                 services = discoverResult.value
             }
@@ -142,9 +139,9 @@ class XYBluetoothGattConnect(val device: BluetoothDevice) : XYBase() {
         } else {
             return@async XYBluetoothResult<List<BluetoothGattService>>(XYBluetoothError("No Gatt"))
         }
-    }
+    }.await()
 
-    fun start(context: Context, transport: Int? = null) = GlobalScope.async {
+    suspend fun start(context: Context, transport: Int? = null) = GlobalScope.async {
         log.info("connect: start")
 
         val listenerName = "XYBluetoothGattConnect${hashCode()}"
@@ -154,7 +151,7 @@ class XYBluetoothGattConnect(val device: BluetoothDevice) : XYBase() {
         var connectStartSuccess = false
 
         if (gatt == null) {
-            val gattConnectResult = connectGatt(context, transport).await()
+            val gattConnectResult = connectGatt(context, transport)
             if (gattConnectResult.error != null) {
                 error = gattConnectResult.error
             } else {
@@ -162,7 +159,7 @@ class XYBluetoothGattConnect(val device: BluetoothDevice) : XYBase() {
                 connectStartSuccess = true
             }
         } else {
-            val connectStarted = gatt?.connect()?.await()
+            val connectStarted = gatt?.connect()
             if (connectStarted != true) {
                 error = XYBluetoothError("start: gatt.connectStarted failed to start")
             } else {
@@ -183,7 +180,7 @@ class XYBluetoothGattConnect(val device: BluetoothDevice) : XYBase() {
                                 error = XYBluetoothError("connect: connection failed(status): $status : $newState")
                                 callback.removeListener(listenerName)
                                 GlobalScope.launch {
-                                    close().await()
+                                    close()
 
                                     val idempotent = cont.tryResume(null)
                                     idempotent?.let {
@@ -195,14 +192,14 @@ class XYBluetoothGattConnect(val device: BluetoothDevice) : XYBase() {
                                 log.info("connect:connected")
                                 callback.removeListener(listenerName)
                                 GlobalScope.launch {
-                                    if (discover().await().error == null) {
+                                    if (discover().error == null) {
                                         val idempotent = cont.tryResume(true)
                                         idempotent?.let {
                                             cont.completeResume(it)
                                         }
                                     } else {
                                         GlobalScope.launch {
-                                            close().await()
+                                            close()
                                             val idempotent = cont.tryResume(null)
                                             idempotent?.let {
                                                 cont.completeResume(it)
@@ -218,7 +215,7 @@ class XYBluetoothGattConnect(val device: BluetoothDevice) : XYBase() {
                                 error = XYBluetoothError("connect: connection failed unknown(state): $status : $newState")
                                 callback.removeListener(listenerName)
                                 GlobalScope.launch {
-                                    close().await()
+                                    close()
                                     val idempotent = cont.tryResume(null)
                                     idempotent?.let {
                                         cont.completeResume(it)
@@ -244,12 +241,12 @@ class XYBluetoothGattConnect(val device: BluetoothDevice) : XYBase() {
 
         log.info("connect: Returning[$value][$error]")
         return@async XYBluetoothResult(value, error)
-    }
+    }.await()
 
-    fun close() = GlobalScope.async {
+    suspend fun close() = withContext(Dispatchers.Default) {
         log.info("disconnect:close")
-        gatt?.disconnect()?.await()
-        gatt?.close()?.await()
+        gatt?.disconnect()
+        gatt?.close()
         gatt = null
     }
 

@@ -10,7 +10,6 @@ import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.BaseAdapter
-import android.widget.CompoundButton
 import com.nabinbhandari.android.permissions.PermissionHandler
 import com.nabinbhandari.android.permissions.Permissions
 import kotlinx.android.synthetic.main.fragment_central.*
@@ -41,14 +40,17 @@ class CentralFragment : XYDeviceFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         active.setOnCheckedChangeListener {_, isChecked ->
-            if (isChecked) {
-                scanner.start()
-            } else {
-                scanner.stop()
+            GlobalScope.launch {
+                if (isChecked) {
+                    scanner.start()
+                } else {
+                    scanner.stop()
+                }
             }
+
         }
 
-        listview!!.adapter = adapter
+        list_view!!.adapter = adapter
 
         launchTest.setOnClickListener { startActivity(Intent(this@CentralFragment.context, XYOTestActivity::class.java)) }
     }
@@ -169,19 +171,19 @@ class CentralFragment : XYDeviceFragment() {
     private fun onBluetoothEnabled() {
         ll_disabled.visibility = GONE
         if (active.isChecked && !scanner.started()) {
-            scanner.start()
+            GlobalScope.launch {
+                scanner.start()
+            }
         }
     }
 
     private fun onBluetoothDisabled() {
         ll_disabled.visibility = VISIBLE
         if (!active.isChecked && scanner.started()) {
-            scanner.stop()
+            GlobalScope.launch {
+                scanner.stop()
+            }
         }
-    }
-
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
 
     companion object {

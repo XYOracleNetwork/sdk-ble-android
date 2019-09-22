@@ -15,7 +15,7 @@ class XYFinderBluetoothDevicePromiseWrapper(val device: XYFinderBluetoothDevice)
 
     fun find(promise: XYPromise<XYBluetoothResult<Int>>?) {
         GlobalScope.launch {
-            val result = device.find().await()
+            val result = device.find()
             promise?.resolve(result)
         }
     }
@@ -26,7 +26,7 @@ class XYFinderBluetoothDevicePromiseWrapper(val device: XYFinderBluetoothDevice)
 
     fun stopFind(promise: XYPromise<XYBluetoothResult<Int>>?) {
         GlobalScope.launch {
-            val result = device.stopFind().await()
+            val result = device.stopFind()
             promise?.resolve(result)
         }
     }
@@ -37,7 +37,7 @@ class XYFinderBluetoothDevicePromiseWrapper(val device: XYFinderBluetoothDevice)
 
     fun lock(promise: XYPromise<XYBluetoothResult<ByteArray>>?) {
         GlobalScope.launch {
-            val result = device.lock().await()
+            val result = device.lock()
             promise?.resolve(result)
         }
     }
@@ -48,7 +48,7 @@ class XYFinderBluetoothDevicePromiseWrapper(val device: XYFinderBluetoothDevice)
 
     fun unlock(promise: XYPromise<XYBluetoothResult<ByteArray>>?) {
         GlobalScope.launch {
-            val result = device.unlock().await()
+            val result = device.unlock()
             promise?.resolve(result)
         }
     }
@@ -59,7 +59,7 @@ class XYFinderBluetoothDevicePromiseWrapper(val device: XYFinderBluetoothDevice)
 
     fun stayAwake(promise: XYPromise<XYBluetoothResult<Int>>?) {
         GlobalScope.launch {
-            val result = device.stayAwake().await()
+            val result = device.stayAwake()
             promise?.resolve(result)
         }
     }
@@ -70,7 +70,7 @@ class XYFinderBluetoothDevicePromiseWrapper(val device: XYFinderBluetoothDevice)
 
     fun fallAsleep(promise: XYPromise<XYBluetoothResult<Int>>?) {
         GlobalScope.launch {
-            val result = device.fallAsleep().await()
+            val result = device.fallAsleep()
             promise?.resolve(result)
         }
     }
@@ -81,7 +81,7 @@ class XYFinderBluetoothDevicePromiseWrapper(val device: XYFinderBluetoothDevice)
 
     fun restart(promise: XYPromise<XYBluetoothResult<Int>>?) {
         GlobalScope.launch {
-            val result = device.restart().await()
+            val result = device.restart()
             promise?.resolve(result)
         }
     }
@@ -92,7 +92,7 @@ class XYFinderBluetoothDevicePromiseWrapper(val device: XYFinderBluetoothDevice)
 
     fun batteryLevel(promise: XYPromise<XYBluetoothResult<Int>>?) {
         GlobalScope.launch {
-            val result = device.batteryLevel().await()
+            val result = device.batteryLevel()
             promise?.resolve(result)
         }
     }

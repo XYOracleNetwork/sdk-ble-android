@@ -1,3 +1,5 @@
+@file:Suppress("SpellCheckingInspection")
+
 package network.xyo.ble.bluetooth
 
 import android.os.ParcelUuid

@@ -54,7 +54,7 @@ class AdvertiserFragment : XYBaseFragment() {
 
     private suspend fun restartAdvertiser () {
         advertiser?.stopAdvertising()
-        val status = advertiser?.startAdvertising()?.await()
+        val status = advertiser?.startAdvertising()
 
 
         ui {
@@ -141,7 +141,7 @@ class AdvertiserFragment : XYBaseFragment() {
     private fun updateAdvertiserDataIBeacon (view: View) : Boolean {
 
         try {
-            val manufactorId = Integer.parseInt(view.ibeacon_manufacturer_id_input.text.toString())
+            val manufacturerId = Integer.parseInt(view.ibeacon_manufacturer_id_input.text.toString())
             val major = Integer.parseInt(view.ibeacon_major.text.toString())
             val minor = Integer.parseInt(view.ibeacon_minor.text.toString())
             val uuid = UUID.fromString(view.ibeacon_primary_service_input.text.toString())
@@ -152,7 +152,7 @@ class AdvertiserFragment : XYBaseFragment() {
                     ByteBuffer.allocate(2).putShort(major.toShort()).array(),
                     ByteBuffer.allocate(2).putShort(minor.toShort()).array(),
                     uuid,
-                    manufactorId,
+                    manufacturerId,
                     getIncludeDeviceName(view))
 
             advertiser?.advertisingData = data.build()

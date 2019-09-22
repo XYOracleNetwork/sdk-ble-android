@@ -162,8 +162,8 @@ class SongFragment : XYDeviceFragment() {
 
     private val song1: ByteBuffer = ByteBuffer.allocate(32 * 4) //Sweet Child of Mine
 
-    init {
-        /*song1.put(Note(Notes.D5.note, 0x01, 0x100).value)
+    /*init {
+        song1.put(Note(Notes.D5.note, 0x01, 0x100).value)
         song1.put(Note(Notes.D6.note, 0x01, 0x100).value)
         song1.put(Note(Notes.A5.note, 0x01, 0x100).value)
         song1.put(Note(Notes.G5.note, 0x01, 0x100).value)
@@ -195,8 +195,8 @@ class SongFragment : XYDeviceFragment() {
         song1.put(Note(Notes.A5.note, 0x01, 0x100).value)
         song1.put(Note(Notes.FS5.note, 0x01, 0x100).value)
         //song1.put(Note(Notes.A5.note, 0x01, 0x100).value)
-        song1.put(Action(Actions.Stop.action, 0x0).value)*/
-    }
+        song1.put(Action(Actions.Stop.action, 0x0).value)
+    }*/
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -284,11 +284,11 @@ class SongFragment : XYDeviceFragment() {
                                 )
 
                                 log.info("setSongOne: $offset:${data.contentToString()} ")
-                                it.primary.buzzerConfig.set(data).await()
+                                it.primary.buzzerConfig.set(data)
                                 offset += 4
                             }
                             return@connection XYBluetoothResult(true)
-                        }.await()
+                        }
                         updateUI()
                         checkConnectionError(hasConnectionError)
                     }
@@ -307,10 +307,10 @@ class SongFragment : XYDeviceFragment() {
 
             device.connection {
                 hasConnectionError = false
-                val data = device.primary.buzzerConfig.get().await()
+                val data = device.primary.buzzerConfig.get()
                 currentSong = "${data.value?.size}"
                 return@connection XYBluetoothResult(true)
-            }.await()
+            }
 
             updateUI()
             checkConnectionError(hasConnectionError)
@@ -321,11 +321,10 @@ class SongFragment : XYDeviceFragment() {
         GlobalScope.launch {
             var hasConnectionError = true
 
-            val conn = device.connection {
+            device.connection {
                 hasConnectionError = false
                 return@connection XYBluetoothResult(true)
             }
-            conn.await()
 
             updateUI()
             checkConnectionError(hasConnectionError)

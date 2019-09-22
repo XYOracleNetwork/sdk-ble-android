@@ -17,30 +17,30 @@ open class XYThreadSafeBluetoothGatt(bluetoothGatt: BluetoothGatt?): XYBase() {
             return gattRef.get()
         }
 
-    fun close() = asyncBle {
+    suspend fun close() = asyncBle {
         gatt?.disconnect()
         gatt?.close()
     }
 
-    fun disconnect() = asyncBle {
+    suspend fun disconnect() = asyncBle {
         gatt?.disconnect()
     }
 
-    fun connect() = asyncBle {
+    suspend fun connect() = asyncBle {
         return@asyncBle gatt?.connect()
     }
 
     @TargetApi(26)
-    fun setPreferredPhy(txPhy: Int, rxPhy: Int, phyOptions: Int) = asyncBle {
+    suspend fun setPreferredPhy(txPhy: Int, rxPhy: Int, phyOptions: Int) = asyncBle {
         return@asyncBle gatt?.setPreferredPhy(txPhy, rxPhy, phyOptions)
     }
 
     @TargetApi(26)
-    fun readPhy() = asyncBle {
+    suspend fun readPhy() = asyncBle {
         return@asyncBle gatt?.readPhy()
     }
 
-    fun discoverServices() = asyncBle {
+    suspend fun discoverServices() = asyncBle {
         return@asyncBle gatt?.discoverServices()
     }
 
@@ -53,31 +53,31 @@ open class XYThreadSafeBluetoothGatt(bluetoothGatt: BluetoothGatt?): XYBase() {
         return gatt?.getService(uuid)
     }
 
-    fun readCharacteristic(characteristic: BluetoothGattCharacteristic) = asyncBle {
+    suspend fun readCharacteristic(characteristic: BluetoothGattCharacteristic) = asyncBle {
         return@asyncBle gatt?.readCharacteristic(characteristic)
     }
 
-    fun writeCharacteristic(characteristic: BluetoothGattCharacteristic) = asyncBle {
+    suspend fun writeCharacteristic(characteristic: BluetoothGattCharacteristic) = asyncBle {
         return@asyncBle gatt?.writeCharacteristic(characteristic)
     }
 
-    fun readDescriptor(descriptor: BluetoothGattDescriptor) = asyncBle {
+    suspend fun readDescriptor(descriptor: BluetoothGattDescriptor) = asyncBle {
         return@asyncBle gatt?.readDescriptor(descriptor)
     }
 
-    fun writeDescriptor(descriptor: BluetoothGattDescriptor) = asyncBle {
+    suspend fun writeDescriptor(descriptor: BluetoothGattDescriptor) = asyncBle {
         return@asyncBle gatt?.writeDescriptor(descriptor)
     }
 
-    fun setCharacteristicNotification(characteristic: BluetoothGattCharacteristic, enable: Boolean) = asyncBle {
+    suspend fun setCharacteristicNotification(characteristic: BluetoothGattCharacteristic, enable: Boolean) = asyncBle {
         return@asyncBle gatt?.setCharacteristicNotification(characteristic, enable)
     }
 
-    fun readRemoteRssi() = asyncBle {
+    suspend fun readRemoteRssi() = asyncBle {
         return@asyncBle gatt?.readRemoteRssi()
     }
 
-    fun requestMtu(mtu: Int) = asyncBle {
+    suspend fun requestMtu(mtu: Int) = asyncBle {
         return@asyncBle gatt?.requestMtu(mtu)
     }
 }

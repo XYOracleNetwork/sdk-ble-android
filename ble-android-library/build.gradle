@@ -19,8 +19,8 @@ configurations {
     localImplementation
 }
 
-def majorVersion = 2
-def minorVersion = 2
+def majorVersion = 3
+def minorVersion = 0
 
 Properties versionProps = new Properties()
 def versionPropsFile = file('version.properties')
@@ -144,7 +144,7 @@ dependencies {
     api 'org.jetbrains:annotations:17.0.0'
 }
 
-//allows experimentals we are using - ignore in lint
+//allows experimental we are using - ignore in lint
 tasks.withType(org.jetbrains.kotlin.gradle.tasks.AbstractKotlinCompile).all { task ->
     task.kotlinOptions.freeCompilerArgs += experimentalsEnabled
 }

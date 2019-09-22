@@ -54,10 +54,6 @@ class ServerFragment : XYDeviceFragment() {
 
     val services = arrayOf<BluetoothGattService>(simpleService)
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
 
@@ -78,7 +74,7 @@ class ServerFragment : XYDeviceFragment() {
         activity!!.registerReceiver(bluetoothIntentReceiver, BluetoothIntentReceiver.bluetoothDeviceIntentFilter)
 
         GlobalScope.launch {
-            spinUpServer().await()
+            spinUpServer()
         }
     }
 
@@ -88,20 +84,20 @@ class ServerFragment : XYDeviceFragment() {
         bleServer?.stopServer()
     }
 
-    private fun createTestServer() = GlobalScope.async {
+    private suspend fun createTestServer() = GlobalScope.async {
         val server = XYBluetoothGattServer(context!!.applicationContext)
         server.startServer()
         bleServer = server
-        return@async server.addService(simpleService).await()
-    }
+        return@async server.addService(simpleService)
+    }.await()
 
-    private fun spinUpServer () = GlobalScope.async {
+    private suspend fun spinUpServer () = GlobalScope.async {
         simpleService.addCharacteristic(characteristicRead)
         simpleService.addCharacteristic(characteristicWrite)
         characteristicRead.addReadResponder("countResponder", countResponder)
         characteristicWrite.addWriteResponder("log Responder",logResponder)
-        return@async createTestServer().await()
-    }
+        return@async createTestServer()
+    }.await()
 
     /**
      * A simple write characteristic that logs whenever it is written to.
@@ -155,8 +151,7 @@ class ServerFragment : XYDeviceFragment() {
 
     companion object {
         fun newInstance () : ServerFragment {
-            val frag = ServerFragment()
-            return frag
+            return ServerFragment()
         }
     }
 }

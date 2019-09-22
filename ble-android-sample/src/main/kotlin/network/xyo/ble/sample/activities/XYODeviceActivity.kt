@@ -199,9 +199,7 @@ class XYODeviceActivity : XYOAppBaseActivity() {
 
     override fun onBackPressed() {
         val activeFrag = sectionsPagerAdapter.getFragmentByPosition(container.currentItem)
-        if (activeFrag is BackFragmentListener && (activeFrag as BackFragmentListener).onBackPressed()) {
-            //Let the fragment handle the back button.
-        } else {
+        if (!(activeFrag is BackFragmentListener && (activeFrag as BackFragmentListener).onBackPressed())) {
             super.onBackPressed()
         }
     }

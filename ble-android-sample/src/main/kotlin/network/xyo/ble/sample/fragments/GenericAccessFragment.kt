@@ -84,27 +84,27 @@ class GenericAccessFragment : XYDeviceFragment() {
         GlobalScope.launch {
             var hasConnectionError = true
 
-            val conn = device.connection {
+            device.connection {
                 hasConnectionError = false
 
-                device.genericAccessService.deviceName.get().await().let {
+                device.genericAccessService.deviceName.get().let {
                     deviceData?.deviceName = "${it.value ?: it.error?.message ?: "Error"}"
                 }
 
-                device.genericAccessService.appearance.get().await().let {
+                device.genericAccessService.appearance.get().let {
                     deviceData?.appearance = "${it.value ?: it.error?.message ?: "Error"}"
                 }
 
-                device.genericAccessService.privacyFlag.get().await().let {
+                device.genericAccessService.privacyFlag.get().let {
                     deviceData?.privacyFlag = "${it.value ?: it.error?.message ?: "Error"}"
                 }
 
-                device.genericAccessService.reconnectionAddress.get().await().let {
+                device.genericAccessService.reconnectionAddress.get().let {
                     deviceData?.reconnectionAddress = "${it.value ?: it.error?.message
                     ?: "Error"}"
                 }
 
-                device.genericAccessService.peripheralPreferredConnectionParameters.get().await().let {
+                device.genericAccessService.peripheralPreferredConnectionParameters.get().let {
                     deviceData?.peripheralPreferredConnectionParameters = "${it.value
                             ?: it.error?.message ?: "Error"}"
                 }
@@ -112,7 +112,6 @@ class GenericAccessFragment : XYDeviceFragment() {
                 return@connection XYBluetoothResult(true)
 
             }
-            conn.await()
 
             updateUI()
             checkConnectionError(hasConnectionError)
@@ -123,27 +122,27 @@ class GenericAccessFragment : XYDeviceFragment() {
         GlobalScope.launch {
             var hasConnectionError = true
 
-            val conn = device.connection {
+            device.connection {
                 hasConnectionError = false
 
-                device.genericAccessService.deviceName.get().await().let {
+                device.genericAccessService.deviceName.get().let {
                     deviceData?.deviceName = "${it.value ?: it.error?.message ?: "Error"}"
                 }
 
-                device.genericAccessService.appearance.get().await().let {
+                device.genericAccessService.appearance.get().let {
                     deviceData?.appearance = "${it.value ?: it.error?.message ?: "Error"}"
                 }
 
-                device.genericAccessService.privacyFlag.get().await().let {
+                device.genericAccessService.privacyFlag.get().let {
                     deviceData?.privacyFlag = "${it.value ?: it.error?.message ?: "Error"}"
                 }
 
-                device.genericAccessService.reconnectionAddress.get().await().let {
+                device.genericAccessService.reconnectionAddress.get().let {
                     deviceData?.reconnectionAddress = "${it.value ?: it.error?.message
                     ?: "Error"}"
                 }
 
-                device.genericAccessService.peripheralPreferredConnectionParameters.get().await().let {
+                device.genericAccessService.peripheralPreferredConnectionParameters.get().let {
                     deviceData?.peripheralPreferredConnectionParameters = "${it.value
                             ?: it.error?.message ?: "Error"}"
                 }
@@ -151,7 +150,6 @@ class GenericAccessFragment : XYDeviceFragment() {
                 return@connection XYBluetoothResult(true)
 
             }
-            conn.await()
 
             updateUI()
             checkConnectionError(hasConnectionError)
@@ -162,27 +160,27 @@ class GenericAccessFragment : XYDeviceFragment() {
         GlobalScope.launch {
             var hasConnectionError = true
 
-            val conn = device.connection {
+            device.connection {
                 hasConnectionError = false
 
-                device.genericAccessService.deviceName.get().await().let {
+                device.genericAccessService.deviceName.get().let {
                     deviceData?.deviceName = "${it.value ?: it.error?.message ?: "Error"}"
                 }
 
-                device.genericAccessService.appearance.get().await().let {
+                device.genericAccessService.appearance.get().let {
                     deviceData?.appearance = "${it.value ?: it.error?.message ?: "Error"}"
                 }
 
-                device.genericAccessService.privacyFlag.get().await().let {
+                device.genericAccessService.privacyFlag.get().let {
                     deviceData?.privacyFlag = "${it.value ?: it.error?.message ?: "Error"}"
                 }
 
-                device.genericAccessService.reconnectionAddress.get().await().let {
+                device.genericAccessService.reconnectionAddress.get().let {
                     deviceData?.reconnectionAddress = "${it.value ?: it.error?.message
                     ?: "Error"}"
                 }
 
-                device.genericAccessService.peripheralPreferredConnectionParameters.get().await().let {
+                device.genericAccessService.peripheralPreferredConnectionParameters.get().let {
                     deviceData?.peripheralPreferredConnectionParameters = "${it.value
                             ?: it.error?.message ?: "Error"}"
                 }
@@ -190,7 +188,6 @@ class GenericAccessFragment : XYDeviceFragment() {
                 return@connection XYBluetoothResult(true)
 
             }
-            conn.await()
 
             updateUI()
             checkConnectionError(hasConnectionError)

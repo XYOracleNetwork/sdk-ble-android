@@ -11,18 +11,19 @@ import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import kotlinx.android.synthetic.main.fragment_firmware_update.*
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import network.xyo.base.XYBase
 import network.xyo.ble.devices.XY4BluetoothDevice
 import network.xyo.ble.devices.XYBluetoothDevice
 import network.xyo.ble.firmware.XYOtaFile
 import network.xyo.ble.firmware.XYOtaUpdate
 import network.xyo.ble.sample.R
 import network.xyo.ble.sample.XYDeviceData
-import network.xyo.ui.ui
 import network.xyo.ble.sample.fragments.core.BackFragmentListener
-import network.xyo.base.XYBase
+import network.xyo.ui.ui
 import java.io.BufferedInputStream
 import java.io.FileOutputStream
 import java.net.URL
@@ -57,13 +58,12 @@ class FirmwareUpdateFragment : XYDeviceFragment(), BackFragmentListener {
 
     fun loadImageFromServer() {
         GlobalScope.launch {
-            readFromServer().await()
+            readFromServer()
             loadList()
         }
     }
 
     private fun loadList() {
-        //setup file listview
         val context = context
         if (context != null) {
             val fileListAdapter = ArrayAdapter<String>(context, android.R.layout.simple_list_item_1)
@@ -84,7 +84,7 @@ class FirmwareUpdateFragment : XYDeviceFragment(), BackFragmentListener {
         }
     }
 
-    fun readFromServer() = GlobalScope.async {
+    suspend fun readFromServer() = withContext(Dispatchers.Default) {
         XYOtaFile.createFileDirectory(folderName)
         val url = URL("https://s3.amazonaws.com/xyfirmware.xyo.network/xy4_585-0-v56.img")
         val connection = url.openConnection()
@@ -196,7 +196,7 @@ class FirmwareUpdateFragment : XYDeviceFragment(), BackFragmentListener {
         GlobalScope.launch {
             throbber?.show()
             //need to connect before refreshing
-            val result = device?.connect()?.await()
+            val result = device?.connect()
             // val result = device?.refreshGatt()?.await()
             if (result?.value as Boolean) {
                 ui { showToast("BLE adapter was reset, performing update") }

@@ -84,17 +84,16 @@ class TxPowerFragment : XYDeviceFragment() {
         GlobalScope.launch {
             var hasConnectionError = true
 
-            val conn = device.connection {
+            device.connection {
                 hasConnectionError = false
 
                 deviceData?.let {
-                    it.txPowerLevel = device.txPowerService.txPowerLevel.get().await().format()
+                    it.txPowerLevel = device.txPowerService.txPowerLevel.get().format()
                 }
 
                 return@connection XYBluetoothResult(true)
 
             }
-            conn.await()
 
             updateUI()
             checkConnectionError(hasConnectionError)
@@ -105,17 +104,16 @@ class TxPowerFragment : XYDeviceFragment() {
         GlobalScope.launch {
             var hasConnectionError = true
 
-            val conn = device.connection {
+            device.connection {
                 hasConnectionError = false
 
                 deviceData?.let {
-                    it.txPowerLevel = device.txPowerService.txPowerLevel.get().await().format()
+                    it.txPowerLevel = device.txPowerService.txPowerLevel.get().format()
                 }
 
                 return@connection XYBluetoothResult(true)
 
             }
-            conn.await()
 
             updateUI()
             checkConnectionError(hasConnectionError)

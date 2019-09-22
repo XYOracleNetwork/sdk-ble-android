@@ -22,7 +22,7 @@ class XYBluetoothGattReadCharacteristic(val gatt: XYThreadSafeBluetoothGatt, val
     }
 
 
-    fun start(characteristicToRead: BluetoothGattCharacteristic) = GlobalScope.async {
+    suspend fun start(characteristicToRead: BluetoothGattCharacteristic) = GlobalScope.async {
         log.info("readCharacteristic")
         val listenerName = "XYBluetoothGattReadCharacteristic${hashCode()}"
         var error: XYBluetoothError? = null
@@ -69,7 +69,7 @@ class XYBluetoothGattReadCharacteristic(val gatt: XYThreadSafeBluetoothGatt, val
             }
             gattCallback.addListener(listenerName, listener)
             GlobalScope.launch {
-                if (gatt.readCharacteristic(characteristicToRead).await() != true) {
+                if (gatt.readCharacteristic(characteristicToRead) != true) {
                     error = XYBluetoothError("readCharacteristic: gatt.readCharacteristic failed to start")
                     gattCallback.removeListener(listenerName)
 
@@ -82,7 +82,7 @@ class XYBluetoothGattReadCharacteristic(val gatt: XYThreadSafeBluetoothGatt, val
         }
 
         return@async XYBluetoothResult(value, error)
-    }
+    }.await()
 
     companion object : XYBase()
 }

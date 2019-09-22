@@ -190,22 +190,22 @@ abstract class XYSmartScan(context: Context) : XYBluetoothBase(context) {
             _background = background
         }
 
-    open fun start() = GlobalScope.async {
+    open suspend fun start() = GlobalScope.async {
         log.info("start")
         startTime = now
         return@async true
-    }
+    }.await()
 
     open fun started(): Boolean {
         return startTime != 0L
     }
 
-    open fun stop() = GlobalScope.async {
+    open suspend fun stop() = GlobalScope.async {
         log.info("stop")
         startTime = 0
         scanResultCount = 0
         return@async true
-    }
+    }.await()
 
     protected fun restartBluetooth() {
         log.info(">>>>> restartBluetooth: Restarting Bluetooth Adapter <<<<<")

@@ -2,10 +2,8 @@ package network.xyo.ble.sample.adapters
 
 import android.app.Activity
 import android.view.View
-import android.view.View.GONE
 import android.view.ViewGroup
 import android.widget.BaseAdapter
-import kotlinx.android.synthetic.main.fragment_central.*
 import network.xyo.ble.devices.XYBluetoothDevice
 import network.xyo.ble.sample.R
 import network.xyo.ble.sample.XYApplication

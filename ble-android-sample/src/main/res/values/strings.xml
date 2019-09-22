@@ -52,7 +52,7 @@
     <string name="device">Device</string>
     <string name="gap">GAP</string>
     <string name="gatt">GATT</string>
-    <string name="linkloss">linkLoss</string>
+    <string name="link_loss">linkLoss</string>
     <string name="tx">Tx</string>
     <string name="song">Song</string>
 
@@ -116,7 +116,6 @@
     <string name="update_started">Update started</string>
     <string name="bluetooth_disabled">Bluetooth Disabled</string>
 
-    <string name="server">Server</string>
     <string name="test">Test</string>
     <string name="ibeacon_advertiser">IBeacon Advertiser</string>
     <string name="standard_advertiser">Standard Advertiser</string>

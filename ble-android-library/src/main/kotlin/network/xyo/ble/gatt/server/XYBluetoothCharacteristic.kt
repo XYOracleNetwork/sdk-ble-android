@@ -86,7 +86,7 @@ open class XYBluetoothCharacteristic(uuid: UUID, properties : Int, permissions :
     }
 
 
-    fun waitForWriteRequest(deviceFilter: BluetoothDevice?) = GlobalScope.async {
+    suspend fun waitForWriteRequest(deviceFilter: BluetoothDevice?) = GlobalScope.async {
         return@async suspendCoroutine<ByteArray?> { cont ->
             val responderKey = "waitForWriteRequest $deviceFilter"
             addWriteResponder(responderKey, object : XYBluetoothWriteResponder {
@@ -103,9 +103,9 @@ open class XYBluetoothCharacteristic(uuid: UUID, properties : Int, permissions :
                 }
             })
         }
-    }
+    }.await()
 
-    fun waitForReadRequest(whatToRead: ByteArray?, deviceFilter: BluetoothDevice?) = GlobalScope.async {
+    suspend fun waitForReadRequest(whatToRead: ByteArray?, deviceFilter: BluetoothDevice?) = GlobalScope.async {
         val readValue = whatToRead ?: value
         value = readValue
 
@@ -122,7 +122,7 @@ open class XYBluetoothCharacteristic(uuid: UUID, properties : Int, permissions :
                 }
             })
         }
-    }
+    }.await()
 
     fun addWriteResponder(key: String, responder: XYBluetoothWriteResponder) {
         writeResponders[key] = responder

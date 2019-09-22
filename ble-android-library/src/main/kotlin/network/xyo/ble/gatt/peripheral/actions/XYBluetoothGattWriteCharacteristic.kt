@@ -23,7 +23,7 @@ class XYBluetoothGattWriteCharacteristic(
         _timeout = timeout
     }
 
-    fun start(characteristicToWrite: BluetoothGattCharacteristic) = GlobalScope.async {
+    suspend fun start(characteristicToWrite: BluetoothGattCharacteristic) = GlobalScope.async {
         log.info("writeCharacteristic")
         if (writeType != null) {
             // BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT
@@ -84,7 +84,7 @@ class XYBluetoothGattWriteCharacteristic(
                     }
                     gattCallback.addListener(listenerName, listener)
                     GlobalScope.launch {
-                        val writeStarted = gatt.writeCharacteristic(characteristicToWrite).await()
+                        val writeStarted = gatt.writeCharacteristic(characteristicToWrite)
                         if (writeStarted != true) {
                             error = XYBluetoothError("writeCharacteristic: gatt.writeCharacteristic failed to start")
                             gattCallback.removeListener(listenerName)
@@ -103,11 +103,11 @@ class XYBluetoothGattWriteCharacteristic(
         } catch (ex: TimeoutCancellationException) {
             error = XYBluetoothError("start: Timeout")
             gattCallback.removeListener(listenerName)
-            XYBluetoothGattDiscover.log.error(ex)
+            log.error(ex)
         }
 
         return@async XYBluetoothResult(value, error)
-    }
+    }.await()
 
     companion object : XYBase()
 }

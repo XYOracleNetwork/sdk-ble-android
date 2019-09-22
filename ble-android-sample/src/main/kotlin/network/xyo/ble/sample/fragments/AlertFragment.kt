@@ -81,19 +81,18 @@ class AlertFragment : XYDeviceFragment() {
     private fun getXY4Values(device: XY4BluetoothDevice) {
         var hasConnectionError = true
         GlobalScope.launch {
-            val conn = device.connection {
+            device.connection {
                 hasConnectionError = false
 
                 /*deviceData?.let {
-                    it.controlPoint = device.alertNotification.controlPoint.get().await().format()
-                    it.unreadAlertStatus = device.alertNotification.unreadAlertStatus.get().await().format()
-                    it.newAlert = device.alertNotification.newAlert.get().await().format()
-                    it.supportedNewAlertCategory = device.alertNotification.supportedNewAlertCategory.get().await().format()
-                    it.supportedUnreadAlertCategory = device.alertNotification.supportedUnreadAlertCategory.get().await().format()
+                    it.controlPoint = device.alertNotification.controlPoint.get().format()
+                    it.unreadAlertStatus = device.alertNotification.unreadAlertStatus.get().format()
+                    it.newAlert = device.alertNotification.newAlert.get().format()
+                    it.supportedNewAlertCategory = device.alertNotification.supportedNewAlertCategory.get().format()
+                    it.supportedUnreadAlertCategory = device.alertNotification.supportedUnreadAlertCategory.get().format()
                 }*/
                 return@connection XYBluetoothResult(true)
             }
-            conn.await()
 
             updateUI()
             checkConnectionError(hasConnectionError)
@@ -104,21 +103,20 @@ class AlertFragment : XYDeviceFragment() {
         GlobalScope.launch {
             var hasConnectionError = true
 
-            val conn = device.connection {
+            device.connection {
                 hasConnectionError = false
 
                 /*deviceData?.let {
-                    it.controlPoint = device.alertNotification.controlPoint.get().await().format()
-                    it.unreadAlertStatus = device.alertNotification.unreadAlertStatus.get().await().format()
-                    it.newAlert = device.alertNotification.newAlert.get().await().format()
-                    it.supportedNewAlertCategory = device.alertNotification.supportedNewAlertCategory.get().await().format()
-                    it.supportedUnreadAlertCategory = device.alertNotification.supportedUnreadAlertCategory.get().await().format()
+                    it.controlPoint = device.alertNotification.controlPoint.get().format()
+                    it.unreadAlertStatus = device.alertNotification.unreadAlertStatus.get().format()
+                    it.newAlert = device.alertNotification.newAlert.get().format()
+                    it.supportedNewAlertCategory = device.alertNotification.supportedNewAlertCategory.get().format()
+                    it.supportedUnreadAlertCategory = device.alertNotification.supportedUnreadAlertCategory.get().format()
                 }*/
 
                 return@connection XYBluetoothResult(true)
 
             }
-            conn.await()
 
             updateUI()
             checkConnectionError(hasConnectionError)

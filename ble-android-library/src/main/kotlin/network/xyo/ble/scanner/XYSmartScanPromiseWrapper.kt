@@ -14,7 +14,7 @@ class XYSmartScanPromiseWrapper(val scanner: XYSmartScan): XYBase() {
 
     fun start(promise: XYPromise<Boolean>? = null){
         GlobalScope.launch {
-            val result = scanner.start().await()
+            val result = scanner.start()
             promise?.resolve(result)
         }
     }
@@ -25,7 +25,7 @@ class XYSmartScanPromiseWrapper(val scanner: XYSmartScan): XYBase() {
 
     fun stop(promise: XYPromise<Boolean>? = null){
         GlobalScope.launch {
-            val result = scanner.stop().await()
+            val result = scanner.stop()
             promise?.resolve(result)
         }
     }

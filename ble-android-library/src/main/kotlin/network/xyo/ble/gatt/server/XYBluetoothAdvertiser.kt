@@ -36,7 +36,7 @@ open class XYBluetoothAdvertiser(context: Context) : XYBluetoothBase(context){
         listeners.remove(key)
     }
 
-    open fun startAdvertising () = asyncBle {
+    open suspend fun startAdvertising () = asyncBle {
         if (bleAdvertiser != null) {
 
             if (!isMultiAdvertisementSupported && advertisingResponse != null) {

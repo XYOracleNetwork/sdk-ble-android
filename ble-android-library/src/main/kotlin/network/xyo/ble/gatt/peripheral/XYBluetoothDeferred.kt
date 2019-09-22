@@ -7,12 +7,12 @@ import kotlin.coroutines.CoroutineContext
 
 //causes *all* ble calls to be initiated in a single thread
 //other functionality (non-gatt/ble initiating calls) should not be in these blocks
-fun <T> asyncBle(
+suspend fun <T> asyncBle(
         timeout: Long = 10000L,
         context: CoroutineContext = XYBluetoothBase.BluetoothThread,
         start: CoroutineStart = CoroutineStart.DEFAULT,
         block: suspend CoroutineScope.() -> T?
-): Deferred<T?> {
+): T? {
     var result: T? = null
     XYLogging("asyncBle").info("Enter")
     return GlobalScope.async(context, start) {
@@ -28,5 +28,5 @@ fun <T> asyncBle(
         }
         XYLogging("asyncBle").info("Returning")
         return@async result
-    }
+    }.await()
 }

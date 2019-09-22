@@ -57,10 +57,10 @@ open class XY4BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
 
     override val prefix = "xy:ibeacon"
 
-    override fun find() = connection {
+    override suspend fun find() = connection {
         log.info("find")
-        if (unlock().await().error == null) {
-            val writeResult = primary.buzzer.set(11).await()
+        if (unlock().error == null) {
+            val writeResult = primary.buzzer.set(11)
             if (writeResult.error == null) {
                 return@connection XYBluetoothResult(writeResult.value)
             } else {
@@ -71,28 +71,28 @@ open class XY4BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
         }
     }
 
-    override fun stopFind() = connection {
-        return@connection primary.buzzer.set(-1).await()
+    override suspend fun stopFind() = connection {
+        return@connection primary.buzzer.set(-1)
     }
 
-    override fun lock() = connection {
-        return@connection primary.lock.set(DefaultLockCode).await()
+    override suspend fun lock() = connection {
+        return@connection primary.lock.set(DefaultLockCode)
     }
 
-    override fun unlock() = connection {
-        return@connection primary.unlock.set(DefaultLockCode).await()
+    override suspend fun unlock() = connection {
+        return@connection primary.unlock.set(DefaultLockCode)
     }
 
-    override fun stayAwake() = connection {
-        return@connection primary.stayAwake.set(1).await()
+    override suspend fun stayAwake() = connection {
+        return@connection primary.stayAwake.set(1)
     }
 
-    override fun fallAsleep() = connection {
-        return@connection primary.stayAwake.set(0).await()
+    override suspend fun fallAsleep() = connection {
+        return@connection primary.stayAwake.set(0)
     }
 
-    override fun batteryLevel() = connection {
-        return@connection batteryService.level.get().await()
+    override suspend fun batteryLevel() = connection {
+        return@connection batteryService.level.get()
     }
 
     override fun onDetect(scanResult: XYScanResult?) {
@@ -131,7 +131,7 @@ open class XY4BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
     private fun enableButtonNotifyIfConnected() {
         if (connection?.state == BluetoothGatt.STATE_CONNECTED) {
             GlobalScope.launch {
-                primary.buttonState.enableNotify(true).await()
+                primary.buttonState.enableNotify(true)
             }
         }
     }

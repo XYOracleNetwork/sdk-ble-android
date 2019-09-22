@@ -20,7 +20,7 @@ class XYBluetoothGattDiscover(val gatt: XYThreadSafeBluetoothGatt, val gattCallb
 
     var services: List<BluetoothGattService>? = null
 
-    fun start() = GlobalScope.async {
+    suspend fun start() = GlobalScope.async {
         log.info("discover")
         val listenerName = "XYBluetoothGattDiscover${hashCode()}"
         var error: XYBluetoothError? = null
@@ -73,7 +73,7 @@ class XYBluetoothGattDiscover(val gatt: XYThreadSafeBluetoothGatt, val gattCallb
                         }
                         gattCallback.addListener(listenerName, listener)
                         GlobalScope.launch {
-                            val discoverStarted = gatt.discoverServices().await()
+                            val discoverStarted = gatt.discoverServices()
                             if (discoverStarted != true) {
                                 error = XYBluetoothError("start: gatt.discoverServices failed to start")
                                 gattCallback.removeListener(listenerName)
@@ -93,7 +93,7 @@ class XYBluetoothGattDiscover(val gatt: XYThreadSafeBluetoothGatt, val gattCallb
             }
         }
         return@async XYBluetoothResult(value, error)
-    }
+    }.await()
 
     companion object : XYBase()
 }

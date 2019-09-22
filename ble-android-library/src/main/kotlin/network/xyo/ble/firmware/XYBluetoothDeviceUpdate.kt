@@ -86,7 +86,7 @@ class XYBluetoothDeviceUpdate(private var spotaService: SpotaService, var device
             val conn = device.connection {
 
                 //STEP 1 - memdev
-                val memResult = setMemDev().await()
+                val memResult = setMemDev()
                 var error = memResult.error
                 if (error != null) {
                     log.info(TAG, "startUpdate:MemDev ERROR: ${error.message.toString()}")
@@ -95,7 +95,7 @@ class XYBluetoothDeviceUpdate(private var spotaService: SpotaService, var device
                 }
 
                 //STEP 2 - GpioMap
-                val gpioResult = setGpioMap().await()
+                val gpioResult = setGpioMap()
                 error = gpioResult.error
                 if (error != null) {
                     log.info(TAG, "startUpdate:GPIO ERROR: ${error.message.toString()}")
@@ -104,7 +104,7 @@ class XYBluetoothDeviceUpdate(private var spotaService: SpotaService, var device
                 }
 
                 //STEP 3 - Set patch length for the first and last block
-                val patchResult = setPatchLength().await()
+                val patchResult = setPatchLength()
                 error = patchResult.error
                 if (error != null) {
                     log.info(TAG, "startUpdate:patch ERROR: ${error.message.toString()}")
@@ -115,7 +115,7 @@ class XYBluetoothDeviceUpdate(private var spotaService: SpotaService, var device
                 //STEP 4 - send blocks
                 while (!lastBlockSent) {
                     progressUpdate()
-                    val blockResult = sendBlock().await()
+                    val blockResult = sendBlock()
                     var blockError = blockResult.error
                     if (blockError != null) {
                         log.info(TAG, "startUpdate:sendBlock ERROR: ${blockError.message.toString()}")
@@ -127,7 +127,7 @@ class XYBluetoothDeviceUpdate(private var spotaService: SpotaService, var device
                         if (!lastBlockReady && otaFile?.numberOfBytes?.rem(otaFile.fileBlockSize) != 0) {
                             log.info(TAG, "startUpdate:LAST BLOCK - SET PATCH LEN: $lastBlock")
 
-                            val finalPatchResult = setPatchLength().await()
+                            val finalPatchResult = setPatchLength()
                             blockError = finalPatchResult.error
                             if (blockError != null) {
                                 log.info(TAG, "startUpdate:finalPatchResult ERROR: ${blockError.message.toString()}")
@@ -141,7 +141,7 @@ class XYBluetoothDeviceUpdate(private var spotaService: SpotaService, var device
                 log.info(TAG, "startUpdate:done sending blocks")
 
                 //step 5 - send end signal
-                val endResult = sendEndSignal().await()
+                val endResult = sendEndSignal()
                 error = endResult.error
                 if (error != null) {
                     log.info(TAG, "startUpdate:endSignal Result ERROR: ${error.message.toString()}")
@@ -152,7 +152,7 @@ class XYBluetoothDeviceUpdate(private var spotaService: SpotaService, var device
                 //step 6 - reboot
                 if (sendRebootOnComplete) {
                     log.info(TAG, "startUpdate:sending Reboot")
-                    val reboot = sendReboot().await()
+                    val reboot = sendReboot()
                     error = reboot.error
                     if (error != null) {
                         // May loose connection after calling reboot - this is normal - don't fail it.
@@ -161,7 +161,7 @@ class XYBluetoothDeviceUpdate(private var spotaService: SpotaService, var device
                 }
 
                 return@connection XYBluetoothResult(true)
-            }.await()
+            }
 
             if (conn.hasError()) {
                 //Failed to connect
@@ -207,29 +207,29 @@ class XYBluetoothDeviceUpdate(private var spotaService: SpotaService, var device
     }
 
     //STEP 1
-    private fun setMemDev(): Deferred<XYBluetoothResult<Int>> {
+    private suspend fun setMemDev(): XYBluetoothResult<Int> {
         return GlobalScope.async {
             val memType = MEMORY_TYPE_EXTERNAL_SPI shl 24 or imageBank
             log.info(TAG, "setMemDev: " + String.format("%#010x", memType))
-            val result = spotaService.SPOTA_MEM_DEV.set(memType).await()
+            val result = spotaService.SPOTA_MEM_DEV.set(memType)
 
             return@async XYBluetoothResult(result.value, result.error)
-        }
+        }.await()
     }
 
     //STEP 2
-    private fun setGpioMap(): Deferred<XYBluetoothResult<Int>> {
+    private suspend fun setGpioMap(): XYBluetoothResult<Int> {
         return GlobalScope.async {
             val memInfo = misoGpio shl 24 or (mosiGpio shl 16) or (csGpio shl 8) or sckGpio
 
-            val result = spotaService.SPOTA_GPIO_MAP.set(memInfo).await()
+            val result = spotaService.SPOTA_GPIO_MAP.set(memInfo)
 
             return@async XYBluetoothResult(result.value, result.error)
-        }
+        }.await()
     }
 
     //STEP 3 - (and when final block is sent)
-    private fun setPatchLength(): Deferred<XYBluetoothResult<XYBluetoothResult<Int>>> {
+    private suspend fun setPatchLength(): XYBluetoothResult<XYBluetoothResult<Int>> {
         return GlobalScope.async {
             var blockSize = otaFile?.fileBlockSize
             if (lastBlock) {
@@ -239,14 +239,14 @@ class XYBluetoothDeviceUpdate(private var spotaService: SpotaService, var device
 
             log.info(TAG, "setPatchLength blockSize: $blockSize - ${String.format("%#06x", blockSize)}")
 
-            val result = spotaService.SPOTA_PATCH_LEN.set(blockSize!!).await()
+            val result = spotaService.SPOTA_PATCH_LEN.set(blockSize!!)
 
             return@async XYBluetoothResult(result, result.error)
-        }
+        }.await()
     }
 
     //STEP 4
-    private fun sendBlock(): Deferred<XYBluetoothResult<ByteArray>> {
+    private suspend fun sendBlock(): XYBluetoothResult<ByteArray> {
         return GlobalScope.async {
             val block = otaFile?.getBlock(blockCounter)
             val i = ++chunkCount
@@ -269,29 +269,29 @@ class XYBluetoothDeviceUpdate(private var spotaService: SpotaService, var device
                     lastBlock = true
                 }
             }
-            val result = spotaService.SPOTA_PATCH_DATA.set(chunk).await()
+            val result = spotaService.SPOTA_PATCH_DATA.set(chunk)
 
             return@async XYBluetoothResult(result.value, result.error)
-        }
+        }.await()
     }
 
     //step 5
-    private fun sendEndSignal(): Deferred<XYBluetoothResult<Int>> {
+    private suspend fun sendEndSignal(): XYBluetoothResult<Int> {
         log.info(TAG, "sendEndSignal...")
         return GlobalScope.async {
-            val result = spotaService.SPOTA_MEM_DEV.set(END_SIGNAL).await()
+            val result = spotaService.SPOTA_MEM_DEV.set(END_SIGNAL)
             endSignalSent = true
             return@async XYBluetoothResult(result.value, result.error)
-        }
+        }.await()
     }
 
     //step 6
-    private fun sendReboot(): Deferred<XYBluetoothResult<Int>> {
+    private suspend fun sendReboot(): XYBluetoothResult<Int> {
         log.info(TAG, "sendReboot...")
         return GlobalScope.async {
-            val result = spotaService.SPOTA_MEM_DEV.set(REBOOT_SIGNAL).await()
+            val result = spotaService.SPOTA_MEM_DEV.set(REBOOT_SIGNAL)
             return@async XYBluetoothResult(result.value, result.error)
-        }
+        }.await()
     }
 
     companion object {

@@ -33,13 +33,6 @@ class DeviceFragment : XYDeviceFragment() {
         }
     }
 
-    internal class DeviceListener: XYBluetoothDevice.Listener() {
-        override fun detected(device: XYBluetoothDevice) {
-            super.detected(device)
-            updateUI()
-        }
-    }
-
     override fun onPause() {
         super.onPause()
         device?.removeListener("DeviceFragment")
@@ -48,7 +41,12 @@ class DeviceFragment : XYDeviceFragment() {
     override fun onResume() {
         super.onResume()
 
-        device?.addListener("DeviceFragment", this)
+        device?.addListener("DeviceFragment", object: XYBluetoothDevice.Listener() {
+            override fun detected(device: XYBluetoothDevice) {
+                updateUI()
+                super.detected(device)
+            }
+        })
 
         if (deviceData?.systemId.isNullOrEmpty()) {
             setDeviceValues()
@@ -57,7 +55,7 @@ class DeviceFragment : XYDeviceFragment() {
         }
     }
 
-    private fun updateUI() {
+    fun updateUI() {
         ui {
             throbber?.show()
 
@@ -103,24 +101,23 @@ class DeviceFragment : XYDeviceFragment() {
         GlobalScope.launch {
             var hasConnectionError = true
 
-            val conn = device.connection {
+            device.connection {
                 hasConnectionError = false
 
                 deviceData?.let {
-                    it.systemId = device.deviceInformationService.systemId.get().await().format()
-                    it.modelNumberString = device.deviceInformationService.modelNumberString.get().await().format()
-                    it.serialNumberString = device.deviceInformationService.serialNumberString.get().await().format()
-                    it.firmwareRevisionString = device.deviceInformationService.firmwareRevisionString.get().await().format()
-                    it.hardwareRevisionString = device.deviceInformationService.hardwareRevisionString.get().await().format()
-                    it.softwareRevisionString = device.deviceInformationService.softwareRevisionString.get().await().format()
-                    it.manufacturerNameString = device.deviceInformationService.manufacturerNameString.get().await().format()
-                    it.ieeeRegulatoryCertificationDataList = device.deviceInformationService.ieeeRegulatoryCertificationDataList.get().await().format()
-                    it.pnpId = device.deviceInformationService.pnpId.get().await().format()
+                    it.systemId = device.deviceInformationService.systemId.get().format()
+                    it.modelNumberString = device.deviceInformationService.modelNumberString.get().format()
+                    it.serialNumberString = device.deviceInformationService.serialNumberString.get().format()
+                    it.firmwareRevisionString = device.deviceInformationService.firmwareRevisionString.get().format()
+                    it.hardwareRevisionString = device.deviceInformationService.hardwareRevisionString.get().format()
+                    it.softwareRevisionString = device.deviceInformationService.softwareRevisionString.get().format()
+                    it.manufacturerNameString = device.deviceInformationService.manufacturerNameString.get().format()
+                    it.ieeeRegulatoryCertificationDataList = device.deviceInformationService.ieeeRegulatoryCertificationDataList.get().format()
+                    it.pnpId = device.deviceInformationService.pnpId.get().format()
                 }
 
                 return@connection XYBluetoothResult(true)
             }
-            conn.await()
 
             updateUI()
             checkConnectionError(hasConnectionError)
@@ -132,25 +129,24 @@ class DeviceFragment : XYDeviceFragment() {
         GlobalScope.launch {
             var hasConnectionError = true
 
-            val conn = device.connection {
+            device.connection {
                 hasConnectionError = false
 
                 deviceData?.let {
-                    it.systemId = device.deviceInformationService.systemId.get().await().format()
-                    it.modelNumberString = device.deviceInformationService.modelNumberString.get().await().format()
-                    it.serialNumberString = device.deviceInformationService.serialNumberString.get().await().format()
-                    it.firmwareRevisionString = device.deviceInformationService.firmwareRevisionString.get().await().format()
-                    it.hardwareRevisionString = device.deviceInformationService.hardwareRevisionString.get().await().format()
-                    it.softwareRevisionString = device.deviceInformationService.softwareRevisionString.get().await().format()
-                    it.manufacturerNameString = device.deviceInformationService.manufacturerNameString.get().await().format()
-                    it.ieeeRegulatoryCertificationDataList = device.deviceInformationService.ieeeRegulatoryCertificationDataList.get().await().format()
-                    it.pnpId = device.deviceInformationService.pnpId.get().await().format()
+                    it.systemId = device.deviceInformationService.systemId.get().format()
+                    it.modelNumberString = device.deviceInformationService.modelNumberString.get().format()
+                    it.serialNumberString = device.deviceInformationService.serialNumberString.get().format()
+                    it.firmwareRevisionString = device.deviceInformationService.firmwareRevisionString.get().format()
+                    it.hardwareRevisionString = device.deviceInformationService.hardwareRevisionString.get().format()
+                    it.softwareRevisionString = device.deviceInformationService.softwareRevisionString.get().format()
+                    it.manufacturerNameString = device.deviceInformationService.manufacturerNameString.get().format()
+                    it.ieeeRegulatoryCertificationDataList = device.deviceInformationService.ieeeRegulatoryCertificationDataList.get().format()
+                    it.pnpId = device.deviceInformationService.pnpId.get().format()
                 }
 
                 return@connection XYBluetoothResult(true)
 
             }
-            conn.await()
 
             updateUI()
             checkConnectionError(hasConnectionError)
@@ -161,25 +157,24 @@ class DeviceFragment : XYDeviceFragment() {
         GlobalScope.launch {
             var hasConnectionError = true
 
-            val conn = device.connection {
+            device.connection {
                 hasConnectionError = false
 
                 deviceData?.let {
-                    it.systemId = device.deviceInformationService.systemId.get().await().format()
-                    it.modelNumberString = device.deviceInformationService.modelNumberString.get().await().format()
-                    it.serialNumberString = device.deviceInformationService.serialNumberString.get().await().format()
-                    it.firmwareRevisionString = device.deviceInformationService.firmwareRevisionString.get().await().format()
-                    it.hardwareRevisionString = device.deviceInformationService.hardwareRevisionString.get().await().format()
-                    it.softwareRevisionString = device.deviceInformationService.softwareRevisionString.get().await().format()
-                    it.manufacturerNameString = device.deviceInformationService.manufacturerNameString.get().await().format()
-                    it.ieeeRegulatoryCertificationDataList = device.deviceInformationService.ieeeRegulatoryCertificationDataList.get().await().format()
-                    it.pnpId = device.deviceInformationService.pnpId.get().await().format()
+                    it.systemId = device.deviceInformationService.systemId.get().format()
+                    it.modelNumberString = device.deviceInformationService.modelNumberString.get().format()
+                    it.serialNumberString = device.deviceInformationService.serialNumberString.get().format()
+                    it.firmwareRevisionString = device.deviceInformationService.firmwareRevisionString.get().format()
+                    it.hardwareRevisionString = device.deviceInformationService.hardwareRevisionString.get().format()
+                    it.softwareRevisionString = device.deviceInformationService.softwareRevisionString.get().format()
+                    it.manufacturerNameString = device.deviceInformationService.manufacturerNameString.get().format()
+                    it.ieeeRegulatoryCertificationDataList = device.deviceInformationService.ieeeRegulatoryCertificationDataList.get().format()
+                    it.pnpId = device.deviceInformationService.pnpId.get().format()
                 }
 
                 return@connection XYBluetoothResult(true)
 
             }
-            conn.await()
 
             updateUI()
             checkConnectionError(hasConnectionError)

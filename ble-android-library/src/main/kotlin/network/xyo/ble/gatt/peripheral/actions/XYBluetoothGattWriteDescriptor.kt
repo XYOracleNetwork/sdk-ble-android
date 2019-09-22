@@ -18,7 +18,7 @@ class XYBluetoothGattWriteDescriptor(val gatt: XYThreadSafeBluetoothGatt, val ga
         _timeout = timeout
     }
 
-    fun start(descriptorToWrite: BluetoothGattDescriptor) = GlobalScope.async {
+    suspend fun start(descriptorToWrite: BluetoothGattDescriptor) = GlobalScope.async {
         log.info("writeDescriptor")
         val listenerName = "XYBluetoothGattWriteDescriptor${hashCode()}"
         var error: XYBluetoothError? = null
@@ -68,7 +68,7 @@ class XYBluetoothGattWriteDescriptor(val gatt: XYThreadSafeBluetoothGatt, val ga
                     }
                     gattCallback.addListener(listenerName, listener)
                     GlobalScope.launch {
-                        if (gatt.writeDescriptor(descriptorToWrite).await() != true) {
+                        if (gatt.writeDescriptor(descriptorToWrite) != true) {
                             error = XYBluetoothError("writeDescriptor: gatt.writeDescriptor failed to start")
                             gattCallback.removeListener(listenerName)
 
@@ -83,11 +83,11 @@ class XYBluetoothGattWriteDescriptor(val gatt: XYThreadSafeBluetoothGatt, val ga
         } catch (ex: TimeoutCancellationException) {
             error = XYBluetoothError("start: Timeout")
             gattCallback.removeListener(listenerName)
-            XYBluetoothGattDiscover.log.error(ex)
+            log.error(ex)
         }
 
         return@async XYBluetoothResult(value, error)
-    }
+    }.await()
 
     companion object : XYBase()
 }

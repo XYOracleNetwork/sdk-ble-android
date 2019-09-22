@@ -79,7 +79,7 @@
                 android:id="@+id/tabLinkLoss"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/linkloss" />
+                android:text="@string/link_loss" />
 
             <com.google.android.material.tabs.TabItem
                 android:id="@+id/tabTx"

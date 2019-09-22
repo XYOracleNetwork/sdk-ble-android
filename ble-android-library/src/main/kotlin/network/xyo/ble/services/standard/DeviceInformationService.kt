@@ -1,3 +1,5 @@
+@file:Suppress("SpellCheckingInspection")
+
 package network.xyo.ble.services.standard
 
 import network.xyo.ble.devices.XYBluetoothDevice

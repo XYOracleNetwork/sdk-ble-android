@@ -108,43 +108,43 @@ open class XYFinderBluetoothDevice(context: Context, scanResult: XYScanResult, h
         }
 
     //signal the user to where it is, usually make it beep
-    open fun find() = connection {
+    open suspend fun find() = connection {
         log.error(UnsupportedOperationException().toString(), true)
         return@connection XYBluetoothResult<Int>(XYBluetoothError("Not Implemented"))
     }
 
     //turn off finding, if supported
-    open fun stopFind() = connection {
+    open suspend fun stopFind() = connection {
         log.error(UnsupportedOperationException(), true)
         return@connection XYBluetoothResult<Int>(XYBluetoothError("Not Implemented"))
     }
 
-    open fun lock() = connection {
+    open suspend fun lock() = connection {
         log.error(UnsupportedOperationException(), true)
         return@connection XYBluetoothResult<ByteArray>(XYBluetoothError("Not Implemented"))
     }
 
-    open fun unlock() = connection {
+    open suspend fun unlock() = connection {
         log.error(UnsupportedOperationException(), true)
         return@connection XYBluetoothResult<ByteArray>(XYBluetoothError("Not Implemented"))
     }
 
-    open fun stayAwake() = connection {
+    open suspend fun stayAwake() = connection {
         log.error(UnsupportedOperationException(), true)
         return@connection XYBluetoothResult<Int>(XYBluetoothError("Not Implemented"))
     }
 
-    open fun fallAsleep() = connection {
+    open suspend fun fallAsleep() = connection {
         log.error(UnsupportedOperationException(), true)
         return@connection XYBluetoothResult<Int>(XYBluetoothError("Not Implemented"))
     }
 
-    open fun restart() = connection {
+    open suspend fun restart() = connection {
         log.error(UnsupportedOperationException(), true)
         return@connection XYBluetoothResult<Int>(XYBluetoothError("Not Implemented"))
     }
 
-    open fun batteryLevel() = connection {
+    open suspend fun batteryLevel() = connection {
         log.error(UnsupportedOperationException(), true)
         return@connection XYBluetoothResult<Int>(XYBluetoothError("Not Implemented"))
     }

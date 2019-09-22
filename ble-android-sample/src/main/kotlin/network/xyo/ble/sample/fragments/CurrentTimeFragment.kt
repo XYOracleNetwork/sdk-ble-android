@@ -81,19 +81,18 @@ class CurrentTimeFragment : XYDeviceFragment() {
         GlobalScope.launch {
             var hasConnectionError = true
 
-            val conn = device.connection {
+            device.connection {
                 hasConnectionError = false
 
                 deviceData?.let {
-                    it.currentTime = device.currentTimeService.currentTime.get().await().format()
-                    it.localTimeInformation = device.currentTimeService.localTimeInformation.get().await().format()
-                    it.referenceTimeInformation = device.currentTimeService.referenceTimeInformation.get().await().format()
+                    it.currentTime = device.currentTimeService.currentTime.get().format()
+                    it.localTimeInformation = device.currentTimeService.localTimeInformation.get().format()
+                    it.referenceTimeInformation = device.currentTimeService.referenceTimeInformation.get().format()
                 }
 
                 return@connection XYBluetoothResult(true)
 
             }
-            conn.await()
 
             updateUI()
             checkConnectionError(hasConnectionError)
@@ -105,19 +104,17 @@ class CurrentTimeFragment : XYDeviceFragment() {
         GlobalScope.launch {
             var hasConnectionError = true
 
-            val conn = device.connection {
+            device.connection {
                 hasConnectionError = false
 
                 deviceData?.let {
-                    it.currentTime = device.currentTimeService.currentTime.get().await().format()
-                    it.localTimeInformation = device.currentTimeService.localTimeInformation.get().await().format()
-                    it.referenceTimeInformation = device.currentTimeService.referenceTimeInformation.get().await().format()
+                    it.currentTime = device.currentTimeService.currentTime.get().format()
+                    it.localTimeInformation = device.currentTimeService.localTimeInformation.get().format()
+                    it.referenceTimeInformation = device.currentTimeService.referenceTimeInformation.get().format()
                 }
 
                 return@connection XYBluetoothResult(true)
-
             }
-            conn.await()
 
             updateUI()
             checkConnectionError(hasConnectionError)

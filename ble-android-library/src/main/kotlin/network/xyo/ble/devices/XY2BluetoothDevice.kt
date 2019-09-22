@@ -25,12 +25,12 @@ open class XY2BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
     val extendedControlService by lazy { ExtendedControlService(this) }
     val sensorService by lazy { SensorService(this) }
 
-    override fun find() = connection {
-        return@connection controlService.buzzerSelect.set(2).await()
+    override suspend fun find() = connection {
+        return@connection controlService.buzzerSelect.set(2)
     }
 
-    override fun stopFind() = connection {
-        return@connection controlService.buzzerSelect.set(-1).await()
+    override suspend fun stopFind() = connection {
+        return@connection controlService.buzzerSelect.set(-1)
     }
 
     override val prefix = "xy:ibeacon"

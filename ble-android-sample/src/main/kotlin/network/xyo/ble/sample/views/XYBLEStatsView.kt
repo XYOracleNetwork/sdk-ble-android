@@ -3,7 +3,7 @@ package network.xyo.ble.sample.views
 import android.content.Context
 import android.util.AttributeSet
 import android.widget.LinearLayout
-import kotlinx.android.synthetic.main.blestats_view.view.*
+import kotlinx.android.synthetic.main.ble_stats_view.view.*
 import network.xyo.ble.devices.XYBluetoothDevice
 import network.xyo.ble.sample.XYApplication
 import network.xyo.ble.scanner.XYSmartScan

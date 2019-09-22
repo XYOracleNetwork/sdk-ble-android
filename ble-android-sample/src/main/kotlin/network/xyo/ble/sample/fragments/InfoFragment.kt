@@ -1,3 +1,5 @@
+@file:Suppress("SpellCheckingInspection")
+
 package network.xyo.ble.sample.fragments
 
 import android.os.Bundle
@@ -8,15 +10,12 @@ import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.CompoundButton
 import kotlinx.android.synthetic.main.fragment_info.*
-import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
+import network.xyo.base.XYBase
 import network.xyo.ble.devices.*
 import network.xyo.ble.gatt.peripheral.XYBluetoothResult
 import network.xyo.ble.sample.R
 import network.xyo.ble.sample.XYDeviceData
-import network.xyo.base.XYBase
 import network.xyo.ui.ui
 
 @kotlin.ExperimentalUnsignedTypes
@@ -189,7 +188,7 @@ class InfoFragment : XYDeviceFragment(), View.OnClickListener, CompoundButton.On
 
     private fun connect() {
         GlobalScope.launch {
-            val result = device?.connect()?.await()
+            val result = device?.connect()
             val error = result?.error
             if (error?.message.isNullOrEmpty()) {
                 ui {
@@ -214,7 +213,7 @@ class InfoFragment : XYDeviceFragment(), View.OnClickListener, CompoundButton.On
         }
 
         GlobalScope.launch {
-            (device as? XYFinderBluetoothDevice)?.find()?.await()
+            (device as? XYFinderBluetoothDevice)?.find()
             ui {
                 this@InfoFragment.isVisible.let { button_find?.isEnabled = true }
 
@@ -229,7 +228,7 @@ class InfoFragment : XYDeviceFragment(), View.OnClickListener, CompoundButton.On
         }
 
         GlobalScope.launch {
-            val stayAwake = (device as? XYFinderBluetoothDevice)?.stayAwake()?.await()
+            val stayAwake = (device as? XYFinderBluetoothDevice)?.stayAwake()
             if (stayAwake == null) {
                 ui {
                     showToast("Stay Awake Failed to Complete Call")
@@ -275,12 +274,12 @@ class InfoFragment : XYDeviceFragment(), View.OnClickListener, CompoundButton.On
         }
 
         GlobalScope.launch {
-            val locked = (device as? XYFinderBluetoothDevice)?.lock()?.await()
+            val locked = (device as? XYFinderBluetoothDevice)?.lock()
             when {
                 locked == null -> showToast("Device does not support Lock")
                 locked.error == null -> {
                     showToast("Locked: ${locked.value}")
-                    updateStayAwakeEnabledStates().await()
+                    updateStayAwakeEnabledStates()
                 }
                 else -> showToast("Lock Error: ${locked.error}")
             }
@@ -297,13 +296,13 @@ class InfoFragment : XYDeviceFragment(), View.OnClickListener, CompoundButton.On
         }
 
         GlobalScope.launch {
-            val unlocked = (device as? XYFinderBluetoothDevice)?.unlock()?.await()
+            val unlocked = (device as? XYFinderBluetoothDevice)?.unlock()
             when {
                 unlocked == null -> showToast("Device does not support Unlock")
                 unlocked.error == null -> {
                     ui {
                         showToast("Unlocked: ${unlocked.value}")
-                        updateStayAwakeEnabledStates().await()
+                        updateStayAwakeEnabledStates()
                     }
                 }
                 else -> ui {
@@ -317,12 +316,12 @@ class InfoFragment : XYDeviceFragment(), View.OnClickListener, CompoundButton.On
     }
 
 
-    private fun updateStayAwakeEnabledStates(): Deferred<Unit> {
+    private suspend fun updateStayAwakeEnabledStates(): Unit {
         return GlobalScope.async {
             log.info("updateStayAwakeEnabledStates")
             val xy4 = device as? XY4BluetoothDevice
             if (xy4 != null) {
-                val stayAwake = xy4.primary.stayAwake.get().await()
+                val stayAwake = xy4.primary.stayAwake.get()
                 log.info("updateStayAwakeEnabledStates: ${stayAwake.value}")
                 ui {
                     this@InfoFragment.isVisible.let {
@@ -339,14 +338,14 @@ class InfoFragment : XYDeviceFragment(), View.OnClickListener, CompoundButton.On
                 log.error("updateStayAwakeEnabledStates: Not an XY4!", false)
             }
             return@async
-        }
+        }.await()
     }
 
     private fun enableButtonNotify(enable: Boolean) {
         GlobalScope.launch {
             val xy4 = device as? XY4BluetoothDevice
             if (xy4 != null) {
-                val notify = xy4.primary.buttonState.enableNotify(enable).await()
+                val notify = xy4.primary.buttonState.enableNotify(enable)
                 ui {
                     showToast(notify.toString())
                 }
@@ -354,7 +353,7 @@ class InfoFragment : XYDeviceFragment(), View.OnClickListener, CompoundButton.On
             } else {
                 val xy3 = device as? XY3BluetoothDevice
                 if (xy3 != null) {
-                    val notify = xy3.controlService.button.enableNotify(enable).await()
+                    val notify = xy3.controlService.button.enableNotify(enable)
                     ui {
                         showToast(notify.toString())
                     }
@@ -377,12 +376,12 @@ class InfoFragment : XYDeviceFragment(), View.OnClickListener, CompoundButton.On
     }
 
     //it is possible that reading the lock value is not implemented in the firmware
-    private fun updateLockValue(): Deferred<Unit> {
-        return GlobalScope.async {
+    private suspend fun updateLockValue(): Unit {
+        return withContext(Dispatchers.Default) {
             log.info("updateLockValue")
             val xy4 = device as? XY4BluetoothDevice
             if (xy4 != null) {
-                val lock = xy4.primary.lock.get().await()
+                val lock = xy4.primary.lock.get()
 
                 log.info("updateLock: $lock.value")
                 ui {
@@ -419,7 +418,7 @@ class InfoFragment : XYDeviceFragment(), View.OnClickListener, CompoundButton.On
             xy4?.connection {
                 for (i in 0..10000) {
                     val text = "Hello+$i"
-                    val write = xy4.primary.lock.set(XY4BluetoothDevice.DefaultLockCode).await()
+                    val write = xy4.primary.lock.set(XY4BluetoothDevice.DefaultLockCode)
                     if (write.error == null) {
                         log.info("testXy4: Success: $text")
                     } else {
@@ -427,7 +426,7 @@ class InfoFragment : XYDeviceFragment(), View.OnClickListener, CompoundButton.On
                     }
                 }
                 return@connection XYBluetoothResult(true)
-            }?.await()
+            }
         }
     }
 

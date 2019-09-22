@@ -87,17 +87,16 @@ class GenericAttributeFragment : XYDeviceFragment() {
         GlobalScope.launch {
             var hasConnectionError = true
 
-            val conn = device.connection {
+            device.connection {
                 hasConnectionError = false
 
                 deviceData?.let {
-                    it.serviceChanged = device.genericAttributeService.serviceChanged.get().await().format()
+                    it.serviceChanged = device.genericAttributeService.serviceChanged.get().format()
                 }
 
                 return@connection XYBluetoothResult(true)
 
             }
-            conn.await()
 
             updateUI()
             checkConnectionError(hasConnectionError)
@@ -108,17 +107,16 @@ class GenericAttributeFragment : XYDeviceFragment() {
         GlobalScope.launch {
             var hasConnectionError = true
 
-            val conn = device.connection {
+            device.connection {
                 hasConnectionError = false
 
                 deviceData?.let {
-                    it.serviceChanged = device.genericAttributeService.serviceChanged.get().await().format()
+                    it.serviceChanged = device.genericAttributeService.serviceChanged.get().format()
                 }
 
                 return@connection XYBluetoothResult(true)
 
             }
-            conn.await()
 
             updateUI()
             checkConnectionError(hasConnectionError)
@@ -129,17 +127,16 @@ class GenericAttributeFragment : XYDeviceFragment() {
         GlobalScope.launch {
             var hasConnectionError = true
 
-            val conn = device.connection {
+            device.connection {
                 hasConnectionError = false
 
                 deviceData?.let {
-                    it.serviceChanged = device.genericAttributeService.serviceChanged.get().await().format()
+                    it.serviceChanged = device.genericAttributeService.serviceChanged.get().format()
                 }
 
                 return@connection XYBluetoothResult(true)
 
             }
-            conn.await()
 
             updateUI()
             checkConnectionError(hasConnectionError)

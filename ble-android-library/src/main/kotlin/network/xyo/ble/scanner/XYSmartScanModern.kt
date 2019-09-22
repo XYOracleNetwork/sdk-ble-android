@@ -20,9 +20,9 @@ import java.util.*
 @TargetApi(21)
 @kotlin.ExperimentalUnsignedTypes
 class XYSmartScanModern(context: Context) : XYSmartScan(context) {
-    override fun start() = GlobalScope.async {
+    override suspend fun start() = GlobalScope.async {
         log.info("start")
-        super.start().await()
+        super.start()
 
         val result = asyncBle {
 
@@ -71,13 +71,13 @@ class XYSmartScanModern(context: Context) : XYSmartScan(context) {
 
             log.info("Bluetooth Disabled")
             return@asyncBle XYBluetoothResult(false)
-        }.await()
+        }
 
         if (result?.error != null) {
             return@async false
         }
         return@async result?.value ?: false
-    }
+    }.await()
 
     private val callback = object : ScanCallback() {
         override fun onBatchScanResults(results: MutableList<ScanResult>?) {
@@ -154,9 +154,9 @@ class XYSmartScanModern(context: Context) : XYSmartScan(context) {
                 .build()
     }
 
-    override fun stop() = GlobalScope.async {
+    override suspend fun stop() = GlobalScope.async {
         log.info("stop")
-        super.stop().await()
+        super.stop()
         val result = asyncBle {
             val bluetoothAdapter = this@XYSmartScanModern.bluetoothAdapter
 
@@ -173,12 +173,12 @@ class XYSmartScanModern(context: Context) : XYSmartScan(context) {
 
             scanner.stopScan(callback)
             return@asyncBle XYBluetoothResult(true)
-        }.await()
+        }
 
         if (result?.error != null) {
             return@async false
         }
         return@async result?.value ?: false
 
-    }
+    }.await()
 }

@@ -18,7 +18,7 @@
 
     <include
         android:id="@+id/include_stats"
-        layout="@layout/blestats_view"
+        layout="@layout/ble_stats_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
@@ -51,7 +51,7 @@
     </LinearLayout>
 
     <ListView
-        android:id="@+id/listview"
+        android:id="@+id/list_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/ll_disabled"

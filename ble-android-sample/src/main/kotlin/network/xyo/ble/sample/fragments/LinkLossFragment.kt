@@ -83,17 +83,16 @@ class LinkLossFragment : XYDeviceFragment() {
         GlobalScope.launch {
             var hasConnectionError = true
 
-            val conn = device.connection {
+            device.connection {
                 hasConnectionError = false
 
                 deviceData?.let {
-                    it.alertLevel = device.linkLossService.alertLevel.get().await().format()
+                    it.alertLevel = device.linkLossService.alertLevel.get().format()
                 }
 
                 return@connection XYBluetoothResult(true)
 
             }
-            conn.await()
 
             updateUI()
             checkConnectionError(hasConnectionError)
@@ -104,17 +103,16 @@ class LinkLossFragment : XYDeviceFragment() {
         GlobalScope.launch {
             var hasConnectionError = true
 
-            val conn = device.connection {
+            device.connection {
                 hasConnectionError = false
 
                 deviceData?.let {
-                    it.alertLevel = device.linkLossService.alertLevel.get().await().format()
+                    it.alertLevel = device.linkLossService.alertLevel.get().format()
                 }
 
                 return@connection XYBluetoothResult(true)
 
             }
-            conn.await()
 
             updateUI()
             checkConnectionError(hasConnectionError)
