@@ -3,6 +3,8 @@ buildscript {
     ext {
         experimentalsEnabled = [
                 "-Xuse-experimental=kotlin.Experimental",
+                "-Xuse-experimental=kotlin.ExperimentalUnsignedTypes",
+                "-Xuse-experimental=kotlin.ExperimentalStdlibApi",
                 "-Xuse-experimental=kotlinx.coroutines.ExperimentalCoroutinesApi",
                 "-Xuse-experimental=kotlinx.coroutines.InternalCoroutinesApi"
         ]

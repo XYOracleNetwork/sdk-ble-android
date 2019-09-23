@@ -6,7 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import kotlinx.android.synthetic.main.fragment_characteristic.view.*
-import network.xyo.ble.gatt.server.XYBluetoothCharacteristic
+import network.xyo.ble.generic.gatt.server.XYBluetoothCharacteristic
 import network.xyo.ble.sample.R
 import network.xyo.ui.XYBaseFragment
 import java.nio.charset.Charset

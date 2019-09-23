@@ -12,8 +12,11 @@ import android.widget.CompoundButton
 import kotlinx.android.synthetic.main.fragment_info.*
 import kotlinx.coroutines.*
 import network.xyo.base.XYBase
-import network.xyo.ble.devices.*
-import network.xyo.ble.gatt.peripheral.XYBluetoothResult
+import network.xyo.ble.devices.apple.XYIBeaconBluetoothDevice
+import network.xyo.ble.devices.xy.XY3BluetoothDevice
+import network.xyo.ble.devices.xy.XY4BluetoothDevice
+import network.xyo.ble.devices.xy.XYFinderBluetoothDevice
+import network.xyo.ble.generic.devices.XYBluetoothDevice
 import network.xyo.ble.sample.R
 import network.xyo.ble.sample.XYDeviceData
 import network.xyo.ui.ui
@@ -375,28 +378,6 @@ class InfoFragment : XYDeviceFragment(), View.OnClickListener, CompoundButton.On
         }
     }
 
-    //it is possible that reading the lock value is not implemented in the firmware
-    private suspend fun updateLockValue() {
-        return withContext(Dispatchers.Default) {
-            log.info("updateLockValue")
-            val xy4 = device as? XY4BluetoothDevice
-            if (xy4 != null) {
-                val lock = xy4.primary.lock.get()
-
-                log.info("updateLock: $lock.value")
-                ui {
-                    this@InfoFragment.isVisible.let {
-                        if (lock.error != null) {
-                            edit_lock_value.setText(getString(R.string.not_supported))
-                        } else {
-                            edit_lock_value.setText(lock.value?.toHex())
-                        }
-                    }
-                }
-            }
-        }
-    }
-
     private val hexChars = "0123456789ABCDEF".toCharArray()
     private fun ByteArray.toHex(): String {
         val result = StringBuffer()
@@ -410,24 +391,6 @@ class InfoFragment : XYDeviceFragment(), View.OnClickListener, CompoundButton.On
         }
 
         return result.toString()
-    }
-
-    private fun testXy4() {
-        GlobalScope.launch {
-            val xy4 = device as? XY4BluetoothDevice
-            xy4?.connection {
-                for (i in 0..10000) {
-                    val text = "Hello+$i"
-                    val write = xy4.primary.lock.set(XY4BluetoothDevice.DefaultLockCode)
-                    if (write.error == null) {
-                        log.info("testXy4: Success: $text")
-                    } else {
-                        log.info("testXy4: Fail: $text : ${write.error}")
-                    }
-                }
-                return@connection XYBluetoothResult(true)
-            }
-        }
     }
 
     companion object : XYBase() {

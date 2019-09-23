@@ -7,11 +7,11 @@ import android.view.ViewGroup
 import kotlinx.android.synthetic.main.fragment_alert.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import network.xyo.ble.devices.XY2BluetoothDevice
-import network.xyo.ble.devices.XY3BluetoothDevice
-import network.xyo.ble.devices.XY4BluetoothDevice
-import network.xyo.ble.devices.XYBluetoothDevice
-import network.xyo.ble.gatt.peripheral.XYBluetoothResult
+import network.xyo.ble.devices.xy.XY2BluetoothDevice
+import network.xyo.ble.devices.xy.XY3BluetoothDevice
+import network.xyo.ble.devices.xy.XY4BluetoothDevice
+import network.xyo.ble.generic.devices.XYBluetoothDevice
+import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResult
 import network.xyo.ble.sample.R
 import network.xyo.ble.sample.XYDeviceData
 import network.xyo.ui.ui
@@ -84,13 +84,13 @@ class AlertFragment : XYDeviceFragment() {
             device.connection {
                 hasConnectionError = false
 
-                /*deviceData?.let {
+                deviceData?.let {
                     it.controlPoint = device.alertNotification.controlPoint.get().format()
                     it.unreadAlertStatus = device.alertNotification.unreadAlertStatus.get().format()
                     it.newAlert = device.alertNotification.newAlert.get().format()
                     it.supportedNewAlertCategory = device.alertNotification.supportedNewAlertCategory.get().format()
                     it.supportedUnreadAlertCategory = device.alertNotification.supportedUnreadAlertCategory.get().format()
-                }*/
+                }
                 return@connection XYBluetoothResult(true)
             }
 
@@ -106,13 +106,13 @@ class AlertFragment : XYDeviceFragment() {
             device.connection {
                 hasConnectionError = false
 
-                /*deviceData?.let {
+                deviceData?.let {
                     it.controlPoint = device.alertNotification.controlPoint.get().format()
                     it.unreadAlertStatus = device.alertNotification.unreadAlertStatus.get().format()
                     it.newAlert = device.alertNotification.newAlert.get().format()
                     it.supportedNewAlertCategory = device.alertNotification.supportedNewAlertCategory.get().format()
                     it.supportedUnreadAlertCategory = device.alertNotification.supportedUnreadAlertCategory.get().format()
-                }*/
+                }
 
                 return@connection XYBluetoothResult(true)
 

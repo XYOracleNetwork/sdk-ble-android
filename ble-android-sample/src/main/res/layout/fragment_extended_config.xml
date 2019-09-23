@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:tag="0"
+    android:theme="@style/XYTheme"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="6dp"
+        android:layout_marginEnd="12dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="6dp"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/layout_margin_normal"
+            android:orientation="horizontal"
+            android:paddingBottom="20dp">
+
+            <network.xyo.ui.views.XYButton
+                android:id="@+id/button_extended_config_refresh"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/refresh" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/layout_margin_normal"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/virtualBeaconSettingsLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="@string/virtual_beacon_settings"
+                android:textColor="@color/black" />
+
+            <TextView
+                android:id="@+id/text_virtual_beacon_settings"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="4dp" />
+
+            <TextView
+                android:id="@+id/toneLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="@string/tone"
+                android:textColor="@color/black" />
+
+            <TextView
+                android:id="@+id/text_tone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="4dp" />
+
+            <TextView
+                android:id="@+id/inactiveVirtualBeaconSettingsLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="@string/inactive_virtual_beacon_settings"
+                android:textColor="@color/black" />
+
+            <TextView
+                android:id="@+id/text_inactive_virtual_beacon_settings"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="4dp" />
+
+            <TextView
+                android:id="@+id/inactiveIntervalLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="@string/inactive_interval"
+                android:textColor="@color/black" />
+
+            <TextView
+                android:id="@+id/text_inactive_interval"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="4dp" />
+
+            <TextView
+                android:id="@+id/gpsInterval"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="@string/gps_interval"
+                android:textColor="@color/black" />
+
+            <TextView
+                android:id="@+id/text_gps_interval"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="4dp" />
+
+            <TextView
+                android:id="@+id/gpsModeLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="@string/gps_mode"
+                android:textColor="@color/black" />
+
+            <TextView
+                android:id="@+id/text_gps_mode"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="4dp" />
+
+            <TextView
+                android:id="@+id/simIdLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="@string/sim_id"
+                android:textColor="@color/black" />
+
+            <TextView
+                android:id="@+id/text_sim_id"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="4dp" />
+
+            <TextView
+                android:id="@+id/stayAwakeLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="@string/stay_awake"
+                android:textColor="@color/black" />
+
+            <TextView
+                android:id="@+id/text_stay_awake"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="4dp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</ScrollView>

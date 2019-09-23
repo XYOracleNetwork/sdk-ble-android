@@ -1,18 +1,17 @@
 package network.xyo.ble.sample.fragments
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import kotlinx.android.synthetic.main.fragment_test.*
 import kotlinx.coroutines.*
-import network.xyo.ble.devices.XY3BluetoothDevice
-import network.xyo.ble.devices.XY4BluetoothDevice
-import network.xyo.ble.gatt.peripheral.XYBluetoothResult
+import network.xyo.ble.devices.xy.XY3BluetoothDevice
+import network.xyo.ble.devices.xy.XY4BluetoothDevice
+import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResult
 import network.xyo.ble.sample.R
 import network.xyo.ble.sample.XYApplication
-import network.xyo.ble.scanner.XYSmartScan
+import network.xyo.ble.generic.scanner.XYSmartScan
 import network.xyo.base.XYBase
 import network.xyo.ui.XYBaseFragment
 import network.xyo.ui.ui
@@ -35,7 +34,6 @@ class BeepTestFragment : XYBaseFragment() {
     private var unlockCount = 0
     private var beepCount = 0
 
-    @SuppressLint("SetTextI18n")
     fun updateUI() {
         ui {
             start_count?.text = "Starts: $startCount"

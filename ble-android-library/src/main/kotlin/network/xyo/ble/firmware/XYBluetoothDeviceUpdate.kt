@@ -1,8 +1,8 @@
 package network.xyo.ble.firmware
 
 import kotlinx.coroutines.*
-import network.xyo.ble.devices.XYBluetoothDevice
-import network.xyo.ble.gatt.peripheral.XYBluetoothResult
+import network.xyo.ble.generic.devices.XYBluetoothDevice
+import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResult
 import network.xyo.ble.services.dialog.SpotaService
 import network.xyo.base.XYBase
 

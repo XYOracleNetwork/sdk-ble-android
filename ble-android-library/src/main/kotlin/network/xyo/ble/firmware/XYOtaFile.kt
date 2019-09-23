@@ -19,14 +19,12 @@ class XYOtaFile(private val inputStream: InputStream?) : XYBase() {
     private var blocks: Array<Array<ByteArray>>? = null
     private val bytesAvailable: Int = inputStream!!.available()
 
-    var crc: Byte = 0
-        private set
+    private var crc: Byte = 0
 
     var fileBlockSize = 128
         private set
 
-    var fileChunkSize = 20
-        private set
+    private var fileChunkSize = 20
 
     var numberOfBlocks = -1
         private set
@@ -50,7 +48,7 @@ class XYOtaFile(private val inputStream: InputStream?) : XYBase() {
     }
 
     // Set the file blockSize and ChunkSize if not using the default 128/20 values
-    fun setFileBlockSize(blockSize: Int, chunkSize: Int) {
+    private fun setFileBlockSize(blockSize: Int, chunkSize: Int) {
         fileBlockSize = max(blockSize, chunkSize)
         fileChunkSize = chunkSize
         chunksPerBlockCount = fileBlockSize / fileChunkSize + if (fileBlockSize.rem(fileChunkSize) != 0) 1 else 0

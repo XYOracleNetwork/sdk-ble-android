@@ -9,10 +9,10 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import com.google.android.material.tabs.TabLayout
 import kotlinx.android.synthetic.main.activity_device.*
-import network.xyo.ble.devices.XY3BluetoothDevice
-import network.xyo.ble.devices.XY4BluetoothDevice
-import network.xyo.ble.devices.XYBluetoothDevice
-import network.xyo.ble.devices.XYFinderBluetoothDevice
+import network.xyo.ble.devices.xy.XY3BluetoothDevice
+import network.xyo.ble.devices.xy.XY4BluetoothDevice
+import network.xyo.ble.generic.devices.XYBluetoothDevice
+import network.xyo.ble.devices.xy.XYFinderBluetoothDevice
 import network.xyo.ble.sample.R
 import network.xyo.ble.sample.XYDeviceData
 import network.xyo.ble.sample.fragments.*
@@ -218,7 +218,7 @@ class XYODeviceActivity : XYOAppBaseActivity() {
 
 
     inner class SectionsPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
-        private val size = 11
+        private val size = 15
         private var fragments: SparseArray<XYBaseFragment> = SparseArray(size)
 
         override fun getItem(position: Int): Fragment {
@@ -257,6 +257,18 @@ class XYODeviceActivity : XYOAppBaseActivity() {
                 }
                 10 -> {
                     frag = FirmwareUpdateFragment.newInstance(device, data)
+                }
+                11 -> {
+                    frag = PrimaryFragment.newInstance(device, data)
+                }
+                12 -> {
+                    frag = BasicFragment.newInstance(device, data)
+                }
+                13 -> {
+                    frag = ExtendedConfigFragment.newInstance(device, data)
+                }
+                14 -> {
+                    frag = ControlFragment.newInstance(device, data)
                 }
                 else -> frag = InfoFragment.newInstance(device, data)
             }

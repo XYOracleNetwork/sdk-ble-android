@@ -44,15 +44,13 @@
                     android:layout_alignParentStart="true"
                     android:visibility="gone"
                     />
-
-                <Switch
-                    android:id="@+id/button_stayConnected"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:text="@string/btn_stay_connected" />
-
             </RelativeLayout>
+
+            <Switch
+                android:id="@+id/button_stayConnected"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/btn_stay_connected" />
 
             <LinearLayout
                 android:layout_width="match_parent"

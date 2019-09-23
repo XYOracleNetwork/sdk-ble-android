@@ -8,11 +8,11 @@ import android.view.ViewGroup
 import kotlinx.android.synthetic.main.fragment_link_loss.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import network.xyo.ble.devices.XY2BluetoothDevice
-import network.xyo.ble.devices.XY3BluetoothDevice
-import network.xyo.ble.devices.XY4BluetoothDevice
-import network.xyo.ble.devices.XYBluetoothDevice
-import network.xyo.ble.gatt.peripheral.XYBluetoothResult
+import network.xyo.ble.devices.xy.XY2BluetoothDevice
+import network.xyo.ble.devices.xy.XY3BluetoothDevice
+import network.xyo.ble.devices.xy.XY4BluetoothDevice
+import network.xyo.ble.generic.devices.XYBluetoothDevice
+import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResult
 import network.xyo.ble.sample.R
 import network.xyo.ble.sample.XYDeviceData
 import network.xyo.ui.ui

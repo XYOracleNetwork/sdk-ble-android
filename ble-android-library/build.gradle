@@ -144,7 +144,6 @@ dependencies {
     api 'org.jetbrains:annotations:17.0.0'
 }
 
-//allows experimental we are using - ignore in lint
 tasks.withType(org.jetbrains.kotlin.gradle.tasks.AbstractKotlinCompile).all { task ->
     task.kotlinOptions.freeCompilerArgs += experimentalsEnabled
 }

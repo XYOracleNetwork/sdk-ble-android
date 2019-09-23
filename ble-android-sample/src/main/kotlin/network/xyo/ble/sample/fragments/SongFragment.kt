@@ -8,10 +8,10 @@ import kotlinx.android.synthetic.main.fragment_battery.*
 import kotlinx.android.synthetic.main.fragment_song.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import network.xyo.ble.devices.XY3BluetoothDevice
-import network.xyo.ble.devices.XY4BluetoothDevice
-import network.xyo.ble.devices.XYBluetoothDevice
-import network.xyo.ble.gatt.peripheral.XYBluetoothResult
+import network.xyo.ble.devices.xy.XY3BluetoothDevice
+import network.xyo.ble.devices.xy.XY4BluetoothDevice
+import network.xyo.ble.generic.devices.XYBluetoothDevice
+import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResult
 import network.xyo.ble.sample.R
 import network.xyo.ble.sample.XYDeviceData
 import network.xyo.ui.ui
@@ -31,7 +31,7 @@ class SongFragment : XYDeviceFragment() {
     /**  VVPP PPPP PPPP PPPP DDDD DDDD DDDD DDDD **/
     /**********************************************/
 
-    class Note(private val pitch: UShort, private val volume: Short, private val duration: Short): SlotItem {
+    /*class Note(private val pitch: UShort, private val volume: Short, private val duration: Short): SlotItem {
         override val value: ByteBuffer
             get() {
                 val byte1 = pitch.and(0x3fff.toUShort()).rotateRight(8).toUByte().or(volume.toUByte()).and(0x03.toUByte().rotateLeft(6)).toByte()
@@ -40,13 +40,13 @@ class SongFragment : XYDeviceFragment() {
                 val byte2 = duration.toUByte().and(0xff.toUByte()).toByte()
                 return ByteBuffer.wrap(byteArrayOf(byte0, byte1, byte2, byte3))
             }
-    }
+    }*/
 
     /**********************************************/
     /**  1111 1111 AAAA AAAA DDDD DDDD DDDD DDDD **/
     /**********************************************/
 
-    class Action(private val action: UShort, private val data: Int): SlotItem {
+    /*class Action(private val action: UShort, private val data: Int): SlotItem {
         override val value: ByteBuffer
             get() {
                 val byte1 = action.rotateRight(8).toByte()
@@ -56,15 +56,15 @@ class SongFragment : XYDeviceFragment() {
 
                 return ByteBuffer.wrap(byteArrayOf(byte0, byte1, byte2, byte3))
             }
-    }
+    }*/
 
-    enum class Actions(val action: UShort) {
+    /*enum class Actions(val action: UShort) {
         Stop(0xf100U),
         Loop(0xf101U),
         Volume(0xf102U),
         VolumePlus(0xf103U),
         VolumeMinus(0xf104U)
-    }
+    }*/
 
     /*enum class Notes(val note: UShort) {
          MIN	(Ushort(0)),

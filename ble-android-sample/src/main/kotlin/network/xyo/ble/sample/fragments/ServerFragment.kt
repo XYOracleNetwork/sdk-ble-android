@@ -18,10 +18,10 @@ import kotlinx.android.synthetic.main.fragment_peripheral.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
-import network.xyo.ble.bluetooth.BluetoothIntentReceiver
-import network.xyo.ble.gatt.server.*
-import network.xyo.ble.gatt.server.responders.XYBluetoothReadResponder
-import network.xyo.ble.gatt.server.responders.XYBluetoothWriteResponder
+import network.xyo.ble.generic.bluetooth.BluetoothIntentReceiver
+import network.xyo.ble.generic.gatt.server.*
+import network.xyo.ble.generic.gatt.server.responders.XYBluetoothReadResponder
+import network.xyo.ble.generic.gatt.server.responders.XYBluetoothWriteResponder
 import network.xyo.ble.sample.R
 import network.xyo.ui.XYBaseFragment
 import java.nio.ByteBuffer

@@ -2,7 +2,7 @@ package network.xyo.ble.sample.fragments
 
 import network.xyo.base.XYBase
 import network.xyo.ble.sample.XYApplication
-import network.xyo.ble.scanner.XYSmartScan
+import network.xyo.ble.generic.scanner.XYSmartScan
 import network.xyo.ui.XYBaseFragment
 import network.xyo.ui.ui
 

@@ -14,6 +14,3 @@ google-services.json
 .DS_Store
 
 .scannerwork
-ble-android-library/lint-report.html
-
-ble-android-sample/lint-report.html

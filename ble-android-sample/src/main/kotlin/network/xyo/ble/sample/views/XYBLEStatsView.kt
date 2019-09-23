@@ -4,10 +4,13 @@ import android.content.Context
 import android.util.AttributeSet
 import android.widget.LinearLayout
 import kotlinx.android.synthetic.main.ble_stats_view.view.*
-import network.xyo.ble.devices.XYBluetoothDevice
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import network.xyo.ble.generic.devices.XYBluetoothDevice
 import network.xyo.ble.sample.XYApplication
-import network.xyo.ble.scanner.XYSmartScan
+import network.xyo.ble.generic.scanner.XYSmartScan
 import network.xyo.base.XYBase
+import network.xyo.ui.ui
 
 /**
  * Created by arietrouw on 12/28/17.
@@ -33,23 +36,29 @@ class XYBLEStatsView(context: Context, attrs: AttributeSet) : LinearLayout(conte
 
         override fun connectionStateChanged(device: XYBluetoothDevice, newState: Int) {
             log.info("connectionStateChanged")
+            update()
         }
 
         override fun statusChanged(status: XYSmartScan.Status) {
             log.info("statusChanged")
+            update()
         }
     }
 
     init {
         scanner.addListener("XYBLEStatsView", smartScanListener)
+        GlobalScope.launch {
+            update()
+        }
     }
 
     fun update() {
-        post {
-            text_start_time.text = scanner.startTime.toString()
-            text_uptime.text = ("%.2f").format(scanner.uptimeSeconds)
+        ui {
+            text_host_device_name.text = scanner.hostDevice.name.toString()
+            text_start_time.text = scanner.startTime?.toString() ?: "--"
+            text_uptime.text = scanner.uptime?.let {("%.2f").format((it / 1000f))} ?: "--"
             text_pulses.text = scanner.scanResultCount.toString()
-            text_pulses_per_second.text = ("%.2f").format(scanner.resultsPerSecond)
+            text_pulses_per_second.text = scanner.resultsPerSecond?.let {("%.2f").format(it)} ?: "--"
             text_devices.text = scanner.devices.size.toString()
         }
     }

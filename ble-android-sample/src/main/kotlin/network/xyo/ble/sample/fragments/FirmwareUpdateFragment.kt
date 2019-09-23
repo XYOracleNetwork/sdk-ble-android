@@ -16,8 +16,8 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import network.xyo.base.XYBase
-import network.xyo.ble.devices.XY4BluetoothDevice
-import network.xyo.ble.devices.XYBluetoothDevice
+import network.xyo.ble.devices.xy.XY4BluetoothDevice
+import network.xyo.ble.generic.devices.XYBluetoothDevice
 import network.xyo.ble.firmware.XYOtaFile
 import network.xyo.ble.firmware.XYOtaUpdate
 import network.xyo.ble.sample.R
@@ -56,7 +56,7 @@ class FirmwareUpdateFragment : XYDeviceFragment(), BackFragmentListener {
         return inflater.inflate(R.layout.fragment_firmware_update, container, false)
     }
 
-    fun loadImageFromServer() {
+    private fun loadImageFromServer() {
         GlobalScope.launch {
             readFromServer()
             loadList()
@@ -84,7 +84,7 @@ class FirmwareUpdateFragment : XYDeviceFragment(), BackFragmentListener {
         }
     }
 
-    suspend fun readFromServer() = withContext(Dispatchers.Default) {
+    private suspend fun readFromServer() = withContext(Dispatchers.Default) {
         XYOtaFile.createFileDirectory(folderName)
         val url = URL("https://s3.amazonaws.com/xyfirmware.xyo.network/xy4_585-0-v56.img")
         val connection = url.openConnection()

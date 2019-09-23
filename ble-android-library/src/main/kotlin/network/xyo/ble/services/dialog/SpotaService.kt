@@ -1,8 +1,8 @@
 package network.xyo.ble.services.dialog
 
 import android.bluetooth.BluetoothGattCharacteristic
-import network.xyo.ble.devices.XYBluetoothDevice
-import network.xyo.ble.services.Service
+import network.xyo.ble.generic.devices.XYBluetoothDevice
+import network.xyo.ble.generic.services.Service
 import java.util.*
 
 class SpotaService(device: XYBluetoothDevice) : Service(device) {
@@ -12,12 +12,45 @@ class SpotaService(device: XYBluetoothDevice) : Service(device) {
             return uuid
         }
 
-    val spotaMemDev = IntegerCharacteristic(this, Characteristics.MEM_DEV.uuid, BluetoothGattCharacteristic.FORMAT_UINT32)
-    val spotaGpioMap = IntegerCharacteristic(this, Characteristics.GPIO_MAP.uuid, BluetoothGattCharacteristic.FORMAT_UINT32)
-    val spotaMemInfo = IntegerCharacteristic(this, Characteristics.MEM_INFO.uuid, BluetoothGattCharacteristic.FORMAT_UINT32)
-    val spotaPatchLen = IntegerCharacteristic(this, Characteristics.PATCH_LEN.uuid, BluetoothGattCharacteristic.FORMAT_UINT16)
-    val spotaPatchData = BytesCharacteristic(this, Characteristics.PATCH_DATA.uuid )
-    val spotaServStatus = IntegerCharacteristic(this, Characteristics.SERV_STATUS.uuid, BluetoothGattCharacteristic.FORMAT_UINT32)
+    init {
+        characteristics[Characteristics.MEM_DEV.uuid] = IntegerCharacteristic(this, Characteristics.MEM_DEV.uuid, "Memory Dev", BluetoothGattCharacteristic.FORMAT_UINT32)
+        characteristics[Characteristics.GPIO_MAP.uuid] = IntegerCharacteristic(this, Characteristics.MEM_DEV.uuid, "GPIO Map", BluetoothGattCharacteristic.FORMAT_UINT32)
+        characteristics[Characteristics.MEM_INFO.uuid] = IntegerCharacteristic(this, Characteristics.MEM_DEV.uuid, "Memory Info", BluetoothGattCharacteristic.FORMAT_UINT32)
+        characteristics[Characteristics.PATCH_LEN.uuid] = IntegerCharacteristic(this, Characteristics.MEM_DEV.uuid, "Patch Length", BluetoothGattCharacteristic.FORMAT_UINT16)
+        characteristics[Characteristics.PATCH_DATA.uuid] = BytesCharacteristic(this, Characteristics.MEM_DEV.uuid, "Patch Data")
+        characteristics[Characteristics.SERV_STATUS.uuid] = IntegerCharacteristic(this, Characteristics.MEM_DEV.uuid, "Service Status", BluetoothGattCharacteristic.FORMAT_UINT32)
+    }
+
+    val spotaMemDev: IntegerCharacteristic
+        get() {
+            return characteristics[Characteristics.MEM_DEV.uuid] as IntegerCharacteristic
+        }
+
+    val spotaGpioMap: IntegerCharacteristic
+        get() {
+            return characteristics[Characteristics.GPIO_MAP.uuid] as IntegerCharacteristic
+        }
+
+    val spotaMemInfo: IntegerCharacteristic
+        get() {
+            return characteristics[Characteristics.MEM_INFO.uuid] as IntegerCharacteristic
+        }
+
+    val spotaPatchLen: IntegerCharacteristic
+        get() {
+            return characteristics[Characteristics.PATCH_LEN.uuid] as IntegerCharacteristic
+        }
+
+    val spotaPatchData: BytesCharacteristic
+        get() {
+            return characteristics[Characteristics.PATCH_DATA.uuid] as BytesCharacteristic
+        }
+
+    val spotaServStatus: IntegerCharacteristic
+        get() {
+            return characteristics[Characteristics.SERV_STATUS.uuid] as IntegerCharacteristic
+        }
+
 
     companion object {
 

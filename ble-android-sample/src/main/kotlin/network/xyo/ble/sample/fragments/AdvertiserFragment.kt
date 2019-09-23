@@ -11,8 +11,8 @@ import android.widget.RadioButton
 import kotlinx.android.synthetic.main.fragment_advertiser.view.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import network.xyo.ble.gatt.server.XYBluetoothAdvertiser
-import network.xyo.ble.gatt.server.XYIBeaconAdvertiseDataCreator
+import network.xyo.ble.generic.gatt.server.XYBluetoothAdvertiser
+import network.xyo.ble.generic.gatt.server.XYIBeaconAdvertiseDataCreator
 import network.xyo.ble.sample.R
 import network.xyo.base.XYBase
 import network.xyo.ui.XYBaseFragment

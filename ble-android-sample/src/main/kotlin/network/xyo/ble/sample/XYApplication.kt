@@ -4,11 +4,14 @@ import android.app.Application
 import android.os.Build
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import network.xyo.ble.devices.*
-import network.xyo.ble.scanner.XYSmartScan
-import network.xyo.ble.scanner.XYSmartScanLegacy
-import network.xyo.ble.scanner.XYSmartScanModern
+import network.xyo.ble.generic.scanner.XYSmartScan
+import network.xyo.ble.generic.scanner.XYSmartScanLegacy
+import network.xyo.ble.generic.scanner.XYSmartScanModern
 import network.xyo.base.XYBase
+import network.xyo.ble.devices.apple.XYAppleBluetoothDevice
+import network.xyo.ble.devices.apple.XYIBeaconBluetoothDevice
+import network.xyo.ble.devices.xy.*
+import network.xyo.ble.generic.devices.XYBluetoothDevice
 
 @kotlin.ExperimentalUnsignedTypes
 class XYApplication : Application() {

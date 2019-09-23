@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.fragment_services.view.*
-import network.xyo.ble.gatt.server.XYBluetoothService
+import network.xyo.ble.generic.gatt.server.XYBluetoothService
 import network.xyo.ble.sample.R
 import network.xyo.ble.sample.adapters.XYServiceListAdapter
 import network.xyo.ui.XYBaseFragment

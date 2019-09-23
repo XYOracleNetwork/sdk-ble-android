@@ -1,6 +1,6 @@
 package network.xyo.ble.firmware
 
-import network.xyo.ble.devices.XYBluetoothDevice
+import network.xyo.ble.generic.devices.XYBluetoothDevice
 import network.xyo.base.XYBase
 
 open class XYOtaUpdate: XYBase() {
