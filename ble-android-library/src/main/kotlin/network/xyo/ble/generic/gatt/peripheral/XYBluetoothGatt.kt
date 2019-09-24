@@ -1,15 +1,15 @@
-package network.xyo.ble.gatt.peripheral
+package network.xyo.ble.generic.gatt.peripheral
 
 import android.bluetooth.*
 import android.content.Context
 import android.os.Handler
 import kotlinx.coroutines.*
-import network.xyo.ble.XYBluetoothBase
-import network.xyo.ble.gatt.peripheral.actions.XYBluetoothGattConnect
-import network.xyo.ble.gatt.peripheral.actions.XYBluetoothGattReadCharacteristic
-import network.xyo.ble.gatt.peripheral.actions.XYBluetoothGattWriteCharacteristic
-import network.xyo.ble.gatt.peripheral.actions.XYBluetoothGattWriteDescriptor
-import network.xyo.ble.scanner.XYScanResult
+import network.xyo.ble.generic.XYBluetoothBase
+import network.xyo.ble.generic.gatt.peripheral.actions.XYBluetoothGattConnect
+import network.xyo.ble.generic.gatt.peripheral.actions.XYBluetoothGattReadCharacteristic
+import network.xyo.ble.generic.gatt.peripheral.actions.XYBluetoothGattWriteCharacteristic
+import network.xyo.ble.generic.gatt.peripheral.actions.XYBluetoothGattWriteDescriptor
+import network.xyo.ble.generic.scanner.XYScanResult
 import java.util.*
 import java.util.concurrent.Executors
 import kotlin.coroutines.CoroutineContext

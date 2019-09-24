@@ -1,7 +1,7 @@
-package network.xyo.ble.gatt.server.responders
+package network.xyo.ble.generic.gatt.server.responders
 
 import android.bluetooth.BluetoothDevice
-import network.xyo.ble.gatt.server.XYBluetoothGattServer
+import network.xyo.ble.generic.gatt.server.XYBluetoothGattServer
 
 
 interface XYBluetoothReadResponder {

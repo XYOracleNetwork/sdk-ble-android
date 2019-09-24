@@ -1,4 +1,4 @@
-package network.xyo.ble.gatt.peripheral
+package network.xyo.ble.generic.gatt.peripheral
 
 //we have the interface here to allow for returning any generic implementation
 interface IXYBluetoothResult {

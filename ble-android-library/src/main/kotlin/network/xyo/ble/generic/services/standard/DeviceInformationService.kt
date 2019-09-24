@@ -1,8 +1,9 @@
 @file:Suppress("SpellCheckingInspection")
 
-package network.xyo.ble.generic.services
+package network.xyo.ble.generic.services.standard
 
-import network.xyo.ble.devices.XYBluetoothDevice
+import network.xyo.ble.generic.devices.XYBluetoothDevice
+import network.xyo.ble.generic.services.Service
 import java.util.*
 
 class DeviceInformationService(device: XYBluetoothDevice) : Service(device) {

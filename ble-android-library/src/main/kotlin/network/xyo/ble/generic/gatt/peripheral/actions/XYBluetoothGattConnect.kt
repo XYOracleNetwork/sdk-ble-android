@@ -1,4 +1,4 @@
-package network.xyo.ble.gatt.peripheral.actions
+package network.xyo.ble.generic.gatt.peripheral.actions
 
 import android.annotation.TargetApi
 import android.bluetooth.BluetoothDevice
@@ -10,8 +10,8 @@ import android.os.Build
 import android.os.Handler
 import kotlinx.coroutines.*
 import network.xyo.base.XYBase
-import network.xyo.ble.XYCallByVersion
-import network.xyo.ble.gatt.peripheral.*
+import network.xyo.ble.utilities.XYCallByVersion
+import network.xyo.ble.generic.gatt.peripheral.*
 
 class XYBluetoothGattConnect(val device: BluetoothDevice) : XYBase() {
 

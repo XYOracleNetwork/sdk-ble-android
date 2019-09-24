@@ -1,4 +1,4 @@
-package network.xyo.ble.gatt.server
+package network.xyo.ble.generic.gatt.server
 
 import android.bluetooth.BluetoothGattService
 import java.util.*

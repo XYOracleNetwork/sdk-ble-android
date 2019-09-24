@@ -1,4 +1,4 @@
-package network.xyo.ble.scanner
+package network.xyo.ble.generic.scanner
 
 import android.os.ParcelUuid
 import android.util.SparseArray

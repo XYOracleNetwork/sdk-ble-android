@@ -1,13 +1,13 @@
-package network.xyo.ble.gatt.peripheral.actions
+package network.xyo.ble.generic.gatt.peripheral.actions
 
 import android.bluetooth.BluetoothGatt
 import android.bluetooth.BluetoothGattCallback
 import android.bluetooth.BluetoothGattService
 import kotlinx.coroutines.*
-import network.xyo.ble.gatt.peripheral.XYBluetoothError
-import network.xyo.ble.gatt.peripheral.XYBluetoothGattCallback
-import network.xyo.ble.gatt.peripheral.XYBluetoothResult
-import network.xyo.ble.gatt.peripheral.XYThreadSafeBluetoothGatt
+import network.xyo.ble.generic.gatt.peripheral.XYBluetoothError
+import network.xyo.ble.generic.gatt.peripheral.XYBluetoothGattCallback
+import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResult
+import network.xyo.ble.generic.gatt.peripheral.XYThreadSafeBluetoothGatt
 import network.xyo.base.XYBase
 
 class XYBluetoothGattDiscover(val gatt: XYThreadSafeBluetoothGatt, val gattCallback: XYBluetoothGattCallback) {

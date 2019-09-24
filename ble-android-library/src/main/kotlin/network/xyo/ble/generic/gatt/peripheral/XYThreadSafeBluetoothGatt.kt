@@ -1,4 +1,4 @@
-package network.xyo.ble.gatt.peripheral
+package network.xyo.ble.generic.gatt.peripheral
 
 import android.annotation.TargetApi
 import android.bluetooth.BluetoothGatt

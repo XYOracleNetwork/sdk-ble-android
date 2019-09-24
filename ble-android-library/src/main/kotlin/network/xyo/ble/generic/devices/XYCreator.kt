@@ -1,4 +1,4 @@
-package network.xyo.ble.devices
+package network.xyo.ble.generic.devices
 
 import android.content.Context
 import network.xyo.ble.generic.scanner.XYScanResult

@@ -1,4 +1,4 @@
-package network.xyo.ble.bluetooth
+package network.xyo.ble.generic.bluetooth
 
 import android.bluetooth.BluetoothDevice
 import android.content.BroadcastReceiver

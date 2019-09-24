@@ -1,4 +1,4 @@
-package network.xyo.ble.bluetooth
+package network.xyo.ble.generic.bluetooth
 
 import android.os.ParcelUuid
 import android.util.ArrayMap
@@ -66,12 +66,12 @@ class ScanRecordLegacy private constructor(@param:Nullable @field:Nullable
      * Returns the service data byte array associated with the `serviceUuid`. Returns
      * `null` if the `serviceDataUuid` is not found.
      */
-    @Nullable
-    fun getServiceData(@Nullable serviceDataUuid: ParcelUuid?): ByteArray? {
+    /*@Nullable
+    private fun getServiceData(@Nullable serviceDataUuid: ParcelUuid?): ByteArray? {
         return if (serviceDataUuid == null) {
             null
         } else serviceData[serviceDataUuid]
-    }
+    }*/
 
     @NotNull
     override fun toString(): String {
@@ -82,8 +82,6 @@ class ScanRecordLegacy private constructor(@param:Nullable @field:Nullable
     }
 
     companion object {
-
-        private val TAG = ScanRecordLegacy::class.java.simpleName
 
         // The following data type values are assigned by Bluetooth SIG.
         // For more add refer to Bluetooth 4.1 specification, Volume 3, Part C, Section 18.

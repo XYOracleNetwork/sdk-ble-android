@@ -1,13 +1,13 @@
-package network.xyo.ble.scanner
+package network.xyo.ble.generic.scanner
 
 import android.bluetooth.BluetoothDevice
 import android.os.Parcel
 
 internal class XYScanResultManual (
-        val _device: BluetoothDevice?,
-        val _rssi: Int,
-        val _scanRecord: XYScanRecord?,
-        val _timestampNanos: Long
+        private val _device: BluetoothDevice?,
+        private val _rssi: Int,
+        private val _scanRecord: XYScanRecord?,
+        private val _timestampNanos: Long
 ) : XYScanResult() {
     override val device: BluetoothDevice?
         get() = _device

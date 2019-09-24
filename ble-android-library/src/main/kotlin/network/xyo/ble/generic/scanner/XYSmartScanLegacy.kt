@@ -1,4 +1,4 @@
-package network.xyo.ble.scanner
+package network.xyo.ble.generic.scanner
 
 import android.content.Context
 import kotlinx.coroutines.GlobalScope

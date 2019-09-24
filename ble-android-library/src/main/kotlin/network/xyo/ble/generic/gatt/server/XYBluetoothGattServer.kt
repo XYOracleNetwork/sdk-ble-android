@@ -1,12 +1,12 @@
-package network.xyo.ble.gatt.server
+package network.xyo.ble.generic.gatt.server
 
 import android.bluetooth.*
 import android.content.Context
 import android.os.Build
-import network.xyo.ble.XYBluetoothBase
-import network.xyo.ble.gatt.peripheral.XYBluetoothError
-import network.xyo.ble.gatt.peripheral.XYBluetoothResult
-import network.xyo.ble.gatt.peripheral.asyncBle
+import network.xyo.ble.generic.XYBluetoothBase
+import network.xyo.ble.generic.gatt.peripheral.XYBluetoothError
+import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResult
+import network.xyo.ble.generic.gatt.peripheral.asyncBle
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.collections.HashMap

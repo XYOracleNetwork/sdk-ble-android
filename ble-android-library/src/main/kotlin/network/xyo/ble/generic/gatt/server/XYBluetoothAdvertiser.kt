@@ -1,4 +1,4 @@
-package network.xyo.ble.gatt.server
+package network.xyo.ble.generic.gatt.server
 
 import android.bluetooth.le.AdvertiseCallback
 import android.bluetooth.le.AdvertiseData
@@ -6,10 +6,10 @@ import android.bluetooth.le.AdvertiseSettings
 import android.bluetooth.le.AdvertiseSettings.*
 import android.bluetooth.le.BluetoothLeAdvertiser
 import android.content.Context
-import network.xyo.ble.XYBluetoothBase
-import network.xyo.ble.gatt.peripheral.XYBluetoothError
-import network.xyo.ble.gatt.peripheral.XYBluetoothResult
-import network.xyo.ble.gatt.peripheral.asyncBle
+import network.xyo.ble.generic.XYBluetoothBase
+import network.xyo.ble.generic.gatt.peripheral.XYBluetoothError
+import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResult
+import network.xyo.ble.generic.gatt.peripheral.asyncBle
 import kotlin.coroutines.suspendCoroutine
 import kotlin.coroutines.resume
 

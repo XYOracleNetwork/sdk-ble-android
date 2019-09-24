@@ -1,4 +1,4 @@
-package network.xyo.ble.bluetooth
+package network.xyo.ble.generic.bluetooth
 
 import android.util.SparseArray
 

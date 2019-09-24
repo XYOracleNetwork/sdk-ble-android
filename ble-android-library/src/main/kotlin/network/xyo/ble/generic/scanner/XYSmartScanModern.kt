@@ -1,4 +1,4 @@
-package network.xyo.ble.scanner
+package network.xyo.ble.generic.scanner
 
 import android.annotation.TargetApi
 import android.bluetooth.le.ScanCallback
@@ -11,9 +11,9 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import network.xyo.ble.XYCallByVersion
-import network.xyo.ble.gatt.peripheral.XYBluetoothResult
-import network.xyo.ble.gatt.peripheral.asyncBle
+import network.xyo.ble.utilities.XYCallByVersion
+import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResult
+import network.xyo.ble.generic.gatt.peripheral.asyncBle
 import java.lang.IllegalStateException
 import java.util.*
 

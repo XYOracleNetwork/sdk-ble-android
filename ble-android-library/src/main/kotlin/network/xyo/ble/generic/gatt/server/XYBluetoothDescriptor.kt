@@ -1,11 +1,11 @@
-package network.xyo.ble.gatt.server
+package network.xyo.ble.generic.gatt.server
 
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothGattDescriptor
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
-import network.xyo.ble.gatt.server.responders.XYBluetoothReadResponder
-import network.xyo.ble.gatt.server.responders.XYBluetoothWriteResponder
+import network.xyo.ble.generic.gatt.server.responders.XYBluetoothReadResponder
+import network.xyo.ble.generic.gatt.server.responders.XYBluetoothWriteResponder
 import java.util.*
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine

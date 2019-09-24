@@ -1,8 +1,8 @@
-package network.xyo.ble.services
+package network.xyo.ble.generic.services
 
 import android.bluetooth.BluetoothGattCharacteristic
 import network.xyo.base.XYBase
-import network.xyo.ble.devices.XYBluetoothDevice
+import network.xyo.ble.generic.devices.XYBluetoothDevice
 import java.util.*
 
 abstract class Service(val device: XYBluetoothDevice) : XYBase() {

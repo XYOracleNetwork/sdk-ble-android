@@ -1,4 +1,4 @@
-package network.xyo.ble.scanner
+package network.xyo.ble.generic.scanner
 
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.le.ScanCallback
@@ -11,9 +11,9 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import network.xyo.ble.devices.XYBluetoothDevice
-import network.xyo.ble.devices.XYMobileBluetoothDevice
-import network.xyo.ble.XYBluetoothBase
+import network.xyo.ble.generic.devices.XYBluetoothDevice
+import network.xyo.ble.devices.xy.XYMobileBluetoothDevice
+import network.xyo.ble.generic.XYBluetoothBase
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 

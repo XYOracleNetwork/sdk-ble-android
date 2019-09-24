@@ -1,4 +1,4 @@
-package network.xyo.ble.ads
+package network.xyo.ble.generic.ads
 
 import network.xyo.base.XYBase
 import java.nio.ByteBuffer

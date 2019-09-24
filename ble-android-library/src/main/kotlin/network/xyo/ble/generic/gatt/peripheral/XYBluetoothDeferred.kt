@@ -1,7 +1,7 @@
-package network.xyo.ble.gatt.peripheral
+package network.xyo.ble.generic.gatt.peripheral
 
 import kotlinx.coroutines.*
-import network.xyo.ble.XYBluetoothBase
+import network.xyo.ble.generic.XYBluetoothBase
 import network.xyo.base.XYLogging
 import kotlin.coroutines.CoroutineContext
 
