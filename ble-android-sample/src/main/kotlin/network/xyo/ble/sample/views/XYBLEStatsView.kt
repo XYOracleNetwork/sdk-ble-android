@@ -11,6 +11,7 @@ import network.xyo.ble.sample.XYApplication
 import network.xyo.ble.generic.scanner.XYSmartScan
 import network.xyo.base.XYBase
 import network.xyo.ui.ui
+import java.util.*
 
 /**
  * Created by arietrouw on 12/28/17.
@@ -55,7 +56,7 @@ class XYBLEStatsView(context: Context, attrs: AttributeSet) : LinearLayout(conte
     fun update() {
         ui {
             text_host_device_name.text = scanner.hostDevice.name.toString()
-            text_start_time.text = scanner.startTime?.toString() ?: "--"
+            text_start_time.text = scanner.startTime?.let { Date(it).toString() } ?: "--"
             text_uptime.text = scanner.uptime?.let {("%.2f").format((it / 1000f))} ?: "--"
             text_pulses.text = scanner.scanResultCount.toString()
             text_pulses_per_second.text = scanner.resultsPerSecond?.let {("%.2f").format(it)} ?: "--"
