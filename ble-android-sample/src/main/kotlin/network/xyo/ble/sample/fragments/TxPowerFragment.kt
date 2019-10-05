@@ -59,19 +59,22 @@ class TxPowerFragment : XYDeviceFragment() {
 
             when (device) {
                 is XY4BluetoothDevice -> {
-                    val x4 = (device as? XY4BluetoothDevice)
-                    x4?.let {
-                        getXY4Values(x4)
+                    val xy4 = (device as? XY4BluetoothDevice)
+                    xy4?.let {
+                        getXY4Values(xy4)
                     }
                 }
                 is XY3BluetoothDevice -> {
-                    val x3 = (device as? XY3BluetoothDevice)
-                    x3?.let {
-                        getXY3Values(x3)
+                    val xy3 = (device as? XY3BluetoothDevice)
+                    xy3?.let {
+                        getXY3Values(xy3)
                     }
                 }
                 is XY2BluetoothDevice -> {
-                    text_tx_power.text = getString(R.string.not_supported_x2)
+                    val xy2 = (device as? XY2BluetoothDevice)
+                    xy2?.let {
+                        getXY2Values(xy2)
+                    }
                 }
                 else -> {
                     text_tx_power.text = getString(R.string.unknown_device)
@@ -101,6 +104,26 @@ class TxPowerFragment : XYDeviceFragment() {
     }
 
     private fun getXY3Values(device: XY3BluetoothDevice) {
+        GlobalScope.launch {
+            var hasConnectionError = true
+
+            device.connection {
+                hasConnectionError = false
+
+                deviceData?.let {
+                    it.txPowerLevel = device.txPowerService.txPowerLevel.get().format()
+                }
+
+                return@connection XYBluetoothResult(true)
+
+            }
+
+            updateUI()
+            checkConnectionError(hasConnectionError)
+        }
+    }
+
+    private fun getXY2Values(device: XY2BluetoothDevice) {
         GlobalScope.launch {
             var hasConnectionError = true
 

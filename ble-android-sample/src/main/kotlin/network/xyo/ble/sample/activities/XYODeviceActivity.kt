@@ -218,7 +218,7 @@ class XYODeviceActivity : XYOAppBaseActivity() {
 
 
     inner class SectionsPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
-        private val size = 15
+        private val size = 16
         private var fragments: SparseArray<XYBaseFragment> = SparseArray(size)
 
         override fun getItem(position: Int): Fragment {
@@ -269,6 +269,9 @@ class XYODeviceActivity : XYOAppBaseActivity() {
                 }
                 14 -> {
                     frag = ControlFragment.newInstance(device, data)
+                }
+                15 -> {
+                    frag = SensorFragment.newInstance(device, data)
                 }
                 else -> frag = InfoFragment.newInstance(device, data)
             }

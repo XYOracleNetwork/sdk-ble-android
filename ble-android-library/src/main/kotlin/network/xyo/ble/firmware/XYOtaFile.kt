@@ -6,7 +6,6 @@ import java.io.FileInputStream
 import java.io.IOException
 import java.io.InputStream
 import java.util.*
-import kotlin.experimental.xor
 import kotlin.math.max
 
 /**
@@ -19,19 +18,19 @@ class XYOtaFile(private val inputStream: InputStream?) : XYBase() {
     private var blocks: Array<Array<ByteArray>>? = null
     private val bytesAvailable: Int = inputStream!!.available()
 
-    private var crc: Byte = 0
+    private var crc: UByte = 0U
 
     var fileBlockSize = 128
         private set
 
     private var fileChunkSize = 20
 
-    var numberOfBlocks = -1
+    var numberOfBlocks = 0
         private set
 
-    var chunksPerBlockCount: Int = 0
+    var chunksPerBlockCount = 0
         private set
-    var totalChunkCount: Int = 0
+    var totalChunkCount = 0
         private set
 
     val numberOfBytes: Int
@@ -41,7 +40,7 @@ class XYOtaFile(private val inputStream: InputStream?) : XYBase() {
         bytes = ByteArray(bytesAvailable + 1)
         inputStream!!.read(bytes!!)
         crc = calculateCrc()
-        bytes!![bytesAvailable] = crc
+        bytes!![bytesAvailable] = crc.toByte()
 
         //Default block/chunk sizes for XY4 devices.
         setFileBlockSize(128, 20)
@@ -117,12 +116,10 @@ class XYOtaFile(private val inputStream: InputStream?) : XYBase() {
     }
 
     @Throws(IOException::class)
-    private fun calculateCrc(): Byte {
-        var crcCode: Byte = 0
+    private fun calculateCrc(): UByte {
+        var crcCode: UByte = 0x0U
         for (i in 0 until bytesAvailable) {
-            val byteValue = bytes!![i]
-            val intVal = byteValue.toInt()
-            crcCode = crcCode xor intVal.toByte()
+            crcCode = crcCode xor bytes!![i].toUByte()
         }
         //XYBase.log.info("XYOtaFile", String.format("Firmware CRC: %#04x", crc_code and 0xff.toByte()))
 

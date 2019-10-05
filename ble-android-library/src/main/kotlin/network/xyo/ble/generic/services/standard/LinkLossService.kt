@@ -11,7 +11,7 @@ class LinkLossService(device: XYBluetoothDevice) : Service(device) {
             return uuid
         }
 
-    val alertLevel = IntegerCharacteristic(this, Characteristics.AlertLevel.uuid, "Alert Level")
+    val alertLevel = ByteCharacteristic(this, Characteristics.AlertLevel.uuid, "Alert Level")
 
     companion object {
         val uuid: UUID = UUID.fromString("00001803-0000-1000-8000-00805F9B34FB")

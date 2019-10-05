@@ -11,11 +11,11 @@ class SensorService(device: XYBluetoothDevice) : Service(device) {
             return uuid
         }
 
-    val raw = IntegerCharacteristic(this, Characteristics.Raw.uuid, "Raw")
-    val timeout = IntegerCharacteristic(this, Characteristics.Timeout.uuid, "Timeout")
-    val threshold = IntegerCharacteristic(this, Characteristics.Threshold.uuid, "Threshold")
-    val inactive = IntegerCharacteristic(this, Characteristics.Inactive.uuid, "Inactive")
-    val movementCount = IntegerCharacteristic(this, Characteristics.MovementCount.uuid, "Movement Count")
+    val raw = ByteCharacteristic(this, Characteristics.Raw.uuid, "Raw")
+    val timeout = ByteCharacteristic(this, Characteristics.Timeout.uuid, "Timeout")
+    val threshold = ByteCharacteristic(this, Characteristics.Threshold.uuid, "Threshold")
+    val inactive = ByteCharacteristic(this, Characteristics.Inactive.uuid, "Inactive")
+    val movementCount = ByteCharacteristic(this, Characteristics.MovementCount.uuid, "Movement Count")
 
     companion object {
         val uuid: UUID = UUID.fromString("F014DD00-0439-3000-E001-00001001FFFF")

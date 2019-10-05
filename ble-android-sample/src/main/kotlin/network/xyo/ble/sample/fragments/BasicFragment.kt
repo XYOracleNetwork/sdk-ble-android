@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import kotlinx.android.synthetic.main.fragment_basic.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import network.xyo.ble.devices.xy.XY2BluetoothDevice
 import network.xyo.ble.devices.xy.XY3BluetoothDevice
 import network.xyo.ble.generic.devices.XYBluetoothDevice
 import network.xyo.ble.sample.R
@@ -39,34 +40,38 @@ class BasicFragment : XYDeviceFragment() {
             basic = it.basicConfigService
         }
 
+        (device as? XY2BluetoothDevice)?.let {
+            basic = it.basicConfigService
+        }
+
         basic?.let {
 
             val lock = it.lock.get()
-            ui { text_lock.text = lock.display }
+            ui { text_lock.text = lock.toString() }
 
             val unlock = it.unlock.get()
-            ui { text_unlock.text = unlock.display }
+            ui { text_unlock.text = unlock.toString() }
 
             val major = it.major.get()
-            ui { text_major.text = major.display }
+            ui { text_major.text = major.toString() }
 
             val minor = it.minor.get()
-            ui { text_minor.text = minor.display }
+            ui { text_minor.text = minor.toString() }
 
             val uuid = it.uuid.get()
-            ui { text_uuid.text = uuid.display }
+            ui { text_uuid.text = uuid.toString() }
 
             val reboot = it.reboot.get()
-            ui { text_uuid.text = reboot.display }
+            ui { text_uuid.text = reboot.toString() }
 
             val interval = it.interval.get()
-            ui { text_interval.text = interval.display }
+            ui { text_interval.text = interval.toString() }
 
             val lockStatus = it.lockStatus.get()
-            ui { text_lock_status.text = lockStatus.display }
+            ui { text_lock_status.text = lockStatus.toString() }
 
             val otaWrite = it.otaWrite.get()
-            ui { text_ota_write.text = otaWrite.display }
+            ui { text_ota_write.text = otaWrite.toString() }
         }
     }
 

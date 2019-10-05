@@ -13,15 +13,15 @@ class DeviceInformationService(device: XYBluetoothDevice) : Service(device) {
             return uuid
         }
 
-    val systemId = IntegerCharacteristic(this, Characteristics.SystemId.uuid, "System Id")
+    val systemId = ByteCharacteristic(this, Characteristics.SystemId.uuid, "System Id")
     val modelNumberString = StringCharacteristic(this, Characteristics.ModelNumberString.uuid, "Model Number")
     val serialNumberString = StringCharacteristic(this, Characteristics.SerialNumberString.uuid, "Serial Number")
     val firmwareRevisionString = StringCharacteristic(this, Characteristics.FirmwareRevisionString.uuid, "Firmware Revision")
     val hardwareRevisionString = StringCharacteristic(this, Characteristics.HardwareRevisionString.uuid, "Hardware Revision")
     val softwareRevisionString = StringCharacteristic(this, Characteristics.SoftwareRevisionString.uuid, "Software Revision")
     val manufacturerNameString = StringCharacteristic(this, Characteristics.ManufacturerNameString.uuid, "Manufacturer Name")
-    val ieeeRegulatoryCertificationDataList = IntegerCharacteristic(this, Characteristics.Ieee11073x20601RegulatoryCertificationDataList.uuid, "IEEE Regulatory Certification")
-    val pnpId = IntegerCharacteristic(this, Characteristics.PnPId.uuid, "Plug-n-Play ID")
+    val ieeeRegulatoryCertificationDataList = ByteCharacteristic(this, Characteristics.Ieee11073x20601RegulatoryCertificationDataList.uuid, "IEEE Regulatory Certification")
+    val pnpId = ByteCharacteristic(this, Characteristics.PnPId.uuid, "Plug-n-Play ID")
 
     companion object {
         val uuid: UUID = UUID.fromString("0000180A-0000-1000-8000-00805F9B34FB")

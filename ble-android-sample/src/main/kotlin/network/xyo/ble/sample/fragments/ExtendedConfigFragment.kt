@@ -47,28 +47,28 @@ class ExtendedConfigFragment : XYDeviceFragment() {
 
         config?.let {
             val gpsInterval = it.gpsInterval.get()
-            ui { text_gps_interval.text = gpsInterval.display }
+            ui { text_gps_interval.text = gpsInterval.toString() }
 
             val tone = it.tone.get()
-            ui { text_gps_interval.text = tone.display }
+            ui { text_gps_interval.text = tone.toString() }
 
             val stayAwake = it.gpsInterval.get()
-            ui { text_stay_awake.text = stayAwake.display }
+            ui { text_stay_awake.text = stayAwake.toString() }
 
             val inactiveVirtualBeaconSettings = it.inactiveVirtualBeaconSettings.get()
-            ui { text_inactive_virtual_beacon_settings.text = inactiveVirtualBeaconSettings.display }
+            ui { text_inactive_virtual_beacon_settings.text = inactiveVirtualBeaconSettings.toString() }
 
             val inactiveInterval = it.inactiveInterval.get()
-            ui { text_inactive_interval.text = inactiveInterval.display }
+            ui { text_inactive_interval.text = inactiveInterval.toString() }
 
             val virtualBeaconSettings = it.virtualBeaconSettings.get()
-            ui { text_virtual_beacon_settings.text = virtualBeaconSettings.display }
+            ui { text_virtual_beacon_settings.text = virtualBeaconSettings.toString() }
 
             val gpsMode = it.gpsMode.get()
-            ui { text_gps_mode.text = gpsMode.display }
+            ui { text_gps_mode.text = gpsMode.toString() }
 
             val simId = it.simId.get()
-            ui { text_sim_id.text = simId.display }
+            ui { text_sim_id.text = simId.toString() }
 
         }
     }

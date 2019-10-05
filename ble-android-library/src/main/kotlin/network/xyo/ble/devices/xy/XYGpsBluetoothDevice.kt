@@ -52,9 +52,9 @@ open class XYGpsBluetoothDevice(context: Context, scanResult: XYScanResult, hash
 
     override val prefix = "xy:gps"
 
-    override suspend fun find(): XYBluetoothResult<Int> {
+    override suspend fun find(): XYBluetoothResult<UByte> {
         log.info("find")
-        return controlService.buzzerSelect.set(1)
+        return controlService.buzzerSelect.set(0x01U)
     }
 
     override fun reportButtonPressed(state: ButtonPress) {
@@ -138,7 +138,7 @@ open class XYGpsBluetoothDevice(context: Context, scanResult: XYScanResult, hash
             }
         }
 
-        internal val creator = object : XYCreator() {
+        private val creator = object : XYCreator() {
             override fun getDevicesFromScanResult(context: Context, scanResult: XYScanResult, globalDevices: ConcurrentHashMap<String, XYBluetoothDevice>, foundDevices: HashMap<String, XYBluetoothDevice>) {
                 val hash = hashFromScanResult(scanResult)
                 foundDevices[hash] = globalDevices[hash] ?: XYGpsBluetoothDevice(context, scanResult, hash)

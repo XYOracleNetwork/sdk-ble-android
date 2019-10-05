@@ -12,7 +12,6 @@ import network.xyo.ble.generic.gatt.server.XYBluetoothService
 import network.xyo.ble.sample.R
 import network.xyo.ble.sample.adapters.XYServiceListAdapter
 import network.xyo.ui.XYBaseFragment
-import network.xyo.ui.ui
 
 class ServicesFragment : XYBaseFragment() {
     val serviceList = XYServiceListAdapter(arrayOf())
@@ -44,11 +43,11 @@ class ServicesFragment : XYBaseFragment() {
         })
     }
 
-    fun addService(service : BluetoothGattService) {
+    /*fun addService(service : BluetoothGattService) {
         ui {
             serviceList.addItem(service)
         }
-    }
+    }*/
 
     init {
         println("newServices: ${serviceList.itemCount}")

@@ -11,13 +11,13 @@ class ControlService(device: XYBluetoothDevice) : Service(device) {
             return uuid
         }
 
-    val buzzer = IntegerCharacteristic(this, Characteristics.Buzzer.uuid, "Buzzer")
-    val handshake = IntegerCharacteristic(this, Characteristics.Handshake.uuid, "Handshake")
+    val buzzer = ByteCharacteristic(this, Characteristics.Buzzer.uuid, "Buzzer")
+    val handshake = ByteCharacteristic(this, Characteristics.Handshake.uuid, "Handshake")
     val version = StringCharacteristic(this, Characteristics.Version.uuid, "Version")
-    val buzzerSelect = IntegerCharacteristic(this, Characteristics.BuzzerSelect.uuid, "Buzzer Select")
-    val surge = IntegerCharacteristic(this, Characteristics.Surge.uuid, "Surge")
-    val button = IntegerCharacteristic(this, Characteristics.Button.uuid, "Button")
-    val disconnect = IntegerCharacteristic(this, Characteristics.Disconnect.uuid, "Disconnect")
+    val buzzerSelect = ByteCharacteristic(this, Characteristics.BuzzerSelect.uuid, "Buzzer Select")
+    val surge = ByteCharacteristic(this, Characteristics.Surge.uuid, "Surge")
+    val button = ByteCharacteristic(this, Characteristics.Button.uuid, "Button")
+    val disconnect = ByteCharacteristic(this, Characteristics.Disconnect.uuid, "Disconnect")
 
     companion object {
         val uuid: UUID = UUID.fromString("F014ED15-0439-3000-E001-00001001FFFF")

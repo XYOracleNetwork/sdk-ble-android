@@ -49,25 +49,25 @@ class ControlFragment : XYDeviceFragment() {
 
         control?.let {
             val buzzer = it.buzzer.get()
-            ui { text_buzzer.text = buzzer.display }
+            ui { text_buzzer.text = buzzer.toString() }
 
             val handShake = it.handshake.get()
-            ui { text_hand_shake.text = handShake.display }
+            ui { text_hand_shake.text = handShake.toString() }
 
             val version = it.version.get()
-            ui { text_version.text = version.display }
+            ui { text_version.text = version.toString() }
 
             val buzzerSelect = it.buzzerSelect.get()
-            ui { text_buzzer_select.text = buzzerSelect.display }
+            ui { text_buzzer_select.text = buzzerSelect.toString() }
 
             val surge = it.surge.get()
-            ui { text_surge.text = surge.display }
+            ui { text_surge.text = surge.toString() }
 
             val button = it.button.get()
-            ui { text_button.text = button.display }
+            ui { text_button.text = button.toString() }
 
             val disconnect = it.disconnect.get()
-            ui { text_disconnect.text = disconnect.display }
+            ui { text_disconnect.text = disconnect.toString() }
         }
     }
 

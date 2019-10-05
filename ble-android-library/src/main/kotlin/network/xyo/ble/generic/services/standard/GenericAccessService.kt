@@ -11,11 +11,11 @@ class GenericAccessService(device: XYBluetoothDevice) : Service(device) {
             return TxPowerService.uuid
         }
 
-    val deviceName = IntegerCharacteristic(this, Characteristics.DeviceName.uuid, "Device Name")
-    val appearance = IntegerCharacteristic(this, Characteristics.Appearance.uuid, "Appearance")
-    val privacyFlag = IntegerCharacteristic(this, Characteristics.PrivacyFlag.uuid, "Privacy Flag")
-    val reconnectionAddress = IntegerCharacteristic(this, Characteristics.ReconnectionAddress.uuid, "Reconnection Address")
-    val peripheralPreferredConnectionParameters = IntegerCharacteristic(this, Characteristics.PeripheralPreferredConnectionParameters.uuid, "Peripheral Preferred Connection Parameters")
+    val deviceName = ByteCharacteristic(this, Characteristics.DeviceName.uuid, "Device Name")
+    val appearance = ByteCharacteristic(this, Characteristics.Appearance.uuid, "Appearance")
+    val privacyFlag = ByteCharacteristic(this, Characteristics.PrivacyFlag.uuid, "Privacy Flag")
+    val reconnectionAddress = ByteCharacteristic(this, Characteristics.ReconnectionAddress.uuid, "Reconnection Address")
+    val peripheralPreferredConnectionParameters = ByteCharacteristic(this, Characteristics.PeripheralPreferredConnectionParameters.uuid, "Peripheral Preferred Connection Parameters")
 
 
     companion object {

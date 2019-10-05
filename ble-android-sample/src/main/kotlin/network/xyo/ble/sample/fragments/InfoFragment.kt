@@ -16,7 +16,9 @@ import network.xyo.ble.devices.apple.XYIBeaconBluetoothDevice
 import network.xyo.ble.devices.xy.XY3BluetoothDevice
 import network.xyo.ble.devices.xy.XY4BluetoothDevice
 import network.xyo.ble.devices.xy.XYFinderBluetoothDevice
+import network.xyo.ble.generic.XYBluetoothBase
 import network.xyo.ble.generic.devices.XYBluetoothDevice
+import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResult
 import network.xyo.ble.sample.R
 import network.xyo.ble.sample.XYDeviceData
 import network.xyo.ui.ui
@@ -193,9 +195,9 @@ class InfoFragment : XYDeviceFragment(), View.OnClickListener, CompoundButton.On
         GlobalScope.launch {
             val result = device?.connect()
             val error = result?.error
-            if (error?.message.isNullOrEmpty()) {
+            if (error != XYBluetoothResult.ErrorCode.None) {
                 ui {
-                    showToast(error?.message.toString())
+                    showToast(error.toString())
                 }
             }
             updateUI()
@@ -280,7 +282,7 @@ class InfoFragment : XYDeviceFragment(), View.OnClickListener, CompoundButton.On
             val locked = (device as? XYFinderBluetoothDevice)?.lock()
             when {
                 locked == null -> showToast("Device does not support Lock")
-                locked.error == null -> {
+                locked.error == XYBluetoothResult.ErrorCode.None -> {
                     showToast("Locked: ${locked.value}")
                     updateStayAwakeEnabledStates()
                 }
@@ -302,7 +304,7 @@ class InfoFragment : XYDeviceFragment(), View.OnClickListener, CompoundButton.On
             val unlocked = (device as? XYFinderBluetoothDevice)?.unlock()
             when {
                 unlocked == null -> showToast("Device does not support Unlock")
-                unlocked.error == null -> {
+                unlocked.error == XYBluetoothResult.ErrorCode.None -> {
                     ui {
                         showToast("Unlocked: ${unlocked.value}")
                         updateStayAwakeEnabledStates()
@@ -328,7 +330,7 @@ class InfoFragment : XYDeviceFragment(), View.OnClickListener, CompoundButton.On
                 log.info("updateStayAwakeEnabledStates: ${stayAwake.value}")
                 ui {
                     this@InfoFragment.isVisible.let {
-                        if (stayAwake.value != 0) {
+                        if (stayAwake.value != 0x0.toUByte()) {
                             button_fall_asleep?.isEnabled = true
                             button_stay_awake?.isEnabled = false
                         } else {

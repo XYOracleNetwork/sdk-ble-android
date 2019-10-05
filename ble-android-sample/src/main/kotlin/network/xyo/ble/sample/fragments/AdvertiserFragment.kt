@@ -15,6 +15,7 @@ import network.xyo.ble.generic.gatt.server.XYBluetoothAdvertiser
 import network.xyo.ble.generic.gatt.server.XYIBeaconAdvertiseDataCreator
 import network.xyo.ble.sample.R
 import network.xyo.base.XYBase
+import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResult
 import network.xyo.ui.XYBaseFragment
 import network.xyo.ui.ui
 import java.nio.ByteBuffer
@@ -58,7 +59,7 @@ class AdvertiserFragment : XYBaseFragment() {
 
 
         ui {
-            if (status?.value == 0 && status.error == null) {
+            if (status?.value == 0 && status.error == XYBluetoothResult.ErrorCode.None) {
                 showToast("Success!")
                 return@ui
             }

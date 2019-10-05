@@ -11,14 +11,14 @@ class ExtendedConfigService(device: XYBluetoothDevice) : Service(device) {
             return uuid
         }
 
-    val virtualBeaconSettings = IntegerCharacteristic(this, Characteristics.VirtualBeaconSettings.uuid, "Virtual Beacon Settings")
-    val tone = IntegerCharacteristic(this, Characteristics.Tone.uuid, "Tone")
-    val stayAwake = IntegerCharacteristic(this, Characteristics.StayAwake.uuid, "Stay Awake")
-    val inactiveVirtualBeaconSettings = IntegerCharacteristic(this, Characteristics.InactiveVirtualBeaconSettings.uuid, "Inactive Virtual Beacon Settings")
-    val inactiveInterval = IntegerCharacteristic(this, Characteristics.InactiveInterval.uuid, "Inactive Interval")
-    val gpsInterval = IntegerCharacteristic(this, Characteristics.GpsInterval.uuid, "GPS Interval")
-    val gpsMode = IntegerCharacteristic(this, Characteristics.GpsMode.uuid, "GPS Mode")
-    val simId = IntegerCharacteristic(this, Characteristics.SimId.uuid, "SIM Id")
+    val virtualBeaconSettings = ByteCharacteristic(this, Characteristics.VirtualBeaconSettings.uuid, "Virtual Beacon Settings")
+    val tone = ByteCharacteristic(this, Characteristics.Tone.uuid, "Tone")
+    val stayAwake = ByteCharacteristic(this, Characteristics.StayAwake.uuid, "Stay Awake")
+    val inactiveVirtualBeaconSettings = ByteCharacteristic(this, Characteristics.InactiveVirtualBeaconSettings.uuid, "Inactive Virtual Beacon Settings")
+    val inactiveInterval = ByteCharacteristic(this, Characteristics.InactiveInterval.uuid, "Inactive Interval")
+    val gpsInterval = ByteCharacteristic(this, Characteristics.GpsInterval.uuid, "GPS Interval")
+    val gpsMode = ByteCharacteristic(this, Characteristics.GpsMode.uuid, "GPS Mode")
+    val simId = ByteCharacteristic(this, Characteristics.SimId.uuid, "SIM Id")
 
     companion object {
         val uuid: UUID = UUID.fromString("F014FF00-0439-3000-E001-00001001FFFF")

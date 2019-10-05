@@ -9,7 +9,6 @@ import kotlinx.coroutines.launch
 import network.xyo.ble.firmware.XYBluetoothDeviceUpdate
 import network.xyo.ble.firmware.XYOtaFile
 import network.xyo.ble.firmware.XYOtaUpdate
-import network.xyo.ble.generic.gatt.peripheral.XYBluetoothError
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResult
 import network.xyo.ble.generic.scanner.XYScanResult
 import network.xyo.ble.services.dialog.SpotaService
@@ -63,22 +62,23 @@ open class XY4BluetoothDevice(
 
     override val prefix = "xy:ibeacon"
 
-    override suspend fun find() = connection {
+    override suspend fun find() = connection<UByte> {
         log.info("find")
-        if (unlock().error == null) {
-            val writeResult = primary.buzzer.set(11)
-            if (writeResult.error == null) {
+        val unlockResult = unlock()
+        if (unlockResult.error == XYBluetoothResult.ErrorCode.None) {
+            val writeResult = primary.buzzer.set(0x11U)
+            if (writeResult.error == XYBluetoothResult.ErrorCode.None) {
                 return@connection XYBluetoothResult(writeResult.value)
             } else {
-                return@connection XYBluetoothResult(-1, XYBluetoothError("Failed to Write Characteristic"))
+                return@connection XYBluetoothResult(null, writeResult.error)
             }
         } else {
-            return@connection XYBluetoothResult(-1, XYBluetoothError("Failed to Unlock"))
+            return@connection XYBluetoothResult(null, unlockResult.error)
         }
     }
 
     override suspend fun stopFind() = connection {
-        return@connection primary.buzzer.set(-1)
+        return@connection primary.buzzer.set(0xffU)
     }
 
     override suspend fun lock() = connection {
@@ -90,11 +90,11 @@ open class XY4BluetoothDevice(
     }
 
     override suspend fun stayAwake() = connection {
-        return@connection primary.stayAwake.set(1)
+        return@connection primary.stayAwake.set(0x01U)
     }
 
     override suspend fun fallAsleep() = connection {
-        return@connection primary.stayAwake.set(0)
+        return@connection primary.stayAwake.set(0x00U)
     }
 
     override suspend fun batteryLevel() = connection {
@@ -173,11 +173,6 @@ open class XY4BluetoothDevice(
         //this is how long the xy4 will broadcast ads with power level 8 when a button is pressed once
         private const val BUTTON_ADVERTISEMENT_LENGTH = 30 * 1000
 
-        enum class StayAwake(val state: Int) {
-            Off(0),
-            On(1)
-        }
-
         fun enable(enable: Boolean) {
             if (enable) {
                 XYFinderBluetoothDevice.enable(true)
@@ -225,7 +220,7 @@ open class XY4BluetoothDevice(
             }
         }
 
-        internal val creator = object : XYCreator() {
+        private val creator = object : XYCreator() {
             override fun getDevicesFromScanResult(context: Context, scanResult: XYScanResult, globalDevices: ConcurrentHashMap<String, XYBluetoothDevice>, foundDevices: HashMap<String, XYBluetoothDevice>) {
                 val hash = hashFromScanResult(scanResult)
                 foundDevices[hash] = globalDevices[hash]

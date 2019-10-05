@@ -11,7 +11,7 @@ class BatteryService(device: XYBluetoothDevice) : Service(device) {
             return uuid
         }
 
-    val level = IntegerCharacteristic(this, Characteristics.Level.uuid, "Level")
+    val level = ByteCharacteristic(this, Characteristics.Level.uuid, "Level")
 
     companion object {
         val uuid: UUID = UUID.fromString("0000180F-0000-1000-8000-00805F9B34FB")

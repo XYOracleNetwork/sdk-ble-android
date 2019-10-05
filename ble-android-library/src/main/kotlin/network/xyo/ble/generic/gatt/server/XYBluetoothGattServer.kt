@@ -4,7 +4,6 @@ import android.bluetooth.*
 import android.content.Context
 import android.os.Build
 import network.xyo.ble.generic.XYBluetoothBase
-import network.xyo.ble.generic.gatt.peripheral.XYBluetoothError
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResult
 import network.xyo.ble.generic.gatt.peripheral.asyncBle
 import java.util.*
@@ -80,7 +79,7 @@ open class XYBluetoothGattServer(context: Context) : XYBluetoothBase(context) {
     suspend fun addService(serviceToAdd: XYBluetoothService) = asyncBle {
         log.info("addService")
         if (androidGattServer == null) {
-            return@asyncBle XYBluetoothResult<Int>(XYBluetoothError("No Gatt Server"))
+            return@asyncBle XYBluetoothResult<Int>(XYBluetoothResult.ErrorCode.NoGatt)
         }
 
         val addCallback = suspendCoroutine<Int> { cont ->
@@ -183,7 +182,7 @@ open class XYBluetoothGattServer(context: Context) : XYBluetoothBase(context) {
             return@asyncBle XYBluetoothResult(error)
         }
 
-        return@asyncBle XYBluetoothResult<Int>(XYBluetoothError("No gatt server!"))
+        return@asyncBle XYBluetoothResult<Int>(XYBluetoothResult.ErrorCode.NoGatt)
     }
 
     suspend fun disconnect(deviceToDisconnectFrom: BluetoothDevice) = asyncBle {
@@ -204,7 +203,7 @@ open class XYBluetoothGattServer(context: Context) : XYBluetoothBase(context) {
 
             return@asyncBle XYBluetoothResult(connectionState)
         }
-        return@asyncBle XYBluetoothResult<Int>(XYBluetoothError("No gatt server!"))
+        return@asyncBle XYBluetoothResult<Int>(XYBluetoothResult.ErrorCode.NoGatt)
     }
 
 

@@ -41,58 +41,58 @@ class PrimaryFragment : XYDeviceFragment() {
 
         primary?.let {
             val adConfig = it.adConfig.get()
-            ui { text_ad_config.text = adConfig.display }
+            ui { text_ad_config.text = adConfig.toString() }
 
             val buttonConfig = it.buttonConfig.get()
-            ui { text_button_config.text = buttonConfig.display }
+            ui { text_button_config.text = buttonConfig.toString() }
 
             val buzzerConfig = it.buzzerConfig.get()
-            ui { text_buzzer_config.text = buzzerConfig.display }
+            ui { text_buzzer_config.text = buzzerConfig.toString() }
 
             val buzzer = it.buzzer.get()
-            ui { text_buzzer.text = buzzer.display }
+            ui { text_buzzer.text = buzzer.toString() }
 
             val buttonState = it.buttonState.get()
-            ui { text_button_state.text = buttonState.display }
+            ui { text_button_state.text = buttonState.toString() }
 
             val color = it.color.get()
-            ui { text_color.text = color.display }
+            ui { text_color.text = color.toString() }
 
             val hardwareCreateDate = it.hardwareCreateDate.get()
-            ui { text_hardware_create_date.text = hardwareCreateDate.display }
+            ui { text_hardware_create_date.text = hardwareCreateDate.toString() }
 
             val lastError = it.lastError.get()
-            ui { text_last_error.text = lastError.display }
+            ui { text_last_error.text = lastError.toString() }
 
             val leftBehind = it.leftBehind.get()
-            ui { text_left_behind.text = leftBehind.display }
+            ui { text_left_behind.text = leftBehind.toString() }
 
             val lock = it.lock.get()
-            ui { text_lock.text = lock.display }
+            ui { text_lock.text = lock.toString() }
 
             val unlock = it.unlock.get()
-            ui { text_unlock.text = unlock.display }
+            ui { text_unlock.text = unlock.toString() }
 
             val major = it.major.get()
-            ui { text_major.text = major.display }
+            ui { text_major.text = major.toString() }
 
             val minor = it.minor.get()
-            ui { text_minor.text = minor.display }
+            ui { text_minor.text = minor.toString() }
 
             val reset = it.reset .get()
-            ui { text_reset.text = reset.display }
+            ui { text_reset.text = reset.toString() }
 
             val selfTest = it.selfTest.get()
-            ui { text_self_test.text = selfTest.display }
+            ui { text_self_test.text = selfTest.toString() }
 
             val stayAwake = it.stayAwake.get()
-            ui { text_stay_awake.text = stayAwake.display }
+            ui { text_stay_awake.text = stayAwake.toString() }
 
             val uptime = it.uptime.get()
-            ui { text_uptime.text = uptime.display }
+            ui { text_uptime.text = uptime.toString() }
 
             val uuid = it.uuid.get()
-            ui { text_uuid.text = uuid.display }
+            ui { text_uuid.text = uuid.toString() }
         }
     }
 

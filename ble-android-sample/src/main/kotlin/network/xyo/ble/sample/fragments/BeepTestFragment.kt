@@ -53,11 +53,11 @@ class BeepTestFragment : XYBaseFragment() {
                     log.info("BeepTest: ${device.id}: Connected")
                     connectCount++
                     updateUI()
-                    if (device.unlock().error == null) {
+                    if (device.unlock().error == XYBluetoothResult.ErrorCode.None) {
                         log.info("BeepTest: ${device.id}: Unlocked")
                         unlockCount++
                         updateUI()
-                        if (device.primary.buzzer.set(11).error == null) {
+                        if (device.primary.buzzer.set(0x11U).error == XYBluetoothResult.ErrorCode.None) {
                             log.info("BeepTest: ${device.id}: Success")
                             beepCount++
                             updateUI()
@@ -69,8 +69,8 @@ class BeepTestFragment : XYBaseFragment() {
                     }
                     return@connection XYBluetoothResult(true)
                 }
-                if (connectResult.error != null) {
-                    log.error("BeepTest: ${device.id}: Failed to Connect: ${connectResult.error?.message}")
+                if (connectResult.error != XYBluetoothResult.ErrorCode.None) {
+                    log.error("BeepTest: ${device.id}: Failed to Connect: ${connectResult.error}")
                 }
             } catch (ex: Exception) {
                 log.error("BeepTest: ${ex.message}")
@@ -88,11 +88,11 @@ class BeepTestFragment : XYBaseFragment() {
                     log.info("BeepTest: ${device.id}: Connected")
                     connectCount++
                     updateUI()
-                    if (device.unlock().error == null) {
+                    if (device.unlock().error == XYBluetoothResult.ErrorCode.None) {
                         log.info("BeepTest: ${device.id}: Unlocked")
                         unlockCount++
                         updateUI()
-                        if (device.controlService.buzzerSelect.set(2).error == null) {
+                        if (device.controlService.buzzerSelect.set(0x02U).error == XYBluetoothResult.ErrorCode.None) {
                             log.info("BeepTest: ${device.id}: Success")
                             beepCount++
                             updateUI()
@@ -104,8 +104,8 @@ class BeepTestFragment : XYBaseFragment() {
                     }
                     return@connection XYBluetoothResult(true)
                 }
-                if (connectResult.error != null) {
-                    log.error("BeepTest: ${device.id}: Failed to Connect: ${connectResult.error?.message}")
+                if (connectResult.error != XYBluetoothResult.ErrorCode.None) {
+                    log.error("BeepTest: ${device.id}: Failed to Connect: ${connectResult.error}")
                 }
             } catch (ex: Exception) {
                 log.error("BeepTest: ${ex.message}")

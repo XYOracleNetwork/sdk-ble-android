@@ -30,7 +30,7 @@ open class XYAppleBluetoothDevice(context: Context, device: BluetoothDevice, has
 
         internal val typeToCreator = SparseArray<XYCreator>()
 
-        internal val creator = object : XYCreator() {
+        private val creator = object : XYCreator() {
             override fun getDevicesFromScanResult(context: Context, scanResult: XYScanResult, globalDevices: ConcurrentHashMap<String, XYBluetoothDevice>, foundDevices: HashMap<String, XYBluetoothDevice>) {
 
                 for (i in 0 until typeToCreator.size()) {

@@ -4,7 +4,6 @@ import android.bluetooth.BluetoothGatt
 import android.bluetooth.BluetoothGattCallback
 import android.bluetooth.BluetoothGattDescriptor
 import kotlinx.coroutines.*
-import network.xyo.ble.generic.gatt.peripheral.XYBluetoothError
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothGattCallback
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResult
 import network.xyo.ble.generic.gatt.peripheral.XYThreadSafeBluetoothGatt
@@ -21,7 +20,7 @@ class XYBluetoothGattWriteDescriptor(val gatt: XYThreadSafeBluetoothGatt, val ga
     suspend fun start(descriptorToWrite: BluetoothGattDescriptor) = GlobalScope.async {
         log.info("writeDescriptor")
         val listenerName = "XYBluetoothGattWriteDescriptor${hashCode()}"
-        var error: XYBluetoothError? = null
+        var error: XYBluetoothResult.ErrorCode = XYBluetoothResult.ErrorCode.None
         var value: ByteArray? = null
 
         try {
@@ -41,7 +40,7 @@ class XYBluetoothGattWriteDescriptor(val gatt: XYThreadSafeBluetoothGatt, val ga
                                         cont.completeResume(it)
                                     }
                                 } else {
-                                    error = XYBluetoothError("writeDescriptor: onDescriptorWrite failed: $status")
+                                    error = XYBluetoothResult.ErrorCode.DiscriptorWriteFailed
                                     gattCallback.removeListener(listenerName)
 
                                     val idempotent = cont.tryResume(null)
@@ -56,7 +55,7 @@ class XYBluetoothGattWriteDescriptor(val gatt: XYThreadSafeBluetoothGatt, val ga
                             log.info("onConnectionStateChange")
                             super.onConnectionStateChange(gatt, status, newState)
                             if (newState != BluetoothGatt.STATE_CONNECTED) {
-                                error = XYBluetoothError("writeDescriptor: connection dropped")
+                                error = XYBluetoothResult.ErrorCode.Disconnected
                                 gattCallback.removeListener(listenerName)
 
                                 val idempotent = cont.tryResume(null)
@@ -69,7 +68,7 @@ class XYBluetoothGattWriteDescriptor(val gatt: XYThreadSafeBluetoothGatt, val ga
                     gattCallback.addListener(listenerName, listener)
                     GlobalScope.launch {
                         if (gatt.writeDescriptor(descriptorToWrite) != true) {
-                            error = XYBluetoothError("writeDescriptor: gatt.writeDescriptor failed to start")
+                            error = XYBluetoothResult.ErrorCode.DiscriptorWriteFailedToStart
                             gattCallback.removeListener(listenerName)
 
                             val idempotent = cont.tryResume(null)
@@ -81,7 +80,7 @@ class XYBluetoothGattWriteDescriptor(val gatt: XYThreadSafeBluetoothGatt, val ga
                 }
             }
         } catch (ex: TimeoutCancellationException) {
-            error = XYBluetoothError("start: Timeout")
+            error = XYBluetoothResult.ErrorCode.Timeout
             gattCallback.removeListener(listenerName)
             log.error(ex)
         }

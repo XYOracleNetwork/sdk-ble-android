@@ -11,7 +11,7 @@ class GenericAttributeService(device: XYBluetoothDevice) : Service(device) {
             return uuid
         }
 
-    val serviceChanged = IntegerCharacteristic(this, Characteristics.ServiceChanged.uuid, "Service Changed")
+    val serviceChanged = ByteCharacteristic(this, Characteristics.ServiceChanged.uuid, "Service Changed")
 
     companion object {
         val uuid: UUID = UUID.fromString("00001801-0000-1000-8000-00805F9B34FB")

@@ -143,10 +143,6 @@ class ServerFragment : XYDeviceFragment() {
             fragments.append(position, fragment)
             return fragment
         }
-
-        fun getFragmentByPosition(position: Int): XYBaseFragment? {
-            return fragments.get(position)
-        }
     }
 
     companion object {

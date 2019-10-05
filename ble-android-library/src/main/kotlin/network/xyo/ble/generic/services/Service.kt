@@ -3,6 +3,7 @@ package network.xyo.ble.generic.services
 import android.bluetooth.BluetoothGattCharacteristic
 import network.xyo.base.XYBase
 import network.xyo.ble.generic.devices.XYBluetoothDevice
+import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResult
 import java.util.*
 
 abstract class Service(val device: XYBluetoothDevice) : XYBase() {
@@ -14,14 +15,25 @@ abstract class Service(val device: XYBluetoothDevice) : XYBase() {
         suspend fun enableNotify(enable: Boolean) = service.enableNotify(uuid, enable)
     }
 
-    class IntegerCharacteristic(service: Service, uuid:UUID, name:String, private val formatType: Int = BluetoothGattCharacteristic.FORMAT_UINT8, val offset:Int = 0) : Characteristic(service, uuid, name) {
-        suspend fun get() = service.readInt(uuid, formatType, offset)
-        suspend fun set(value: Int) = service.writeInt(uuid, value, formatType, offset)
+    class ByteCharacteristic(service: Service, uuid:UUID, name:String, val offset:Int = 0) : Characteristic(service, uuid, name) {
+        suspend fun get() = service.readByte(uuid, offset)
+        suspend fun set(value: UByte): XYBluetoothResult<UByte> {
+            return service.writeByte(uuid, value, offset)
+        }
     }
 
-    class FloatCharacteristic(service: Service, uuid:UUID, name:String, private val formatType: Int = BluetoothGattCharacteristic.FORMAT_FLOAT, val offset:Int = 0) : Characteristic(service, uuid, name) {
-        suspend fun get() = service.readFloat(uuid, formatType, offset)
-        suspend fun set(mantissa: Int, exponent: Int) = service.writeFloat(uuid, mantissa, exponent, formatType, offset)
+    class ShortCharacteristic(service: Service, uuid:UUID, name:String, val offset:Int = 0) : Characteristic(service, uuid, name) {
+        suspend fun get() = service.readShort(uuid, offset)
+        suspend fun set(value: UShort): XYBluetoothResult<UShort> {
+            return service.writeShort(uuid, value, offset)
+        }
+    }
+
+    class IntCharacteristic(service: Service, uuid:UUID, name:String, val offset:Int = 0) : Characteristic(service, uuid, name) {
+        suspend fun get() = service.readInt(uuid, offset)
+        suspend fun set(value: UInt): XYBluetoothResult<UInt> {
+            return service.writeInt(uuid, value, offset)
+        }
     }
 
     class StringCharacteristic(service: Service, uuid:UUID, name:String) : Characteristic(service, uuid, name) {
@@ -34,22 +46,56 @@ abstract class Service(val device: XYBluetoothDevice) : XYBase() {
         suspend fun set(value: ByteArray) = service.writeBytes(uuid, value)
     }
 
-    private suspend fun readInt(characteristic: UUID, formatType: Int = BluetoothGattCharacteristic.FORMAT_UINT8, offset:Int = 0) = device.connection {
-        return@connection device.findAndReadCharacteristicInt(
+    private suspend fun readByte(characteristic: UUID, offset:Int = 0) = device.connection {
+        return@connection device.findAndReadCharacteristicByte(
                 serviceUuid,
                 characteristic,
-                formatType,
                 offset
         )
     }
 
-    private suspend fun writeInt(characteristic: UUID, value: Int, formatType: Int = BluetoothGattCharacteristic.FORMAT_UINT8, offset:Int = 0) = device.connection {
+    private suspend fun writeByte(characteristic: UUID, value: UByte, offset:Int = 0) = device.connection {
         log.info("writeInt: connection")
-        return@connection device.findAndWriteCharacteristic(
+        return@connection device.findAndWriteCharacteristicByte(
                 serviceUuid,
                 characteristic,
                 value,
-                formatType,
+                offset
+        )
+    }
+
+    private suspend fun readShort(characteristic: UUID, offset:Int = 0) = device.connection {
+        return@connection device.findAndReadCharacteristicShort(
+                serviceUuid,
+                characteristic,
+                offset
+        )
+    }
+
+    private suspend fun writeShort(characteristic: UUID, value: UShort, offset:Int = 0) = device.connection {
+        log.info("writeInt: connection")
+        return@connection device.findAndWriteCharacteristicShort(
+                serviceUuid,
+                characteristic,
+                value,
+                offset
+        )
+    }
+
+    private suspend fun readInt(characteristic: UUID, offset:Int = 0) = device.connection {
+        return@connection device.findAndReadCharacteristicInt(
+                serviceUuid,
+                characteristic,
+                offset
+        )
+    }
+
+    private suspend fun writeInt(characteristic: UUID, value: UInt, offset:Int = 0) = device.connection {
+        log.info("writeInt: connection")
+        return@connection device.findAndWriteCharacteristicInt(
+                serviceUuid,
+                characteristic,
+                value,
                 offset
         )
     }

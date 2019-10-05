@@ -28,11 +28,11 @@ open class XY2BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
     val sensorService by lazy { SensorService(this) }
 
     override suspend fun find() = connection {
-        return@connection controlService.buzzerSelect.set(2)
+        return@connection controlService.buzzerSelect.set(0x02U)
     }
 
     override suspend fun stopFind() = connection {
-        return@connection controlService.buzzerSelect.set(-1)
+        return@connection controlService.buzzerSelect.set(0xffU)
     }
 
     override val prefix = "xy:ibeacon"
@@ -43,12 +43,9 @@ open class XY2BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
 
         private val FAMILY_UUID = UUID.fromString("07775dd0-111b-11e4-9191-0800200c9a66")!!
 
-        private val DEFAULT_LOCK_CODE = byteArrayOf(0x2f.toByte(), 0xbe.toByte(), 0xa2.toByte(), 0x07.toByte(), 0x52.toByte(), 0xfe.toByte(), 0xbf.toByte(), 0x31.toByte(), 0x1d.toByte(), 0xac.toByte(), 0x5d.toByte(), 0xfa.toByte(), 0x7d.toByte(), 0x77.toByte(), 0x76.toByte(), 0x80.toByte())
-
-        enum class StayAwake(val state: Int) {
-            Off(0),
-            On(1)
-        }
+        /*val DEFAULT_LOCK_CODE = ubyteArrayOf(
+                0x2fU, 0xbeU, 0xa2U, 0x07U, 0x52U, 0xfeU, 0xbfU, 0x31U, 0x1dU, 0xacU, 0x5dU, 0xfaU, 0x7dU, 0x77U, 0x76U, 0x80U
+        )*/
 
         fun enable(enable: Boolean) {
             if (enable) {
@@ -59,7 +56,7 @@ open class XY2BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
             }
         }
 
-        internal val creator = object : XYCreator() {
+        private val creator = object : XYCreator() {
             override fun getDevicesFromScanResult(context: Context, scanResult: XYScanResult, globalDevices: ConcurrentHashMap<String, XYBluetoothDevice>, foundDevices: HashMap<String, XYBluetoothDevice>) {
                 val hash = hashFromScanResult(scanResult)
                 foundDevices[hash] = globalDevices[hash]

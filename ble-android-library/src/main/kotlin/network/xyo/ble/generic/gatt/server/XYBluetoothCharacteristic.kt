@@ -40,7 +40,7 @@ open class XYBluetoothCharacteristic(uuid: UUID, properties : Int, permissions :
         return super.setValue(mantissa, exponent, formatType, offset)
     }
 
-    protected fun onChange () {
+    private fun onChange () {
         for ((_, listener) in listeners) {
             listener.onChange()
         }

@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import kotlinx.android.synthetic.main.fragment_sensor.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import network.xyo.ble.devices.xy.XY2BluetoothDevice
 import network.xyo.ble.devices.xy.XY3BluetoothDevice
 import network.xyo.ble.generic.devices.XYBluetoothDevice
 import network.xyo.ble.sample.R
@@ -39,22 +40,26 @@ class SensorFragment : XYDeviceFragment() {
             sensor = it.sensorService
         }
 
+        (device as? XY2BluetoothDevice)?.let {
+            sensor = it.sensorService
+        }
+
         sensor?.let {
 
             val raw = it.raw.get()
-            ui { text_raw.text = raw.display }
+            ui { text_raw.text = raw.toString() }
 
             val timeout = it.timeout.get()
-            ui { text_timeout.text = timeout.display }
+            ui { text_timeout.text = timeout.toString() }
 
             val threshold = it.threshold.get()
-            ui { text_threshold.text = threshold.display }
+            ui { text_threshold.text = threshold.toString() }
 
             val inactive = it.inactive.get()
-            ui { text_inactive.text = inactive.display }
+            ui { text_inactive.text = inactive.toString() }
 
             val movementCount = it.movementCount.get()
-            ui { text_movement_count.text = movementCount.display }
+            ui { text_movement_count.text = movementCount.toString() }
 
         }
     }

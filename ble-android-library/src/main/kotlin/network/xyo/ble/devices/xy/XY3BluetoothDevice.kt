@@ -37,11 +37,6 @@ open class XY3BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
 
     private var lastButtonPressTime = 0L
 
-    enum class StayAwake(val state: Int) {
-        Off(0),
-        On(1)
-    }
-
     private val buttonListener = object : BluetoothGattCallback() {
         override fun onCharacteristicChanged(gatt: BluetoothGatt?, characteristic: BluetoothGattCharacteristic?) {
             super.onCharacteristicChanged(gatt, characteristic)
@@ -72,11 +67,11 @@ open class XY3BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
     override val prefix = "xy:ibeacon"
 
     override suspend fun find() = connection {
-        return@connection controlService.buzzerSelect.set(2)
+        return@connection controlService.buzzerSelect.set(0x02U)
     }
 
     override suspend fun stopFind() = connection {
-        return@connection controlService.buzzerSelect.set(-1)
+        return@connection controlService.buzzerSelect.set(0xffU)
     }
 
     override suspend fun lock() = connection {
@@ -88,11 +83,11 @@ open class XY3BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
     }
 
     override suspend fun stayAwake() = connection {
-        return@connection extendedConfigService.stayAwake.set(1)
+        return@connection extendedConfigService.stayAwake.set(StayAwake.On.state)
     }
 
     override suspend fun fallAsleep() = connection {
-        return@connection extendedConfigService.stayAwake.set(0)
+        return@connection extendedConfigService.stayAwake.set(StayAwake.Off.state)
     }
 
     override fun onDetect(scanResult: XYScanResult?) {
@@ -213,7 +208,7 @@ open class XY3BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
             }
         }
 
-        internal val creator = object : XYCreator() {
+        private val creator = object : XYCreator() {
             override fun getDevicesFromScanResult(context: Context, scanResult: XYScanResult, globalDevices: ConcurrentHashMap<String, XYBluetoothDevice>, foundDevices: HashMap<String, XYBluetoothDevice>) {
                 val hash = hashFromScanResult(scanResult)
                 foundDevices[hash] = globalDevices[hash]

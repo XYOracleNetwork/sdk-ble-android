@@ -4,12 +4,12 @@ import android.content.Context
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import network.xyo.ble.firmware.XYOtaUpdate
-import network.xyo.ble.generic.gatt.peripheral.XYBluetoothError
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResult
 import network.xyo.ble.generic.scanner.XYScanResult
 import network.xyo.base.XYBase
 import network.xyo.ble.devices.apple.XYAppleBluetoothDevice
 import network.xyo.ble.devices.apple.XYIBeaconBluetoothDevice
+import network.xyo.ble.generic.XYBluetoothBase
 import network.xyo.ble.generic.devices.XYBluetoothDevice
 import network.xyo.ble.generic.devices.XYCreator
 import java.io.InputStream
@@ -48,6 +48,11 @@ open class XYFinderBluetoothDevice(context: Context, scanResult: XYScanResult, h
         Single(1),
         Double(2),
         Long(3)
+    }
+
+    enum class StayAwake(val state: UByte) {
+        Off(0U),
+        On(1U)
     }
 
     override val id: String
@@ -114,43 +119,43 @@ open class XYFinderBluetoothDevice(context: Context, scanResult: XYScanResult, h
     //signal the user to where it is, usually make it beep
     open suspend fun find() = connection {
         log.error(UnsupportedOperationException().toString(), true)
-        return@connection XYBluetoothResult<Int>(XYBluetoothError("Not Implemented"))
+        return@connection XYBluetoothResult<UByte>(XYBluetoothResult.ErrorCode.Unsupported)
     }
 
     //turn off finding, if supported
     open suspend fun stopFind() = connection {
         log.error(UnsupportedOperationException(), true)
-        return@connection XYBluetoothResult<Int>(XYBluetoothError("Not Implemented"))
+        return@connection XYBluetoothResult<UByte>(XYBluetoothResult.ErrorCode.Unsupported)
     }
 
     open suspend fun lock() = connection {
         log.error(UnsupportedOperationException(), true)
-        return@connection XYBluetoothResult<ByteArray>(XYBluetoothError("Not Implemented"))
+        return@connection XYBluetoothResult<ByteArray>(XYBluetoothResult.ErrorCode.Unsupported)
     }
 
     open suspend fun unlock() = connection {
         log.error(UnsupportedOperationException(), true)
-        return@connection XYBluetoothResult<ByteArray>(XYBluetoothError("Not Implemented"))
+        return@connection XYBluetoothResult<ByteArray>(XYBluetoothResult.ErrorCode.Unsupported)
     }
 
     open suspend fun stayAwake() = connection {
         log.error(UnsupportedOperationException(), true)
-        return@connection XYBluetoothResult<Int>(XYBluetoothError("Not Implemented"))
+        return@connection XYBluetoothResult<UByte>(XYBluetoothResult.ErrorCode.Unsupported)
     }
 
     open suspend fun fallAsleep() = connection {
         log.error(UnsupportedOperationException(), true)
-        return@connection XYBluetoothResult<Int>(XYBluetoothError("Not Implemented"))
+        return@connection XYBluetoothResult<UByte>(XYBluetoothResult.ErrorCode.Unsupported)
     }
 
     open suspend fun restart() = connection {
         log.error(UnsupportedOperationException(), true)
-        return@connection XYBluetoothResult<Int>(XYBluetoothError("Not Implemented"))
+        return@connection XYBluetoothResult<UByte>(XYBluetoothResult.ErrorCode.Unsupported)
     }
 
     open suspend fun batteryLevel() = connection {
         log.error(UnsupportedOperationException(), true)
-        return@connection XYBluetoothResult<Int>(XYBluetoothError("Not Implemented"))
+        return@connection XYBluetoothResult<UByte>(XYBluetoothResult.ErrorCode.Unsupported)
     }
 
     open fun updateFirmware(stream: InputStream, listener: XYOtaUpdate.Listener) {
@@ -228,7 +233,7 @@ open class XYFinderBluetoothDevice(context: Context, scanResult: XYScanResult, h
 
         private val uuidToCreator = HashMap<UUID, XYCreator>()
 
-        internal val creator = object : XYCreator() {
+        private val creator = object : XYCreator() {
             override fun getDevicesFromScanResult(context: Context, scanResult: XYScanResult, globalDevices: ConcurrentHashMap<String, XYBluetoothDevice>, foundDevices: HashMap<String, XYBluetoothDevice>) {
 
                 val bytes = scanResult.scanRecord?.getManufacturerSpecificData(XYAppleBluetoothDevice.MANUFACTURER_ID)

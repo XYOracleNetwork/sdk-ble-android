@@ -23,9 +23,9 @@ class SongFragment : XYDeviceFragment() {
 
     private var currentSong = ""
 
-    interface SlotItem {
+    /*interface SlotItem {
         val value: ByteBuffer
-    }
+    }*/
 
     /**********************************************/
     /**  VVPP PPPP PPPP PPPP DDDD DDDD DDDD DDDD **/

@@ -88,25 +88,23 @@ class GenericAccessFragment : XYDeviceFragment() {
                 hasConnectionError = false
 
                 device.genericAccessService.deviceName.get().let {
-                    deviceData?.deviceName = "${it.value ?: it.error?.message ?: "Error"}"
+                    deviceData?.deviceName = "${it.value ?: it.error}"
                 }
 
                 device.genericAccessService.appearance.get().let {
-                    deviceData?.appearance = "${it.value ?: it.error?.message ?: "Error"}"
+                    deviceData?.appearance = "${it.value ?: it.error}"
                 }
 
                 device.genericAccessService.privacyFlag.get().let {
-                    deviceData?.privacyFlag = "${it.value ?: it.error?.message ?: "Error"}"
+                    deviceData?.privacyFlag = "${it.value ?: it.error}"
                 }
 
                 device.genericAccessService.reconnectionAddress.get().let {
-                    deviceData?.reconnectionAddress = "${it.value ?: it.error?.message
-                    ?: "Error"}"
+                    deviceData?.reconnectionAddress = "${it.value ?: it.error}"
                 }
 
                 device.genericAccessService.peripheralPreferredConnectionParameters.get().let {
-                    deviceData?.peripheralPreferredConnectionParameters = "${it.value
-                            ?: it.error?.message ?: "Error"}"
+                    deviceData?.peripheralPreferredConnectionParameters = "${it.value ?: it.error}"
                 }
 
                 return@connection XYBluetoothResult(true)
@@ -126,25 +124,23 @@ class GenericAccessFragment : XYDeviceFragment() {
                 hasConnectionError = false
 
                 device.genericAccessService.deviceName.get().let {
-                    deviceData?.deviceName = "${it.value ?: it.error?.message ?: "Error"}"
+                    deviceData?.deviceName = "${it.value ?: it.error}"
                 }
 
                 device.genericAccessService.appearance.get().let {
-                    deviceData?.appearance = "${it.value ?: it.error?.message ?: "Error"}"
+                    deviceData?.appearance = "${it.value ?: it.error}"
                 }
 
                 device.genericAccessService.privacyFlag.get().let {
-                    deviceData?.privacyFlag = "${it.value ?: it.error?.message ?: "Error"}"
+                    deviceData?.privacyFlag = "${it.value ?: it.error}"
                 }
 
                 device.genericAccessService.reconnectionAddress.get().let {
-                    deviceData?.reconnectionAddress = "${it.value ?: it.error?.message
-                    ?: "Error"}"
+                    deviceData?.reconnectionAddress = "${it.value ?: it.error}"
                 }
 
                 device.genericAccessService.peripheralPreferredConnectionParameters.get().let {
-                    deviceData?.peripheralPreferredConnectionParameters = "${it.value
-                            ?: it.error?.message ?: "Error"}"
+                    deviceData?.peripheralPreferredConnectionParameters = "${it.value ?: it.error}"
                 }
 
                 return@connection XYBluetoothResult(true)
@@ -164,25 +160,23 @@ class GenericAccessFragment : XYDeviceFragment() {
                 hasConnectionError = false
 
                 device.genericAccessService.deviceName.get().let {
-                    deviceData?.deviceName = "${it.value ?: it.error?.message ?: "Error"}"
+                    deviceData?.deviceName = "${it.value ?: it.error}"
                 }
 
                 device.genericAccessService.appearance.get().let {
-                    deviceData?.appearance = "${it.value ?: it.error?.message ?: "Error"}"
+                    deviceData?.appearance = "${it.value ?: it.error}"
                 }
 
                 device.genericAccessService.privacyFlag.get().let {
-                    deviceData?.privacyFlag = "${it.value ?: it.error?.message ?: "Error"}"
+                    deviceData?.privacyFlag = "${it.value ?: it.error}"
                 }
 
                 device.genericAccessService.reconnectionAddress.get().let {
-                    deviceData?.reconnectionAddress = "${it.value ?: it.error?.message
-                    ?: "Error"}"
+                    deviceData?.reconnectionAddress = "${it.value ?: it.error}"
                 }
 
                 device.genericAccessService.peripheralPreferredConnectionParameters.get().let {
-                    deviceData?.peripheralPreferredConnectionParameters = "${it.value
-                            ?: it.error?.message ?: "Error"}"
+                    deviceData?.peripheralPreferredConnectionParameters = "${it.value ?: it.error}"
                 }
 
                 return@connection XYBluetoothResult(true)
