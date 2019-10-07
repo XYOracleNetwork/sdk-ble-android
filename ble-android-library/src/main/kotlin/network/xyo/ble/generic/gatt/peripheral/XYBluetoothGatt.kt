@@ -73,14 +73,21 @@ open class XYBluetoothGatt protected constructor(
         }
 
     // last time this device was accessed (connected to)
-    protected var lastAccessTime = 0L
+    protected var lastAccessTime: Long? = null
 
     // last time we heard a ad from this device
-    protected var lastAdTime = 0L
+    protected var lastAdTime: Long? = null
+
+    // last time we heard a ad from this device
+    protected var enterTime: Long? = null
 
     var rssi: Int? = null
 
     protected var connection: XYBluetoothGattConnect? = null
+
+    suspend fun services() = GlobalScope.async {
+        return@async connection?.services ?: emptyList()
+    }.await()
 
     val defaultTimeout = 15000L
 

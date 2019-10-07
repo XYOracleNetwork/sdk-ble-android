@@ -4,12 +4,16 @@ import android.app.Activity
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import network.xyo.ble.generic.devices.XYBluetoothDevice
 import network.xyo.ble.sample.R
 import network.xyo.ble.sample.XYApplication
 import network.xyo.ble.sample.views.XYDeviceItemView
 import network.xyo.ble.generic.scanner.XYSmartScan
 import network.xyo.ui.ui
+import java.util.concurrent.locks.Lock
+import java.util.concurrent.locks.ReentrantLock
 
 @kotlin.ExperimentalStdlibApi
 @kotlin.ExperimentalUnsignedTypes
@@ -32,13 +36,16 @@ class XYDeviceAdapter(private val activity: Activity) : BaseAdapter() {
         }
 
         override fun detected(device: XYBluetoothDevice) {
-            refreshDevices()
+            //refreshDevices()
         }
     }
 
-    fun refreshDevices() {
-        if ((System.currentTimeMillis() - lastSort) > 5000) {
-            devices = XYBluetoothDevice.sortedList(scanner.devices)
+    private val sortLock = ReentrantLock()
+
+    fun refreshDevices() = GlobalScope.launch {
+        //we want to prevent multiple updates to go at the same time
+        if (sortLock.tryLock()) {
+            devices = XYBluetoothDevice.sortedList(scanner.devices.values.toList())
             ui {
                 notifyDataSetChanged()
             }

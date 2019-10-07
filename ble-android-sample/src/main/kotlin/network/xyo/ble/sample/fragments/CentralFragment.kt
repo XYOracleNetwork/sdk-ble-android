@@ -14,10 +14,10 @@ import com.nabinbhandari.android.permissions.Permissions
 import kotlinx.android.synthetic.main.fragment_central.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import network.xyo.ble.devices.xy.XY3BluetoothDevice
-import network.xyo.ble.devices.xy.XY4BluetoothDevice
+import network.xyo.ble.devices.apple.XYAppleBluetoothDevice
+import network.xyo.ble.devices.apple.XYIBeaconBluetoothDevice
+import network.xyo.ble.devices.xy.*
 import network.xyo.ble.generic.devices.XYBluetoothDevice
-import network.xyo.ble.devices.xy.XYFinderBluetoothDevice
 import network.xyo.ble.sample.R
 import network.xyo.ble.sample.activities.XYODeviceActivity
 import network.xyo.ble.sample.activities.XYOTestActivity
@@ -31,6 +31,15 @@ class CentralFragment : XYDeviceFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
+
+        XYAppleBluetoothDevice.enable(true)
+        XYIBeaconBluetoothDevice.enable(true)
+        XYFinderBluetoothDevice.enable(true)
+        XY4BluetoothDevice.enable(true)
+        XY3BluetoothDevice.enable(true)
+        XY2BluetoothDevice.enable(true)
+        XYGpsBluetoothDevice.enable(true)
+        //XYBluetoothDevice.enable(true)
 
         return inflater.inflate(R.layout.fragment_central, container, false)
     }

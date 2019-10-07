@@ -45,14 +45,14 @@ class BatteryFragment : XYDeviceFragment() {
 
     private fun updateUI() {
         ui {
-            throbber?.hide()
-
             text_battery_level?.text = deviceData?.level
         }
     }
 
     private fun readBatteryLevel() {
-        throbber?.show()
+        ui {
+            throbber?.show()
+        }
 
         when (device) {
             is XY4BluetoothDevice -> {
@@ -77,8 +77,9 @@ class BatteryFragment : XYDeviceFragment() {
                 text_battery_level.text = getString(R.string.unknown_device)
             }
         }
-
-        throbber?.hide()
+        ui {
+            throbber?.hide()
+        }
     }
 
     private fun getXY4Values(device: XY4BluetoothDevice) {

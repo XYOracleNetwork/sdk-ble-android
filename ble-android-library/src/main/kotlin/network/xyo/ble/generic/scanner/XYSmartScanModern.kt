@@ -35,7 +35,7 @@ class XYSmartScanModern(context: Context) : XYSmartScan(context) {
                 } else {
                     // this loop is for Android 7 to prevent getting nuked for scanning too much
                     GlobalScope.launch {
-                        while (started()) {
+                        //while (started()) {
                             if (status != Status.BluetoothDisabled && status != Status.BluetoothUnavailable) {
                                 val filters = ArrayList<ScanFilter>()
                                 try {
@@ -45,7 +45,7 @@ class XYSmartScanModern(context: Context) : XYSmartScan(context) {
                                 }
                                 // prevent the pause after a restart from being 5 minutes
                                 // 15 minutes
-                                for (i in 0..180) {
+                                /*for (i in 0..180) {
                                     delay(5000) // 5 seconds
                                     if (status != Status.Enabled) {
                                         break
@@ -56,12 +56,12 @@ class XYSmartScanModern(context: Context) : XYSmartScan(context) {
                                 } catch (ex: IllegalStateException) {
                                     log.info("Turning Scanner off after BT disable")
                                 }
-                                delay(1000)
-                            } else {
+                                delay(1000)*/
+                            }/* else {
                                 // wait for enabled status
                                 delay(5000)
-                            }
-                        }
+                            }*/
+                        //}
                     }
                 }
 

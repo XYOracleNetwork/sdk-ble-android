@@ -32,8 +32,6 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, val has
     var exitCount = 0
     var averageDetectGap = 0L
     var lastDetectGap = 0L
-    var firstDetectTime = 0L
-    var lastDetectTime = 0L
     var maxDetectTime = 0L
 
     // set this to true if the device should report that it is out of
@@ -109,7 +107,7 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, val has
                 // check if something else has already marked it as exited
                 // this should only happen if another system (exit on connection drop for example)
                 // marks this as out of range
-                if ((now - lastAdTime) > outOfRangeDelay && (now - lastAccessTime) > outOfRangeDelay) {
+                if ((now - (lastAdTime ?: now)) > outOfRangeDelay && (now - (lastAccessTime ?: now)) > outOfRangeDelay) {
                     if (rssi != null) {
                         rssi = null
                         onExit()
@@ -131,7 +129,7 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, val has
     internal open fun onEnter() {
         // log.info("onEnter: $address")
         enterCount++
-        lastAdTime = now
+        enterTime = now
         synchronized(listeners) {
             for ((_, listener) in listeners) {
                 GlobalScope.launch {
@@ -145,6 +143,7 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, val has
     internal open fun onExit() {
         // log.info("onExit: $address")
         exitCount++
+        enterTime = 0
         synchronized(listeners) {
             for ((_, listener) in listeners) {
                 GlobalScope.launch {
@@ -159,18 +158,13 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, val has
 
     override fun onDetect(scanResult: XYScanResult?) {
         detectCount++
-        if (lastDetectTime == 0L) {
-            lastDetectTime = now
-        }
-        if (firstDetectTime == 0L) {
-            firstDetectTime = now
-        }
-        lastDetectGap = now - lastDetectTime
+        lastAdTime = lastAdTime ?: enterTime ?: now
+        lastDetectGap = now - (lastAdTime ?: now)
         if (lastDetectGap > maxDetectTime) {
             maxDetectTime = lastDetectGap
         }
-        averageDetectGap = (lastDetectTime - firstDetectTime) / detectCount
-        lastDetectTime = now
+        averageDetectGap = ((lastAdTime ?: now) - (enterTime ?: now)) / detectCount
+        lastAdTime = now
 
         synchronized(listeners) {
             for ((_, listener) in listeners) {
@@ -311,13 +305,28 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, val has
 
                 if (foundDevices.size == 0) {
                     val hash = hashFromScanResult(scanResult)
-
                     val device = scanResult.device
 
-                    if (canCreate && device != null) {
-                        val createdDevice = XYBluetoothDevice(context, device, hash)
-                        foundDevices[hash] = createdDevice
-                        globalDevices[hash] = createdDevice
+                    val existingDevice = globalDevices[hash]
+
+                    if (existingDevice != null) {
+                        existingDevice.onDetect(scanResult)
+                    } else {
+                        if (canCreate && device != null) {
+                            val createdDevice = XYBluetoothDevice(context, device, hash)
+                            foundDevices[hash] = createdDevice
+                            globalDevices[hash] = createdDevice
+                        }
+                    }
+                } else {
+                    foundDevices.forEach {
+                        val existingDevice = globalDevices[it.value.hash]
+                        if (existingDevice != null) {
+                            existingDevice.onDetect(scanResult)
+                        } else {
+                            foundDevices[it.value.hash] = it.value
+                            globalDevices[it.value.hash] = it.value
+                        }
                     }
                 }
             }
@@ -327,7 +336,7 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, val has
             return scanResult.address
         }
 
-        val compareDistance = kotlin.Comparator<XYBluetoothDevice> { o1, o2 ->
+        private val compareDistance = kotlin.Comparator<XYBluetoothDevice> { o1, o2 ->
             if (o1 == null || o2 == null) {
                 if (o1 != null && o2 == null) return@Comparator -1
                 if (o2 != null && o1 == null) return@Comparator 1
@@ -336,15 +345,8 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, val has
             o1.compareTo(o2)
         }
 
-        fun sortedList(devices: ConcurrentHashMap<String, XYBluetoothDevice>): List<XYBluetoothDevice> {
-            val result = ArrayList<XYBluetoothDevice>()
-            for ((_, device) in devices) {
-                val deviceToAdd = device as? XYBluetoothDevice
-                if (deviceToAdd != null) {
-                    result.add(deviceToAdd)
-                }
-            }
-            return result.sortedWith(compareDistance)
+        fun sortedList(devices: List<XYBluetoothDevice>): List<XYBluetoothDevice> {
+            return devices.sortedWith(compareDistance)
         }
     }
 }

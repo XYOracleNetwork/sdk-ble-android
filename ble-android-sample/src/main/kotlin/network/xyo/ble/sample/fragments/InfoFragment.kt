@@ -76,6 +76,16 @@ class InfoFragment : XYDeviceFragment(), View.OnClickListener, CompoundButton.On
                 }
             }
 
+            override fun detected(device: XYBluetoothDevice) {
+                super.detected(device)
+                updateUI()
+            }
+
+            override fun connectionStateChanged(device: XYBluetoothDevice, newState: Int) {
+                super.connectionStateChanged(device, newState)
+                updateUI()
+            }
+
             override fun exited(device: XYBluetoothDevice) {
                 super.exited(device)
                 ui {
@@ -105,7 +115,7 @@ class InfoFragment : XYDeviceFragment(), View.OnClickListener, CompoundButton.On
                 text_family.text = device?.name
                 text_rssi.text = device?.rssi.toString()
 
-                (device as XYIBeaconBluetoothDevice).let {
+                (device as? XYIBeaconBluetoothDevice)?.let {
                     text_power.text = it.power.toString()
                     text_major.text = String.format(getString(R.string.hex_placeholder), it.major.toInt().toString(16))
                     text_minor.text = String.format(getString(R.string.hex_placeholder), it.minor.toInt().toString(16))
@@ -197,6 +207,10 @@ class InfoFragment : XYDeviceFragment(), View.OnClickListener, CompoundButton.On
             if (error != XYBluetoothResult.ErrorCode.None) {
                 ui {
                     showToast(error.toString())
+                }
+            } else {
+                ui {
+                    showToast("Connected")
                 }
             }
             updateUI()

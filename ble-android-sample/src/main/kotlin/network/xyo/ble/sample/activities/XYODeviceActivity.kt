@@ -218,7 +218,7 @@ class XYODeviceActivity : XYOAppBaseActivity() {
 
 
     inner class SectionsPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
-        private val size = 16
+        private val size = 17
         private var fragments: SparseArray<XYBaseFragment> = SparseArray(size)
 
         override fun getItem(position: Int): Fragment {
@@ -229,48 +229,51 @@ class XYODeviceActivity : XYOAppBaseActivity() {
                     frag = InfoFragment.newInstance(device, data)
                 }
                 1 -> {
-                    frag = AlertFragment.newInstance(device, data)
+                    frag = DeviceServicesFragment.newInstance(device, data)
                 }
                 2 -> {
-                    frag = BatteryFragment.newInstance(device, data)
+                    frag = AlertFragment.newInstance(device, data)
                 }
                 3 -> {
-                    frag = CurrentTimeFragment.newInstance(device, data)
+                    frag = BatteryFragment.newInstance(device, data)
                 }
                 4 -> {
-                    frag = DeviceFragment.newInstance(device, data)
+                    frag = CurrentTimeFragment.newInstance(device, data)
                 }
                 5 -> {
-                    frag = GenericAccessFragment.newInstance(device, data)
+                    frag = DeviceFragment.newInstance(device, data)
                 }
                 6 -> {
-                    frag = GenericAttributeFragment.newInstance(device, data)
+                    frag = GenericAccessFragment.newInstance(device, data)
                 }
                 7 -> {
-                    frag = LinkLossFragment.newInstance(device, data)
+                    frag = GenericAttributeFragment.newInstance(device, data)
                 }
                 8 -> {
-                    frag = TxPowerFragment.newInstance(device, data)
+                    frag = LinkLossFragment.newInstance(device, data)
                 }
                 9 -> {
-                    frag = SongFragment.newInstance(device, data)
+                    frag = TxPowerFragment.newInstance(device, data)
                 }
                 10 -> {
-                    frag = FirmwareUpdateFragment.newInstance(device, data)
+                    frag = SongFragment.newInstance(device, data)
                 }
                 11 -> {
-                    frag = PrimaryFragment.newInstance(device, data)
+                    frag = FirmwareUpdateFragment.newInstance(device, data)
                 }
                 12 -> {
-                    frag = BasicFragment.newInstance(device, data)
+                    frag = PrimaryFragment.newInstance(device, data)
                 }
                 13 -> {
-                    frag = ExtendedConfigFragment.newInstance(device, data)
+                    frag = BasicFragment.newInstance(device, data)
                 }
                 14 -> {
-                    frag = ControlFragment.newInstance(device, data)
+                    frag = ExtendedConfigFragment.newInstance(device, data)
                 }
                 15 -> {
+                    frag = ControlFragment.newInstance(device, data)
+                }
+                16 -> {
                     frag = SensorFragment.newInstance(device, data)
                 }
                 else -> frag = InfoFragment.newInstance(device, data)

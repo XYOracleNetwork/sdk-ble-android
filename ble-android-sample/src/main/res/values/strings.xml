@@ -175,5 +175,6 @@
     <string name="inactive">Inactive:</string>
     <string name="movement_count">Movement Count:</string>
     <string name="power">Power</string>
+    <string name="net">Net</string>
 
 </resources>
