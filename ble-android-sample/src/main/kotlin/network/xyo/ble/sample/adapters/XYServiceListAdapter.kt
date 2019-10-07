@@ -8,6 +8,7 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import network.xyo.ble.sample.R
+import network.xyo.ui.ui
 
 class XYServiceListAdapter(services : Array<BluetoothGattService>) : RecyclerView.Adapter<XYServiceListAdapter.ViewHolder>() {
     private val listeners = HashMap<String, XYServiceListAdapterListener>()
@@ -15,11 +16,6 @@ class XYServiceListAdapter(services : Array<BluetoothGattService>) : RecyclerVie
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.uuid.text = list[position].uuid.toString()
-        holder.button.setOnClickListener {
-            for ((_, listener) in listeners) {
-                listener.onClick(list[position])
-            }
-        }
     }
 
     fun addListener(key : String, listener : XYServiceListAdapterListener) {
@@ -45,12 +41,20 @@ class XYServiceListAdapter(services : Array<BluetoothGattService>) : RecyclerVie
 
     fun addItem(item: BluetoothGattService) {
         list.add(item)
-        notifyDataSetChanged()
+        ui {
+            notifyDataSetChanged()
+        }
+    }
+
+    fun clear() {
+        list.clear()
+        ui {
+            notifyDataSetChanged()
+        }
     }
 
     class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
         val uuid:TextView = itemView.findViewById(R.id.service_uuid)
-        val button:Button = itemView.findViewById(R.id.view_service_button)
     }
 
     companion object {

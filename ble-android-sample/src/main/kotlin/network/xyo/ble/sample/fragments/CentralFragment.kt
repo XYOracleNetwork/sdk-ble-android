@@ -1,7 +1,6 @@
 package network.xyo.ble.sample.fragments
 
 import android.Manifest
-import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -10,20 +9,19 @@ import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.BaseAdapter
-import android.widget.CompoundButton
 import com.nabinbhandari.android.permissions.PermissionHandler
 import com.nabinbhandari.android.permissions.Permissions
 import kotlinx.android.synthetic.main.fragment_central.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import network.xyo.ble.devices.XY3BluetoothDevice
-import network.xyo.ble.devices.XY4BluetoothDevice
-import network.xyo.ble.devices.XYBluetoothDevice
-import network.xyo.ble.devices.XYFinderBluetoothDevice
+import network.xyo.ble.devices.apple.XYAppleBluetoothDevice
+import network.xyo.ble.devices.apple.XYIBeaconBluetoothDevice
+import network.xyo.ble.devices.xy.*
+import network.xyo.ble.generic.devices.XYBluetoothDevice
 import network.xyo.ble.sample.R
 import network.xyo.ble.sample.activities.XYODeviceActivity
 import network.xyo.ble.sample.activities.XYOTestActivity
-import network.xyo.ble.scanner.XYSmartScan
+import network.xyo.ble.generic.scanner.XYSmartScan
 import network.xyo.ui.ui
 
 @kotlin.ExperimentalStdlibApi
@@ -34,6 +32,15 @@ class CentralFragment : XYDeviceFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
 
+        XYAppleBluetoothDevice.enable(true)
+        XYIBeaconBluetoothDevice.enable(true)
+        XYFinderBluetoothDevice.enable(true)
+        XY4BluetoothDevice.enable(true)
+        XY3BluetoothDevice.enable(true)
+        XY2BluetoothDevice.enable(true)
+        XYGpsBluetoothDevice.enable(true)
+        //XYBluetoothDevice.enable(true)
+
         return inflater.inflate(R.layout.fragment_central, container, false)
     }
 
@@ -41,14 +48,17 @@ class CentralFragment : XYDeviceFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         active.setOnCheckedChangeListener {_, isChecked ->
-            if (isChecked) {
-                scanner.start()
-            } else {
-                scanner.stop()
+            GlobalScope.launch {
+                if (isChecked) {
+                    scanner.start()
+                } else {
+                    scanner.stop()
+                }
             }
+
         }
 
-        listview!!.adapter = adapter
+        list_view!!.adapter = adapter
 
         launchTest.setOnClickListener { startActivity(Intent(this@CentralFragment.context, XYOTestActivity::class.java)) }
     }
@@ -102,23 +112,9 @@ class CentralFragment : XYDeviceFragment() {
             }
             XYSmartScan.Status.BluetoothDisabled -> {
                 onBluetoothDisabled()
-                val alertDialog = AlertDialog.Builder(this.context).create()
-                alertDialog.setTitle("Bluetooth Disabled")
-                alertDialog.setMessage("Please enable Bluetooth to see a list of devices.")
-                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK") { dialog, _ ->
-                    dialog.dismiss()
-                }
-                alertDialog.show()
             }
             XYSmartScan.Status.BluetoothUnavailable -> {
-                onBluetoothDisabled()
-                val alertDialog = AlertDialog.Builder(this.context).create()
-                alertDialog.setTitle("Bluetooth Unavailable")
-                alertDialog.setMessage("It seems like your device may not support Bluetooth, or you are using an emulator")
-                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK") { dialog, _ ->
-                    dialog.dismiss()
-                }
-                alertDialog.show()
+                onBluetoothUnavailable()
             }
             XYSmartScan.Status.LocationDisabled -> {
             }
@@ -168,20 +164,14 @@ class CentralFragment : XYDeviceFragment() {
 
     private fun onBluetoothEnabled() {
         ll_disabled.visibility = GONE
-        if (active.isChecked && !scanner.started()) {
-            scanner.start()
-        }
     }
 
     private fun onBluetoothDisabled() {
         ll_disabled.visibility = VISIBLE
-        if (!active.isChecked && scanner.started()) {
-            scanner.stop()
-        }
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+    private fun onBluetoothUnavailable() {
+        ll_device_nobluetooth.visibility = VISIBLE
     }
 
     companion object {

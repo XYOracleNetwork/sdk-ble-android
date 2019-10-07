@@ -33,8 +33,5 @@ data class XYDeviceData(
 
     var alertLevel: String = "",
 
-    var txPowerLevel: String = "",
-
-    var EddystoneService: String = "",
-    var EddystoneConfigService: String = ""
+    var txPowerLevel: String = ""
 )

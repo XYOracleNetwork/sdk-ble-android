@@ -1,13 +1,11 @@
 package network.xyo.ble.firmware
 
-import android.os.Environment
 import android.util.Log
-import network.xyo.base.XYBase
 import java.io.FileInputStream
 import java.io.IOException
 import java.io.InputStream
-import java.util.*
-import kotlin.experimental.xor
+import kotlin.math.max
+import network.xyo.base.XYBase
 
 /**
  * File format for Over-the-air images
@@ -19,21 +17,19 @@ class XYOtaFile(private val inputStream: InputStream?) : XYBase() {
     private var blocks: Array<Array<ByteArray>>? = null
     private val bytesAvailable: Int = inputStream!!.available()
 
-    var crc: Byte = 0
-        private set
+    private var crc: UByte = 0U
 
     var fileBlockSize = 128
         private set
 
-    var fileChunkSize = 20
+    private var fileChunkSize = 20
+
+    var numberOfBlocks = 0
         private set
 
-    var numberOfBlocks = -1
+    var chunksPerBlockCount = 0
         private set
-
-    var chunksPerBlockCount: Int = 0
-        private set
-    var totalChunkCount: Int = 0
+    var totalChunkCount = 0
         private set
 
     val numberOfBytes: Int
@@ -43,15 +39,15 @@ class XYOtaFile(private val inputStream: InputStream?) : XYBase() {
         bytes = ByteArray(bytesAvailable + 1)
         inputStream!!.read(bytes!!)
         crc = calculateCrc()
-        bytes!![bytesAvailable] = crc
+        bytes!![bytesAvailable] = crc.toByte()
 
-        //Default block/chunk sizes for XY4 devices.
+        // Default block/chunk sizes for XY4 devices.
         setFileBlockSize(128, 20)
     }
 
     // Set the file blockSize and ChunkSize if not using the default 128/20 values
-    fun setFileBlockSize(blockSize: Int, chunkSize: Int) {
-        fileBlockSize = Math.max(blockSize, chunkSize)
+    private fun setFileBlockSize(blockSize: Int, chunkSize: Int) {
+        fileBlockSize = max(blockSize, chunkSize)
         fileChunkSize = chunkSize
         chunksPerBlockCount = fileBlockSize / fileChunkSize + if (fileBlockSize.rem(fileChunkSize) != 0) 1 else 0
         numberOfBlocks = bytes!!.size / fileBlockSize + if (bytes!!.size.rem(fileBlockSize) != 0) 1 else 0
@@ -63,8 +59,7 @@ class XYOtaFile(private val inputStream: InputStream?) : XYBase() {
             @Suppress("UNCHECKED_CAST")
             (arrayOfNulls<T>(size) as Array<T>)
 
-
-    //Chunk the XYOtaFile into correct block sizes.
+    // Chunk the XYOtaFile into correct block sizes.
     private fun initBlocksSuota() {
         totalChunkCount = 0
         blocks = fileEmptyArray(numberOfBlocks)
@@ -93,8 +88,8 @@ class XYOtaFile(private val inputStream: InputStream?) : XYBase() {
                     chunkSize = blockSize.rem(fileChunkSize)
                 }
 
-                //XYBase.log.info("XYOtaFile", "total bytes: " + bytes!!.size + ", offset: " + byteOffset + ", block: " + i + ", chunk: " + (chunkNumber + 1) + ", blockSize: " + blockSize + ", chunkSize: " + chunkSize)
-                val chunk = Arrays.copyOfRange(bytes!!, byteOffset, byteOffset + chunkSize)
+                // XYBase.log.info("XYOtaFile", "total bytes: " + bytes!!.size + ", offset: " + byteOffset + ", block: " + i + ", chunk: " + (chunkNumber + 1) + ", blockSize: " + blockSize + ", chunkSize: " + chunkSize)
+                val chunk = (bytes!!).copyOfRange(byteOffset, byteOffset + chunkSize)
                 blocks!![i][chunkNumber] = chunk
                 byteOffset += chunkSize
                 chunkNumber++
@@ -119,14 +114,12 @@ class XYOtaFile(private val inputStream: InputStream?) : XYBase() {
     }
 
     @Throws(IOException::class)
-    private fun calculateCrc(): Byte {
-        var crcCode: Byte = 0
+    private fun calculateCrc(): UByte {
+        var crcCode: UByte = 0x0U
         for (i in 0 until bytesAvailable) {
-            val byteValue = bytes!![i]
-            val intVal = byteValue.toInt()
-            crcCode = crcCode xor intVal.toByte()
+            crcCode = crcCode xor bytes!![i].toUByte()
         }
-        //XYBase.log.info("XYOtaFile", String.format("Firmware CRC: %#04x", crc_code and 0xff.toByte()))
+        // XYBase.log.info("XYOtaFile", String.format("Firmware CRC: %#04x", crc_code and 0xff.toByte()))
 
         return crcCode
     }
@@ -145,7 +138,7 @@ class XYOtaFile(private val inputStream: InputStream?) : XYBase() {
         }
 
         fun folderPath(folderName: String): String {
-            return folderName //""${Environment.getExternalStorageDirectory().absolutePath}/$folderName"
+            return folderName // ""${Environment.getExternalStorageDirectory().absolutePath}/$folderName"
         }
 
         fun createFileDirectory(folderName: String): Boolean {
