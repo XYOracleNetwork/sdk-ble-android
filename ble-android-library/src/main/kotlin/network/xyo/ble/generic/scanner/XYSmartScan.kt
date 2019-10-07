@@ -7,15 +7,14 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.location.LocationManager
+import java.util.concurrent.ConcurrentHashMap
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import network.xyo.ble.generic.devices.XYBluetoothDevice
 import network.xyo.ble.devices.xy.XYMobileBluetoothDevice
 import network.xyo.ble.generic.XYBluetoothBase
-import java.util.*
-import java.util.concurrent.ConcurrentHashMap
+import network.xyo.ble.generic.devices.XYBluetoothDevice
 
 @kotlin.ExperimentalUnsignedTypes
 abstract class XYSmartScan(context: Context) : XYBluetoothBase(context) {
@@ -52,7 +51,7 @@ abstract class XYSmartScan(context: Context) : XYBluetoothBase(context) {
 
     private var oldStatus = Status.None
 
-    private val recevier = object: BroadcastReceiver() {
+    private val recevier = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             if (BluetoothAdapter.ACTION_STATE_CHANGED == intent?.action) {
                 if (intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, -1) == BluetoothAdapter.STATE_OFF) {
@@ -77,7 +76,7 @@ abstract class XYSmartScan(context: Context) : XYBluetoothBase(context) {
 
     private fun startStatusChecker() {
         GlobalScope.launch {
-            while(true) {
+            while (true) {
                 if (status != oldStatus) {
                     reportStatusChanged()
                 }
@@ -119,10 +118,10 @@ abstract class XYSmartScan(context: Context) : XYBluetoothBase(context) {
     }
 
     fun getDevicesFromScanResult(scanResult: XYScanResult, globalDevices: ConcurrentHashMap<String, XYBluetoothDevice>, foundDevices: HashMap<String, XYBluetoothDevice>) {
-        //only add them if they do not already exist
+        // only add them if they do not already exist
         XYBluetoothDevice.creator.getDevicesFromScanResult(context, scanResult, globalDevices, foundDevices)
 
-        //add (or replace) all the found devices
+        // add (or replace) all the found devices
         for ((_, foundDevice) in foundDevices) {
             globalDevices[foundDevice.hash] = foundDevice
         }
@@ -150,7 +149,6 @@ abstract class XYSmartScan(context: Context) : XYBluetoothBase(context) {
 
     open class Listener : XYBluetoothDevice.Listener() {
         open fun statusChanged(status: Status) {
-
         }
     }
 
@@ -261,7 +259,7 @@ abstract class XYSmartScan(context: Context) : XYBluetoothBase(context) {
     }
 
     private fun reportEntered(device: XYBluetoothDevice) {
-        //log.info("reportEntered")
+        // log.info("reportEntered")
         synchronized(listeners) {
             for ((_, listener) in listeners) {
                 GlobalScope.launch {
@@ -272,7 +270,7 @@ abstract class XYSmartScan(context: Context) : XYBluetoothBase(context) {
     }
 
     private fun reportExited(device: XYBluetoothDevice) {
-        //log.info("reportExited")
+        // log.info("reportExited")
         synchronized(listeners) {
             for ((_, listener) in listeners) {
                 GlobalScope.launch {
@@ -283,7 +281,7 @@ abstract class XYSmartScan(context: Context) : XYBluetoothBase(context) {
     }
 
     private fun reportDetected(device: XYBluetoothDevice) {
-        //log.info("reportDetected")
+        // log.info("reportDetected")
         synchronized(listeners) {
             for ((_, listener) in listeners) {
                 GlobalScope.launch {
@@ -292,5 +290,4 @@ abstract class XYSmartScan(context: Context) : XYBluetoothBase(context) {
             }
         }
     }
-
 }

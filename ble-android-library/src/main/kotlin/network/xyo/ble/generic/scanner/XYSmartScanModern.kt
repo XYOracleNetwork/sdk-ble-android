@@ -7,15 +7,14 @@ import android.bluetooth.le.ScanResult
 import android.bluetooth.le.ScanSettings
 import android.content.Context
 import android.os.Build
+import java.lang.IllegalStateException
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import network.xyo.ble.utilities.XYCallByVersion
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResult
 import network.xyo.ble.generic.gatt.peripheral.asyncBle
-import java.lang.IllegalStateException
-import java.util.*
+import network.xyo.ble.utilities.XYCallByVersion
 
 @TargetApi(21)
 @kotlin.ExperimentalUnsignedTypes
@@ -41,25 +40,25 @@ class XYSmartScanModern(context: Context) : XYSmartScan(context) {
                                 val filters = ArrayList<ScanFilter>()
                                 try {
                                     scanner.startScan(filters, getSettings(), callback)
-                                } catch(ex: IllegalStateException) {
+                                } catch (ex: IllegalStateException) {
                                     log.info("Turning Scanner on after BT disable")
                                 }
-                                //prevent the pause after a restart from being 5 minutes
-                                //15 minutes
+                                // prevent the pause after a restart from being 5 minutes
+                                // 15 minutes
                                 for (i in 0..180) {
-                                    delay(5000) //5 seconds
+                                    delay(5000) // 5 seconds
                                     if (status != Status.Enabled) {
                                         break
                                     }
                                 }
                                 try {
                                     scanner.stopScan(callback)
-                                } catch(ex: IllegalStateException) {
+                                } catch (ex: IllegalStateException) {
                                     log.info("Turning Scanner off after BT disable")
                                 }
                                 delay(1000)
                             } else {
-                                //wait for enabled status
+                                // wait for enabled status
                                 delay(5000)
                             }
                         }
@@ -82,7 +81,7 @@ class XYSmartScanModern(context: Context) : XYSmartScan(context) {
     private val callback = object : ScanCallback() {
         override fun onBatchScanResults(results: MutableList<ScanResult>?) {
             super.onBatchScanResults(results)
-            //log.info("onBatchScanResults: $results")
+            // log.info("onBatchScanResults: $results")
             results?.let {
                 val xyResults = ArrayList<XYScanResult>()
                 for (result in it) {
@@ -102,7 +101,7 @@ class XYSmartScanModern(context: Context) : XYSmartScan(context) {
 
         override fun onScanResult(callbackType: Int, result: ScanResult?) {
             super.onScanResult(callbackType, result)
-            //log.info("onScanResult: $result")
+            // log.info("onScanResult: $result")
             result?.let {
                 val xyResults = ArrayList<XYScanResult>()
                 xyResults.add(XYScanResultModern(it))
@@ -126,7 +125,7 @@ class XYSmartScanModern(context: Context) : XYSmartScan(context) {
         return result!!
     }
 
-    //Android 5 and 6
+    // Android 5 and 6
     private fun getSettings21(): ScanSettings {
         return ScanSettings.Builder()
                 .setScanMode(ScanSettings.SCAN_MODE_LOW_POWER)
@@ -134,7 +133,7 @@ class XYSmartScanModern(context: Context) : XYSmartScan(context) {
                 .build()
     }
 
-    //Android 7 and 7.1
+    // Android 7 and 7.1
     @TargetApi(Build.VERSION_CODES.M)
     private fun getSettings23(): ScanSettings {
         return ScanSettings.Builder()
@@ -144,7 +143,7 @@ class XYSmartScanModern(context: Context) : XYSmartScan(context) {
                 .build()
     }
 
-    //Android 8 and 9
+    // Android 8 and 9
     @TargetApi(Build.VERSION_CODES.O)
     private fun getSettings26(): ScanSettings {
         return ScanSettings.Builder()
@@ -179,6 +178,5 @@ class XYSmartScanModern(context: Context) : XYSmartScan(context) {
             return@async false
         }
         return@async result?.value ?: false
-
     }.await()
 }

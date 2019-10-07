@@ -5,26 +5,24 @@ import android.bluetooth.BluetoothGatt
 import android.content.Context
 import android.os.ParcelUuid
 import android.util.SparseArray
+import java.nio.ByteBuffer
+import java.util.UUID
+import java.util.concurrent.ConcurrentHashMap
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import network.xyo.base.XYBase
 import network.xyo.ble.generic.ads.XYBleAd
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothGattClient
 import network.xyo.ble.generic.scanner.XYScanRecord
 import network.xyo.ble.generic.scanner.XYScanResult
-import network.xyo.base.XYBase
-import java.nio.ByteBuffer
-import java.util.*
-import java.util.concurrent.ConcurrentHashMap
 
 open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, val hash: String, transport: Int? = null) : XYBluetoothGattClient(context, device, false, null, transport, null, null), Comparable<XYBluetoothDevice> {
 
-    //hash - the reason for the hash system is that some devices rotate MAC addresses or polymorph in other ways
-    //the user generally wants to treat a single physical device as a single logical device so the
-    //hash that is passed in to create the class is used to make sure that the reuse of existing instances
-    //is done based on device specific logic on "sameness"
-
-
+    // hash - the reason for the hash system is that some devices rotate MAC addresses or polymorph in other ways
+    // the user generally wants to treat a single physical device as a single logical device so the
+    // hash that is passed in to create the class is used to make sure that the reuse of existing instances
+    // is done based on device specific logic on "sameness"
 
     protected val listeners = HashMap<String, Listener>()
     val ads = SparseArray<XYBleAd>()
@@ -38,9 +36,9 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, val has
     var lastDetectTime = 0L
     var maxDetectTime = 0L
 
-    //set this to true if the device should report that it is out of
-    //range right after disconnect.  Generally used for devices
-    //with rotating MAC addresses
+    // set this to true if the device should report that it is out of
+    // range right after disconnect.  Generally used for devices
+    // with rotating MAC addresses
     var exitAfterDisconnect = false
 
     private var addressValue: String? = null
@@ -85,18 +83,18 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, val has
         return this.hashCode() == other?.hashCode()
     }
 
-    override  fun updateBluetoothDevice(device: BluetoothDevice?) {
+    override fun updateBluetoothDevice(device: BluetoothDevice?) {
 
         if (device?.address != this.device?.address || this.device == null) {
-            //log.info("updateBluetoothDevice: Updating Device [$hash]")
-            //log.info("updateBluetoothDevice: Updating Device [new = ${device?.address}, old = ${this.device?.address}]")
-            //log.info("updateBluetoothDevice: Updating Device [new = 0x${device?.hashCode()?.absoluteValue?.toString(16)}, old = 0x${this.device?.hashCode()?.absoluteValue?.toString(16)}]")
+            // log.info("updateBluetoothDevice: Updating Device [$hash]")
+            // log.info("updateBluetoothDevice: Updating Device [new = ${device?.address}, old = ${this.device?.address}]")
+            // log.info("updateBluetoothDevice: Updating Device [new = 0x${device?.hashCode()?.absoluteValue?.toString(16)}, old = 0x${this.device?.hashCode()?.absoluteValue?.toString(16)}]")
             this.device = device
         }
     }
 
-    //this should only be called from the onEnter function so that
-    //there is one onExit for every onEnter
+    // this should only be called from the onEnter function so that
+    // there is one onExit for every onEnter
     private fun checkForExit() {
         lastAccessTime = now
         if (checkingForExit) {
@@ -105,18 +103,18 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, val has
         checkingForExit = true
         GlobalScope.launch {
             while (checkingForExit && !cancelNotifications) {
-                //log.info("checkForExit: $id : $rssi : $now : $outOfRangeDelay : $lastAdTime : $lastAccessTime")
+                // log.info("checkForExit: $id : $rssi : $now : $outOfRangeDelay : $lastAdTime : $lastAccessTime")
                 delay(outOfRangeDelay)
 
-                //check if something else has already marked it as exited
-                //this should only happen if another system (exit on connection drop for example)
-                //marks this as out of range
+                // check if something else has already marked it as exited
+                // this should only happen if another system (exit on connection drop for example)
+                // marks this as out of range
                 if ((now - lastAdTime) > outOfRangeDelay && (now - lastAccessTime) > outOfRangeDelay) {
                     if (rssi != null) {
                         rssi = null
                         onExit()
 
-                        //make it thread safe
+                        // make it thread safe
                         val localNotifyExit = notifyExit
                         if (localNotifyExit != null) {
                             GlobalScope.launch {
@@ -131,7 +129,7 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, val has
     }
 
     internal open fun onEnter() {
-        //log.info("onEnter: $address")
+        // log.info("onEnter: $address")
         enterCount++
         lastAdTime = now
         synchronized(listeners) {
@@ -184,7 +182,7 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, val has
     }
 
     override fun onConnectionStateChange(newState: Int) {
-        //log.info("onConnectionStateChange: $id : $newState: $listeners.size")
+        // log.info("onConnectionStateChange: $id : $newState: $listeners.size")
         synchronized(listeners) {
             for ((tag, listener) in listeners) {
                 GlobalScope.launch {
@@ -196,13 +194,13 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, val has
                 }
             }
         }
-        //if a connection drop means we should mark it as out of range, then lets do it!
+        // if a connection drop means we should mark it as out of range, then lets do it!
         if (exitAfterDisconnect) {
             GlobalScope.launch {
                 rssi = null
                 onExit()
 
-                //make it thread safe
+                // make it thread safe
                 val localNotifyExit = notifyExit
                 if (localNotifyExit != null) {
                     GlobalScope.launch {
@@ -214,7 +212,7 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, val has
     }
 
     fun addListener(key: String, listener: Listener) {
-        //log.info("addListener:$key:$listener")
+        // log.info("addListener:$key:$listener")
         GlobalScope.launch {
             synchronized(listeners) {
                 listeners.put(key, listener)
@@ -268,8 +266,8 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, val has
 
     companion object : XYBase() {
 
-        //the period of time to wait for marking something as out of range
-        //if we have not gotten any ads or been connected to it
+        // the period of time to wait for marking something as out of range
+        // if we have not gotten any ads or been connected to it
         const val OUT_OF_RANGE_DELAY = 15000L
 
         fun enable(enable: Boolean) {
@@ -279,7 +277,7 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, val has
         internal var canCreate = false
         val manufacturerToCreator = SparseArray<XYCreator>()
 
-        //Do not serviceToCreator this Private. It's called by other apps
+        // Do not serviceToCreator this Private. It's called by other apps
         val serviceToCreator = HashMap<UUID, XYCreator>()
 
         // cancel the checkForExit routine so we don't get notifications after service is stopped
@@ -348,6 +346,5 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, val has
             }
             return result.sortedWith(compareDistance)
         }
-
     }
 }

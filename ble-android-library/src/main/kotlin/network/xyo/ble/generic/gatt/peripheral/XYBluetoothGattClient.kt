@@ -5,18 +5,18 @@ import android.bluetooth.BluetoothGattCharacteristic
 import android.bluetooth.BluetoothGattDescriptor
 import android.content.Context
 import android.os.Handler
+import java.util.UUID
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
-import java.util.*
 
 open class XYBluetoothGattClient protected constructor(
-        context: Context,
-        device: BluetoothDevice?,
-        autoConnect: Boolean,
-        callback: XYBluetoothGattCallback?,
-        transport: Int?,
-        phy: Int?,
-        handler: Handler?
+    context: Context,
+    device: BluetoothDevice?,
+    autoConnect: Boolean,
+    callback: XYBluetoothGattCallback?,
+    transport: Int?,
+    phy: Int?,
+    handler: Handler?
 ) : XYBluetoothGatt(context, device, autoConnect, callback, transport, phy, handler) {
 
     open fun updateBluetoothDevice(device: BluetoothDevice?) {
@@ -228,7 +228,7 @@ open class XYBluetoothGattClient protected constructor(
     }.await()
 
     suspend fun findAndWriteCharacteristic(service: UUID, characteristic: UUID, valueToWrite: Int, formatType: Int, offset: Int) = GlobalScope.async {
-        //this prevents a queued close from closing while we run
+        // this prevents a queued close from closing while we run
         lastAccessTime = now
 
         log.info("findAndWriteCharacteristic")
@@ -261,7 +261,7 @@ open class XYBluetoothGattClient protected constructor(
     }.await()
 
     suspend fun findAndWriteCharacteristicByte(service: UUID, characteristic: UUID, valueToWrite: UByte, offset: Int) = GlobalScope.async {
-        //this prevents a queued close from closing while we run
+        // this prevents a queued close from closing while we run
         lastAccessTime = now
 
         log.info("findAndWriteCharacteristic")
@@ -294,7 +294,7 @@ open class XYBluetoothGattClient protected constructor(
     }.await()
 
     suspend fun findAndWriteCharacteristicFloat(service: UUID, characteristic: UUID, mantissa: Int, exponent: Int, formatType: Int, offset: Int) = GlobalScope.async {
-        //this prevents a queued close from closing while we run
+        // this prevents a queued close from closing while we run
         lastAccessTime = now
 
         log.info("findAndWriteCharacteristicFloat")
@@ -323,7 +323,7 @@ open class XYBluetoothGattClient protected constructor(
     }.await()
 
     suspend fun findAndWriteCharacteristicShort(service: UUID, characteristic: UUID, valueToWrite: UShort, offset: Int) = GlobalScope.async {
-        //this prevents a queued close from closing while we run
+        // this prevents a queued close from closing while we run
         lastAccessTime = now
 
         log.info("findAndWriteCharacteristic")
@@ -356,7 +356,7 @@ open class XYBluetoothGattClient protected constructor(
     }.await()
 
     suspend fun findAndWriteCharacteristicInt(service: UUID, characteristic: UUID, valueToWrite: UInt, offset: Int) = GlobalScope.async {
-        //this prevents a queued close from closing while we run
+        // this prevents a queued close from closing while we run
         lastAccessTime = now
 
         log.info("findAndWriteCharacteristic")
@@ -389,7 +389,7 @@ open class XYBluetoothGattClient protected constructor(
     }.await()
 
     suspend fun findAndWriteCharacteristic(service: UUID, characteristic: UUID, valueToWrite: String) = GlobalScope.async {
-        //this prevents a queued close from closing while we run
+        // this prevents a queued close from closing while we run
         lastAccessTime = now
 
         log.info("findAndWriteCharacteristic")
@@ -417,12 +417,13 @@ open class XYBluetoothGattClient protected constructor(
         return@async XYBluetoothResult(value, error)
     }.await()
 
-    suspend fun findAndWriteCharacteristic(service: UUID,
-                                           characteristic: UUID,
-                                           bytes: ByteArray,
-                                           writeType: Int? = null
+    suspend fun findAndWriteCharacteristic(
+        service: UUID,
+        characteristic: UUID,
+        bytes: ByteArray,
+        writeType: Int? = null
     ) = GlobalScope.async {
-        //this prevents a queued close from closing while we run
+        // this prevents a queued close from closing while we run
         lastAccessTime = now
 
         log.info("findAndWriteCharacteristic")
@@ -452,9 +453,8 @@ open class XYBluetoothGattClient protected constructor(
         return@async XYBluetoothResult(value, error)
     }.await()
 
-
     suspend fun findAndWriteCharacteristicNotify(service: UUID, characteristic: UUID, enable: Boolean) = GlobalScope.async {
-        //this prevents a queued close from closing while we run
+        // this prevents a queued close from closing while we run
         lastAccessTime = now
 
         log.info("findAndWriteCharacteristicNotify")
@@ -490,7 +490,6 @@ open class XYBluetoothGattClient protected constructor(
 
         return@async XYBluetoothResult(value, error)
     }.await()
-
 
     companion object {
         val CLIENT_CHARACTERISTIC_CONFIG: UUID = UUID.fromString("00002902-0000-1000-8000-00805f9b34fb")

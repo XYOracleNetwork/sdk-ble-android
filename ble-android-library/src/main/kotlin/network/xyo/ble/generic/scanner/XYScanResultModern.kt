@@ -6,19 +6,19 @@ import android.bluetooth.le.ScanResult
 import android.os.Parcel
 
 @TargetApi(21)
-internal class XYScanResultModern(private val scanResult:ScanResult): XYScanResult() {
+internal class XYScanResultModern(private val scanResult: ScanResult) : XYScanResult() {
 
-    override val timestampNanos : Long
+    override val timestampNanos: Long
         get() {
             return scanResult.timestampNanos
         }
 
-    override val rssi : Int
+    override val rssi: Int
         get() {
             return scanResult.rssi
         }
 
-    override val scanRecord : XYScanRecord?
+    override val scanRecord: XYScanRecord?
         get() {
             val scanRecord = scanResult.scanRecord
             if (scanRecord != null) {
@@ -27,7 +27,7 @@ internal class XYScanResultModern(private val scanResult:ScanResult): XYScanResu
             return null
         }
 
-    override val device : BluetoothDevice
+    override val device: BluetoothDevice
         get() {
             return scanResult.device
         }
@@ -36,11 +36,11 @@ internal class XYScanResultModern(private val scanResult:ScanResult): XYScanResu
         scanResult.writeToParcel(dest, flags)
     }
 
-    override fun describeContents() : Int {
+    override fun describeContents(): Int {
         return scanResult.describeContents()
     }
 
-    override fun hashCode() : Int {
+    override fun hashCode(): Int {
         return scanResult.hashCode()
     }
 
@@ -51,5 +51,4 @@ internal class XYScanResultModern(private val scanResult:ScanResult): XYScanResu
     override fun toString(): String {
         return scanResult.toString()
     }
-
 }

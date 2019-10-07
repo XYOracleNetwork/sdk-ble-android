@@ -1,21 +1,21 @@
 package network.xyo.ble.devices.xy
 
 import android.content.Context
-import network.xyo.ble.generic.scanner.XYScanResult
+import java.nio.ByteBuffer
+import java.util.UUID
+import java.util.concurrent.ConcurrentHashMap
 import network.xyo.base.XYBase
 import network.xyo.ble.devices.apple.XYAppleBluetoothDevice
 import network.xyo.ble.generic.devices.XYBluetoothDevice
 import network.xyo.ble.generic.devices.XYCreator
+import network.xyo.ble.generic.scanner.XYScanResult
 import network.xyo.ble.generic.services.standard.*
 import network.xyo.ble.services.xy.*
-import java.nio.ByteBuffer
-import java.util.*
-import java.util.concurrent.ConcurrentHashMap
 
 @kotlin.ExperimentalUnsignedTypes
 open class XY2BluetoothDevice(context: Context, scanResult: XYScanResult, hash: String) : XYFinderBluetoothDevice(context, scanResult, hash) {
 
-    val batteryService: BatteryService by lazy { BatteryService(this) }
+    val batteryService by lazy { BatteryService(this) }
     val deviceInformationService by lazy { DeviceInformationService(this) }
     val genericAccessService by lazy { GenericAccessService(this) }
     val genericAttributeService by lazy { GenericAttributeService(this) }

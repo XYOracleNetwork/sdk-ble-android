@@ -1,8 +1,8 @@
 package network.xyo.ble.services.xy
 
+import java.util.UUID
 import network.xyo.ble.generic.devices.XYBluetoothDevice
 import network.xyo.ble.generic.services.Service
-import java.util.*
 
 class ControlService(device: XYBluetoothDevice) : Service(device) {
 

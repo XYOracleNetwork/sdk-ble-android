@@ -1,8 +1,8 @@
 package network.xyo.ble.generic.ads
 
-import network.xyo.base.XYBase
 import java.nio.ByteBuffer
 import kotlin.math.pow
+import network.xyo.base.XYBase
 
 open class XYBleAd(buffer: ByteBuffer) : XYBase() {
 
@@ -66,7 +66,7 @@ open class XYBleAd(buffer: ByteBuffer) : XYBase() {
                 data = ByteArray(size - 1)
                 buffer.get(data!!, 0, size - 1)
             } else {
-                //if size is zero, we hit the end
+                // if size is zero, we hit the end
                 while (buffer.hasRemaining()) {
                     buffer.get()
                 }
@@ -108,7 +108,6 @@ open class XYBleAd(buffer: ByteBuffer) : XYBase() {
                 hash = hash.xor(hash.shr(17))
                 hash += hash.shl(5)
             }
-
         }
         return hash
     }

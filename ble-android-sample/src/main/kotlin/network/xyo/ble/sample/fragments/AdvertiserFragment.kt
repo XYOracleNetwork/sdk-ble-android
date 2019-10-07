@@ -19,7 +19,7 @@ import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResult
 import network.xyo.ui.XYBaseFragment
 import network.xyo.ui.ui
 import java.nio.ByteBuffer
-import java.util.*
+import java.util.UUID
 
 class AdvertiserFragment : XYBaseFragment() {
     private var isInIBeacon = false

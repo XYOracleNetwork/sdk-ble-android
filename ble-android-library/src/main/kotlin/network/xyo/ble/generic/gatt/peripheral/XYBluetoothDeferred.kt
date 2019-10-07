@@ -1,17 +1,17 @@
 package network.xyo.ble.generic.gatt.peripheral
 
-import kotlinx.coroutines.*
-import network.xyo.ble.generic.XYBluetoothBase
-import network.xyo.base.XYLogging
 import kotlin.coroutines.CoroutineContext
+import kotlinx.coroutines.*
+import network.xyo.base.XYLogging
+import network.xyo.ble.generic.XYBluetoothBase
 
-//causes *all* ble calls to be initiated in a single thread
-//other functionality (non-gatt/ble initiating calls) should not be in these blocks
+// causes *all* ble calls to be initiated in a single thread
+// other functionality (non-gatt/ble initiating calls) should not be in these blocks
 suspend fun <T> asyncBle(
-        timeout: Long = 10000L,
-        context: CoroutineContext = XYBluetoothBase.BluetoothThread,
-        start: CoroutineStart = CoroutineStart.DEFAULT,
-        block: suspend CoroutineScope.() -> T?
+    timeout: Long = 10000L,
+    context: CoroutineContext = XYBluetoothBase.BluetoothThread,
+    start: CoroutineStart = CoroutineStart.DEFAULT,
+    block: suspend CoroutineScope.() -> T?
 ): T? {
     var result: T? = null
     XYLogging("asyncBle").info("Enter")

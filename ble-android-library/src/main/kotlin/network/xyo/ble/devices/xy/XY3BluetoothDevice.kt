@@ -5,18 +5,18 @@ import android.bluetooth.BluetoothGatt
 import android.bluetooth.BluetoothGattCallback
 import android.bluetooth.BluetoothGattCharacteristic
 import android.content.Context
+import java.nio.ByteBuffer
+import java.util.UUID
+import java.util.concurrent.ConcurrentHashMap
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import network.xyo.ble.generic.scanner.XYScanResult
 import network.xyo.base.XYBase
 import network.xyo.ble.devices.apple.XYAppleBluetoothDevice
 import network.xyo.ble.generic.devices.XYBluetoothDevice
 import network.xyo.ble.generic.devices.XYCreator
+import network.xyo.ble.generic.scanner.XYScanResult
 import network.xyo.ble.generic.services.standard.*
 import network.xyo.ble.services.xy.*
-import java.nio.ByteBuffer
-import java.util.*
-import java.util.concurrent.ConcurrentHashMap
 
 open class XY3BluetoothDevice(context: Context, scanResult: XYScanResult, hash: String) : XYFinderBluetoothDevice(context, scanResult, hash) {
 
@@ -50,7 +50,7 @@ open class XY3BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
         centralCallback.addListener("xy3", buttonListener)
     }
 
-    //we only allow mac addresses that end in 4 to be updated since those are the connectible ones
+    // we only allow mac addresses that end in 4 to be updated since those are the connectible ones
     override fun updateBluetoothDevice(device: BluetoothDevice?) {
         if (device?.address?.endsWith("4") == true) {
             this.device = device
@@ -60,7 +60,7 @@ open class XY3BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
 
     override val minor: UShort
         get() {
-            //we have to mask the low nibble for the power level
+            // we have to mask the low nibble for the power level
             return minorValue.and(0xfff0.toUShort()).or(0x0004.toUShort())
         }
 
@@ -110,8 +110,8 @@ open class XY3BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
 
     override fun reportButtonPressed(state: ButtonPress) {
         super.reportButtonPressed(state)
-        //every time a notify fires, we have to re-enable it
-        //enableButtonNotifyIfConnected()
+        // every time a notify fires, we have to re-enable it
+        // enableButtonNotifyIfConnected()
         reportGlobalButtonPressed(this, state)
     }
 
@@ -121,7 +121,7 @@ open class XY3BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
 
         private val FAMILY_UUID = UUID.fromString("08885dd0-111b-11e4-9191-0800200c9a66")!!
 
-        //this is how long the xy4 will broadcast ads with power level 8 when a button is pressed once
+        // this is how long the xy4 will broadcast ads with power level 8 when a button is pressed once
         private const val BUTTON_ADVERTISEMENT_LENGTH = 30 * 1000
 
         private val DEFAULT_LOCK_CODE = byteArrayOf(0x2f.toByte(), 0xbe.toByte(), 0xa2.toByte(), 0x07.toByte(), 0x52.toByte(), 0xfe.toByte(), 0xbf.toByte(), 0x31.toByte(), 0x1d.toByte(), 0xac.toByte(), 0x5d.toByte(), 0xfa.toByte(), 0x7d.toByte(), 0x77.toByte(), 0x76.toByte(), 0x80.toByte())
@@ -222,6 +222,5 @@ open class XY3BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
             val minor = minorFromScanResult(scanResult)
             return "$uuid:$major:$minor"
         }
-
     }
 }

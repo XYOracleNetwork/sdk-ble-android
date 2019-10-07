@@ -174,5 +174,6 @@
     <string name="thresold">Thresold:</string>
     <string name="inactive">Inactive:</string>
     <string name="movement_count">Movement Count:</string>
+    <string name="power">Power</string>
 
 </resources>

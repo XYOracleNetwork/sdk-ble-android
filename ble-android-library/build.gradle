@@ -12,8 +12,16 @@ buildscript {
         mavenLocal()
         jcenter()
         google()
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+    }
+    dependencies {
+        classpath "org.jlleitschuh.gradle:ktlint-gradle:9.0.0"
     }
 }
+
+apply plugin: "org.jlleitschuh.gradle.ktlint"
 
 configurations {
     localImplementation
@@ -55,10 +63,10 @@ android {
     defaultPublishConfig "release"
 
     lintOptions {
-        htmlReport true
+        htmlReport false
         abortOnError true
         warningsAsErrors true
-        lintConfig file('lint.xml')
+        disable "HardwareIds", "MissingPermission"
     }
 
     sourceSets {
@@ -133,6 +141,10 @@ bintray {
         }
     }
     publications = ['Production']
+}
+
+ktlint {
+    disabledRules = ["no-wildcard-imports"]
 }
 
 dependencies {

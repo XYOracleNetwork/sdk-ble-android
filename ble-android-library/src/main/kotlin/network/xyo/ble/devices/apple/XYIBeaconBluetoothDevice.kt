@@ -1,26 +1,25 @@
 package network.xyo.ble.devices.apple
 
 import android.content.Context
-import network.xyo.ble.generic.scanner.XYScanResult
+import java.nio.BufferUnderflowException
+import java.nio.ByteBuffer
+import java.util.UUID
+import java.util.concurrent.ConcurrentHashMap
+import kotlin.math.pow
 import network.xyo.base.XYBase
 import network.xyo.ble.generic.devices.XYBluetoothDevice
 import network.xyo.ble.generic.devices.XYCreator
-import java.nio.BufferUnderflowException
-import java.nio.ByteBuffer
-import java.util.*
-import java.util.concurrent.ConcurrentHashMap
-import kotlin.math.pow
+import network.xyo.ble.generic.scanner.XYScanResult
 
 @kotlin.ExperimentalUnsignedTypes
-open class XYIBeaconBluetoothDevice(context: Context, val scanResult: XYScanResult?, hash: String, transport: Int? = null)
-    : XYBluetoothDevice(context, scanResult?.device, hash, transport) {
+open class XYIBeaconBluetoothDevice(context: Context, val scanResult: XYScanResult?, hash: String, transport: Int? = null) :
+    XYBluetoothDevice(context, scanResult?.device, hash, transport) {
 
     private var uuidValue: UUID
     open val uuid: UUID
         get() {
             return uuidValue
         }
-
 
     protected var majorValue: UShort
     open val major: UShort
@@ -46,9 +45,9 @@ open class XYIBeaconBluetoothDevice(context: Context, val scanResult: XYScanResu
         rssi = scanResult?.rssi ?: -999
         if (bytes != null && bytes.size >= 23) {
             val buffer = ByteBuffer.wrap(bytes)
-            buffer.position(2) //skip the type and size
+            buffer.position(2) // skip the type and size
 
-            //get uuid
+            // get uuid
             val high = buffer.long
             val low = buffer.long
             uuidValue = UUID(high, low)
@@ -66,7 +65,6 @@ open class XYIBeaconBluetoothDevice(context: Context, val scanResult: XYScanResu
 
     open class Listener : XYAppleBluetoothDevice.Listener() {
         open fun onIBeaconDetect(uuid: String, major: UShort, minor: UShort) {
-
         }
     }
 
@@ -74,12 +72,11 @@ open class XYIBeaconBluetoothDevice(context: Context, val scanResult: XYScanResu
         get() {
             val rssi = rssi ?: return null
             val dist: Double
-            val ratio: Double = rssi*1.0/power
+            val ratio: Double = rssi * 1.0 / power
             dist = if (ratio < 1.0) {
                 ratio.pow(10.0)
-            }
-            else {
-                (0.89976)* ratio.pow(7.7095) + 0.111
+            } else {
+                (0.89976) * ratio.pow(7.7095) + 0.111
             }
             return dist
         }
@@ -124,10 +121,10 @@ open class XYIBeaconBluetoothDevice(context: Context, val scanResult: XYScanResu
             val bytes = scanResult.scanRecord?.getManufacturerSpecificData(XYAppleBluetoothDevice.MANUFACTURER_ID)
             return if (bytes != null) {
                 val buffer = ByteBuffer.wrap(bytes)
-                buffer.position(2) //skip the type and size
+                buffer.position(2) // skip the type and size
 
                 try {
-                    //get uuid
+                    // get uuid
                     val high = buffer.long
                     val low = buffer.long
                     UUID(high, low)
@@ -145,10 +142,10 @@ open class XYIBeaconBluetoothDevice(context: Context, val scanResult: XYScanResu
 
         private val creator = object : XYCreator() {
             override fun getDevicesFromScanResult(
-                    context: Context,
-                    scanResult: XYScanResult,
-                    globalDevices: ConcurrentHashMap<String, XYBluetoothDevice>,
-                    foundDevices: HashMap<String, XYBluetoothDevice>
+                context: Context,
+                scanResult: XYScanResult,
+                globalDevices: ConcurrentHashMap<String, XYBluetoothDevice>,
+                foundDevices: HashMap<String, XYBluetoothDevice>
             ) {
                 for ((uuid, creator) in uuidToCreator) {
                     val bytes =

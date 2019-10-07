@@ -2,13 +2,13 @@ package network.xyo.ble.generic.gatt.server
 
 import android.bluetooth.le.AdvertiseData
 import java.nio.ByteBuffer
-import java.util.*
+import java.util.UUID
 
-object XYIBeaconAdvertiseDataCreator  {
+object XYIBeaconAdvertiseDataCreator {
 
-    fun create (major: ByteArray, minor: ByteArray, serviceUuid : UUID, manufacturerId: Int, includeDeviceName : Boolean) : AdvertiseData.Builder {
+    fun create(major: ByteArray, minor: ByteArray, serviceUuid: UUID, manufacturerId: Int, includeDeviceName: Boolean): AdvertiseData.Builder {
         if (major.size != 2) throw Exception("IBeacon major must be 2 bytes!")
-        if (minor.size != 2)  throw Exception("IBeacon major must be 2 bytes!")
+        if (minor.size != 2) throw Exception("IBeacon major must be 2 bytes!")
 
         val buffer = ByteBuffer.allocate(23)
         buffer.put(byteArrayOf(0x02.toByte(), 0x15.toByte()))
@@ -22,7 +22,5 @@ object XYIBeaconAdvertiseDataCreator  {
         val builder = AdvertiseData.Builder()
         builder.addManufacturerData(manufacturerId, buffer.array())
         return builder.setIncludeDeviceName(includeDeviceName)
-
     }
-
 }

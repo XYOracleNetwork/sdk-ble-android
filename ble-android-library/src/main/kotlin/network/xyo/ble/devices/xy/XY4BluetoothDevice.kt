@@ -4,31 +4,31 @@ import android.bluetooth.BluetoothGatt
 import android.bluetooth.BluetoothGattCallback
 import android.bluetooth.BluetoothGattCharacteristic
 import android.content.Context
+import java.io.InputStream
+import java.nio.ByteBuffer
+import java.util.UUID
+import java.util.concurrent.ConcurrentHashMap
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import network.xyo.base.XYBase
+import network.xyo.ble.devices.apple.XYAppleBluetoothDevice
 import network.xyo.ble.firmware.XYBluetoothDeviceUpdate
 import network.xyo.ble.firmware.XYOtaFile
 import network.xyo.ble.firmware.XYOtaUpdate
-import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResult
-import network.xyo.ble.generic.scanner.XYScanResult
-import network.xyo.ble.services.dialog.SpotaService
-import network.xyo.ble.services.xy.PrimaryService
-import network.xyo.base.XYBase
-import network.xyo.ble.devices.apple.XYAppleBluetoothDevice
 import network.xyo.ble.generic.devices.XYBluetoothDevice
 import network.xyo.ble.generic.devices.XYCreator
+import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResult
+import network.xyo.ble.generic.scanner.XYScanResult
 import network.xyo.ble.generic.services.standard.*
-import java.io.InputStream
-import java.nio.ByteBuffer
-import java.util.*
-import java.util.concurrent.ConcurrentHashMap
+import network.xyo.ble.services.dialog.SpotaService
+import network.xyo.ble.services.xy.PrimaryService
 
 @kotlin.ExperimentalUnsignedTypes
 open class XY4BluetoothDevice(
-        context: Context,
-        scanResult: XYScanResult,
-        hash: String
-        ) : XYFinderBluetoothDevice(context, scanResult, hash) {
+    context: Context,
+    scanResult: XYScanResult,
+    hash: String
+) : XYFinderBluetoothDevice(context, scanResult, hash) {
 
     val alertNotification by lazy { AlertNotificationService(this) }
     val batteryService by lazy { BatteryService(this) }
@@ -113,9 +113,9 @@ open class XY4BluetoothDevice(
         }
     }
 
-    override fun updateFirmware(folderName:String, filename: String, listener: XYOtaUpdate.Listener) {
+    override fun updateFirmware(folderName: String, filename: String, listener: XYOtaUpdate.Listener) {
         val otaFile = XYOtaFile.getByName(folderName, filename)
-        val updater = XYBluetoothDeviceUpdate(spotaService,this, otaFile)
+        val updater = XYBluetoothDeviceUpdate(spotaService, this, otaFile)
 
         updater.addListener("XY4BluetoothDevice", listener)
         updater.start()
@@ -124,7 +124,7 @@ open class XY4BluetoothDevice(
     override fun updateFirmware(stream: InputStream, listener: XYOtaUpdate.Listener) {
 
         val otaFile = XYOtaFile.getByStream(stream)
-        updater = XYBluetoothDeviceUpdate(spotaService,this, otaFile)
+        updater = XYBluetoothDeviceUpdate(spotaService, this, otaFile)
 
         updater?.addListener("XY4BluetoothDevice", listener)
         updater?.start()
@@ -149,14 +149,14 @@ open class XY4BluetoothDevice(
 
     override fun reportButtonPressed(state: ButtonPress) {
         super.reportButtonPressed(state)
-        //every time a notify fires, we have to re-enable it
+        // every time a notify fires, we have to re-enable it
         enableButtonNotifyIfConnected()
         reportGlobalButtonPressed(this, state)
     }
 
     override val minor: UShort
         get() {
-            //we have to mask the low nibble for the power level
+            // we have to mask the low nibble for the power level
             return minorValue.and(0xfff0.toUShort()).or(0x0004.toUShort())
         }
 
@@ -170,7 +170,7 @@ open class XY4BluetoothDevice(
 
         val DefaultLockCode = byteArrayOf(0x00.toByte(), 0x01.toByte(), 0x02.toByte(), 0x03.toByte(), 0x04.toByte(), 0x05.toByte(), 0x06.toByte(), 0x07.toByte(), 0x08.toByte(), 0x09.toByte(), 0x0a.toByte(), 0x0b.toByte(), 0x0c.toByte(), 0x0d.toByte(), 0x0e.toByte(), 0x0f.toByte())
 
-        //this is how long the xy4 will broadcast ads with power level 8 when a button is pressed once
+        // this is how long the xy4 will broadcast ads with power level 8 when a button is pressed once
         private const val BUTTON_ADVERTISEMENT_LENGTH = 30 * 1000
 
         fun enable(enable: Boolean) {
@@ -269,6 +269,5 @@ open class XY4BluetoothDevice(
 
             return "$uuid:$major:$minor"
         }
-
     }
 }

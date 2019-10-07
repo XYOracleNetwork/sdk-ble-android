@@ -16,7 +16,6 @@ import network.xyo.ble.devices.apple.XYIBeaconBluetoothDevice
 import network.xyo.ble.devices.xy.XY3BluetoothDevice
 import network.xyo.ble.devices.xy.XY4BluetoothDevice
 import network.xyo.ble.devices.xy.XYFinderBluetoothDevice
-import network.xyo.ble.generic.XYBluetoothBase
 import network.xyo.ble.generic.devices.XYBluetoothDevice
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResult
 import network.xyo.ble.sample.R
@@ -106,10 +105,10 @@ class InfoFragment : XYDeviceFragment(), View.OnClickListener, CompoundButton.On
                 text_family.text = device?.name
                 text_rssi.text = device?.rssi.toString()
 
-                val iBeaconDevice = device as XYIBeaconBluetoothDevice?
-                if (iBeaconDevice != null) {
-                    text_major.text = String.format(getString(R.string.hex_placeholder), iBeaconDevice.major.toInt().toString(16))
-                    text_minor.text = String.format(getString(R.string.hex_placeholder), iBeaconDevice.minor.toInt().toString(16))
+                (device as XYIBeaconBluetoothDevice).let {
+                    text_power.text = it.power.toString()
+                    text_major.text = String.format(getString(R.string.hex_placeholder), it.major.toInt().toString(16))
+                    text_minor.text = String.format(getString(R.string.hex_placeholder), it.minor.toInt().toString(16))
                 }
 
                 text_pulse_count.text = device?.detectCount.toString()

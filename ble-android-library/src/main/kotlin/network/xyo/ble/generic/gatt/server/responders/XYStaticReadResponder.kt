@@ -1,19 +1,19 @@
 package network.xyo.ble.generic.gatt.server.responders
 
 import android.bluetooth.BluetoothDevice
-import network.xyo.ble.generic.gatt.server.XYBluetoothGattServer
 import java.nio.ByteBuffer
 import kotlin.math.min
+import network.xyo.ble.generic.gatt.server.XYBluetoothGattServer
 
-class XYStaticReadResponder (var value : ByteArray, val listener : XYStaticReadResponderListener?) : XYBluetoothReadResponder {
+class XYStaticReadResponder(var value: ByteArray, val listener: XYStaticReadResponderListener?) : XYBluetoothReadResponder {
     private var lastTime = 0
 
     constructor(string: String, listener: XYStaticReadResponderListener?) : this(string.toByteArray(), listener)
     constructor(int: Int, listener: XYStaticReadResponderListener?) : this(ByteBuffer.allocate(4).putInt(int).array(), listener)
-    constructor(byte : Byte, listener: XYStaticReadResponderListener?) : this(byteArrayOf(byte), listener)
+    constructor(byte: Byte, listener: XYStaticReadResponderListener?) : this(byteArrayOf(byte), listener)
 
     override fun onReadRequest(device: BluetoothDevice?, offset: Int): XYBluetoothGattServer.XYReadRequest? {
-        //todo connection MTU
+        // todo connection MTU
         val size = min((value.size - offset), 26)
         val response = ByteArray(size)
 
@@ -30,8 +30,7 @@ class XYStaticReadResponder (var value : ByteArray, val listener : XYStaticReadR
         return XYBluetoothGattServer.XYReadRequest(response, min(offset, value.size))
     }
 
-
     interface XYStaticReadResponderListener {
-        fun onReadComplete ()
+        fun onReadComplete()
     }
 }

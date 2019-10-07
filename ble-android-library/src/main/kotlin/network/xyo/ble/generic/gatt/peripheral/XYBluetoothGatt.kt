@@ -3,6 +3,10 @@ package network.xyo.ble.generic.gatt.peripheral
 import android.bluetooth.*
 import android.content.Context
 import android.os.Handler
+import java.util.UUID
+import java.util.concurrent.Executors
+import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.resume
 import kotlinx.coroutines.*
 import network.xyo.ble.generic.XYBluetoothBase
 import network.xyo.ble.generic.gatt.peripheral.actions.XYBluetoothGattConnect
@@ -10,22 +14,18 @@ import network.xyo.ble.generic.gatt.peripheral.actions.XYBluetoothGattReadCharac
 import network.xyo.ble.generic.gatt.peripheral.actions.XYBluetoothGattWriteCharacteristic
 import network.xyo.ble.generic.gatt.peripheral.actions.XYBluetoothGattWriteDescriptor
 import network.xyo.ble.generic.scanner.XYScanResult
-import java.util.*
-import java.util.concurrent.Executors
-import kotlin.coroutines.CoroutineContext
-import kotlin.coroutines.resume
 
-//XYBluetoothGatt is a pure wrapper that does not add any functionality
-//other than the ability to call the BluetoothGatt functions using coroutines
+// XYBluetoothGatt is a pure wrapper that does not add any functionality
+// other than the ability to call the BluetoothGatt functions using coroutines
 
 open class XYBluetoothGatt protected constructor(
-        context: Context,
-        protected var device: BluetoothDevice?,
-        private var autoConnect: Boolean,
-        private val callback: XYBluetoothGattCallback?,
-        private val transport: Int?,
-        private val phy: Int?,
-        private val handler: Handler?
+    context: Context,
+    protected var device: BluetoothDevice?,
+    private var autoConnect: Boolean,
+    private val callback: XYBluetoothGattCallback?,
+    private val transport: Int?,
+    private val phy: Int?,
+    private val handler: Handler?
 ) : XYBluetoothBase(context) {
 
     enum class Status(val status: Short) {
@@ -72,10 +72,10 @@ open class XYBluetoothGatt protected constructor(
             log.info("References Set: $_references")
         }
 
-    //last time this device was accessed (connected to)
+    // last time this device was accessed (connected to)
     protected var lastAccessTime = 0L
 
-    //last time we heard a ad from this device
+    // last time we heard a ad from this device
     protected var lastAdTime = 0L
 
     var rssi: Int? = null
@@ -84,13 +84,13 @@ open class XYBluetoothGatt protected constructor(
 
     val defaultTimeout = 15000L
 
-    //force ble functions for this gatt to run in order
+    // force ble functions for this gatt to run in order
     suspend fun <T> queueBle(
-            timeout: Long? = null,
-            action: String = "Unknown",
-            context: CoroutineContext = bluetoothQueue,
-            start: CoroutineStart = CoroutineStart.DEFAULT,
-            block: suspend CoroutineScope.() -> XYBluetoothResult<T>
+        timeout: Long? = null,
+        action: String = "Unknown",
+        context: CoroutineContext = bluetoothQueue,
+        start: CoroutineStart = CoroutineStart.DEFAULT,
+        block: suspend CoroutineScope.() -> XYBluetoothResult<T>
     ) = GlobalScope.async(context, start) {
         log.info("queueBle: $action: started")
         val timeoutToUse = timeout ?: defaultTimeout
@@ -137,11 +137,9 @@ open class XYBluetoothGatt protected constructor(
         get() = (connection == null)
 
     open fun onDetect(scanResult: XYScanResult?) {
-
     }
 
     internal open fun onConnectionStateChange(newState: Int) {
-
     }
 
     suspend fun requestMtu(mtu: Int): XYBluetoothResult<Int> = GlobalScope.async {
@@ -211,10 +209,10 @@ open class XYBluetoothGatt protected constructor(
                 log.info("refreshGatt found method $localMethod")
                 result = (localMethod.invoke(gatt) as Boolean)
             } catch (ex: NoSuchMethodException) {
-                //null receiver
+                // null receiver
                 error = XYBluetoothResult.ErrorCode.FailedToRefreshGatt
                 log.error("refreshGatt catch $ex", true)
-                //method not found
+                // method not found
             }
         }
         return@async XYBluetoothResult(result, error)
@@ -224,7 +222,7 @@ open class XYBluetoothGatt protected constructor(
         log.info("connect: start")
         val device = this@XYBluetoothGatt.device
                 ?: return@queueBle XYBluetoothResult(false, XYBluetoothResult.ErrorCode.NoDevice)
-        var connection = this@XYBluetoothGatt.connection //make it thread safe by putting it on the stack
+        var connection = this@XYBluetoothGatt.connection // make it thread safe by putting it on the stack
         lastAccessTime = now
         if (connection == null) {
             connection = XYBluetoothGattConnect(device)
@@ -256,7 +254,7 @@ open class XYBluetoothGatt protected constructor(
         return@queueBle XYBluetoothResult(true)
     }
 
-    //this can only be called after a successful discover
+    // this can only be called after a successful discover
     protected suspend fun findCharacteristic(service: UUID, characteristic: UUID, timeout: Long = 1500) = queueBle(timeout, "findCharacteristic") {
 
         log.info("findCharacteristic")
@@ -298,9 +296,9 @@ open class XYBluetoothGatt protected constructor(
     }
 
     protected suspend fun writeCharacteristic(
-            characteristicToWrite: BluetoothGattCharacteristic,
-            timeout: Long = 10000,
-            writeType: Int? = null
+        characteristicToWrite: BluetoothGattCharacteristic,
+        timeout: Long = 10000,
+        writeType: Int? = null
     ) = queueBle(timeout, "writeCharacteristic") {
 
         log.info("writeCharacteristic")
@@ -343,11 +341,11 @@ open class XYBluetoothGatt protected constructor(
         }
     }
 
-    //make a safe session to interact with the device
+    // make a safe session to interact with the device
     suspend fun <T> connection(closure: suspend () -> XYBluetoothResult<T>) = GlobalScope.async {
         log.info("connectionWithResult: start")
         var value: T? = null
-        var error: XYBluetoothResult.ErrorCode
+        val error: XYBluetoothResult.ErrorCode
         references++
 
         try {

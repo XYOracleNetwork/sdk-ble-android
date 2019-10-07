@@ -14,6 +14,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:layout_alignParentTop="true"
+        android:background="@color/design_default_color_surface"
         >
 
         <include
@@ -42,7 +43,6 @@
                 android:layout_width="160dp"
                 android:layout_height="wrap_content"
                 android:textAlignment="textEnd"
-                android:textColor="@color/xy_text_light"
                 android:padding="8dp"
                 android:checked="false"
                 android:text="@string/active" />

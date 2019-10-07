@@ -10,8 +10,11 @@ import android.os.Build
 import android.os.Handler
 import kotlinx.coroutines.*
 import network.xyo.base.XYBase
+import network.xyo.ble.generic.gatt.peripheral.XYBluetoothGattCallback
+import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResult
+import network.xyo.ble.generic.gatt.peripheral.XYThreadSafeBluetoothGatt
+import network.xyo.ble.generic.gatt.peripheral.asyncBle
 import network.xyo.ble.utilities.XYCallByVersion
-import network.xyo.ble.generic.gatt.peripheral.*
 
 class XYBluetoothGattConnect(val device: BluetoothDevice) : XYBase() {
 
@@ -24,8 +27,8 @@ class XYBluetoothGattConnect(val device: BluetoothDevice) : XYBase() {
     var gatt: XYThreadSafeBluetoothGatt? = null
     var services: List<BluetoothGattService>? = null
 
-    //we make sure we always monitor the connection state so that we do not miss a message and
-    //get out of sync
+    // we make sure we always monitor the connection state so that we do not miss a message and
+    // get out of sync
     var callback = object : XYBluetoothGattCallback() {
         override fun onConnectionStateChange(gatt: BluetoothGatt?, status: Int, newState: Int) {
             super.onConnectionStateChange(gatt, status, newState)
@@ -37,7 +40,7 @@ class XYBluetoothGattConnect(val device: BluetoothDevice) : XYBase() {
     var state = BluetoothGatt.STATE_DISCONNECTED
     var status = BluetoothGatt.GATT_SUCCESS
 
-    //make sure we always close connections
+    // make sure we always close connections
     protected fun finalize() {
         val gatt = this.gatt
         if (gatt != null) {
@@ -52,19 +55,21 @@ class XYBluetoothGattConnect(val device: BluetoothDevice) : XYBase() {
 
     @TargetApi(Build.VERSION_CODES.KITKAT)
     private fun connectGatt19(
-            context: Context,
-            device: BluetoothDevice,
-            autoConnect: Boolean): BluetoothGatt? {
+        context: Context,
+        device: BluetoothDevice,
+        autoConnect: Boolean
+    ): BluetoothGatt? {
         log.info("connectGatt19")
         return device.connectGatt(context, autoConnect, callback)
     }
 
     @TargetApi(Build.VERSION_CODES.M)
     private fun connectGatt23(
-            context: Context,
-            device: BluetoothDevice,
-            autoConnect: Boolean,
-            transport: Int?): BluetoothGatt? {
+        context: Context,
+        device: BluetoothDevice,
+        autoConnect: Boolean,
+        transport: Int?
+    ): BluetoothGatt? {
         log.info("connectGatt23")
         return if (transport == null) {
             device.connectGatt(context, autoConnect, callback)
@@ -75,12 +80,13 @@ class XYBluetoothGattConnect(val device: BluetoothDevice) : XYBase() {
 
     @TargetApi(Build.VERSION_CODES.O)
     private fun connectGatt26(
-            context: Context,
-            device: BluetoothDevice,
-            autoConnect: Boolean,
-            transport: Int?,
-            phy: Int?,
-            handler: Handler?): BluetoothGatt? {
+        context: Context,
+        device: BluetoothDevice,
+        autoConnect: Boolean,
+        transport: Int?,
+        phy: Int?,
+        handler: Handler?
+    ): BluetoothGatt? {
         log.info("connectGatt26")
 
         return when {
@@ -128,7 +134,7 @@ class XYBluetoothGattConnect(val device: BluetoothDevice) : XYBase() {
     private suspend fun discover() = GlobalScope.async {
         log.info("discover")
         assert(state != BluetoothGatt.STATE_CONNECTED)
-        val gatt = this@XYBluetoothGattConnect.gatt //make thread safe
+        val gatt = this@XYBluetoothGattConnect.gatt // make thread safe
         if (gatt != null) {
             val discover = XYBluetoothGattDiscover(gatt, callback)
             val discoverResult = discover.start()
@@ -227,7 +233,7 @@ class XYBluetoothGattConnect(val device: BluetoothDevice) : XYBase() {
                 }
                 callback.addListener(listenerName, listener)
 
-                //check if a connection happened while we were setting things up
+                // check if a connection happened while we were setting things up
                 if (state == BluetoothGatt.STATE_CONNECTED) {
                     log.info("connect:already connected")
                     callback.removeListener(listenerName)

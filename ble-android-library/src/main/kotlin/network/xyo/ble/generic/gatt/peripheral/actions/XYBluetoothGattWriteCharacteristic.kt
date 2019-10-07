@@ -4,16 +4,15 @@ import android.bluetooth.BluetoothGatt
 import android.bluetooth.BluetoothGattCallback
 import android.bluetooth.BluetoothGattCharacteristic
 import kotlinx.coroutines.*
+import network.xyo.base.XYBase
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothGattCallback
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResult
 import network.xyo.ble.generic.gatt.peripheral.XYThreadSafeBluetoothGatt
-import network.xyo.base.XYBase
-
 
 class XYBluetoothGattWriteCharacteristic(
-        val gatt: XYThreadSafeBluetoothGatt,
-        val gattCallback: XYBluetoothGattCallback,
-        private val writeType: Int? = null
+    val gatt: XYThreadSafeBluetoothGatt,
+    val gattCallback: XYBluetoothGattCallback,
+    private val writeType: Int? = null
 ) {
 
     private var _timeout = 15000L
@@ -40,8 +39,8 @@ class XYBluetoothGattWriteCharacteristic(
                         override fun onCharacteristicWrite(gatt: BluetoothGatt?, characteristic: BluetoothGattCharacteristic?, status: Int) {
                             log.info("onCharacteristicWrite: $status")
                             super.onCharacteristicWrite(gatt, characteristic, status)
-                            //since it is always possible to have a rogue callback from a previously timedout call,
-                            //make sure it is the one we are looking for
+                            // since it is always possible to have a rogue callback from a previously timedout call,
+                            // make sure it is the one we are looking for
                             if (characteristicToWrite.uuid == characteristic?.uuid) {
                                 if (status == BluetoothGatt.GATT_SUCCESS) {
                                     gattCallback.removeListener(listenerName)

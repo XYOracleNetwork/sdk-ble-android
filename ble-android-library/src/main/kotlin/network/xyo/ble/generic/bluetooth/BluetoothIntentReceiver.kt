@@ -10,11 +10,11 @@ import network.xyo.base.XYBase
 class BluetoothIntentReceiver : BroadcastReceiver() {
     private val listeners = HashMap<String, BluetoothIntentReceiverListener>()
 
-    fun addListener (listener: BluetoothIntentReceiverListener, key : String) {
+    fun addListener(listener: BluetoothIntentReceiverListener, key: String) {
         listeners[key] = listener
     }
 
-    fun removeListener (key: String) {
+    fun removeListener(key: String) {
         listeners.remove(key)
     }
 
@@ -44,71 +44,55 @@ class BluetoothIntentReceiver : BroadcastReceiver() {
 
     open class BluetoothIntentReceiverListener {
         open fun actionAclConnected(intent: Intent?) {
-
         }
 
         open fun actionAclDisconnected(intent: Intent?) {
-
         }
 
         open fun actionAclDisconnectRequested(intent: Intent?) {
-
         }
 
         open fun actionBondStateChanged(intent: Intent?) {
-
         }
 
         open fun actionClassChanged(intent: Intent?) {
-
         }
 
         open fun actionFound(intent: Intent?) {
-
         }
 
         open fun actionNameChanged(intent: Intent?) {
-
         }
 
         open fun actionPairingRequest(intent: Intent?) {
-
         }
 
         open fun actionUuid(intent: Intent?) {
-
         }
 
         open fun extraBondState(intent: Intent?) {
-
         }
 
         open fun extraClass(intent: Intent?) {
-
         }
 
         open fun extraDevice(intent: Intent?) {
-
         }
 
         open fun extraName(intent: Intent?) {
-
         }
 
         open fun extraRssi(intent: Intent?) {
-
         }
 
         open fun extraPairingKey(intent: Intent?) {
-
         }
 
         open fun extraPairingVagrant(intent: Intent?) {
-
         }
     }
 
-    private fun actionAclConnected (intent: Intent?) {
+    private fun actionAclConnected(intent: Intent?) {
         log.info("actionAclConnected $intent")
 
         for ((_, listener) in listeners) {
@@ -116,7 +100,7 @@ class BluetoothIntentReceiver : BroadcastReceiver() {
         }
     }
 
-    private fun actionAclDisconnected (intent: Intent?) {
+    private fun actionAclDisconnected(intent: Intent?) {
         log.info("actionAclDisconnected $intent")
 
         for ((_, listener) in listeners) {
@@ -140,7 +124,7 @@ class BluetoothIntentReceiver : BroadcastReceiver() {
         }
     }
 
-    private fun actionClassChanged (intent: Intent?) {
+    private fun actionClassChanged(intent: Intent?) {
         log.info("actionClassChanged $intent")
 
         for ((_, listener) in listeners) {
@@ -148,7 +132,7 @@ class BluetoothIntentReceiver : BroadcastReceiver() {
         }
     }
 
-    private fun actionFound (intent: Intent?) {
+    private fun actionFound(intent: Intent?) {
         log.info("actionFound $intent")
 
         for ((_, listener) in listeners) {
@@ -156,7 +140,7 @@ class BluetoothIntentReceiver : BroadcastReceiver() {
         }
     }
 
-    private fun actionNameChanged (intent: Intent?) {
+    private fun actionNameChanged(intent: Intent?) {
         log.info("actionNameChanged $intent")
 
         for ((_, listener) in listeners) {
@@ -164,7 +148,7 @@ class BluetoothIntentReceiver : BroadcastReceiver() {
         }
     }
 
-    private fun actionPairingRequest (intent: Intent?) {
+    private fun actionPairingRequest(intent: Intent?) {
         log.info("actionPairingRequest $intent")
 
         for ((_, listener) in listeners) {
@@ -180,7 +164,7 @@ class BluetoothIntentReceiver : BroadcastReceiver() {
         }
     }
 
-    private fun extraBondState (intent: Intent?) {
+    private fun extraBondState(intent: Intent?) {
         log.info("extraBondState $intent")
 
         for ((_, listener) in listeners) {
@@ -188,7 +172,7 @@ class BluetoothIntentReceiver : BroadcastReceiver() {
         }
     }
 
-    private fun extraClass (intent: Intent?) {
+    private fun extraClass(intent: Intent?) {
         log.info("extraClass $intent")
 
         for ((_, listener) in listeners) {
@@ -196,7 +180,7 @@ class BluetoothIntentReceiver : BroadcastReceiver() {
         }
     }
 
-    private fun extraDevice (intent: Intent?) {
+    private fun extraDevice(intent: Intent?) {
         log.info("extraDevice $intent")
 
         for ((_, listener) in listeners) {
@@ -204,7 +188,7 @@ class BluetoothIntentReceiver : BroadcastReceiver() {
         }
     }
 
-    private fun extraName (intent: Intent?) {
+    private fun extraName(intent: Intent?) {
         log.info("extraName $intent")
 
         for ((_, listener) in listeners) {
@@ -212,7 +196,7 @@ class BluetoothIntentReceiver : BroadcastReceiver() {
         }
     }
 
-    private fun extraRssi (intent: Intent?) {
+    private fun extraRssi(intent: Intent?) {
         log.info("extraRssi $intent")
 
         for ((_, listener) in listeners) {
@@ -220,7 +204,7 @@ class BluetoothIntentReceiver : BroadcastReceiver() {
         }
     }
 
-    private fun extraPairingKey (intent: Intent?) {
+    private fun extraPairingKey(intent: Intent?) {
         log.info("extraPairingKey $intent")
 
         for ((_, listener) in listeners) {
@@ -228,14 +212,13 @@ class BluetoothIntentReceiver : BroadcastReceiver() {
         }
     }
 
-    private fun extraPairingVagrant (intent: Intent?) {
+    private fun extraPairingVagrant(intent: Intent?) {
         log.info("extraPairingVagrant $intent")
 
         for ((_, listener) in listeners) {
             listener.extraPairingVagrant(intent)
         }
     }
-
 
     companion object : XYBase() {
         val bluetoothDeviceIntentFilter = object : IntentFilter() {

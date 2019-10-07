@@ -27,17 +27,17 @@ internal class XYScanRecordModern(private val scanRecord: ScanRecord) : XYScanRe
             return scanRecord.txPowerLevel
         }
 
-    override val serviceUuids : List<ParcelUuid>?
+    override val serviceUuids: List<ParcelUuid>?
         get() {
             return scanRecord.serviceUuids
         }
 
-    override val manufacturerSpecificData : SparseArray<ByteArray>
+    override val manufacturerSpecificData: SparseArray<ByteArray>
         get() {
             return scanRecord.manufacturerSpecificData
         }
 
-    override val serviceData : Map<ParcelUuid, ByteArray>
+    override val serviceData: Map<ParcelUuid, ByteArray>
         get() {
             return scanRecord.serviceData
         }
@@ -50,7 +50,7 @@ internal class XYScanRecordModern(private val scanRecord: ScanRecord) : XYScanRe
         return scanRecord.getServiceData(serviceDataUuid)
     }
 
-    override fun toString() : String {
+    override fun toString(): String {
         return scanRecord.toString()
     }
 }

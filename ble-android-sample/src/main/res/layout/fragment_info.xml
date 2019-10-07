@@ -142,6 +142,26 @@
                 android:orientation="horizontal">
 
                 <TextView
+                    android:id="@+id/powerLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/power"
+                    android:textColor="@color/black" />
+
+                <TextView
+                    android:id="@+id/text_power"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:text="-999" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/layout_margin_normal"
+                android:orientation="horizontal">
+
+                <TextView
                     android:id="@+id/pulsesLabel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

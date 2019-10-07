@@ -5,7 +5,7 @@ open class XYBluetoothResult<T> {
     enum class ErrorCode(val status: Short) {
         None(0x00),
         Unsupported(0x01),
-        Timeout( 0x02),
+        Timeout(0x02),
         Disconnected(0x03),
         NoGatt(0x04),
         FailedToRefreshGatt(0x05),
@@ -23,8 +23,8 @@ open class XYBluetoothResult<T> {
         WriteCharacteristicFailedToStart(0x11),
         DiscriptorWriteFailed(0x12),
         DiscriptorWriteFailedToStart(0x13),
-        CharacteristicWriteFailed (0x14),
-        CharacteristicReadFailed (0x15),
+        CharacteristicWriteFailed(0x14),
+        CharacteristicReadFailed(0x15),
         AdvertisingScanResponseNotSupported(0x16),
         AdvertisingAlreadyStarted(0x17),
         AdvertisingDataTooLarge(0x18),
@@ -64,5 +64,4 @@ open class XYBluetoothResult<T> {
     fun hasError(): Boolean {
         return error != ErrorCode.None
     }
-
 }

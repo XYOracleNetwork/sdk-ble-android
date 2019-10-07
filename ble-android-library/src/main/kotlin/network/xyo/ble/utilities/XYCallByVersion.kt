@@ -6,8 +6,8 @@ import network.xyo.base.XYBase
 class XYCallByVersion : XYBase() {
 
     class Call(
-            val version: Int,
-            val closure: () -> Unit
+        val version: Int,
+        val closure: () -> Unit
     ) {
         fun call() {
             closure()

@@ -5,17 +5,17 @@ import android.bluetooth.BluetoothManager
 import android.content.Context
 import android.os.Handler
 import android.os.Looper
-import kotlinx.coroutines.asCoroutineDispatcher
-import network.xyo.base.XYBase
 import java.util.concurrent.Executors
 import kotlin.coroutines.AbstractCoroutineContextElement
 import kotlin.coroutines.Continuation
 import kotlin.coroutines.ContinuationInterceptor
+import kotlinx.coroutines.asCoroutineDispatcher
+import network.xyo.base.XYBase
 
 open class XYBluetoothBase(context: Context) : XYBase() {
 
     enum class Status(val status: Short) {
-        Success (0x00),
+        Success(0x00),
         UnknownBtLeCommand(0x01),
         UnknownConnectionIdentifier(0x02),
         AuthenticationFailure(0x03),
@@ -43,10 +43,10 @@ open class XYBluetoothBase(context: Context) : XYBase() {
         FailedToEstablish(0x3e)
     }
 
-    //we store this since on initial creation, the applicationContext may not yet be available
+    // we store this since on initial creation, the applicationContext may not yet be available
     private val _context = context
 
-    //we want to use the application context for everything
+    // we want to use the application context for everything
     protected val context: Context
         get() {
             return _context.applicationContext
@@ -62,13 +62,13 @@ open class XYBluetoothBase(context: Context) : XYBase() {
             return bluetoothManager?.adapter
         }
 
-    protected val isEnabled : Boolean
+    protected val isEnabled: Boolean
         get() = bluetoothAdapter?.isEnabled ?: false
 
-    protected val isDiscovering : Boolean
+    protected val isDiscovering: Boolean
         get() = bluetoothAdapter?.isDiscovering ?: false
 
-    protected val isLe2MPhySupported : Boolean
+    protected val isLe2MPhySupported: Boolean
         get() {
             if (android.os.Build.VERSION.SDK_INT >= 26) {
                 return bluetoothAdapter?.isLe2MPhySupported ?: false
@@ -76,7 +76,7 @@ open class XYBluetoothBase(context: Context) : XYBase() {
             return false
         }
 
-    protected val isLeCodedPhySupported : Boolean
+    protected val isLeCodedPhySupported: Boolean
         get() {
             if (android.os.Build.VERSION.SDK_INT >= 26) {
                 return bluetoothAdapter?.isLeCodedPhySupported ?: false
@@ -84,7 +84,7 @@ open class XYBluetoothBase(context: Context) : XYBase() {
             return false
         }
 
-    protected val isLeExtendedAdvertisingSupported : Boolean
+    protected val isLeExtendedAdvertisingSupported: Boolean
         get() {
             if (android.os.Build.VERSION.SDK_INT >= 26) {
                 return bluetoothAdapter?.isLeExtendedAdvertisingSupported ?: false
@@ -92,7 +92,7 @@ open class XYBluetoothBase(context: Context) : XYBase() {
             return false
         }
 
-    protected val isLePeriodicAdvertisingSupported : Boolean
+    protected val isLePeriodicAdvertisingSupported: Boolean
         get() {
             if (android.os.Build.VERSION.SDK_INT >= 26) {
                 return bluetoothAdapter?.isLePeriodicAdvertisingSupported ?: false
@@ -100,18 +100,17 @@ open class XYBluetoothBase(context: Context) : XYBase() {
             return false
         }
 
-    protected val isMultipleAdvertisementSupported : Boolean
+    protected val isMultipleAdvertisementSupported: Boolean
         get() = bluetoothAdapter?.isMultipleAdvertisementSupported ?: false
 
-    protected val isOffloadedFilteringSupported : Boolean
+    protected val isOffloadedFilteringSupported: Boolean
         get() = bluetoothAdapter?.isOffloadedFilteringSupported ?: false
 
-    protected val isOffloadedScanBatchingSupported : Boolean
+    protected val isOffloadedScanBatchingSupported: Boolean
         get() = bluetoothAdapter?.isOffloadedScanBatchingSupported ?: false
 
-
-    companion object: XYBase() {
-        //this is the thread that all calls should happen on for gatt calls.
+    companion object : XYBase() {
+        // this is the thread that all calls should happen on for gatt calls.
         internal val BluetoothThread = when {
             (android.os.Build.VERSION.SDK_INT >= 26) -> {
                 Executors.newSingleThreadExecutor().asCoroutineDispatcher()
@@ -120,7 +119,7 @@ open class XYBluetoothBase(context: Context) : XYBase() {
                 Executors.newSingleThreadExecutor().asCoroutineDispatcher()
             }
             else -> {
-                //if the device is before 20, use the UI thread for the BLE calls
+                // if the device is before 20, use the UI thread for the BLE calls
                 object : AbstractCoroutineContextElement(ContinuationInterceptor), ContinuationInterceptor {
                     override fun <T> interceptContinuation(continuation: Continuation<T>): Continuation<T> =
                             AndroidContinuation(continuation)
@@ -134,7 +133,5 @@ open class XYBluetoothBase(context: Context) : XYBase() {
                 else Handler(Looper.getMainLooper()).post { cont.resumeWith(result) }
             }
         }
-
     }
-
 }

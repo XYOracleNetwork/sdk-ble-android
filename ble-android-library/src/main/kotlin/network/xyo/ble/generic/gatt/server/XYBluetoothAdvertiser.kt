@@ -3,43 +3,42 @@ package network.xyo.ble.generic.gatt.server
 import android.bluetooth.le.AdvertiseCallback
 import android.bluetooth.le.AdvertiseData
 import android.bluetooth.le.AdvertiseSettings
-import android.bluetooth.le.AdvertiseSettings.*
 import android.bluetooth.le.BluetoothLeAdvertiser
 import android.content.Context
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 import network.xyo.ble.generic.XYBluetoothBase
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResult
 import network.xyo.ble.generic.gatt.peripheral.asyncBle
-import kotlin.coroutines.suspendCoroutine
-import kotlin.coroutines.resume
 
-open class XYBluetoothAdvertiser(context: Context) : XYBluetoothBase(context){
-    var advertisingData : AdvertiseData? = null
-    private var advertisingResponse : AdvertiseData? = null
+open class XYBluetoothAdvertiser(context: Context) : XYBluetoothBase(context) {
+    var advertisingData: AdvertiseData? = null
+    private var advertisingResponse: AdvertiseData? = null
 
     protected val listeners = HashMap<String, AdvertiseCallback>()
-    private val bleAdvertiser : BluetoothLeAdvertiser? = bluetoothAdapter?.bluetoothLeAdvertiser
+    private val bleAdvertiser: BluetoothLeAdvertiser? = bluetoothAdapter?.bluetoothLeAdvertiser
 
-    private var advertisingMode : Int? = null
-    private var advertisingTxLever : Int? = null
-    private var connectible : Boolean? = null
-    private var timeout : Int? = null
+    private var advertisingMode: Int? = null
+    private var advertisingTxLever: Int? = null
+    private var connectible: Boolean? = null
+    private var timeout: Int? = null
 
-    val isMultiAdvertisementSupported : Boolean
+    val isMultiAdvertisementSupported: Boolean
         get() = bluetoothAdapter?.isMultipleAdvertisementSupported ?: false
 
-    fun addListener (key: String, listener : AdvertiseCallback) {
+    fun addListener(key: String, listener: AdvertiseCallback) {
         listeners[key] = listener
     }
 
-    protected fun removeListener (key: String) {
+    protected fun removeListener(key: String) {
         listeners.remove(key)
     }
 
-    open suspend fun startAdvertising () = asyncBle {
+    open suspend fun startAdvertising() = asyncBle {
         if (bleAdvertiser != null) {
 
             if (!isMultiAdvertisementSupported && advertisingResponse != null) {
-                return@asyncBle  XYBluetoothResult(null, XYBluetoothResult.ErrorCode.AdvertisingScanResponseNotSupported)
+                return@asyncBle XYBluetoothResult(null, XYBluetoothResult.ErrorCode.AdvertisingScanResponseNotSupported)
             }
 
             val startCode = suspendCoroutine<Int> { cont ->
@@ -62,7 +61,7 @@ open class XYBluetoothAdvertiser(context: Context) : XYBluetoothBase(context){
                 }
             }
 
-            when(startCode) {
+            when (startCode) {
                 0 -> return@asyncBle XYBluetoothResult(startCode)
                 AdvertiseCallback.ADVERTISE_FAILED_ALREADY_STARTED -> return@asyncBle XYBluetoothResult(startCode, XYBluetoothResult.ErrorCode.AdvertisingAlreadyStarted)
                 AdvertiseCallback.ADVERTISE_FAILED_DATA_TOO_LARGE -> return@asyncBle XYBluetoothResult(startCode, XYBluetoothResult.ErrorCode.AdvertisingDataTooLarge)
@@ -75,23 +74,23 @@ open class XYBluetoothAdvertiser(context: Context) : XYBluetoothBase(context){
         return@asyncBle XYBluetoothResult<Int>(XYBluetoothResult.ErrorCode.NoAdvertiser)
     }
 
-    fun stopAdvertising ()  {
+    fun stopAdvertising() {
         bleAdvertiser?.stopAdvertising(primaryCallback)
     }
 
-    open fun changeContactable (newConnectible : Boolean) {
+    open fun changeContactable(newConnectible: Boolean) {
         connectible = newConnectible
     }
 
-    open fun changeTimeout (newTimeout : Int?)  {
+    open fun changeTimeout(newTimeout: Int?) {
         timeout = newTimeout
     }
 
-    open fun changeAdvertisingMode (newAdvertisingMode : Int?) : Boolean {
+    open fun changeAdvertisingMode(newAdvertisingMode: Int?): Boolean {
         if (newAdvertisingMode != null) {
-            if (!(newAdvertisingMode == ADVERTISE_MODE_BALANCED
-                    || newAdvertisingMode == ADVERTISE_MODE_LOW_LATENCY
-                    || newAdvertisingMode == ADVERTISE_MODE_LOW_POWER)) {
+            if (!(newAdvertisingMode == AdvertiseSettings.ADVERTISE_MODE_BALANCED ||
+                    newAdvertisingMode == AdvertiseSettings.ADVERTISE_MODE_LOW_LATENCY ||
+                    newAdvertisingMode == AdvertiseSettings.ADVERTISE_MODE_LOW_POWER)) {
                 return false
             }
         }
@@ -100,12 +99,12 @@ open class XYBluetoothAdvertiser(context: Context) : XYBluetoothBase(context){
         return true
     }
 
-    open fun changeAdvertisingTxLevel (newAdvertisingTxLevel : Int?) : Boolean {
+    open fun changeAdvertisingTxLevel(newAdvertisingTxLevel: Int?): Boolean {
         if (newAdvertisingTxLevel != null) {
-            if (!(newAdvertisingTxLevel == ADVERTISE_TX_POWER_HIGH
-                    || newAdvertisingTxLevel == ADVERTISE_TX_POWER_LOW
-                    || newAdvertisingTxLevel == ADVERTISE_TX_POWER_MEDIUM
-                    || newAdvertisingTxLevel == ADVERTISE_TX_POWER_ULTRA_LOW)) {
+            if (!(newAdvertisingTxLevel == AdvertiseSettings.ADVERTISE_TX_POWER_HIGH ||
+                    newAdvertisingTxLevel == AdvertiseSettings.ADVERTISE_TX_POWER_LOW ||
+                    newAdvertisingTxLevel == AdvertiseSettings.ADVERTISE_TX_POWER_MEDIUM ||
+                    newAdvertisingTxLevel == AdvertiseSettings.ADVERTISE_TX_POWER_ULTRA_LOW)) {
                 return false
             }
         }
@@ -115,9 +114,8 @@ open class XYBluetoothAdvertiser(context: Context) : XYBluetoothBase(context){
         return true
     }
 
-
-    protected open fun buildAdvertisingSettings () : AdvertiseSettings {
-        val builder = Builder()
+    protected open fun buildAdvertisingSettings(): AdvertiseSettings {
+        val builder = AdvertiseSettings.Builder()
 
         advertisingMode?.let { builder.setAdvertiseMode(it) }
         connectible?.let { builder.setConnectable(it) }
@@ -126,7 +124,6 @@ open class XYBluetoothAdvertiser(context: Context) : XYBluetoothBase(context){
 
         return builder.build()
     }
-
 
     private val primaryCallback = object : AdvertiseCallback() {
         override fun onStartFailure(errorCode: Int) {

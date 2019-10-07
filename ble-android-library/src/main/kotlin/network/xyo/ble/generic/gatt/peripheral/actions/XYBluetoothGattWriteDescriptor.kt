@@ -4,10 +4,10 @@ import android.bluetooth.BluetoothGatt
 import android.bluetooth.BluetoothGattCallback
 import android.bluetooth.BluetoothGattDescriptor
 import kotlinx.coroutines.*
+import network.xyo.base.XYBase
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothGattCallback
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResult
 import network.xyo.ble.generic.gatt.peripheral.XYThreadSafeBluetoothGatt
-import network.xyo.base.XYBase
 
 class XYBluetoothGattWriteDescriptor(val gatt: XYThreadSafeBluetoothGatt, val gattCallback: XYBluetoothGattCallback) {
 
@@ -30,7 +30,7 @@ class XYBluetoothGattWriteDescriptor(val gatt: XYThreadSafeBluetoothGatt, val ga
                         override fun onDescriptorWrite(gatt: BluetoothGatt?, descriptor: BluetoothGattDescriptor?, status: Int) {
                             log.info("onDescriptorWrite: $status")
                             super.onDescriptorWrite(gatt, descriptor, status)
-                            //since it is always possible to have a rogue callback, make sure it is the one we are looking for
+                            // since it is always possible to have a rogue callback, make sure it is the one we are looking for
                             if (descriptorToWrite == descriptor) {
                                 if (status == BluetoothGatt.GATT_SUCCESS) {
                                     gattCallback.removeListener(listenerName)

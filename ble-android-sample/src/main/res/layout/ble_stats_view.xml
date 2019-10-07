@@ -2,7 +2,6 @@
 <network.xyo.ble.sample.views.XYBLEStatsView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/xy_background_light"
     android:theme="@style/XYTheme">
 
     <LinearLayout

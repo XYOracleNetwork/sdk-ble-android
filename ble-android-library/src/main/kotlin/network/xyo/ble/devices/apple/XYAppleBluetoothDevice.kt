@@ -3,12 +3,11 @@ package network.xyo.ble.devices.apple
 import android.bluetooth.BluetoothDevice
 import android.content.Context
 import android.util.SparseArray
-import network.xyo.ble.generic.scanner.XYScanResult
+import java.util.concurrent.ConcurrentHashMap
 import network.xyo.base.XYBase
 import network.xyo.ble.generic.devices.XYBluetoothDevice
 import network.xyo.ble.generic.devices.XYCreator
-import java.util.*
-import java.util.concurrent.ConcurrentHashMap
+import network.xyo.ble.generic.scanner.XYScanResult
 
 open class XYAppleBluetoothDevice(context: Context, device: BluetoothDevice, hash: String) : XYBluetoothDevice(context, device, hash) {
 

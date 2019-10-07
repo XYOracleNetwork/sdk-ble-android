@@ -5,11 +5,11 @@ import android.bluetooth.BluetoothGatt
 import android.bluetooth.BluetoothGattCharacteristic
 import android.bluetooth.BluetoothGattDescriptor
 import android.bluetooth.BluetoothGattService
-import network.xyo.base.XYBase
 import java.lang.ref.WeakReference
-import java.util.*
+import java.util.UUID
+import network.xyo.base.XYBase
 
-open class XYThreadSafeBluetoothGatt(bluetoothGatt: BluetoothGatt?): XYBase() {
+open class XYThreadSafeBluetoothGatt(bluetoothGatt: BluetoothGatt?) : XYBase() {
 
     private val gattRef = WeakReference<BluetoothGatt>(bluetoothGatt)
     private val gatt: BluetoothGatt?

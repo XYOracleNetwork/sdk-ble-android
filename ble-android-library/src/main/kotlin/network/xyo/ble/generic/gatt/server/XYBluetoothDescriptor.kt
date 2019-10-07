@@ -2,9 +2,9 @@ package network.xyo.ble.generic.gatt.server
 
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothGattDescriptor
+import java.util.UUID
 import network.xyo.ble.generic.gatt.server.responders.XYBluetoothReadResponder
 import network.xyo.ble.generic.gatt.server.responders.XYBluetoothWriteResponder
-import java.util.*
 
 open class XYBluetoothDescriptor(uuid: UUID, permissions: Int) : BluetoothGattDescriptor(uuid, permissions) {
     private val readResponders = HashMap<String, XYBluetoothReadResponder>()
@@ -40,7 +40,6 @@ open class XYBluetoothDescriptor(uuid: UUID, permissions: Int) : BluetoothGattDe
         }
         return null
     }
-
 
     /*suspend fun waitForWriteRequest(deviceFilter: BluetoothDevice?) = GlobalScope.async {
         return@async suspendCoroutine<ByteArray?> { cont ->

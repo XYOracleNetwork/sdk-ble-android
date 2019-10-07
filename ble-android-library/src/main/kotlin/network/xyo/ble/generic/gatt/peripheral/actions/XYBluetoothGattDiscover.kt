@@ -4,10 +4,10 @@ import android.bluetooth.BluetoothGatt
 import android.bluetooth.BluetoothGattCallback
 import android.bluetooth.BluetoothGattService
 import kotlinx.coroutines.*
+import network.xyo.base.XYBase
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothGattCallback
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResult
 import network.xyo.ble.generic.gatt.peripheral.XYThreadSafeBluetoothGatt
-import network.xyo.base.XYBase
 
 class XYBluetoothGattDiscover(val gatt: XYThreadSafeBluetoothGatt, val gattCallback: XYBluetoothGattCallback) {
 
@@ -47,7 +47,7 @@ class XYBluetoothGattDiscover(val gatt: XYThreadSafeBluetoothGatt, val gattCallb
                                         cont.completeResume(it)
                                     }
                                 } else {
-                                    //success - send back the services
+                                    // success - send back the services
                                     log.info("discover: Returning new services")
                                     this@XYBluetoothGattDiscover.services = gatt?.services
 

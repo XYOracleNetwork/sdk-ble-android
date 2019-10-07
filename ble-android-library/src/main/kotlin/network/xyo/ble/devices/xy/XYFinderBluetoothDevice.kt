@@ -1,21 +1,20 @@
 package network.xyo.ble.devices.xy
 
 import android.content.Context
+import java.io.InputStream
+import java.nio.ByteBuffer
+import java.util.UUID
+import java.util.concurrent.ConcurrentHashMap
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import network.xyo.ble.firmware.XYOtaUpdate
-import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResult
-import network.xyo.ble.generic.scanner.XYScanResult
 import network.xyo.base.XYBase
 import network.xyo.ble.devices.apple.XYAppleBluetoothDevice
 import network.xyo.ble.devices.apple.XYIBeaconBluetoothDevice
-import network.xyo.ble.generic.XYBluetoothBase
+import network.xyo.ble.firmware.XYOtaUpdate
 import network.xyo.ble.generic.devices.XYBluetoothDevice
 import network.xyo.ble.generic.devices.XYCreator
-import java.io.InputStream
-import java.nio.ByteBuffer
-import java.util.*
-import java.util.concurrent.ConcurrentHashMap
+import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResult
+import network.xyo.ble.generic.scanner.XYScanResult
 
 @kotlin.ExperimentalUnsignedTypes
 open class XYFinderBluetoothDevice(context: Context, scanResult: XYScanResult, hash: String) : XYIBeaconBluetoothDevice(context, scanResult, hash) {
@@ -83,7 +82,7 @@ open class XYFinderBluetoothDevice(context: Context, scanResult: XYScanResult, h
             }
         }
 
-    //the distance is in meters, so these are what we subjectively think are the fuzzy proximity values
+    // the distance is in meters, so these are what we subjectively think are the fuzzy proximity values
     val proximity: Proximity
         get() {
 
@@ -116,13 +115,13 @@ open class XYFinderBluetoothDevice(context: Context, scanResult: XYScanResult, h
             return Proximity.VeryFar
         }
 
-    //signal the user to where it is, usually make it beep
+    // signal the user to where it is, usually make it beep
     open suspend fun find() = connection {
         log.error(UnsupportedOperationException().toString(), true)
         return@connection XYBluetoothResult<UByte>(XYBluetoothResult.ErrorCode.Unsupported)
     }
 
-    //turn off finding, if supported
+    // turn off finding, if supported
     open suspend fun stopFind() = connection {
         log.error(UnsupportedOperationException(), true)
         return@connection XYBluetoothResult<UByte>(XYBluetoothResult.ErrorCode.Unsupported)
@@ -159,15 +158,12 @@ open class XYFinderBluetoothDevice(context: Context, scanResult: XYScanResult, h
     }
 
     open fun updateFirmware(stream: InputStream, listener: XYOtaUpdate.Listener) {
-
     }
 
     open fun updateFirmware(folderName: String, filename: String, listener: XYOtaUpdate.Listener) {
-
     }
 
     open fun cancelUpdateFirmware() {
-
     }
 
     internal open fun reportButtonPressed(state: ButtonPress) {
@@ -239,7 +235,7 @@ open class XYFinderBluetoothDevice(context: Context, scanResult: XYScanResult, h
                 val bytes = scanResult.scanRecord?.getManufacturerSpecificData(XYAppleBluetoothDevice.MANUFACTURER_ID)
                 if (bytes != null) {
                     val buffer = ByteBuffer.wrap(bytes)
-                    buffer.position(2) //skip the type and size
+                    buffer.position(2) // skip the type and size
 
                     // get uuid
                     val high = buffer.long
@@ -265,6 +261,5 @@ open class XYFinderBluetoothDevice(context: Context, scanResult: XYScanResult, h
         internal fun hashFromScanResult(scanResult: XYScanResult): String {
             return XYIBeaconBluetoothDevice.hashFromScanResult(scanResult)
         }
-
     }
 }

@@ -26,7 +26,7 @@ import network.xyo.ble.sample.R
 import network.xyo.ui.XYBaseFragment
 import java.nio.ByteBuffer
 import java.nio.charset.Charset
-import java.util.*
+import java.util.UUID
 
 @kotlin.ExperimentalUnsignedTypes
 class ServerFragment : XYDeviceFragment() {

@@ -2,16 +2,16 @@ package network.xyo.ble.generic.gatt.server
 
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothGattCharacteristic
+import java.util.UUID
+import kotlin.collections.HashMap
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import network.xyo.ble.generic.gatt.server.responders.XYBluetoothReadResponder
 import network.xyo.ble.generic.gatt.server.responders.XYBluetoothWriteResponder
-import java.util.*
-import kotlin.collections.HashMap
-import kotlin.coroutines.resume
-import kotlin.coroutines.suspendCoroutine
 
-open class XYBluetoothCharacteristic(uuid: UUID, properties : Int, permissions : Int) : BluetoothGattCharacteristic(uuid, properties, permissions) {
+open class XYBluetoothCharacteristic(uuid: UUID, properties: Int, permissions: Int) : BluetoothGattCharacteristic(uuid, properties, permissions) {
     private val listeners = HashMap<String, XYBluetoothCharacteristicListener>()
     private val readResponders = HashMap<String, XYBluetoothReadResponder>()
     private val writeResponders = HashMap<String, XYBluetoothWriteResponder>()
@@ -40,17 +40,17 @@ open class XYBluetoothCharacteristic(uuid: UUID, properties : Int, permissions :
         return super.setValue(mantissa, exponent, formatType, offset)
     }
 
-    private fun onChange () {
+    private fun onChange() {
         for ((_, listener) in listeners) {
             listener.onChange()
         }
     }
 
-    fun addListener(key : String, listener: XYBluetoothCharacteristicListener) {
+    fun addListener(key: String, listener: XYBluetoothCharacteristicListener) {
         listeners[key] = listener
     }
 
-    fun removeListiner (key: String) {
+    fun removeListiner(key: String) {
         listeners.remove(key)
     }
 
@@ -84,7 +84,6 @@ open class XYBluetoothCharacteristic(uuid: UUID, properties : Int, permissions :
         }
         return null
     }
-
 
     suspend fun waitForWriteRequest(deviceFilter: BluetoothDevice?) = GlobalScope.async {
         return@async suspendCoroutine<ByteArray?> { cont ->

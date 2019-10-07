@@ -6,14 +6,14 @@ import android.bluetooth.BluetoothGattCallback
 import android.bluetooth.BluetoothGattCharacteristic
 import android.bluetooth.BluetoothGattDescriptor
 import android.os.Build
+import java.util.HashMap
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import network.xyo.base.XYBase
-import java.util.HashMap
 
 // This class is just a callback broadcast version of the standard BluetoothGattCallback
 
-open class XYBluetoothGattCallback: BluetoothGattCallback() {
+open class XYBluetoothGattCallback : BluetoothGattCallback() {
     private val gattListeners = HashMap<String, BluetoothGattCallback>()
     private val _lock = Any()
 
@@ -124,7 +124,6 @@ open class XYBluetoothGattCallback: BluetoothGattCallback() {
         }
     }
 
-
     @TargetApi(Build.VERSION_CODES.O)
     override fun onPhyRead(gatt: BluetoothGatt?, txPhy: Int, rxPhy: Int, status: Int) {
         super.onPhyRead(gatt, txPhy, rxPhy, status)
@@ -155,8 +154,8 @@ open class XYBluetoothGattCallback: BluetoothGattCallback() {
     override fun onReadRemoteRssi(gatt: BluetoothGatt?, rssi: Int, status: Int) {
         super.onReadRemoteRssi(gatt, rssi, status)
         log.info("onReadRemoteRssi: $rssi : $status")
-        //AT:this@XYBluetoothGatt.rssi = rssi
-        //AT:onDetect(null)
+        // AT:this@XYBluetoothGatt.rssi = rssi
+        // AT:onDetect(null)
         synchronized(_lock) {
             for ((_, listener) in gattListeners) {
                 GlobalScope.launch {
@@ -190,7 +189,7 @@ open class XYBluetoothGattCallback: BluetoothGattCallback() {
         }
     }
 
-    companion object: XYBase() {
+    companion object : XYBase() {
         var blockNotificationCallback = false
     }
 }
