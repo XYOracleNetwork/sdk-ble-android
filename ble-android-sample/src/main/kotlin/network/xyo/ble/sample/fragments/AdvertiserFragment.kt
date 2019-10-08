@@ -11,14 +11,15 @@ import android.widget.RadioButton
 import kotlinx.android.synthetic.main.fragment_advertiser.view.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import network.xyo.ble.gatt.server.XYBluetoothAdvertiser
-import network.xyo.ble.gatt.server.XYIBeaconAdvertiseDataCreator
+import network.xyo.ble.generic.gatt.server.XYBluetoothAdvertiser
+import network.xyo.ble.generic.gatt.server.XYIBeaconAdvertiseDataCreator
 import network.xyo.ble.sample.R
 import network.xyo.base.XYBase
+import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResult
 import network.xyo.ui.XYBaseFragment
 import network.xyo.ui.ui
 import java.nio.ByteBuffer
-import java.util.*
+import java.util.UUID
 
 class AdvertiserFragment : XYBaseFragment() {
     private var isInIBeacon = false
@@ -54,11 +55,11 @@ class AdvertiserFragment : XYBaseFragment() {
 
     private suspend fun restartAdvertiser () {
         advertiser?.stopAdvertising()
-        val status = advertiser?.startAdvertising()?.await()
+        val status = advertiser?.startAdvertising()
 
 
         ui {
-            if (status?.value == 0 && status.error == null) {
+            if (status?.value == 0 && status.error == XYBluetoothResult.ErrorCode.None) {
                 showToast("Success!")
                 return@ui
             }
@@ -71,9 +72,8 @@ class AdvertiserFragment : XYBaseFragment() {
         val radioButtonGroup = view.advertising_mode_selector
         val radioButtonID = radioButtonGroup.checkedRadioButtonId
         val radioButton = radioButtonGroup.findViewById<RadioButton>(radioButtonID)
-        val idx = radioButtonGroup.indexOfChild(radioButton)
 
-        when(idx) {
+        when(radioButtonGroup.indexOfChild(radioButton)) {
             0 -> advertiser?.changeAdvertisingMode(AdvertiseSettings.ADVERTISE_MODE_LOW_LATENCY)
             1 -> advertiser?.changeAdvertisingMode(AdvertiseSettings.ADVERTISE_MODE_BALANCED)
             2 -> advertiser?.changeAdvertisingMode(AdvertiseSettings.ADVERTISE_MODE_LOW_POWER)
@@ -86,9 +86,8 @@ class AdvertiserFragment : XYBaseFragment() {
         val radioButtonGroup = view.advertising_power_selector
         val radioButtonID = radioButtonGroup.checkedRadioButtonId
         val radioButton = radioButtonGroup.findViewById<RadioButton>(radioButtonID)
-        val idx = radioButtonGroup.indexOfChild(radioButton)
 
-        when(idx) {
+        when(radioButtonGroup.indexOfChild(radioButton)) {
             0 -> advertiser?.changeAdvertisingTxLevel(AdvertiseSettings.ADVERTISE_TX_POWER_HIGH)
             1 -> advertiser?.changeAdvertisingTxLevel(AdvertiseSettings.ADVERTISE_TX_POWER_MEDIUM)
             2 -> advertiser?.changeAdvertisingTxLevel(AdvertiseSettings.ADVERTISE_TX_POWER_HIGH)
@@ -101,9 +100,8 @@ class AdvertiserFragment : XYBaseFragment() {
         val radioButtonGroup = view.connectable_selector
         val radioButtonID = radioButtonGroup.checkedRadioButtonId
         val radioButton = radioButtonGroup.findViewById<RadioButton>(radioButtonID)
-        val idx = radioButtonGroup.indexOfChild(radioButton)
 
-        when(idx) {
+        when(radioButtonGroup.indexOfChild(radioButton)) {
             0 -> advertiser?.changeContactable(true)
             1 -> advertiser?.changeContactable(false)
         }
@@ -122,9 +120,8 @@ class AdvertiserFragment : XYBaseFragment() {
         val radioButtonGroup = view.include_device_name_selector
         val radioButtonID = radioButtonGroup.checkedRadioButtonId
         val radioButton = radioButtonGroup.findViewById<RadioButton>(radioButtonID)
-        val idx = radioButtonGroup.indexOfChild(radioButton)
 
-        when(idx) {
+        when(radioButtonGroup.indexOfChild(radioButton)) {
             0 -> return true
         }
 
@@ -141,7 +138,7 @@ class AdvertiserFragment : XYBaseFragment() {
     private fun updateAdvertiserDataIBeacon (view: View) : Boolean {
 
         try {
-            val manufactorId = Integer.parseInt(view.ibeacon_manufacturer_id_input.text.toString())
+            val manufacturerId = Integer.parseInt(view.ibeacon_manufacturer_id_input.text.toString())
             val major = Integer.parseInt(view.ibeacon_major.text.toString())
             val minor = Integer.parseInt(view.ibeacon_minor.text.toString())
             val uuid = UUID.fromString(view.ibeacon_primary_service_input.text.toString())
@@ -152,7 +149,7 @@ class AdvertiserFragment : XYBaseFragment() {
                     ByteBuffer.allocate(2).putShort(major.toShort()).array(),
                     ByteBuffer.allocate(2).putShort(minor.toShort()).array(),
                     uuid,
-                    manufactorId,
+                    manufacturerId,
                     getIncludeDeviceName(view))
 
             advertiser?.advertisingData = data.build()
@@ -196,9 +193,8 @@ class AdvertiserFragment : XYBaseFragment() {
         val radioButtonGroup = view.include_tx_power_level_selector
         val radioButtonID = radioButtonGroup.checkedRadioButtonId
         val radioButton = radioButtonGroup.findViewById<RadioButton>(radioButtonID)
-        val idx = radioButtonGroup.indexOfChild(radioButton)
 
-        return when(idx) {
+        return when(radioButtonGroup.indexOfChild(radioButton)) {
             0 -> true
             1 -> false
             else -> false

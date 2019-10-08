@@ -2,17 +2,18 @@ package network.xyo.ble.sample.adapters
 
 import android.app.Activity
 import android.view.View
-import android.view.View.GONE
 import android.view.ViewGroup
 import android.widget.BaseAdapter
-import kotlinx.android.synthetic.main.activity_device_list.*
-import network.xyo.ble.devices.XYBluetoothDevice
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import network.xyo.ble.generic.devices.XYBluetoothDevice
 import network.xyo.ble.sample.R
 import network.xyo.ble.sample.XYApplication
 import network.xyo.ble.sample.views.XYDeviceItemView
-import network.xyo.ble.scanner.XYSmartScan
+import network.xyo.ble.generic.scanner.XYSmartScan
 import network.xyo.ui.ui
-import java.util.*
+import java.util.concurrent.locks.Lock
+import java.util.concurrent.locks.ReentrantLock
 
 @kotlin.ExperimentalStdlibApi
 @kotlin.ExperimentalUnsignedTypes
@@ -35,15 +36,17 @@ class XYDeviceAdapter(private val activity: Activity) : BaseAdapter() {
         }
 
         override fun detected(device: XYBluetoothDevice) {
-            refreshDevices()
+            //refreshDevices()
         }
     }
 
-    fun refreshDevices() {
-        if ((System.currentTimeMillis() - lastSort) > 5000) {
-            devices = XYBluetoothDevice.sortedList(scanner.devices)
+    private val sortLock = ReentrantLock()
+
+    fun refreshDevices() = GlobalScope.launch {
+        //we want to prevent multiple updates to go at the same time
+        if (sortLock.tryLock()) {
+            devices = XYBluetoothDevice.sortedList(scanner.devices.values.toList())
             ui {
-                activity.progress_spinner_scanner.visibility = GONE
                 notifyDataSetChanged()
             }
             lastSort = System.currentTimeMillis()

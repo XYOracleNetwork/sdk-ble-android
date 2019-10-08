@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.appcompat.widget.Toolbar;
@@ -19,20 +18,21 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import network.xyo.ble.devices.XY2BluetoothDevice;
-import network.xyo.ble.devices.XY3BluetoothDevice;
-import network.xyo.ble.devices.XY4BluetoothDevice;
-import network.xyo.ble.devices.XYAppleBluetoothDevice;
-import network.xyo.ble.devices.XYBluetoothDevice;
-import network.xyo.ble.devices.XYFinderBluetoothDevice;
-import network.xyo.ble.devices.XYGpsBluetoothDevice;
-import network.xyo.ble.devices.XYIBeaconBluetoothDevice;
-import network.xyo.ble.scanner.XYSmartScan;
-import network.xyo.ble.scanner.XYSmartScanPromiseWrapper;
-import network.xyo.ble.scanner.XYSmartScanLegacy;
-import network.xyo.ble.scanner.XYSmartScanModern;
-import network.xyo.sdk.ble.sample.java.dummy.DummyContent;
+import network.xyo.ble.generic.scanner.XYSmartScan;
+import network.xyo.ble.utilities.XYPromise;
+import network.xyo.ble.devices.xy.XY2BluetoothDevice;
+import network.xyo.ble.devices.xy.XY3BluetoothDevice;
+import network.xyo.ble.devices.xy.XY4BluetoothDevice;
+import network.xyo.ble.devices.apple.XYAppleBluetoothDevice;
+import network.xyo.ble.generic.devices.XYBluetoothDevice;
+import network.xyo.ble.devices.xy.XYFinderBluetoothDevice;
+import network.xyo.ble.devices.xy.XYGpsBluetoothDevice;
+import network.xyo.ble.devices.apple.XYIBeaconBluetoothDevice;
+import network.xyo.ble.generic.scanner.XYSmartScanPromise;
+import network.xyo.ble.generic.scanner.XYSmartScanLegacy;
+import network.xyo.ble.generic.scanner.XYSmartScanModern;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,11 +58,11 @@ public class ItemListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_item_list);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         toolbar.setTitle(getTitle());
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -96,15 +96,15 @@ public class ItemListActivity extends AppCompatActivity {
         recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(this, mTwoPane));
     }
 
-    private XYSmartScanPromiseWrapper _scanner;
+    private XYSmartScanPromise _scanner;
 
-    protected XYSmartScanPromiseWrapper getScanner() {
+    private XYSmartScanPromise getScanner() {
         synchronized (this) {
             if (_scanner == null) {
                 if (Build.VERSION.SDK_INT >= 21) {
-                    _scanner = new XYSmartScanPromiseWrapper(new XYSmartScanModern(this.getApplicationContext()));
+                    _scanner = new XYSmartScanPromise(new XYSmartScanModern(this.getApplicationContext()));
                 } else {
-                    _scanner = new XYSmartScanPromiseWrapper(new XYSmartScanLegacy(this.getApplicationContext()));
+                    _scanner = new XYSmartScanPromise(new XYSmartScanLegacy(this.getApplicationContext()));
                 }
             }
             return _scanner;
@@ -113,14 +113,13 @@ public class ItemListActivity extends AppCompatActivity {
 
     @Override
     protected void onPause() {
-        getScanner().stop();
+        getScanner().stop(new XYPromise<Boolean>() {
+            @Override
+            public void resolve(@Nullable Boolean value) {
+                super.resolve(value);
+            }
+        });
         super.onPause();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        getScanner().start();
     }
 
     public static class SimpleItemRecyclerViewAdapter
@@ -133,20 +132,14 @@ public class ItemListActivity extends AppCompatActivity {
         private final View.OnClickListener mOnClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                DummyContent.DummyItem item = (DummyContent.DummyItem) view.getTag();
                 if (mTwoPane) {
-                    Bundle arguments = new Bundle();
-                    arguments.putString(ItemDetailFragment.ARG_ITEM_ID, item.id);
                     ItemDetailFragment fragment = new ItemDetailFragment();
-                    fragment.setArguments(arguments);
                     mParentActivity.getSupportFragmentManager().beginTransaction()
                             .replace(R.id.item_detail_container, fragment)
                             .commit();
                 } else {
                     Context context = view.getContext();
                     Intent intent = new Intent(context, ItemDetailActivity.class);
-                    intent.putExtra(ItemDetailFragment.ARG_ITEM_ID, item.id);
-
                     context.startActivity(intent);
                 }
             }
@@ -154,7 +147,7 @@ public class ItemListActivity extends AppCompatActivity {
 
         SimpleItemRecyclerViewAdapter(final ItemListActivity parent,
                                       boolean twoPane) {
-            mValues = new ArrayList<XYBluetoothDevice>();
+            mValues = new ArrayList<>();
             mParentActivity = parent;
             mTwoPane = twoPane;
             self = this;
@@ -186,6 +179,7 @@ public class ItemListActivity extends AppCompatActivity {
             });
         }
 
+        @NotNull
         @Override
         public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             View view = LayoutInflater.from(parent.getContext())
@@ -213,8 +207,8 @@ public class ItemListActivity extends AppCompatActivity {
 
             ViewHolder(View view) {
                 super(view);
-                mIdView = (TextView) view.findViewById(R.id.id_text);
-                mContentView = (TextView) view.findViewById(R.id.content);
+                mIdView = view.findViewById(R.id.id_text);
+                mContentView = view.findViewById(R.id.content);
             }
         }
     }

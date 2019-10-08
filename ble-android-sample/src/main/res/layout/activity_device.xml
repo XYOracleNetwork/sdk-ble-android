@@ -40,6 +40,12 @@
                 android:text="@string/info" />
 
             <com.google.android.material.tabs.TabItem
+                android:id="@+id/tabServices"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/services" />
+
+            <com.google.android.material.tabs.TabItem
                 android:id="@+id/tabAlert"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -79,7 +85,7 @@
                 android:id="@+id/tabLinkLoss"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/linkloss" />
+                android:text="@string/link_loss" />
 
             <com.google.android.material.tabs.TabItem
                 android:id="@+id/tabTx"
@@ -122,6 +128,23 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/bluetooth_disabled"
+            android:textColor="@android:color/white" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_device_nobluetooth"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:background="@android:color/holo_red_light"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/no_bluetooth"
             android:textColor="@android:color/white" />
     </LinearLayout>
 

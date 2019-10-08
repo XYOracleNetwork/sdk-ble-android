@@ -52,7 +52,7 @@
     <string name="device">Device</string>
     <string name="gap">GAP</string>
     <string name="gatt">GATT</string>
-    <string name="linkloss">linkLoss</string>
+    <string name="link_loss">linkLoss</string>
     <string name="tx">Tx</string>
     <string name="song">Song</string>
 
@@ -60,7 +60,7 @@
     <string name="major">Major:\u0020</string>
     <string name="minor">Minor:\u0020</string>
     <string name="rssi">RSSI:\u0020</string>
-    <string name="pulses">Pulses:\u0020</string>
+    <string name="pulses">\u0020Pulses:\u0020</string>
     <string name="avg_gap">Avg. Gap:\u0020</string>
     <string name="last_gap">Last Gap:\u0020</string>
     <string name="max_gap">Max Gap:\u0020</string>
@@ -71,9 +71,9 @@
     <string name="connected">Connected:\u0020</string>
     <string name="address">Address:\u0020</string>
     <string name="uuid">UUID:\u0020</string>
-    <string name="uptime">Uptime:\u0020</string>
-    <string name="pulses_second">Pulses/Second:\u0020</string>
-    <string name="devices">Devices:\u0020</string>
+    <string name="uptime">\u0020Uptime:\u0020</string>
+    <string name="pulses_second">\u0020Pulses/Second:\u0020</string>
+    <string name="devices">\u0020Devices:\u0020</string>
     <string name="refresh">Refresh</string>
     <string name="set_song_one">Set Song One</string>
     <string name="control_point">controlPoint:\u0020</string>
@@ -104,7 +104,6 @@
     <string name="peripheral_preferred_connection_parameters">peripheralPreferredConnectionParameters:\u0020</string>
     <string name="service_changed">Service Changed:\u0020</string>
     <string name="alert_level">Alert Level:\u0020</string>
-    <string name="not_supported">not supported</string>
     <string name="hex_placeholder">0x%s</string>
     <string name="unknown_device">unknown device</string>
     <string name="not_supported_x2">Not supported by XY2BluetoothDevice</string>
@@ -116,7 +115,6 @@
     <string name="update_started">Update started</string>
     <string name="bluetooth_disabled">Bluetooth Disabled</string>
 
-    <string name="server">Server</string>
     <string name="test">Test</string>
     <string name="ibeacon_advertiser">IBeacon Advertiser</string>
     <string name="standard_advertiser">Standard Advertiser</string>
@@ -132,5 +130,51 @@
     <string name="characteristic_button_update">Characteristic Update</string>
     <string name="service_type">Service Type</string>
     <string name="characteristics">Characteristics</string>
+
+    <string name="central">Central</string>
+    <string name="peripheral">Peripheral</string>
+    <string name="active">Active</string>
+
+    <string name="start_time">\u0020Start:</string>
+    <string name="stay_awake">Stay Awake:</string>
+    <string name="unlock">Unlock:</string>
+    <string name="button_state">Button State:</string>
+    <string name="buzzer">Buzzer:</string>
+    <string name="ad_config">Ad Config:</string>
+    <string name="button_config">Button Config:</string>
+    <string name="buzzer_config">Buzzer Config:</string>
+    <string name="last_error">Last Error:</string>
+    <string name="reset">Reset:</string>
+    <string name="self_test">Self Test:</string>
+    <string name="debug">Debug:</string>
+    <string name="left_behind">Left Behind:</string>
+    <string name="color">Color:</string>
+    <string name="hardware_create_date">Hardware Create Date:</string>
+    <string name="host_device_name">\u0020Host Device Name:</string>
+    <string name="no_bluetooth">No Bluetooth</string>
+    <string name="lock_status">Lock Status:</string>
+    <string name="interval">Interval:</string>
+    <string name="ota_write">OTA Write:</string>
+    <string name="reboot">Reboot:</string>
+    <string name="hand_shake">Hand Shake:</string>
+    <string name="version">Version:</string>
+    <string name="buzzer_select">Buzzer Select:</string>
+    <string name="surge">Surge:</string>
+    <string name="button">Button:</string>
+    <string name="disconnect">Disconnect:</string>
+    <string name="virtual_beacon_settings">Virtual Beacon Settings:</string>
+    <string name="tone">Tone:</string>
+    <string name="inactive_virtual_beacon_settings">Inactive Virtual Beacon Settings</string>
+    <string name="inactive_interval">Inactive Interval:</string>
+    <string name="gps_interval">GPS Interval:</string>
+    <string name="gps_mode">GPS Mode:</string>
+    <string name="sim_id">SIM Id:</string>
+    <string name="raw">Raw:</string>
+    <string name="timeout">Timeout:</string>
+    <string name="thresold">Thresold:</string>
+    <string name="inactive">Inactive:</string>
+    <string name="movement_count">Movement Count:</string>
+    <string name="power">Power</string>
+    <string name="net">Net</string>
 
 </resources>

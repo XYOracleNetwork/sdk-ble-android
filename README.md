@@ -93,14 +93,17 @@ scanner.addListener("myTAG", object : XYFilteredSmartScan.Listener() {
 
     override fun exited(device: XYBluetoothDevice) {
         super.exited(device)
+        doSomethingOnExit()
     }
 
     override fun detected(device: XYBluetoothDevice) {
         super.detected(device)
+        doSomethingOnDetected()
     }
 
     override fun connectionStateChanged(device: XYBluetoothDevice, newState: Int) {
         super.connectionStateChanged(device, newState)
+        doSomethingOnChanged()
     }
 
 })
@@ -119,30 +122,37 @@ private fun checkMyDeviceTypeAddListener(device: XYBluetoothDevice) {
     (device as? XY4BluetoothDevice)?.addListener("myTAG", object : XY4BluetoothDevice.Listener(){
         override fun buttonSinglePressed(device: XYFinderBluetoothDevice) {
             super.buttonSinglePressed(device)
+            doSomethingOnSinglePressed()
         }
 
         override fun buttonDoublePressed(device: XYFinderBluetoothDevice) {
             super.buttonDoublePressed(device)
+            doSomethingOnDoublePressed()
         }
 
         override fun buttonLongPressed(device: XYFinderBluetoothDevice) {
             super.buttonLongPressed(device)
+            doSomethingOnLongPressed()
         }
 
         override fun entered(device: XYBluetoothDevice) {
             super.entered(device)
+            doSomethingOnEntered()
         }
 
         override fun exited(device: XYBluetoothDevice) {
             super.exited(device)
+            doSomethingOnExited()
         }
 
         override fun detected(device: XYBluetoothDevice) {
             super.detected(device)
+            doSomethingOnDetected()
         }
 
         override fun connectionStateChanged(device: XYBluetoothDevice, newState: Int) {
             super.connectionStateChanged(device, newState)
+            doSomethingOnConnectionStateChanged()
         }
     })
 

@@ -21,9 +21,9 @@ class RootServicesFragment : XYBaseFragment() {
         return view
     }
 
-    fun addService(service: BluetoothGattService) {
+    /*fun addService(service: BluetoothGattService) {
         servicesFragment?.addService(service)
-    }
+    }*/
 
     companion object {
         fun newInstance (startingServices : Array<BluetoothGattService>?) : RootServicesFragment {

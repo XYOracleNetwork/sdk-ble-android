@@ -8,7 +8,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
-import kotlinx.android.synthetic.main.activity_server.*
+import kotlinx.android.synthetic.main.fragment_peripheral.*
 import network.xyo.ble.sample.R
 import network.xyo.ble.sample.fragments.BeepTestFragment
 import network.xyo.ui.XYBaseFragment

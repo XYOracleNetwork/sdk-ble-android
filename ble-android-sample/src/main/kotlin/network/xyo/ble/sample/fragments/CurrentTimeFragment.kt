@@ -7,11 +7,11 @@ import android.view.ViewGroup
 import kotlinx.android.synthetic.main.fragment_current_time.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import network.xyo.ble.devices.XY2BluetoothDevice
-import network.xyo.ble.devices.XY3BluetoothDevice
-import network.xyo.ble.devices.XY4BluetoothDevice
-import network.xyo.ble.devices.XYBluetoothDevice
-import network.xyo.ble.gatt.peripheral.XYBluetoothResult
+import network.xyo.ble.devices.xy.XY2BluetoothDevice
+import network.xyo.ble.devices.xy.XY3BluetoothDevice
+import network.xyo.ble.devices.xy.XY4BluetoothDevice
+import network.xyo.ble.generic.devices.XYBluetoothDevice
+import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResult
 import network.xyo.ble.sample.R
 import network.xyo.ble.sample.XYDeviceData
 import network.xyo.ui.ui
@@ -81,19 +81,18 @@ class CurrentTimeFragment : XYDeviceFragment() {
         GlobalScope.launch {
             var hasConnectionError = true
 
-            val conn = device.connection {
+            device.connection {
                 hasConnectionError = false
 
                 deviceData?.let {
-                    it.currentTime = device.currentTimeService.currentTime.get().await().format()
-                    it.localTimeInformation = device.currentTimeService.localTimeInformation.get().await().format()
-                    it.referenceTimeInformation = device.currentTimeService.referenceTimeInformation.get().await().format()
+                    it.currentTime = device.currentTimeService.currentTime.get().format()
+                    it.localTimeInformation = device.currentTimeService.localTimeInformation.get().format()
+                    it.referenceTimeInformation = device.currentTimeService.referenceTimeInformation.get().format()
                 }
 
                 return@connection XYBluetoothResult(true)
 
             }
-            conn.await()
 
             updateUI()
             checkConnectionError(hasConnectionError)
@@ -105,19 +104,17 @@ class CurrentTimeFragment : XYDeviceFragment() {
         GlobalScope.launch {
             var hasConnectionError = true
 
-            val conn = device.connection {
+            device.connection {
                 hasConnectionError = false
 
                 deviceData?.let {
-                    it.currentTime = device.currentTimeService.currentTime.get().await().format()
-                    it.localTimeInformation = device.currentTimeService.localTimeInformation.get().await().format()
-                    it.referenceTimeInformation = device.currentTimeService.referenceTimeInformation.get().await().format()
+                    it.currentTime = device.currentTimeService.currentTime.get().format()
+                    it.localTimeInformation = device.currentTimeService.localTimeInformation.get().format()
+                    it.referenceTimeInformation = device.currentTimeService.referenceTimeInformation.get().format()
                 }
 
                 return@connection XYBluetoothResult(true)
-
             }
-            conn.await()
 
             updateUI()
             checkConnectionError(hasConnectionError)
