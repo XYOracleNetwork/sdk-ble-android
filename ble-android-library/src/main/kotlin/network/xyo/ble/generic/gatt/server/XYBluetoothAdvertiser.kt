@@ -13,7 +13,7 @@ import network.xyo.ble.generic.gatt.peripheral.asyncBle
 
 open class XYBluetoothAdvertiser(context: Context) : XYBluetoothBase(context) {
     var advertisingData: AdvertiseData? = null
-    private var advertisingResponse: AdvertiseData? = null
+    var advertisingResponse: AdvertiseData? = null
 
     protected val listeners = HashMap<String, AdvertiseCallback>()
     private val bleAdvertiser: BluetoothLeAdvertiser? = bluetoothAdapter?.bluetoothLeAdvertiser
