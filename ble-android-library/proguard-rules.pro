@@ -31,3 +31,4 @@
 -keepattributes EnclosingMethod
 
 -keep public class network.xyo.** { *; }
+-keep class androidx.core.app.CoreComponentFactory { *; }
