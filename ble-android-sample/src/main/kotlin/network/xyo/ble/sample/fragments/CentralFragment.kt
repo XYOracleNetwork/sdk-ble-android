@@ -33,13 +33,13 @@ class CentralFragment : XYDeviceFragment() {
                               savedInstanceState: Bundle?): View? {
 
         XYAppleBluetoothDevice.enable(true)
-        XYIBeaconBluetoothDevice.enable(true)
-        XYFinderBluetoothDevice.enable(true)
+        XYIBeaconBluetoothDevice.enable(true, canCreate = true)
+        XYFinderBluetoothDevice.enable(true, canCreate = true)
         XY4BluetoothDevice.enable(true)
         XY3BluetoothDevice.enable(true)
         XY2BluetoothDevice.enable(true)
         XYGpsBluetoothDevice.enable(true)
-        //XYBluetoothDevice.enable(true)
+        XYBluetoothDevice.enable(true)
 
         return inflater.inflate(R.layout.fragment_central, container, false)
     }
