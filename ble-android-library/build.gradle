@@ -45,6 +45,8 @@ android {
     versionProps.store(versionPropsFile.newWriter(), null)
 
     compileOptions {
+        sourceCompatibility = 1.8
+        targetCompatibility = 1.8
         kotlinOptions {
             allWarningsAsErrors = true
         }
@@ -80,8 +82,8 @@ android {
 
     buildTypes {
         release {
-            //minifyEnabled true
-            //proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
         debug {
             debuggable true
