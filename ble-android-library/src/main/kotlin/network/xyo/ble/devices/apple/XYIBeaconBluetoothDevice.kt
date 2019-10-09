@@ -107,7 +107,8 @@ open class XYIBeaconBluetoothDevice(context: Context, val scanResult: XYScanResu
 
         var canCreate = false
 
-        fun enable(enable: Boolean) {
+        fun enable(enable: Boolean, canCreate: Boolean? = null) {
+            this.canCreate = canCreate ?: this.canCreate
             if (enable) {
                 XYAppleBluetoothDevice.enable(true)
                 XYAppleBluetoothDevice.typeToCreator.append(APPLE_IBEACON_ID, creator)
@@ -129,7 +130,7 @@ open class XYIBeaconBluetoothDevice(context: Context, val scanResult: XYScanResu
                     UUID(high, low)
                 } catch (ex: BufferUnderflowException) {
                     // can throw a BufferUnderflowException if the beacon sends an invalid value for UUID.
-                    log.error("refreshGatt catch $ex", true)
+                    log.error("BufferUnderflowException: $ex", true)
                     return null
                 }
             } else {
