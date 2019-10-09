@@ -264,8 +264,8 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, val has
         // if we have not gotten any ads or been connected to it
         const val OUT_OF_RANGE_DELAY = 15000L
 
-        fun enable(enable: Boolean) {
-            canCreate = enable
+        fun enable(canCreate: Boolean) {
+            this.canCreate = canCreate
         }
 
         internal var canCreate = false
