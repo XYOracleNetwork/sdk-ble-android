@@ -277,7 +277,7 @@ open class XYBluetoothGattServer(context: Context) : XYBluetoothBase(context) {
             }
 
             for ((_, listener) in listeners) {
-                listener.onCharacteristicReadRequest(device, requestId, offset, characteristic)
+                listener.onCharacteristicWriteRequest(device, requestId, characteristic, preparedWrite, responseNeeded, offset, value)
             }
         }
 
