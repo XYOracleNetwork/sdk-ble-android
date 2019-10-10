@@ -453,7 +453,7 @@ open class XYBluetoothGattClient protected constructor(
         return@async XYBluetoothResult(value, error)
     }.await()
 
-    suspend fun findAndWriteCharacteristicNotify(service: UUID, characteristic: UUID, enable: Boolean) = GlobalScope.async {
+    suspend fun findAndWriteCharacteristicNotify(service: UUID, characteristic: UUID, enable: Boolean): XYBluetoothResult<Any> {
         // this prevents a queued close from closing while we run
         lastAccessTime = now
 
@@ -488,8 +488,8 @@ open class XYBluetoothGattClient protected constructor(
 
         lastAccessTime = now
 
-        return@async XYBluetoothResult(value, error)
-    }.await()
+        return XYBluetoothResult(value, error)
+    }
 
     companion object {
         val CLIENT_CHARACTERISTIC_CONFIG: UUID = UUID.fromString("00002902-0000-1000-8000-00805f9b34fb")
