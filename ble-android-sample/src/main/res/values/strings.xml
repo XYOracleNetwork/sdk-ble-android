@@ -29,7 +29,6 @@
     <string name="start_sync">Start Sync</string>
     <string name="services">Services</string>
     <string name="service_uuid">Service UUID</string>
-    <string name="view_service">View</string>
     <string name="characteristic_uuid">Characteristic UUID</string>
     <string name="view_characteristic">View</string>
 

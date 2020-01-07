@@ -12,7 +12,6 @@ import network.xyo.ble.sample.XYApplication
 import network.xyo.ble.sample.views.XYDeviceItemView
 import network.xyo.ble.generic.scanner.XYSmartScan
 import network.xyo.ui.ui
-import java.util.concurrent.locks.Lock
 import java.util.concurrent.locks.ReentrantLock
 
 @kotlin.ExperimentalStdlibApi
