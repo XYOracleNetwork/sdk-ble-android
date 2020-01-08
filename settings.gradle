@@ -1,3 +1,9 @@
 include ':ble-android-sample'
 include ':ble-android-library'
 include ':ble-android-sample-java'
+
+include ':ui-android-library'
+project(':ui-android-library').projectDir = new File(settingsDir, '../sdk-ui-android/ui-android-library')
+
+include ':sdk-base-android'
+project(':sdk-base-android').projectDir = new File(settingsDir, '../sdk-base-android/base-android-library')

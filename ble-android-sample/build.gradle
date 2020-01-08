@@ -73,9 +73,9 @@ dependencies {
     api 'com.google.android.material:material:1.2.0-alpha03'
     api 'androidx.coordinatorlayout:coordinatorlayout:1.1.0'
     api "com.nabinbhandari.android:permissions:3.8"
-    api 'network.xyo:sdk-base-android:2.1.114'
-    api 'com.github.XYOracleNetwork:sdk-ui-android:1.2.2'
     api 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.2.1'
     implementation project(':ble-android-library')
+    implementation project(':ui-android-library')
+    implementation project(':sdk-base-android')
     api "androidx.legacy:legacy-support-v4:1.0.0"
 }
