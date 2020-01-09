@@ -122,7 +122,3 @@ dependencies {
     api 'org.jetbrains:annotations:17.0.0'
     implementation project(':sdk-base-android')
 }
-
-tasks.withType(org.jetbrains.kotlin.gradle.tasks.AbstractKotlinCompile).all { task ->
-    task.kotlinOptions.freeCompilerArgs += experimentalsEnabled
-}
