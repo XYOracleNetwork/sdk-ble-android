@@ -6,6 +6,17 @@ apply plugin: 'maven-publish'
 group = 'network.xyo'
 
 buildscript {
+
+    ext {
+        experimentalsEnabled = [
+                "-Xuse-experimental=kotlin.Experimental",
+                "-Xuse-experimental=kotlin.ExperimentalUnsignedTypes",
+                "-Xuse-experimental=kotlin.ExperimentalStdlibApi",
+                "-Xuse-experimental=kotlinx.coroutines.ExperimentalCoroutinesApi",
+                "-Xuse-experimental=kotlinx.coroutines.InternalCoroutinesApi"
+        ]
+    }
+
     repositories {
         mavenCentral()
         mavenLocal()
@@ -121,4 +132,8 @@ dependencies {
     api 'org.jetbrains.kotlin:kotlin-reflect:1.3.61'
     api 'org.jetbrains:annotations:17.0.0'
     implementation project(':sdk-base-android')
+}
+
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.AbstractKotlinCompile).all { task ->
+    task.kotlinOptions.freeCompilerArgs += experimentalsEnabled
 }
