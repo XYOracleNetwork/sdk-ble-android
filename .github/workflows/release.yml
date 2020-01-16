@@ -2,27 +2,48 @@ name: Release
 
 on: 
   push:
-    tags:
-      - 'v*'
+    branches:
+      - 'master'
 
-jobs: 
-  build: 
-    name: Create Release
+jobs:         
+  publish:
+
     runs-on: ubuntu-latest
-    steps: 
-      - name: Checkout code
-        uses: actions/checkout@master
+    
+    steps:
+      - uses: actions/checkout@master
+      - uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+      - name: pre-build
+        run: chmod +x gradlew
+      - name: install
+        run: ./gradlew install
+      - name: bump version
+        run: ./gradlew version
+        id: release_version
+      - name: assemble
+        run: ./gradlew :ble-android-library:assembleRelease
+      - name: bintray upload
+        env: 
+          BINTRAY_USER: ${{ secrets.BINTRAY_USER }}
+          BINTRAY_KEY: ${{ secrets.BINTRAY_KEY }}
+        run: ./gradlew :ble-android-library:bintrayUpload
+        
+      - name: Bump version and push tag
+        uses: anothrNick/github-tag-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          WITH_V: false
+          CUSTOM_TAG: ${{ steps.release_version.outputs }}
+          DEFAULT_BUMP: patch
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
-        env:
+        env: 
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
+        with: 
           tag_name: ${{ github.ref }}
           release_name: Release ${{ github.ref }}
-          body: |
-            Changes in this release
-            - First Change
-            - Second Change
-          draft: false
+          draft: true
           prerelease: false
