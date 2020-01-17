@@ -25,6 +25,12 @@ buildscript {
 
 }
 
+project.ext {
+    majorVersion = 3
+    minorVersion = 0
+    patchVersion = 1106
+}
+
 allprojects {
     repositories {
         jcenter()
