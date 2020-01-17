@@ -19,7 +19,7 @@ import network.xyo.ui.ui
 
 @kotlin.ExperimentalUnsignedTypes
 class DeviceServicesFragment : XYDeviceFragment() {
-    val serviceList = XYServiceListAdapter(arrayOf())
+    private val serviceList = XYServiceListAdapter(arrayOf())
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_services, container, false)
