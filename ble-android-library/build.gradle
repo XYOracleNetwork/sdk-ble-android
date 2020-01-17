@@ -1,6 +1,7 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'com.jfrog.bintray'
 apply plugin: 'maven-publish'
 
 group = 'network.xyo'
@@ -30,6 +31,8 @@ buildscript {
         classpath "org.jlleitschuh.gradle:ktlint-gradle:9.0.0"
     }
 }
+
+apply plugin: "org.jlleitschuh.gradle.ktlint"
 
 def majorVersion = 3
 def minorVersion = 0
@@ -123,6 +126,32 @@ publishing {
             }
         }
     }
+}
+
+bintray {
+    user = System.getenv('BINTRAY_USER')
+    key = System.getenv('BINTRAY_KEY')
+    dryRun = false
+    override = false
+    publish = true
+    pkg {
+        repo = 'xyo'
+        name = 'sdk-ble-android'
+        userOrg = 'xyoraclenetwork'
+        licenses = ['LGPL-3.0']
+        desc = 'Android Base Classes'
+        vcsUrl = 'https://github.com/xyoraclenetwork/sdk-ble-android.git'
+
+        version {
+            name = verString
+            vcsTag = verString
+        }
+    }
+    publications = ['Production']
+}
+
+ktlint {
+    disabledRules = ["no-wildcard-imports"]
 }
 
 dependencies {
