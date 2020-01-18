@@ -1,6 +1,9 @@
 name: CI
 
-on: [push]
+on:
+  push: 
+    branches-ignore: 
+      - 'master'
 
 jobs:
   build:
@@ -8,8 +11,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v2
     - name: pre-build
       run:  chmod +x ./gradlew
     - name: build
-      run: ./gradlew :ble-android-library:clean assemble
+      run: ./gradlew :ble-android-library:assemble
