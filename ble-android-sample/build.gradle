@@ -58,24 +58,19 @@ buildscript {
         google()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.5.1'
+        classpath 'com.android.tools.build:gradle:3.5.3'
         classpath "com.github.dcendents:android-maven-gradle-plugin:2.1"
     }
 }
 
-configurations {
-    localImplementation
-    jitpackApi
-}
-
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    api 'com.google.android.material:material:1.1.0-beta01'
-    api 'androidx.coordinatorlayout:coordinatorlayout:1.1.0-beta01'
+    api 'com.google.android.material:material:1.2.0-alpha03'
+    api 'androidx.coordinatorlayout:coordinatorlayout:1.1.0'
     api "com.nabinbhandari.android:permissions:3.8"
-    api 'network.xyo:sdk-base-android:2.1.114'
-    api 'com.github.XYOracleNetwork:sdk-ui-android:1.2.2'
     api 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.2.1'
+    implementation 'com.github.XYOracleNetwork:sdk-ui-android:1.0.2'
+    implementation 'network.xyo:sdk-base-android:2.1.281'
     implementation project(':ble-android-library')
     api "androidx.legacy:legacy-support-v4:1.0.0"
 }
