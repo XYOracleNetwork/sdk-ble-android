@@ -35,6 +35,7 @@
     <string name="btn_start_test">Start Test</string>
     <string name="btn_stay_connected">Stay Connected</string>
     <string name="btn_find">Find</string>
+    <string name="btn_stop_find">Stop Find</string>
     <string name="btn_stay_awake">Stay Awake</string>
     <string name="btn_fall_asleep">Fall Asleep</string>
     <string name="btn_lock">Lock</string>
