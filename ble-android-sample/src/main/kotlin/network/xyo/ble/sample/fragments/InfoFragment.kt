@@ -38,6 +38,7 @@ class InfoFragment : XYDeviceFragment(), View.OnClickListener, CompoundButton.On
         button_connect.setOnClickListener(this)
         button_disconnect.setOnClickListener(this)
         button_find.setOnClickListener(this)
+        button_stop_find.setOnClickListener(this)
         button_stay_awake.setOnClickListener(this)
         button_fall_asleep.setOnClickListener(this)
         button_lock.setOnClickListener(this)
@@ -162,6 +163,9 @@ class InfoFragment : XYDeviceFragment(), View.OnClickListener, CompoundButton.On
             R.id.button_find -> {
                 find()
             }
+            R.id.button_stop_find -> {
+                stopFind()
+            }
             R.id.button_stay_awake -> {
                 wake()
             }
@@ -232,6 +236,21 @@ class InfoFragment : XYDeviceFragment(), View.OnClickListener, CompoundButton.On
 
         GlobalScope.launch {
             (device as? XYFinderBluetoothDevice)?.find()
+            ui {
+                this@InfoFragment.isVisible.let { button_find?.isEnabled = true }
+
+            }
+        }
+    }
+
+    private fun stopFind() {
+        log.info("beepButton: got xyDevice")
+        ui {
+            button_find?.isEnabled = false
+        }
+
+        GlobalScope.launch {
+            (device as? XYFinderBluetoothDevice)?.stopFind()
             ui {
                 this@InfoFragment.isVisible.let { button_find?.isEnabled = true }
 

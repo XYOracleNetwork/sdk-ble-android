@@ -66,7 +66,7 @@ open class XY4BluetoothDevice(
         log.info("find")
         val unlockResult = unlock()
         if (unlockResult.error == XYBluetoothResult.ErrorCode.None) {
-            val writeResult = primary.buzzer.set(0x11U)
+            val writeResult = primary.buzzer.set(0xbU)
             if (writeResult.error == XYBluetoothResult.ErrorCode.None) {
                 return@connection XYBluetoothResult(writeResult.value)
             } else {
