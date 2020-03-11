@@ -1,8 +1,10 @@
-name: CI
+name: Minor Branch Build
 
 on:
   push: 
     branches-ignore: 
+      - 'develop'
+      - 'release'
       - 'master'
 
 jobs:

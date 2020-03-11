@@ -34,21 +34,36 @@ buildscript {
 
 apply plugin: "org.jlleitschuh.gradle.ktlint"
 
-def verString = project.majorVersion + '.' + project.minorVersion + '.' + (project.patchVersion)
+Properties versionProps = new Properties()
+def versionPropsFile = file('version.properties')
 
-task version(type: VersionTask) 
-class VersionTask extends DefaultTask {
+if (versionPropsFile.exists())
+    versionProps.load(new FileInputStream(versionPropsFile))
 
-    def verString = project.majorVersion + '.' + project.minorVersion + '.' + (project.patchVersion)
-    @TaskAction
-    def version() {
-        println verString
-    }
+def increment = 0
+
+def runTasks = gradle.startParameter.taskNames
+
+if (':ble-android-library:assemble' in runTasks) {
+    increment = 1
+}
+
+def majorVersion = 3
+def minorVersion = 1
+def patch = versionProps['VERSION_PATCH'].toInteger() + increment
+
+def verString = majorVersion + '.' + minorVersion + '.' + patch
+
+task printVersion {
+    println verString
 }
 
 android {
     compileSdkVersion 29
     buildToolsVersion '29.0.2'
+
+    versionProps['VERSION_PATCH'] = patch.toString()
+    versionProps.store(versionPropsFile.newWriter(), null) 
 
     compileOptions {
         sourceCompatibility = 1.8
@@ -62,8 +77,8 @@ android {
         minSdkVersion 21
         targetSdkVersion 29
         defaultPublishConfig 'release'
-        versionCode project.majorVersion * 100000000 + project.minorVersion * 1000000 + project.patchVersion
-        versionName project.majorVersion + "." + project.minorVersion + "." + project.patchVersion
+        versionCode = majorVersion * 100000000 + minorVersion * 1000000 + patch
+        versionName majorVersion + "." + minorVersion + "." + patch
     }
 
     defaultPublishConfig "release"
@@ -73,17 +88,6 @@ android {
         abortOnError true
         warningsAsErrors true
         disable "HardwareIds", "MissingPermission"
-    }
-
-    sourceSets {
-        main {
-            assets {
-                srcDir 'assets'
-            }
-            java {
-                srcDirs += 'src/main/kotlin'
-            }
-        }
     }
 
     buildTypes {
