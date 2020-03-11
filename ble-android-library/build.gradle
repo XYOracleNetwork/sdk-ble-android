@@ -90,17 +90,6 @@ android {
         disable "HardwareIds", "MissingPermission"
     }
 
-    sourceSets {
-        main {
-            assets {
-                srcDir 'assets'
-            }
-            java {
-                srcDirs += 'src/main/kotlin'
-            }
-        }
-    }
-
     buildTypes {
         release {
             minifyEnabled true
