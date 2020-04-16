@@ -11,6 +11,8 @@
 [![Sonarcloud Status](https://sonarcloud.io/api/project_badges/measure?project=XYOracleNetwork_sdk-ble-android&metric=alert_status)](https://sonarcloud.io/dashboard?id=XYOracleNetwork_sdk-ble-android)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/b14446847e614a2fae7152892765dac1)](https://www.codacy.com/app/arietrouw/sdk-ble-android?utm_source=github.com&utm_medium=referral&utm_content=XYOracleNetwork/sdk-ble-android&utm_campaign=Badge_Grade) [![Known Vulnerabilities](https://snyk.io/test/github/XYOracleNetwork/sdk-ble-android/badge.svg?targetFile=build.gradle)](https://snyk.io/test/github/XYOracleNetwork/sdk-ble-android?targetFile=build.gradle)
 
+> The XYO Foundation provides this source code available in our efforts to advance the understanding of the XYO Procotol and its possible uses. We continue to maintain this software in the interest of developer education. Usage of this source code is not intended for production.
+
 ## Table of Contents
 
 -   [Title](#xyo-bluetooth-sdk)
