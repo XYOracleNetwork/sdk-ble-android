@@ -2,6 +2,7 @@ package network.xyo.ble.sample.activities
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.util.SparseArray
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
@@ -33,10 +34,11 @@ class XYODeviceActivity : XYOAppBaseActivity() {
     lateinit var data: XYDeviceData
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        val tag = "TAG: "
         super.onCreate(savedInstanceState)
 
         val deviceHash = intent.getStringExtra(EXTRA_DEVICEHASH)!!
-        log.info("onCreate: $deviceHash")
+        Log.i(tag, "onCreate: $deviceHash")
         device = scanner.devices[deviceHash]
         if (device == null) {
             showToast("Failed to Find Device")
@@ -45,7 +47,7 @@ class XYODeviceActivity : XYOAppBaseActivity() {
         setContentView(R.layout.activity_device)
 
         data = XYDeviceData()
-
+        Log.i(tag, "device data: $data")
         sectionsPagerAdapter = SectionsPagerAdapter(supportFragmentManager)
 
         container.adapter = sectionsPagerAdapter
@@ -136,6 +138,8 @@ class XYODeviceActivity : XYOAppBaseActivity() {
         }
 
         override fun detected(device: XYBluetoothDevice) {
+            val tag = "TAG: "
+            Log.i(tag, "do I have a XY4 device? $device")
             update()
         }
 
