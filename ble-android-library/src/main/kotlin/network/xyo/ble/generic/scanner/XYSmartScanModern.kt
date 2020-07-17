@@ -112,6 +112,9 @@ class XYSmartScanModern(context: Context) : XYSmartScan(context) {
     private fun getSettings(): ScanSettings {
         var result: ScanSettings? = null
         XYCallByVersion()
+                .add(Build.VERSION_CODES.Q) {
+                    result = getSettings29()
+                }
                 .add(Build.VERSION_CODES.O) {
                     result = getSettings26()
                 }
@@ -145,6 +148,16 @@ class XYSmartScanModern(context: Context) : XYSmartScan(context) {
     // Android 8 and 9
     @TargetApi(Build.VERSION_CODES.O)
     private fun getSettings26(): ScanSettings {
+        return ScanSettings.Builder()
+                .setScanMode(ScanSettings.SCAN_MODE_BALANCED)
+                .setCallbackType(ScanSettings.CALLBACK_TYPE_ALL_MATCHES)
+                .setMatchMode(ScanSettings.MATCH_MODE_STICKY)
+                .build()
+    }
+
+    // Android 10
+    @TargetApi(Build.VERSION_CODES.Q)
+    private fun getSettings29(): ScanSettings {
         return ScanSettings.Builder()
                 .setScanMode(ScanSettings.SCAN_MODE_BALANCED)
                 .setCallbackType(ScanSettings.CALLBACK_TYPE_ALL_MATCHES)
