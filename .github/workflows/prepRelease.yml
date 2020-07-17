@@ -13,6 +13,8 @@ jobs:
     - uses: actions/checkout@v2
     - name: pre-build
       run:  chmod +x ./gradlew
+    - name: clean
+      run: ./gradlew :ble-android-library:clean
     - name: build
       run: ./gradlew :ble-android-library:assemble
     - name: check in local changes
