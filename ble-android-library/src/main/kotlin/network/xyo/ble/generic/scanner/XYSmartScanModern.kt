@@ -112,6 +112,9 @@ class XYSmartScanModern(context: Context) : XYSmartScan(context) {
     private fun getSettings(): ScanSettings {
         var result: ScanSettings? = null
         XYCallByVersion()
+                .add(Build.VERSION_CODES.Q) {
+                    result = getSettings29()
+                }
                 .add(Build.VERSION_CODES.O) {
                     result = getSettings26()
                 }
