@@ -28,7 +28,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath "org.jlleitschuh.gradle:ktlint-gradle:9.0.0"
+        classpath "org.jlleitschuh.gradle:ktlint-gradle:9.3.0"
     }
 }
 
