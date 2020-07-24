@@ -60,14 +60,14 @@ task printVersion {
 
 android {
     compileSdkVersion 29
-    buildToolsVersion '29.0.2'
+    buildToolsVersion '29.0.3'
 
     versionProps['VERSION_PATCH'] = patch.toString()
     versionProps.store(versionPropsFile.newWriter(), null) 
 
     compileOptions {
-        sourceCompatibility = 11.0
-        targetCompatibility = 11.0
+        sourceCompatibility = 1.8
+        targetCompatibility = 1.8
         kotlinOptions {
             allWarningsAsErrors = true
         }
