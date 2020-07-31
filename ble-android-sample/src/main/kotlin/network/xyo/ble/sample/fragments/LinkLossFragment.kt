@@ -15,7 +15,6 @@ import network.xyo.ble.generic.devices.XYBluetoothDevice
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResult
 import network.xyo.ble.sample.R
 import network.xyo.ble.sample.XYDeviceData
-import network.xyo.ui.ui
 
 
 @kotlin.ExperimentalUnsignedTypes
@@ -46,13 +45,12 @@ class LinkLossFragment : XYDeviceFragment() {
     }
 
     private fun updateUI() {
-        ui {
+        activity?.runOnUiThread {
             text_alert_level?.text = deviceData?.alertLevel
         }
     }
 
     private fun initLinkLossValues() {
-        throbber?.show()
 
         when (device) {
             is XY4BluetoothDevice -> {
@@ -75,8 +73,6 @@ class LinkLossFragment : XYDeviceFragment() {
             }
 
         }
-
-        throbber?.hide()
     }
 
     private fun getXY4Values(device: XY4BluetoothDevice) {

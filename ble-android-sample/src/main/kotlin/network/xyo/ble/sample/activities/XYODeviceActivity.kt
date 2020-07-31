@@ -9,6 +9,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import com.google.android.material.tabs.TabLayout
 import kotlinx.android.synthetic.main.activity_device.*
+import network.xyo.base.XYBase
 import network.xyo.ble.devices.xy.XY3BluetoothDevice
 import network.xyo.ble.devices.xy.XY4BluetoothDevice
 import network.xyo.ble.generic.devices.XYBluetoothDevice
@@ -17,8 +18,6 @@ import network.xyo.ble.sample.R
 import network.xyo.ble.sample.XYDeviceData
 import network.xyo.ble.sample.fragments.*
 import network.xyo.ble.sample.fragments.core.BackFragmentListener
-import network.xyo.ui.XYBaseFragment
-import network.xyo.ui.ui
 
 /**
  * Created by arietrouw on 12/28/17.
@@ -31,6 +30,7 @@ class XYODeviceActivity : XYOAppBaseActivity() {
     var device: XYBluetoothDevice? = null
     private lateinit var sectionsPagerAdapter: SectionsPagerAdapter
     lateinit var data: XYDeviceData
+    private val log = XYBase.log("XYODeviceActivity")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,7 +39,7 @@ class XYODeviceActivity : XYOAppBaseActivity() {
         log.info("onCreate: $deviceHash")
         device = scanner.devices[deviceHash]
         if (device == null) {
-            showToast("Failed to Find Device")
+            log.error("Device not found")
             finish()
         }
         setContentView(R.layout.activity_device)
@@ -71,16 +71,12 @@ class XYODeviceActivity : XYOAppBaseActivity() {
     private val xy3DeviceListener = object : XY3BluetoothDevice.Listener() {
         override fun entered(device: XYBluetoothDevice) {
             update()
-            ui {
-                showToast("Entered")
-            }
+            log.info("Entered")
         }
 
         override fun exited(device: XYBluetoothDevice) {
             update()
-            ui {
-                showToast("Exited")
-            }
+            log.info("Exited")
         }
 
         override fun detected(device: XYBluetoothDevice) {
@@ -91,48 +87,34 @@ class XYODeviceActivity : XYOAppBaseActivity() {
             log.info("connectionStateChanged: $newState")
             update()
             if (newState == 2) {
-                ui {
-                    showToast("Connected")
-                }
+                log.info("Connected")
             } else {
-                ui {
-                    showToast("Disconnected")
-                }
+                log.info("Disconnected")
             }
         }
 
         override fun buttonSinglePressed(device: XYFinderBluetoothDevice) {
-            ui {
-                showToast("Button Pressed: Single")
-            }
+            log.info("Button Pressed: Single")
         }
 
         override fun buttonDoublePressed(device: XYFinderBluetoothDevice) {
-            ui {
-                showToast("Button Pressed: Double")
-            }
+            log.info("Button Pressed: Double")
         }
 
         override fun buttonLongPressed(device: XYFinderBluetoothDevice) {
-            ui {
-                showToast("Button Pressed: Long")
-            }
+            log.info("Button Pressed: Long")
         }
     }
 
     private val xy4DeviceListener = object : XY4BluetoothDevice.Listener() {
         override fun entered(device: XYBluetoothDevice) {
             update()
-            ui {
-                showToast("Entered")
-            }
+            log.info("Entered")
         }
 
         override fun exited(device: XYBluetoothDevice) {
             update()
-            ui {
-                showToast("Exited")
-            }
+            log.info("Exited")
         }
 
         override fun detected(device: XYBluetoothDevice) {
@@ -142,31 +124,23 @@ class XYODeviceActivity : XYOAppBaseActivity() {
         override fun connectionStateChanged(device: XYBluetoothDevice, newState: Int) {
             log.info("connectionStateChanged: $newState")
             update()
-            ui {
-                if (newState == 2) {
-                    showToast("Connected")
-                } else {
-                    showToast("Disconnected")
-                }
+            if (newState == 2) {
+                log.info("Connected")
+            } else {
+                log.info("Disconnected")
             }
         }
 
         override fun buttonSinglePressed(device: XYFinderBluetoothDevice) {
-            ui {
-                showToast("Button Pressed: Single")
-            }
+            log.info("Button Pressed: Single")
         }
 
         override fun buttonDoublePressed(device: XYFinderBluetoothDevice) {
-            ui {
-                showToast("Button Pressed: Double")
-            }
+            log.info("Button Pressed: Double")
         }
 
         override fun buttonLongPressed(device: XYFinderBluetoothDevice) {
-            ui {
-                showToast("Button Pressed: Long")
-            }
+            log.info("Button Pressed: Long")
         }
     }
 
@@ -205,7 +179,7 @@ class XYODeviceActivity : XYOAppBaseActivity() {
     }
 
     fun update() {
-        ui {
+        runOnUiThread {
             val frag = sectionsPagerAdapter.getFragmentByPosition(container.currentItem)
             (frag as? InfoFragment)?.update()
         }
@@ -219,10 +193,10 @@ class XYODeviceActivity : XYOAppBaseActivity() {
 
     inner class SectionsPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
         private val size = 17
-        private var fragments: SparseArray<XYBaseFragment> = SparseArray(size)
+        private var fragments: SparseArray<Fragment> = SparseArray(size)
 
         override fun getItem(position: Int): Fragment {
-            lateinit var frag: XYAppBaseFragment
+            lateinit var frag: Fragment
 
             when (position) {
                 0 -> {
@@ -287,12 +261,12 @@ class XYODeviceActivity : XYOAppBaseActivity() {
         }
 
         override fun instantiateItem(container: ViewGroup, position: Int): Any {
-            val fragment = super.instantiateItem(container, position) as XYBaseFragment
+            val fragment = super.instantiateItem(container, position) as Fragment
             fragments.append(position, fragment)
             return fragment
         }
 
-        fun getFragmentByPosition(position: Int): XYBaseFragment {
+        fun getFragmentByPosition(position: Int): Fragment {
             return fragments.get(position)
         }
 

@@ -5,15 +5,16 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.fragment_services.view.*
 import network.xyo.ble.generic.gatt.server.XYBluetoothService
 import network.xyo.ble.sample.R
 import network.xyo.ble.sample.adapters.XYServiceListAdapter
-import network.xyo.ui.XYBaseFragment
 
-class ServicesFragment : XYBaseFragment() {
+@ExperimentalUnsignedTypes
+class ServicesFragment : Fragment() {
     val serviceList = XYServiceListAdapter(arrayOf())
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

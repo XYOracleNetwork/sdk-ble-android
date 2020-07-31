@@ -10,7 +10,6 @@ import network.xyo.ble.generic.devices.XYBluetoothDevice
 import network.xyo.ble.sample.XYApplication
 import network.xyo.ble.generic.scanner.XYSmartScan
 import network.xyo.base.XYBase
-import network.xyo.ui.ui
 import java.util.Date
 
 /**
@@ -36,9 +35,7 @@ class XYBLEStatsView(context: Context, attrs: AttributeSet) : LinearLayout(conte
         }
 
         override fun detected(device: XYBluetoothDevice) {
-            ui {
-                text_pulses.text = scanner.scanResultCount.toString()
-            }
+            text_pulses.text = scanner.scanResultCount.toString()
         }
 
         override fun connectionStateChanged(device: XYBluetoothDevice, newState: Int) {
@@ -60,17 +57,15 @@ class XYBLEStatsView(context: Context, attrs: AttributeSet) : LinearLayout(conte
     }
 
     fun update() {
-        ui {
-            text_host_device_name.text = scanner.hostDevice.name.toString()
-            text_enters.text = enterCount.toString()
-            text_exits.text = exitCount.toString()
-            text_net.text = (enterCount - exitCount).toString()
-            text_start_time.text = scanner.startTime?.let { Date(it).toString() } ?: "--"
-            text_uptime.text = scanner.uptime?.let {("%.2f").format((it / 1000f))} ?: "--"
-            text_pulses.text = scanner.scanResultCount.toString()
-            text_pulses_per_second.text = scanner.resultsPerSecond?.let {("%.2f").format(it)} ?: "--"
-            text_devices.text = scanner.devices.size.toString()
-        }
+        text_host_device_name.text = scanner.hostDevice.name.toString()
+        text_enters.text = enterCount.toString()
+        text_exits.text = exitCount.toString()
+        text_net.text = (enterCount - exitCount).toString()
+        text_start_time.text = scanner.startTime?.let { Date(it).toString() } ?: "--"
+        text_uptime.text = scanner.uptime?.let {("%.2f").format((it / 1000f))} ?: "--"
+        text_pulses.text = scanner.scanResultCount.toString()
+        text_pulses_per_second.text = scanner.resultsPerSecond?.let {("%.2f").format(it)} ?: "--"
+        text_devices.text = scanner.devices.size.toString()
     }
 
     companion object: XYBase()

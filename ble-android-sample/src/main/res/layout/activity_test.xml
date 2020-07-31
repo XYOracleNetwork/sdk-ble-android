@@ -4,7 +4,7 @@ xmlns:app="http://schemas.android.com/apk/res-auto"
 android:layout_width="match_parent"
 android:layout_height="match_parent"
 android:fitsSystemWindows="true"
-android:theme="@style/XYTheme">
+android:theme="@style/Theme.AppCompat.DayNight">
 
 <com.google.android.material.appbar.AppBarLayout
     android:id="@+id/appbar"
@@ -14,7 +14,6 @@ android:theme="@style/XYTheme">
 
     <include
         android:id="@+id/toolbar"
-        layout="@layout/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
@@ -28,8 +27,7 @@ android:theme="@style/XYTheme">
         android:id="@+id/server_tabs"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:tabMode="scrollable"
-        app:tabTextColor="@color/xy_text_light">
+        app:tabMode="scrollable">
 
         <com.google.android.material.tabs.TabItem
             android:id="@+id/tab_beep_all"

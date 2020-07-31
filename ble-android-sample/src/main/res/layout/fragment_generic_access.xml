@@ -3,8 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:tag="0"
-    android:theme="@style/XYTheme">
+    android:tag="0">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -21,7 +20,7 @@
                 android:layout_margin="@dimen/layout_margin_normal"
                 android:orientation="horizontal">
 
-                <network.xyo.ui.views.XYButton
+                <Button
                     android:id="@+id/button_generic_refresh"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

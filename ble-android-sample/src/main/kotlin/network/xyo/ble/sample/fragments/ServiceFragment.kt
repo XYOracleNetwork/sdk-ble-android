@@ -8,14 +8,15 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.fragment_service.view.*
 import network.xyo.ble.sample.R
 import network.xyo.ble.sample.adapters.XYCharacteristicAdapter
-import network.xyo.ui.XYBaseFragment
 
-class ServiceFragment : XYBaseFragment() {
+@ExperimentalUnsignedTypes
+class ServiceFragment : Fragment() {
     private var service: BluetoothGattService? = null
 
 

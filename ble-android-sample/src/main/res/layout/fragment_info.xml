@@ -4,8 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:tag="0"
-    android:theme="@style/XYTheme">
+    android:tag="0">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -16,7 +15,7 @@
             android:layout_marginTop="6dp"
             android:orientation="vertical">
 
-            <network.xyo.ui.views.XYButton
+            <Button
                 android:id="@+id/button_startTest"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -29,14 +28,14 @@
                 android:layout_margin="@dimen/layout_margin_normal"
                 android:orientation="horizontal">
 
-                <network.xyo.ui.views.XYButton
+                <Button
                     android:id="@+id/button_connect"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentStart="true"
                     android:text="@string/btn_connect" />
 
-                <network.xyo.ui.views.XYButton
+                <Button
                     android:id="@+id/button_disconnect"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -311,13 +310,13 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/layout_margin_normal">
 
-                    <network.xyo.ui.views.XYButton
+                    <Button
                         android:id="@+id/button_find"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/btn_find" />
 
-                    <network.xyo.ui.views.XYButton
+                    <Button
                         android:id="@+id/button_stop_find"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -331,13 +330,13 @@
                     android:layout_margin="@dimen/layout_margin_normal"
                     android:orientation="horizontal">
 
-                    <network.xyo.ui.views.XYButton
+                    <Button
                         android:id="@+id/button_stay_awake"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/btn_stay_awake" />
 
-                    <network.xyo.ui.views.XYButton
+                    <Button
                         android:id="@+id/button_fall_asleep"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -351,13 +350,13 @@
                     android:layout_margin="@dimen/layout_margin_normal"
                     android:orientation="horizontal">
 
-                    <network.xyo.ui.views.XYButton
+                    <Button
                         android:id="@+id/button_lock"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/btn_lock" />
 
-                    <network.xyo.ui.views.XYButton
+                    <Button
                         android:id="@+id/button_unlock"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -371,13 +370,13 @@
                     android:layout_margin="@dimen/layout_margin_normal"
                     android:orientation="horizontal">
 
-                    <network.xyo.ui.views.XYButton
+                    <Button
                         android:id="@+id/button_enable_notify"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/btn_enable_notify" />
 
-                    <network.xyo.ui.views.XYButton
+                    <Button
                         android:id="@+id/button_disable_notify"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -388,7 +387,7 @@
 
             <View style="@style/divider" />
 
-            <network.xyo.ui.views.XYTextView
+            <TextView
                 android:id="@+id/adList"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
