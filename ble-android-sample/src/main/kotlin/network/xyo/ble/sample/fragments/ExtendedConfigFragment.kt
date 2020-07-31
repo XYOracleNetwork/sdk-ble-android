@@ -13,7 +13,6 @@ import network.xyo.ble.generic.devices.XYBluetoothDevice
 import network.xyo.ble.sample.R
 import network.xyo.ble.sample.XYDeviceData
 import network.xyo.ble.services.xy.ExtendedConfigService
-import network.xyo.ui.ui
 
 @kotlin.ExperimentalUnsignedTypes
 class ExtendedConfigFragment : XYDeviceFragment() {
@@ -47,28 +46,28 @@ class ExtendedConfigFragment : XYDeviceFragment() {
 
         config?.let {
             val gpsInterval = it.gpsInterval.get()
-            ui { text_gps_interval.text = gpsInterval.toString() }
+            activity?.runOnUiThread { text_gps_interval.text = gpsInterval.toString() }
 
             val tone = it.tone.get()
-            ui { text_gps_interval.text = tone.toString() }
+            activity?.runOnUiThread { text_gps_interval.text = tone.toString() }
 
             val stayAwake = it.gpsInterval.get()
-            ui { text_stay_awake.text = stayAwake.toString() }
+            activity?.runOnUiThread { text_stay_awake.text = stayAwake.toString() }
 
             val inactiveVirtualBeaconSettings = it.inactiveVirtualBeaconSettings.get()
-            ui { text_inactive_virtual_beacon_settings.text = inactiveVirtualBeaconSettings.toString() }
+            activity?.runOnUiThread { text_inactive_virtual_beacon_settings.text = inactiveVirtualBeaconSettings.toString() }
 
             val inactiveInterval = it.inactiveInterval.get()
-            ui { text_inactive_interval.text = inactiveInterval.toString() }
+            activity?.runOnUiThread { text_inactive_interval.text = inactiveInterval.toString() }
 
             val virtualBeaconSettings = it.virtualBeaconSettings.get()
-            ui { text_virtual_beacon_settings.text = virtualBeaconSettings.toString() }
+            activity?.runOnUiThread { text_virtual_beacon_settings.text = virtualBeaconSettings.toString() }
 
             val gpsMode = it.gpsMode.get()
-            ui { text_gps_mode.text = gpsMode.toString() }
+            activity?.runOnUiThread { text_gps_mode.text = gpsMode.toString() }
 
             val simId = it.simId.get()
-            ui { text_sim_id.text = simId.toString() }
+            activity?.runOnUiThread { text_sim_id.text = simId.toString() }
 
         }
     }

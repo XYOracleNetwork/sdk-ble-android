@@ -1,11 +1,11 @@
 package network.xyo.ble.sample.activities
 
-import network.xyo.ble.sample.XYApplication
+import androidx.appcompat.app.AppCompatActivity
 import network.xyo.ble.generic.scanner.XYSmartScan
-import network.xyo.ui.XYBaseActivity
+import network.xyo.ble.sample.XYApplication
 
 @kotlin.ExperimentalUnsignedTypes
-abstract class XYOAppBaseActivity : XYBaseActivity() {
+abstract class XYOAppBaseActivity : AppCompatActivity() {
 
     val scanner: XYSmartScan
         get() {

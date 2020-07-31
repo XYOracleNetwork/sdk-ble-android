@@ -13,7 +13,7 @@
         android:text="@string/characteristic_uuid"
         android:textAppearance="@style/TextAppearance.Widget.AppCompat.Toolbar.Title" />
 
-    <network.xyo.ui.views.XYButton
+    <Button
         android:id="@+id/view_characteristic_button"
         android:layout_width="120dp"
         android:layout_height="0dp"

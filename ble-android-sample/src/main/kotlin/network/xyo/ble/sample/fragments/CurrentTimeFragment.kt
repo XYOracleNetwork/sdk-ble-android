@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import kotlinx.android.synthetic.main.fragment_current_time.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -14,7 +15,6 @@ import network.xyo.ble.generic.devices.XYBluetoothDevice
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResult
 import network.xyo.ble.sample.R
 import network.xyo.ble.sample.XYDeviceData
-import network.xyo.ui.ui
 
 @kotlin.ExperimentalUnsignedTypes
 class CurrentTimeFragment : XYDeviceFragment() {
@@ -45,9 +45,7 @@ class CurrentTimeFragment : XYDeviceFragment() {
     }
 
     private fun updateUI() {
-        ui {
-            throbber?.hide()
-
+        activity?.runOnUiThread {
             text_currentTime?.text = deviceData?.currentTime
             text_localTimeInformation?.text = deviceData?.localTimeInformation
             text_referenceTimeInformation?.text = deviceData?.referenceTimeInformation
@@ -55,8 +53,6 @@ class CurrentTimeFragment : XYDeviceFragment() {
     }
 
     private fun setTimeValues() {
-        throbber?.show()
-
         when (device) {
             is XY4BluetoothDevice -> {
                 val x4 = (device as? XY4BluetoothDevice)
@@ -73,8 +69,6 @@ class CurrentTimeFragment : XYDeviceFragment() {
                 text_currentTime.text = getString(R.string.unknown_device)
             }
         }
-
-        throbber?.hide()
     }
 
     private fun getXY4Values(device: XY4BluetoothDevice) {

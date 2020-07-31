@@ -15,7 +15,6 @@ import network.xyo.ble.generic.devices.XYBluetoothDevice
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResult
 import network.xyo.ble.sample.R
 import network.xyo.ble.sample.XYDeviceData
-import network.xyo.ui.ui
 
 
 @kotlin.ExperimentalUnsignedTypes
@@ -46,15 +45,13 @@ class TxPowerFragment : XYDeviceFragment() {
     }
 
     private fun updateUI() {
-        ui {
-            throbber?.hide()
-
+        activity?.runOnUiThread {
             text_tx_power?.text = deviceData?.txPowerLevel
         }
     }
 
     private fun setTxValues() {
-        ui {
+        activity?.runOnUiThread {
             text_tx_power.text = ""
 
             when (device) {
