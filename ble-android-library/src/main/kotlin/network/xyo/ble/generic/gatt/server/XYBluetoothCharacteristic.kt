@@ -71,7 +71,7 @@ open class XYBluetoothCharacteristic(uuid: UUID, properties: Int, permissions: I
         listeners[key] = listener
     }
 
-    fun removeListiner(key: String) {
+    fun removeListener(key: String) {
         listeners.remove(key)
     }
 

@@ -13,7 +13,7 @@ import network.xyo.ble.generic.scanner.XYScanResultManual
 open class XYMobileBluetoothDevice(context: Context, scanResult: XYScanResult, hash: String) : XYFinderBluetoothDevice(context, scanResult, hash) {
 
     init {
-        // we use this since the user would prefer for it to survice a resinstall.  DO NOT USE for advertising!
+        // we use this since the user would prefer for it to service a reinstall.  DO NOT USE for advertising!
         val uniqueId = Settings.Secure.getString(context.contentResolver,
                 Settings.Secure.ANDROID_ID).hashCode().toUInt()
         majorValue = uniqueId.and(0xffff0000.toUInt()).shr(16).toUShort()

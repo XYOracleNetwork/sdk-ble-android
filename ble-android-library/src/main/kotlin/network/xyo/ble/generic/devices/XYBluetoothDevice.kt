@@ -271,7 +271,7 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, val has
         internal var canCreate = false
         val manufacturerToCreator = SparseArray<XYCreator>()
 
-        // Do not serviceToCreator this Private. It's called by other apps
+        // Do not set serviceToCreator as Private. It's called by other apps
         val serviceToCreator = HashMap<UUID, XYCreator>()
 
         // cancel the checkForExit routine so we don't get notifications after service is stopped

@@ -196,34 +196,34 @@
             </RadioGroup>
 
             <TextView
-                android:id="@+id/connectable_title"
+                android:id="@+id/connectible_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/connectable_title"
+                android:text="@string/connectible_title"
                 android:paddingTop="10dp"
                 android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
             <RadioGroup
-                android:id="@+id/connectable_selector"
+                android:id="@+id/connectible_selector"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
                 <RadioButton
-                    android:id="@+id/connectable_1"
+                    android:id="@+id/connectible_1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/_true" />
 
                 <RadioButton
-                    android:id="@+id/connectable_2"
+                    android:id="@+id/connectible_2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/_false" />
 
                 <RadioButton
-                    android:id="@+id/connectable_3"
+                    android:id="@+id/connectible_3"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"

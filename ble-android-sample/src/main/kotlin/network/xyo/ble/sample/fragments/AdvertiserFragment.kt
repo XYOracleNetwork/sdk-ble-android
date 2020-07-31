@@ -97,7 +97,7 @@ class AdvertiserFragment : Fragment() {
     }
 
     private  fun updateConnectible (view: View) {
-        val radioButtonGroup = view.connectable_selector
+        val radioButtonGroup = view.connectible_selector
         val radioButtonID = radioButtonGroup.checkedRadioButtonId
         val radioButton = radioButtonGroup.findViewById<RadioButton>(radioButtonID)
 

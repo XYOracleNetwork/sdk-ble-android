@@ -65,7 +65,7 @@ abstract class XYSmartScan(context: Context) : XYBluetoothBase(context) {
 
     private var oldStatus = XYSmartScanStatus.None
 
-    private val recevier = object : BroadcastReceiver() {
+    private val receiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             if (BluetoothAdapter.ACTION_STATE_CHANGED == intent?.action) {
                 if (intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, -1) == BluetoothAdapter.STATE_OFF) {
@@ -84,7 +84,7 @@ abstract class XYSmartScan(context: Context) : XYBluetoothBase(context) {
 
     init {
         devices[hostDevice.hash] = hostDevice
-        context.registerReceiver(recevier, IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED))
+        context.registerReceiver(receiver, IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED))
         startStatusChecker()
     }
 

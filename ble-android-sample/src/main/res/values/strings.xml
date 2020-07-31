@@ -14,7 +14,7 @@
     <string name="advertising_power_selector_2">ADVERTISE_TX_POWER_MEDIUM</string>
     <string name="advertising_power_selector_3">ADVERTISE_TX_POWER_LOW</string>
     <string name="advertising_power_selector_4">ADVERTISE_TX_POWER_ULTRA_LOW</string>
-    <string name="connectable_title">Connectable</string>
+    <string name="connectible_title">Connectible</string>
     <string name="_true">TRUE</string>
     <string name="_false">FALSE</string>
     <string name="timeout_title">Timeout</string>
@@ -171,7 +171,7 @@
     <string name="sim_id">SIM Id:</string>
     <string name="raw">Raw:</string>
     <string name="timeout">Timeout:</string>
-    <string name="thresold">Thresold:</string>
+    <string name="threshold">Threshold:</string>
     <string name="inactive">Inactive:</string>
     <string name="movement_count">Movement Count:</string>
     <string name="power">Power</string>
