@@ -23,6 +23,7 @@ import network.xyo.ble.sample.R
 import network.xyo.ble.sample.activities.XYODeviceActivity
 import network.xyo.ble.sample.activities.XYOTestActivity
 import network.xyo.ble.generic.scanner.XYSmartScan
+import network.xyo.ble.generic.scanner.XYSmartScanStatus
 
 @kotlin.ExperimentalStdlibApi
 @kotlin.ExperimentalUnsignedTypes
@@ -70,7 +71,7 @@ class CentralFragment : XYDeviceFragment() {
     }
 
     private fun connectListeners() {
-        XY4BluetoothDevice.addGlobalListener(tag!!, object : XY4BluetoothDevice.Listener() {
+        XY4BluetoothDevice.addGlobalListener(tag!!, object : XY4BluetoothDeviceListener() {
             override fun buttonSinglePressed(device: XYFinderBluetoothDevice) {
                 super.buttonSinglePressed(device)
                 log.info("XY4 Button Single Pressed: ${device.address}")
@@ -87,7 +88,7 @@ class CentralFragment : XYDeviceFragment() {
                 log.info("XY4 Button Long Pressed")
             }
         })
-        XY3BluetoothDevice.addGlobalListener(tag!!, object : XY3BluetoothDevice.Listener() {
+        XY3BluetoothDevice.addGlobalListener(tag!!, object : XY3BluetoothDeviceListener() {
             override fun buttonSinglePressed(device: XYFinderBluetoothDevice) {
                 super.buttonSinglePressed(device)
                 log.info("XY3 Button Single Pressed: ${device.address}")
@@ -107,18 +108,18 @@ class CentralFragment : XYDeviceFragment() {
 
     private fun checkStatus() {
         when (scanner.status) {
-            XYSmartScan.Status.Enabled -> {
+            XYSmartScanStatus.Enabled -> {
                 onBluetoothEnabled()
             }
-            XYSmartScan.Status.BluetoothDisabled -> {
+            XYSmartScanStatus.BluetoothDisabled -> {
                 onBluetoothDisabled()
             }
-            XYSmartScan.Status.BluetoothUnavailable -> {
+            XYSmartScanStatus.BluetoothUnavailable -> {
                 onBluetoothUnavailable()
             }
-            XYSmartScan.Status.LocationDisabled -> {
+            XYSmartScanStatus.LocationDisabled -> {
             }
-            XYSmartScan.Status.None -> {
+            XYSmartScanStatus.None -> {
             }
         }
     }

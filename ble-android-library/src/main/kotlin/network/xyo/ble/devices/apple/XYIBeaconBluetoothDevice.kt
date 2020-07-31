@@ -11,6 +11,11 @@ import network.xyo.ble.generic.devices.XYBluetoothDevice
 import network.xyo.ble.generic.devices.XYCreator
 import network.xyo.ble.generic.scanner.XYScanResult
 
+open class XYIBeaconBluetoothDeviceListener : XYAppleBluetoothDeviceListener() {
+    open fun onIBeaconDetect(uuid: String, major: UShort, minor: UShort) {
+    }
+}
+
 @kotlin.ExperimentalUnsignedTypes
 open class XYIBeaconBluetoothDevice(context: Context, val scanResult: XYScanResult?, hash: String, transport: Int? = null) :
     XYBluetoothDevice(context, scanResult?.device, hash, transport) {
@@ -59,11 +64,6 @@ open class XYIBeaconBluetoothDevice(context: Context, val scanResult: XYScanResu
             majorValue = 0.toUShort()
             minorValue = 0.toUShort()
             power = 0
-        }
-    }
-
-    open class Listener : XYAppleBluetoothDevice.Listener() {
-        open fun onIBeaconDetect(uuid: String, major: UShort, minor: UShort) {
         }
     }
 

@@ -11,6 +11,7 @@ import network.xyo.ble.sample.R
 import network.xyo.ble.sample.XYApplication
 import network.xyo.ble.sample.views.XYDeviceItemView
 import network.xyo.ble.generic.scanner.XYSmartScan
+import network.xyo.ble.generic.scanner.XYSmartScanListener
 import java.util.concurrent.locks.ReentrantLock
 
 @kotlin.ExperimentalStdlibApi
@@ -24,7 +25,7 @@ class XYDeviceAdapter(private val activity: Activity) : BaseAdapter() {
             return (activity.applicationContext as XYApplication).scanner
         }
 
-    private val smartScannerListener = object : XYSmartScan.Listener() {
+    private val smartScannerListener = object : XYSmartScanListener() {
         override fun entered(device: XYBluetoothDevice) {
             refreshDevices()
         }

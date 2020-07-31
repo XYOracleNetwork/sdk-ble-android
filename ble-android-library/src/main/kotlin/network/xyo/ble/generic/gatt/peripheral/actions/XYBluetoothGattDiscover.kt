@@ -7,6 +7,7 @@ import kotlinx.coroutines.*
 import network.xyo.base.XYBase
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothGattCallback
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResult
+import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResultErrorCode
 import network.xyo.ble.generic.gatt.peripheral.XYThreadSafeBluetoothGatt
 
 class XYBluetoothGattDiscover(val gatt: XYThreadSafeBluetoothGatt, val gattCallback: XYBluetoothGattCallback) {
@@ -22,7 +23,7 @@ class XYBluetoothGattDiscover(val gatt: XYThreadSafeBluetoothGatt, val gattCallb
     suspend fun start() = GlobalScope.async {
         log.info("discover")
         val listenerName = "XYBluetoothGattDiscover${hashCode()}"
-        var error: XYBluetoothResult.ErrorCode = XYBluetoothResult.ErrorCode.None
+        var error: XYBluetoothResultErrorCode = XYBluetoothResultErrorCode.None
         var value: List<BluetoothGattService>? = null
 
         val services = this@XYBluetoothGattDiscover.services ?: gatt.services
@@ -40,7 +41,7 @@ class XYBluetoothGattDiscover(val gatt: XYThreadSafeBluetoothGatt, val gattCallb
                                 super.onServicesDiscovered(gatt, status)
                                 gattCallback.removeListener(listenerName)
                                 if (status != BluetoothGatt.GATT_SUCCESS) {
-                                    error = XYBluetoothResult.ErrorCode.ServiceDiscoveryFailed
+                                    error = XYBluetoothResultErrorCode.ServiceDiscoveryFailed
 
                                     val idempotent = cont.tryResume(null)
                                     idempotent?.let {
@@ -61,7 +62,7 @@ class XYBluetoothGattDiscover(val gatt: XYThreadSafeBluetoothGatt, val gattCallb
                             override fun onConnectionStateChange(gatt: BluetoothGatt?, status: Int, newState: Int) {
                                 super.onConnectionStateChange(gatt, status, newState)
                                 if (newState != BluetoothGatt.STATE_CONNECTED) {
-                                    error = XYBluetoothResult.ErrorCode.Disconnected
+                                    error = XYBluetoothResultErrorCode.Disconnected
                                     gattCallback.removeListener(listenerName)
                                     val idempotent = cont.tryResume(null)
                                     idempotent?.let {
@@ -74,7 +75,7 @@ class XYBluetoothGattDiscover(val gatt: XYThreadSafeBluetoothGatt, val gattCallb
                         GlobalScope.launch {
                             val discoverStarted = gatt.discoverServices()
                             if (discoverStarted != true) {
-                                error = XYBluetoothResult.ErrorCode.DiscoverServicesFailedToStart
+                                error = XYBluetoothResultErrorCode.DiscoverServicesFailedToStart
                                 gattCallback.removeListener(listenerName)
 
                                 val idempotent = cont.tryResume(null)
@@ -86,7 +87,7 @@ class XYBluetoothGattDiscover(val gatt: XYThreadSafeBluetoothGatt, val gattCallb
                     }
                 }
             } catch (ex: TimeoutCancellationException) {
-                error = XYBluetoothResult.ErrorCode.Timeout
+                error = XYBluetoothResultErrorCode.Timeout
                 gattCallback.removeListener(listenerName)
                 log.error(ex)
             }

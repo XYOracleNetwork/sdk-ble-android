@@ -10,10 +10,7 @@ import android.os.Build
 import android.os.Handler
 import kotlinx.coroutines.*
 import network.xyo.base.XYBase
-import network.xyo.ble.generic.gatt.peripheral.XYBluetoothGattCallback
-import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResult
-import network.xyo.ble.generic.gatt.peripheral.XYThreadSafeBluetoothGatt
-import network.xyo.ble.generic.gatt.peripheral.asyncBle
+import network.xyo.ble.generic.gatt.peripheral.*
 import network.xyo.ble.utilities.XYCallByVersion
 
 class XYBluetoothGattConnect(val device: BluetoothDevice) : XYBase() {
@@ -99,7 +96,7 @@ class XYBluetoothGattConnect(val device: BluetoothDevice) : XYBase() {
 
     private suspend fun connectGatt(context: Context, transport: Int? = null) = GlobalScope.async {
         log.info("connectGatt")
-        var error: XYBluetoothResult.ErrorCode = XYBluetoothResult.ErrorCode.None
+        var error: XYBluetoothResultErrorCode = XYBluetoothResultErrorCode.None
         var value: XYThreadSafeBluetoothGatt? = null
         val autoConnect = false
         val phy = null
@@ -123,7 +120,7 @@ class XYBluetoothGattConnect(val device: BluetoothDevice) : XYBase() {
         }
 
         if (result?.value == null) {
-            error = XYBluetoothResult.ErrorCode.FailedToConnectGatt
+            error = XYBluetoothResultErrorCode.FailedToConnectGatt
         } else {
             value = result.value
         }
@@ -138,12 +135,12 @@ class XYBluetoothGattConnect(val device: BluetoothDevice) : XYBase() {
         if (gatt != null) {
             val discover = XYBluetoothGattDiscover(gatt, callback)
             val discoverResult = discover.start()
-            if (discoverResult.error == XYBluetoothResult.ErrorCode.None) {
+            if (discoverResult.error == XYBluetoothResultErrorCode.None) {
                 services = discoverResult.value
             }
             return@async discoverResult
         } else {
-            return@async XYBluetoothResult<List<BluetoothGattService>>(XYBluetoothResult.ErrorCode.NoGatt)
+            return@async XYBluetoothResult<List<BluetoothGattService>>(XYBluetoothResultErrorCode.NoGatt)
         }
     }.await()
 
@@ -151,14 +148,14 @@ class XYBluetoothGattConnect(val device: BluetoothDevice) : XYBase() {
         log.info("connect: start")
 
         val listenerName = "XYBluetoothGattConnect${hashCode()}"
-        var error: XYBluetoothResult.ErrorCode = XYBluetoothResult.ErrorCode.None
+        var error: XYBluetoothResultErrorCode = XYBluetoothResultErrorCode.None
         var value: Boolean? = null
 
         var connectStartSuccess = false
 
         if (gatt == null) {
             val gattConnectResult = connectGatt(context, transport)
-            if (gattConnectResult.error != XYBluetoothResult.ErrorCode.None) {
+            if (gattConnectResult.error != XYBluetoothResultErrorCode.None) {
                 error = gattConnectResult.error
             } else {
                 gatt = gattConnectResult.value
@@ -167,7 +164,7 @@ class XYBluetoothGattConnect(val device: BluetoothDevice) : XYBase() {
         } else {
             val connectStarted = gatt?.connect()
             if (connectStarted != true) {
-                error = XYBluetoothResult.ErrorCode.ConnectFailedToStart
+                error = XYBluetoothResultErrorCode.ConnectFailedToStart
             } else {
                 connectStartSuccess = true
             }
@@ -183,7 +180,7 @@ class XYBluetoothGattConnect(val device: BluetoothDevice) : XYBase() {
                         when {
                             status == BluetoothGatt.GATT_FAILURE -> {
                                 log.info("connect:failure: $status : $newState")
-                                error = XYBluetoothResult.ErrorCode.GattFailure
+                                error = XYBluetoothResultErrorCode.GattFailure
                                 callback.removeListener(listenerName)
                                 GlobalScope.launch {
                                     close()
@@ -198,7 +195,7 @@ class XYBluetoothGattConnect(val device: BluetoothDevice) : XYBase() {
                                 log.info("connect:connected")
                                 callback.removeListener(listenerName)
                                 GlobalScope.launch {
-                                    if (discover().error == XYBluetoothResult.ErrorCode.None) {
+                                    if (discover().error == XYBluetoothResultErrorCode.None) {
                                         val idempotent = cont.tryResume(true)
                                         idempotent?.let {
                                             cont.completeResume(it)
@@ -218,7 +215,7 @@ class XYBluetoothGattConnect(val device: BluetoothDevice) : XYBase() {
                             newState == BluetoothGatt.STATE_CONNECTING -> log.info("connect:connecting")
 
                             else -> {
-                                error = XYBluetoothResult.ErrorCode.FailedToConnect
+                                error = XYBluetoothResultErrorCode.FailedToConnect
                                 callback.removeListener(listenerName)
                                 GlobalScope.launch {
                                     close()

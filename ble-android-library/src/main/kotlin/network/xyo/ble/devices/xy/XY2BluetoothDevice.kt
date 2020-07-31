@@ -12,6 +12,8 @@ import network.xyo.ble.generic.scanner.XYScanResult
 import network.xyo.ble.generic.services.standard.*
 import network.xyo.ble.services.xy.*
 
+open class XY2BluetoothDeviceListener : XYFinderBluetoothDeviceListener()
+
 @kotlin.ExperimentalUnsignedTypes
 open class XY2BluetoothDevice(context: Context, scanResult: XYScanResult, hash: String) : XYFinderBluetoothDevice(context, scanResult, hash) {
 
@@ -36,8 +38,6 @@ open class XY2BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
     }
 
     override val prefix = "xy:ibeacon"
-
-    open class Listener : XYFinderBluetoothDevice.Listener()
 
     companion object : XYBase() {
 

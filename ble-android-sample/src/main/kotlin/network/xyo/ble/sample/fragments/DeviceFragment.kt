@@ -11,6 +11,7 @@ import network.xyo.ble.devices.xy.XY2BluetoothDevice
 import network.xyo.ble.devices.xy.XY3BluetoothDevice
 import network.xyo.ble.devices.xy.XY4BluetoothDevice
 import network.xyo.ble.generic.devices.XYBluetoothDevice
+import network.xyo.ble.generic.devices.XYBluetoothDeviceListener
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResult
 import network.xyo.ble.sample.R
 import network.xyo.ble.sample.XYDeviceData
@@ -40,7 +41,7 @@ class DeviceFragment : XYDeviceFragment() {
     override fun onResume() {
         super.onResume()
 
-        device?.addListener("DeviceFragment", object: XYBluetoothDevice.Listener() {
+        device?.addListener("DeviceFragment", object: XYBluetoothDeviceListener() {
             override fun detected(device: XYBluetoothDevice) {
                 updateUI()
                 super.detected(device)

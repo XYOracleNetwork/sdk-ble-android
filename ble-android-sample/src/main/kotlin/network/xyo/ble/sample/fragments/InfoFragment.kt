@@ -17,7 +17,9 @@ import network.xyo.ble.devices.xy.XY3BluetoothDevice
 import network.xyo.ble.devices.xy.XY4BluetoothDevice
 import network.xyo.ble.devices.xy.XYFinderBluetoothDevice
 import network.xyo.ble.generic.devices.XYBluetoothDevice
+import network.xyo.ble.generic.devices.XYBluetoothDeviceListener
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResult
+import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResultErrorCode
 import network.xyo.ble.sample.R
 import network.xyo.ble.sample.XYDeviceData
 
@@ -68,7 +70,7 @@ class InfoFragment : XYDeviceFragment(), View.OnClickListener, CompoundButton.On
         updateAdList()
         updateUI()
 
-        device?.addListener("info", object: XYBluetoothDevice.Listener() {
+        device?.addListener("info", object: XYBluetoothDeviceListener() {
             override fun entered(device: XYBluetoothDevice) {
                 super.entered(device)
                 log.info("Entered")
@@ -201,7 +203,7 @@ class InfoFragment : XYDeviceFragment(), View.OnClickListener, CompoundButton.On
         GlobalScope.launch {
             val result = device?.connect()
             val error = result?.error
-            if (error != XYBluetoothResult.ErrorCode.None) {
+            if (error != XYBluetoothResultErrorCode.None) {
                 log.error(error.toString())
             } else {
                 log.info("Connected")
@@ -294,7 +296,7 @@ class InfoFragment : XYDeviceFragment(), View.OnClickListener, CompoundButton.On
             val locked = (device as? XYFinderBluetoothDevice)?.lock()
             when {
                 locked == null -> log.error("Device does not support Lock")
-                locked.error == XYBluetoothResult.ErrorCode.None -> {
+                locked.error == XYBluetoothResultErrorCode.None -> {
                     log.info("Locked: ${locked.value}")
                     updateStayAwakeEnabledStates()
                 }
@@ -316,7 +318,7 @@ class InfoFragment : XYDeviceFragment(), View.OnClickListener, CompoundButton.On
             val unlocked = (device as? XYFinderBluetoothDevice)?.unlock()
             when {
                 unlocked == null -> log.error("Device does not support Unlock")
-                unlocked.error == XYBluetoothResult.ErrorCode.None -> {
+                unlocked.error == XYBluetoothResultErrorCode.None -> {
                     log.info("Unlocked: ${unlocked.value}")
                     updateStayAwakeEnabledStates()
                 }
