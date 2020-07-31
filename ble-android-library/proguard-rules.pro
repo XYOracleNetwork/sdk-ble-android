@@ -31,5 +31,6 @@
 -keepattributes EnclosingMethod
 
 #noinspection ShrinkerUnresolvedReference
--keep public class network.xyo.** { *; }
+-dontshrink
+-keep public class network.xyo.ble.** { *; }
 -keep class androidx.core.app.CoreComponentFactory { *; }
