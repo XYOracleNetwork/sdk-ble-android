@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import kotlinx.android.synthetic.main.fragment_basic.*
 import kotlinx.android.synthetic.main.fragment_test.*
 import kotlinx.coroutines.*
 import network.xyo.ble.devices.xy.XY3BluetoothDevice

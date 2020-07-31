@@ -8,7 +8,6 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import network.xyo.ble.generic.devices.XYBluetoothDevice
 import network.xyo.ble.sample.XYApplication
-import network.xyo.ble.generic.scanner.XYSmartScan
 import network.xyo.base.XYBase
 import network.xyo.ble.generic.scanner.XYSmartScanListener
 import network.xyo.ble.generic.scanner.XYSmartScanStatus

@@ -3,8 +3,10 @@ package network.xyo.ble.generic.gatt.peripheral
 import android.bluetooth.*
 import android.content.Context
 import android.os.Handler
+import com.jaredrummler.android.device.BuildConfig
 import java.util.UUID
 import java.util.concurrent.Executors
+import java.lang.RuntimeException
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.resume
 import kotlinx.coroutines.*
@@ -292,7 +294,8 @@ open class XYBluetoothGatt protected constructor(
 
     protected suspend fun readCharacteristic(characteristicToRead: BluetoothGattCharacteristic, timeout: Long = 10000) = queueBle(timeout, "readCharacteristic") {
         log.info("readCharacteristic")
-        assert(connection?.state == BluetoothGatt.STATE_CONNECTED)
+        if(BuildConfig.DEBUG && connection?.state != BluetoothGatt.STATE_CONNECTED)
+            throw RuntimeException("cannot read characteristic")
         val gatt = connection?.gatt
         if (gatt != null) {
             val readCharacteristic = XYBluetoothGattReadCharacteristic(gatt, centralCallback)
@@ -309,7 +312,8 @@ open class XYBluetoothGatt protected constructor(
     ) = queueBle(timeout, "writeCharacteristic") {
 
         log.info("writeCharacteristic")
-        assert(connection?.state == BluetoothGatt.STATE_CONNECTED)
+        if(BuildConfig.DEBUG && connection?.state != BluetoothGatt.STATE_CONNECTED)
+            throw RuntimeException("cannot read characteristic")
         val gatt = connection?.gatt
         if (gatt != null) {
             val writeCharacteristic = XYBluetoothGattWriteCharacteristic(gatt, centralCallback, writeType)
@@ -338,7 +342,8 @@ open class XYBluetoothGatt protected constructor(
 
     protected suspend fun writeDescriptor(descriptorToWrite: BluetoothGattDescriptor, timeout: Long = 1100) = queueBle(timeout, "writeDescriptor") {
         log.info("writeDescriptor")
-        assert(connection?.state == BluetoothGatt.STATE_CONNECTED)
+        if(BuildConfig.DEBUG && connection?.state != BluetoothGatt.STATE_CONNECTED)
+            throw RuntimeException("cannot read characteristic")
         val gatt = connection?.gatt
         if (gatt != null) {
             val writeDescriptor = XYBluetoothGattWriteDescriptor(gatt, centralCallback)

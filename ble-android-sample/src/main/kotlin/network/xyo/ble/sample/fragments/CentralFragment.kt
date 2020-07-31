@@ -9,7 +9,6 @@ import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.BaseAdapter
-import androidx.fragment.app.Fragment
 import com.nabinbhandari.android.permissions.PermissionHandler
 import com.nabinbhandari.android.permissions.Permissions
 import kotlinx.android.synthetic.main.fragment_central.*
@@ -22,7 +21,6 @@ import network.xyo.ble.generic.devices.XYBluetoothDevice
 import network.xyo.ble.sample.R
 import network.xyo.ble.sample.activities.XYODeviceActivity
 import network.xyo.ble.sample.activities.XYOTestActivity
-import network.xyo.ble.generic.scanner.XYSmartScan
 import network.xyo.ble.generic.scanner.XYSmartScanStatus
 
 @kotlin.ExperimentalStdlibApi

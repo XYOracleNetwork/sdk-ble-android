@@ -314,13 +314,15 @@
                         android:id="@+id/button_find"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/btn_find" />
+                        android:text="@string/btn_find"
+                        style="?android:attr/borderlessButtonStyle" />
 
                     <Button
                         android:id="@+id/button_stop_find"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/btn_stop_find" />
+                        android:text="@string/btn_stop_find"
+                        style="?android:attr/borderlessButtonStyle" />
 
                 </LinearLayout>
 
@@ -334,14 +336,16 @@
                         android:id="@+id/button_stay_awake"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/btn_stay_awake" />
+                        android:text="@string/btn_stay_awake"
+                        style="?android:attr/borderlessButtonStyle" />
 
                     <Button
                         android:id="@+id/button_fall_asleep"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
-                        android:text="@string/btn_fall_asleep" />
+                        android:text="@string/btn_fall_asleep"
+                        style="?android:attr/borderlessButtonStyle" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -354,14 +358,16 @@
                         android:id="@+id/button_lock"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/btn_lock" />
+                        android:text="@string/btn_lock"
+                        style="?android:attr/borderlessButtonStyle" />
 
                     <Button
                         android:id="@+id/button_unlock"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
-                        android:text="@string/btn_unlock" />
+                        android:text="@string/btn_unlock"
+                        style="?android:attr/borderlessButtonStyle" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -374,14 +380,16 @@
                         android:id="@+id/button_enable_notify"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/btn_enable_notify" />
+                        android:text="@string/btn_enable_notify"
+                        style="?android:attr/borderlessButtonStyle" />
 
                     <Button
                         android:id="@+id/button_disable_notify"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
-                        android:text="@string/btn_disable_notify" />
+                        android:text="@string/btn_disable_notify"
+                        style="?android:attr/borderlessButtonStyle" />
                 </LinearLayout>
             </LinearLayout>
 

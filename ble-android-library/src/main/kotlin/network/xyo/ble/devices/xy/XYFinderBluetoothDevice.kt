@@ -11,7 +11,6 @@ import network.xyo.base.XYBase
 import network.xyo.ble.devices.apple.XYAppleBluetoothDevice
 import network.xyo.ble.devices.apple.XYIBeaconBluetoothDevice
 import network.xyo.ble.devices.apple.XYIBeaconBluetoothDeviceListener
-import network.xyo.ble.firmware.XYOtaUpdate
 import network.xyo.ble.firmware.XYOtaUpdateListener
 import network.xyo.ble.generic.devices.XYBluetoothDevice
 import network.xyo.ble.generic.devices.XYCreator

@@ -10,7 +10,6 @@ import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
-import androidx.fragment.app.Fragment
 import kotlinx.android.synthetic.main.fragment_firmware_update.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -20,7 +19,6 @@ import network.xyo.base.XYBase
 import network.xyo.ble.devices.xy.XY4BluetoothDevice
 import network.xyo.ble.generic.devices.XYBluetoothDevice
 import network.xyo.ble.firmware.XYOtaFile
-import network.xyo.ble.firmware.XYOtaUpdate
 import network.xyo.ble.firmware.XYOtaUpdateListener
 import network.xyo.ble.sample.R
 import network.xyo.ble.sample.XYDeviceData

@@ -7,7 +7,6 @@ import android.view.View
 import android.widget.RelativeLayout
 import kotlinx.android.synthetic.main.device_item.view.*
 import network.xyo.ble.generic.devices.XYBluetoothDevice
-import network.xyo.ble.devices.xy.XYFinderBluetoothDevice
 import network.xyo.ble.devices.apple.XYIBeaconBluetoothDevice
 import network.xyo.ble.sample.R
 import network.xyo.ble.sample.activities.XYODeviceActivity
