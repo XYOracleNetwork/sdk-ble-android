@@ -11,6 +11,7 @@ import network.xyo.ble.sample.XYApplication
 import network.xyo.ble.generic.scanner.XYSmartScan
 import network.xyo.base.XYBase
 import network.xyo.ble.generic.scanner.XYSmartScanListener
+import network.xyo.ble.generic.scanner.XYSmartScanStatus
 import java.util.Date
 
 /**
@@ -44,7 +45,7 @@ class XYBLEStatsView(context: Context, attrs: AttributeSet) : LinearLayout(conte
             update()
         }
 
-        override fun statusChanged(status: XYSmartScan.Status) {
+        override fun statusChanged(status: XYSmartScanStatus) {
             log.info("statusChanged")
             update()
         }

@@ -23,6 +23,7 @@ import network.xyo.ble.sample.R
 import network.xyo.ble.sample.activities.XYODeviceActivity
 import network.xyo.ble.sample.activities.XYOTestActivity
 import network.xyo.ble.generic.scanner.XYSmartScan
+import network.xyo.ble.generic.scanner.XYSmartScanStatus
 
 @kotlin.ExperimentalStdlibApi
 @kotlin.ExperimentalUnsignedTypes
@@ -107,18 +108,18 @@ class CentralFragment : XYDeviceFragment() {
 
     private fun checkStatus() {
         when (scanner.status) {
-            XYSmartScan.Status.Enabled -> {
+            XYSmartScanStatus.Enabled -> {
                 onBluetoothEnabled()
             }
-            XYSmartScan.Status.BluetoothDisabled -> {
+            XYSmartScanStatus.BluetoothDisabled -> {
                 onBluetoothDisabled()
             }
-            XYSmartScan.Status.BluetoothUnavailable -> {
+            XYSmartScanStatus.BluetoothUnavailable -> {
                 onBluetoothUnavailable()
             }
-            XYSmartScan.Status.LocationDisabled -> {
+            XYSmartScanStatus.LocationDisabled -> {
             }
-            XYSmartScan.Status.None -> {
+            XYSmartScanStatus.None -> {
             }
         }
     }

@@ -16,6 +16,7 @@ import network.xyo.ble.firmware.XYOtaUpdateListener
 import network.xyo.ble.generic.devices.XYBluetoothDevice
 import network.xyo.ble.generic.devices.XYCreator
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResult
+import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResultErrorCode
 import network.xyo.ble.generic.scanner.XYScanResult
 
 open class XYFinderBluetoothDeviceListener : XYIBeaconBluetoothDeviceListener() {
@@ -26,43 +27,43 @@ open class XYFinderBluetoothDeviceListener : XYIBeaconBluetoothDeviceListener() 
     open fun buttonLongPressed(device: XYFinderBluetoothDevice) {}
 }
 
+enum class XYFinderBluetoothDeviceFamily {
+    Unknown,
+    XY1,
+    XY2,
+    XY3,
+    Mobile,
+    Gps,
+    Near,
+    XY4,
+    Webble
+}
+
+enum class XYFinderBluetoothDeviceProximity {
+    None,
+    OutOfRange,
+    VeryFar,
+    Far,
+    Medium,
+    Near,
+    VeryNear,
+    Touching
+}
+
+enum class XYFinderBluetoothDeviceButtonPress(val state: Int) {
+    None(0),
+    Single(1),
+    Double(2),
+    Long(3)
+}
+
+enum class XYFinderBluetoothDeviceStayAwake(val state: UByte) {
+    Off(0U),
+    On(1U)
+}
+
 @kotlin.ExperimentalUnsignedTypes
 open class XYFinderBluetoothDevice(context: Context, scanResult: XYScanResult, hash: String) : XYIBeaconBluetoothDevice(context, scanResult, hash) {
-
-    enum class Family {
-        Unknown,
-        XY1,
-        XY2,
-        XY3,
-        Mobile,
-        Gps,
-        Near,
-        XY4,
-        Webble
-    }
-
-    enum class Proximity {
-        None,
-        OutOfRange,
-        VeryFar,
-        Far,
-        Medium,
-        Near,
-        VeryNear,
-        Touching
-    }
-
-    enum class ButtonPress(val state: Int) {
-        None(0),
-        Single(1),
-        Double(2),
-        Long(3)
-    }
-
-    enum class StayAwake(val state: UByte) {
-        Off(0U),
-        On(1U)
-    }
 
     override val id: String
         get() {
@@ -71,100 +72,100 @@ open class XYFinderBluetoothDevice(context: Context, scanResult: XYScanResult, h
 
     internal open val prefix = "xy:finder"
 
-    val family: Family
+    val family: XYFinderBluetoothDeviceFamily
         get() {
             return when (this@XYFinderBluetoothDevice) {
                 is XYMobileBluetoothDevice -> {
-                    Family.Mobile
+                    XYFinderBluetoothDeviceFamily.Mobile
                 }
                 is XYGpsBluetoothDevice -> {
-                    Family.Gps
+                    XYFinderBluetoothDeviceFamily.Gps
                 }
                 is XY4BluetoothDevice -> {
-                    Family.XY4
+                    XYFinderBluetoothDeviceFamily.XY4
                 }
                 is XY3BluetoothDevice -> {
-                    Family.XY3
+                    XYFinderBluetoothDeviceFamily.XY3
                 }
                 else -> {
-                    Family.Unknown
+                    XYFinderBluetoothDeviceFamily.Unknown
                 }
             }
         }
 
     // the distance is in meters, so these are what we subjectively think are the fuzzy proximity values
-    val proximity: Proximity
+    val proximity: XYFinderBluetoothDeviceProximity
         get() {
 
-            val distance = distance ?: return Proximity.OutOfRange
+            val distance = distance ?: return XYFinderBluetoothDeviceProximity.OutOfRange
 
             if (distance < 0.0) {
-                return Proximity.None
+                return XYFinderBluetoothDeviceProximity.None
             }
 
             if (distance < 0.5) {
-                return Proximity.Touching
+                return XYFinderBluetoothDeviceProximity.Touching
             }
 
             if (distance < 15) {
-                return Proximity.VeryNear
+                return XYFinderBluetoothDeviceProximity.VeryNear
             }
 
             if (distance < 30) {
-                return Proximity.Near
+                return XYFinderBluetoothDeviceProximity.Near
             }
 
             if (distance < 60) {
-                return Proximity.Medium
+                return XYFinderBluetoothDeviceProximity.Medium
             }
 
             if (distance < 120) {
-                return Proximity.Far
+                return XYFinderBluetoothDeviceProximity.Far
             }
 
-            return Proximity.VeryFar
+            return XYFinderBluetoothDeviceProximity.VeryFar
         }
 
     // signal the user to where it is, usually make it beep
     open suspend fun find() = connection {
         log.error(UnsupportedOperationException().toString(), true)
-        return@connection XYBluetoothResult<UByte>(XYBluetoothResult.ErrorCode.Unsupported)
+        return@connection XYBluetoothResult<UByte>(XYBluetoothResultErrorCode.Unsupported)
     }
 
     // turn off finding, if supported
     open suspend fun stopFind() = connection {
         log.error(UnsupportedOperationException(), true)
-        return@connection XYBluetoothResult<UByte>(XYBluetoothResult.ErrorCode.Unsupported)
+        return@connection XYBluetoothResult<UByte>(XYBluetoothResultErrorCode.Unsupported)
     }
 
     open suspend fun lock() = connection {
         log.error(UnsupportedOperationException(), true)
-        return@connection XYBluetoothResult<ByteArray>(XYBluetoothResult.ErrorCode.Unsupported)
+        return@connection XYBluetoothResult<ByteArray>(XYBluetoothResultErrorCode.Unsupported)
     }
 
     open suspend fun unlock() = connection {
         log.error(UnsupportedOperationException(), true)
-        return@connection XYBluetoothResult<ByteArray>(XYBluetoothResult.ErrorCode.Unsupported)
+        return@connection XYBluetoothResult<ByteArray>(XYBluetoothResultErrorCode.Unsupported)
     }
 
     open suspend fun stayAwake() = connection {
         log.error(UnsupportedOperationException(), true)
-        return@connection XYBluetoothResult<UByte>(XYBluetoothResult.ErrorCode.Unsupported)
+        return@connection XYBluetoothResult<UByte>(XYBluetoothResultErrorCode.Unsupported)
     }
 
     open suspend fun fallAsleep() = connection {
         log.error(UnsupportedOperationException(), true)
-        return@connection XYBluetoothResult<UByte>(XYBluetoothResult.ErrorCode.Unsupported)
+        return@connection XYBluetoothResult<UByte>(XYBluetoothResultErrorCode.Unsupported)
     }
 
     open suspend fun restart() = connection {
         log.error(UnsupportedOperationException(), true)
-        return@connection XYBluetoothResult<UByte>(XYBluetoothResult.ErrorCode.Unsupported)
+        return@connection XYBluetoothResult<UByte>(XYBluetoothResultErrorCode.Unsupported)
     }
 
     open suspend fun batteryLevel() = connection {
         log.error(UnsupportedOperationException(), true)
-        return@connection XYBluetoothResult<UByte>(XYBluetoothResult.ErrorCode.Unsupported)
+        return@connection XYBluetoothResult<UByte>(XYBluetoothResultErrorCode.Unsupported)
     }
 
     open fun updateFirmware(stream: InputStream, listener: XYOtaUpdateListener) {
@@ -176,7 +177,7 @@ open class XYFinderBluetoothDevice(context: Context, scanResult: XYScanResult, h
     open fun cancelUpdateFirmware() {
     }
 
-    internal open fun reportButtonPressed(state: ButtonPress) {
+    internal open fun reportButtonPressed(state: XYFinderBluetoothDeviceButtonPress) {
         log.info("reportButtonPressed")
         GlobalScope.launch {
             synchronized(listeners) {
@@ -186,9 +187,9 @@ open class XYFinderBluetoothDevice(context: Context, scanResult: XYScanResult, h
                         log.info("reportButtonPressed: $xyFinderListener")
                         GlobalScope.launch {
                             when (state) {
-                                ButtonPress.Single -> xyFinderListener.buttonSinglePressed(this@XYFinderBluetoothDevice)
-                                ButtonPress.Double -> xyFinderListener.buttonDoublePressed(this@XYFinderBluetoothDevice)
-                                ButtonPress.Long -> xyFinderListener.buttonLongPressed(this@XYFinderBluetoothDevice)
+                                XYFinderBluetoothDeviceButtonPress.Single -> xyFinderListener.buttonSinglePressed(this@XYFinderBluetoothDevice)
+                                XYFinderBluetoothDeviceButtonPress.Double -> xyFinderListener.buttonDoublePressed(this@XYFinderBluetoothDevice)
+                                XYFinderBluetoothDeviceButtonPress.Long -> xyFinderListener.buttonLongPressed(this@XYFinderBluetoothDevice)
                                 else -> {
                                 }
                             }
@@ -208,13 +209,13 @@ open class XYFinderBluetoothDevice(context: Context, scanResult: XYScanResult, h
             }
         }
 
-        fun buttonPressFromInt(index: Int): ButtonPress {
+        fun buttonPressFromInt(index: Int): XYFinderBluetoothDeviceButtonPress {
             return when (index) {
-                1 -> ButtonPress.Single
-                2 -> ButtonPress.Double
-                3 -> ButtonPress.Long
+                1 -> XYFinderBluetoothDeviceButtonPress.Single
+                2 -> XYFinderBluetoothDeviceButtonPress.Double
+                3 -> XYFinderBluetoothDeviceButtonPress.Long
                 else -> {
-                    ButtonPress.None
+                    XYFinderBluetoothDeviceButtonPress.None
                 }
             }
         }

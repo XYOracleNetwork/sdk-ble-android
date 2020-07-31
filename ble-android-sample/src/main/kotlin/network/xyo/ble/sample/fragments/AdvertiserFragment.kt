@@ -17,6 +17,7 @@ import network.xyo.ble.generic.gatt.server.XYIBeaconAdvertiseDataCreator
 import network.xyo.ble.sample.R
 import network.xyo.base.XYBase
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResult
+import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResultErrorCode
 import java.nio.ByteBuffer
 import java.util.UUID
 
@@ -58,7 +59,7 @@ class AdvertiserFragment : Fragment() {
 
 
         activity?.runOnUiThread {
-            if (status?.value == 0 && status.error == XYBluetoothResult.ErrorCode.None) {
+            if (status?.value == 0 && status.error == XYBluetoothResultErrorCode.None) {
                 log.info("Success!")
                 return@runOnUiThread
             }

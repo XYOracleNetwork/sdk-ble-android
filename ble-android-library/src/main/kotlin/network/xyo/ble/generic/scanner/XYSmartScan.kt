@@ -17,9 +17,25 @@ import network.xyo.ble.generic.XYBluetoothBase
 import network.xyo.ble.generic.devices.XYBluetoothDevice
 import network.xyo.ble.generic.devices.XYBluetoothDeviceListener
 
+enum class XYSmartScanListenerScanFailed {
+    Unknown,
+    AlreadyStarted,
+    ApplicationRegistrationFailed,
+    FeatureUnsupported,
+    InternalError
+}
+
 open class XYSmartScanListener : XYBluetoothDeviceListener() {
-    open fun statusChanged(status: XYSmartScan.Status) {
+    open fun statusChanged(status: XYSmartScanStatus) {
     }
+}
+
+enum class XYSmartScanStatus {
+    None,
+    Enabled,
+    BluetoothDisabled,
+    BluetoothUnavailable,
+    LocationDisabled
 }
 
 @kotlin.ExperimentalUnsignedTypes
@@ -27,14 +43,6 @@ abstract class XYSmartScan(context: Context) : XYBluetoothBase(context) {
 
     var startTime: Long? = null
     var scanResultCount = 0
-
-    enum class Status {
-        None,
-        Enabled,
-        BluetoothDisabled,
-        BluetoothUnavailable,
-        LocationDisabled
-    }
 
     val resultsPerSecond: Float?
         get() {
@@ -55,7 +63,7 @@ abstract class XYSmartScan(context: Context) : XYBluetoothBase(context) {
 
     protected var restartingBluetooth = false
 
-    private var oldStatus = Status.None
+    private var oldStatus = XYSmartScanStatus.None
 
     private val recevier = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
@@ -91,19 +99,19 @@ abstract class XYSmartScan(context: Context) : XYBluetoothBase(context) {
         }
     }
 
-    val status: Status
+    val status: XYSmartScanStatus
         get() {
             val bluetoothManager = this.bluetoothManager
             if (bluetoothManager?.adapter == null) {
-                return Status.BluetoothUnavailable
+                return XYSmartScanStatus.BluetoothUnavailable
             }
             if (!(bluetoothManager.adapter.isEnabled)) {
-                return Status.BluetoothDisabled
+                return XYSmartScanStatus.BluetoothDisabled
             }
             if (!areLocationServicesAvailable()) {
-                return Status.LocationDisabled
+                return XYSmartScanStatus.LocationDisabled
             }
-            return Status.Enabled
+            return XYSmartScanStatus.Enabled
         }
 
     fun enableBluetooth(enable: Boolean) {
@@ -153,21 +161,13 @@ abstract class XYSmartScan(context: Context) : XYBluetoothBase(context) {
 
     private val listeners = HashMap<String, XYSmartScanListener>()
 
-    enum class ScanFailed {
-        Unknown,
-        AlreadyStarted,
-        ApplicationRegistrationFailed,
-        FeatureUnsupported,
-        InternalError
-    }
-
-    fun codeToScanFailed(code: Int): ScanFailed {
+    fun codeToScanFailed(code: Int): XYSmartScanListenerScanFailed {
         return when (code) {
-            ScanCallback.SCAN_FAILED_ALREADY_STARTED -> ScanFailed.AlreadyStarted
-            ScanCallback.SCAN_FAILED_APPLICATION_REGISTRATION_FAILED -> ScanFailed.ApplicationRegistrationFailed
-            ScanCallback.SCAN_FAILED_FEATURE_UNSUPPORTED -> ScanFailed.FeatureUnsupported
-            ScanCallback.SCAN_FAILED_INTERNAL_ERROR -> ScanFailed.InternalError
-            else -> ScanFailed.Unknown
+            ScanCallback.SCAN_FAILED_ALREADY_STARTED -> XYSmartScanListenerScanFailed.AlreadyStarted
+            ScanCallback.SCAN_FAILED_APPLICATION_REGISTRATION_FAILED -> XYSmartScanListenerScanFailed.ApplicationRegistrationFailed
+            ScanCallback.SCAN_FAILED_FEATURE_UNSUPPORTED -> XYSmartScanListenerScanFailed.FeatureUnsupported
+            ScanCallback.SCAN_FAILED_INTERNAL_ERROR -> XYSmartScanListenerScanFailed.InternalError
+            else -> XYSmartScanListenerScanFailed.Unknown
         }
     }
 

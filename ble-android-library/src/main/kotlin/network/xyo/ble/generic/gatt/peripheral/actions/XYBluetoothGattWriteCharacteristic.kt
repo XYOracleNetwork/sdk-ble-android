@@ -7,6 +7,7 @@ import kotlinx.coroutines.*
 import network.xyo.base.XYBase
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothGattCallback
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResult
+import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResultErrorCode
 import network.xyo.ble.generic.gatt.peripheral.XYThreadSafeBluetoothGatt
 
 class XYBluetoothGattWriteCharacteristic(
@@ -29,7 +30,7 @@ class XYBluetoothGattWriteCharacteristic(
         }
 
         val listenerName = "XYBluetoothGattWriteCharacteristic${hashCode()}"
-        var error: XYBluetoothResult.ErrorCode = XYBluetoothResult.ErrorCode.None
+        var error: XYBluetoothResultErrorCode = XYBluetoothResultErrorCode.None
         var value: ByteArray? = null
 
         try {
@@ -49,7 +50,7 @@ class XYBluetoothGattWriteCharacteristic(
                                         cont.completeResume(it)
                                     }
                                 } else {
-                                    error = XYBluetoothResult.ErrorCode.CharacteristicWriteFailed
+                                    error = XYBluetoothResultErrorCode.CharacteristicWriteFailed
                                     gattCallback.removeListener(listenerName)
                                     if (!isActive) {
                                         return
@@ -67,7 +68,7 @@ class XYBluetoothGattWriteCharacteristic(
                             log.info("onCharacteristicWrite")
                             super.onConnectionStateChange(gatt, status, newState)
                             if (newState != BluetoothGatt.STATE_CONNECTED) {
-                                error = XYBluetoothResult.ErrorCode.Disconnected
+                                error = XYBluetoothResultErrorCode.Disconnected
                                 gattCallback.removeListener(listenerName)
                                 if (!isActive) {
                                     return
@@ -84,7 +85,7 @@ class XYBluetoothGattWriteCharacteristic(
                     GlobalScope.launch {
                         val writeStarted = gatt.writeCharacteristic(characteristicToWrite)
                         if (writeStarted != true) {
-                            error = XYBluetoothResult.ErrorCode.WriteCharacteristicFailedToStart
+                            error = XYBluetoothResultErrorCode.WriteCharacteristicFailedToStart
                             gattCallback.removeListener(listenerName)
                             if (!isActive) {
                                 return@launch
@@ -99,7 +100,7 @@ class XYBluetoothGattWriteCharacteristic(
                 }
             }
         } catch (ex: TimeoutCancellationException) {
-            error = XYBluetoothResult.ErrorCode.Timeout
+            error = XYBluetoothResultErrorCode.Timeout
             gattCallback.removeListener(listenerName)
             log.error(ex)
         }

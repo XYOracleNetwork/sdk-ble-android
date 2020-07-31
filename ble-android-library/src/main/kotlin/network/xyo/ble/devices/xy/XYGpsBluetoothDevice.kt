@@ -20,6 +20,11 @@ import network.xyo.ble.services.xy.*
 
 open class XYGpsBluetoothDeviceListener : XYFinderBluetoothDeviceListener()
 
+enum class XYGpsBluetoothDeviceStayAwake(val state: Int) {
+    Off(0),
+    On(1)
+}
+
 @kotlin.ExperimentalUnsignedTypes
 open class XYGpsBluetoothDevice(context: Context, scanResult: XYScanResult, hash: String) : XYFinderBluetoothDevice(context, scanResult, hash) {
 
@@ -59,7 +64,7 @@ open class XYGpsBluetoothDevice(context: Context, scanResult: XYScanResult, hash
         return controlService.buzzerSelect.set(0x01U)
     }
 
-    override fun reportButtonPressed(state: ButtonPress) {
+    override fun reportButtonPressed(state: XYFinderBluetoothDeviceButtonPress) {
         super.reportButtonPressed(state)
         reportGlobalButtonPressed(this, state)
     }
@@ -84,11 +89,6 @@ open class XYGpsBluetoothDevice(context: Context, scanResult: XYScanResult, hash
         val DEFAULT_LOCK_CODE = byteArrayOf(0x2f.toByte(), 0xbe.toByte(), 0xa2.toByte(), 0x07.toByte(), 0x52.toByte(), 0xfe.toByte(), 0xbf.toByte(), 0x31.toByte(), 0x1d.toByte(), 0xac.toByte(), 0x5d.toByte(), 0xfa.toByte(), 0x7d.toByte(), 0x77.toByte(), 0x76.toByte(), 0x80.toByte())
 
         protected val globalListeners = HashMap<String, XYGpsBluetoothDeviceListener>()
-
-        enum class StayAwake(val state: Int) {
-            Off(0),
-            On(1)
-        }
 
         fun enable(enable: Boolean) {
             if (enable) {
@@ -115,7 +115,7 @@ open class XYGpsBluetoothDevice(context: Context, scanResult: XYScanResult, hash
             }
         }
 
-        fun reportGlobalButtonPressed(device: XYGpsBluetoothDevice, state: ButtonPress) {
+        fun reportGlobalButtonPressed(device: XYGpsBluetoothDevice, state: XYFinderBluetoothDeviceButtonPress) {
             log.info("reportButtonPressed (Global)")
             GlobalScope.launch {
                 synchronized(globalListeners) {
@@ -125,9 +125,9 @@ open class XYGpsBluetoothDevice(context: Context, scanResult: XYScanResult, hash
                             log.info("reportButtonPressed: $xyFinderListener")
                             GlobalScope.launch {
                                 when (state) {
-                                    ButtonPress.Single -> xyFinderListener.buttonSinglePressed(device)
-                                    ButtonPress.Double -> xyFinderListener.buttonDoublePressed(device)
-                                    ButtonPress.Long -> xyFinderListener.buttonLongPressed(device)
+                                    XYFinderBluetoothDeviceButtonPress.Single -> xyFinderListener.buttonSinglePressed(device)
+                                    XYFinderBluetoothDeviceButtonPress.Double -> xyFinderListener.buttonDoublePressed(device)
+                                    XYFinderBluetoothDeviceButtonPress.Long -> xyFinderListener.buttonLongPressed(device)
                                     else -> {
                                     }
                                 }

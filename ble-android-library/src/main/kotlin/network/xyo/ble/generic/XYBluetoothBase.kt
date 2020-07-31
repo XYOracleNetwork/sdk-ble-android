@@ -12,36 +12,36 @@ import kotlin.coroutines.ContinuationInterceptor
 import kotlinx.coroutines.asCoroutineDispatcher
 import network.xyo.base.XYBase
 
-open class XYBluetoothBase(context: Context) : XYBase() {
+enum class XYBluetoothBaseStatus(val status: Short) {
+    Success(0x00),
+    UnknownBtLeCommand(0x01),
+    UnknownConnectionIdentifier(0x02),
+    AuthenticationFailure(0x03),
+    PinOrKeyMissing(0x06),
+    MemoryCapacityExceeded(0x07),
+    Timeout(0x08),
+    CommandDisallowed(0x0c),
+    InvalidBtLeCommandParameters(0x12),
+    RemoteUserTerminatedConnection(0x13),
+    RemoteDevTerminationFromLowResources(0x14),
+    RemoteDevTerminationFromPowerOff(0x15),
+    LocalHostTerminatedConnection(0x16),
+    UnsupportedRemoteFeature(0x1a),
+    InvalidLmpParameters(0x1e),
+    UnspecifiedError(0x1f),
+    LmpResponseTimeout(0x22),
+    LmpPduNotAllowed(0x24),
+    InstantPassed(0x28),
+    PairingWithUnitKeyUnsupported(0x29),
+    DifferentTransactionCollision(0x2a),
+    ControllerBusy(0x3a),
+    ConnIntervalUnacceptable(0x3b),
+    DirectedAdvertiserTimeout(0x3c),
+    TerminatedDueToMicFailure(0x3d),
+    FailedToEstablish(0x3e)
+}
 
-    enum class Status(val status: Short) {
-        Success(0x00),
-        UnknownBtLeCommand(0x01),
-        UnknownConnectionIdentifier(0x02),
-        AuthenticationFailure(0x03),
-        PinOrKeyMissing(0x06),
-        MemoryCapacityExceeded(0x07),
-        Timeout(0x08),
-        CommandDisallowed(0x0c),
-        InvalidBtLeCommandParameters(0x12),
-        RemoteUserTerminatedConnection(0x13),
-        RemoteDevTerminationFromLowResources(0x14),
-        RemoteDevTerminationFromPowerOff(0x15),
-        LocalHostTerminatedConnection(0x16),
-        UnsupportedRemoteFeature(0x1a),
-        InvalidLmpParameters(0x1e),
-        UnspecifiedError(0x1f),
-        LmpResponseTimeout(0x22),
-        LmpPduNotAllowed(0x24),
-        InstantPassed(0x28),
-        PairingWithUnitKeyUnsupported(0x29),
-        DifferentTransactionCollision(0x2a),
-        ControllerBusy(0x3a),
-        ConnIntervalUnacceptable(0x3b),
-        DirectedAdvertiserTimeout(0x3c),
-        TerminatedDueToMicFailure(0x3d),
-        FailedToEstablish(0x3e)
-    }
+open class XYBluetoothBase(context: Context) : XYBase() {
 
     // we store this since on initial creation, the applicationContext may not yet be available
     private val _context = context

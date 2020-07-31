@@ -35,7 +35,7 @@ class XYSmartScanModern(context: Context) : XYSmartScan(context) {
                     // this loop is for Android 7 to prevent getting nuked for scanning too much
                     GlobalScope.launch {
                         //while (started()) {
-                            if (status != Status.BluetoothDisabled && status != Status.BluetoothUnavailable) {
+                            if (status != XYSmartScanStatus.BluetoothDisabled && status != XYSmartScanStatus.BluetoothUnavailable) {
                                 val filters = ArrayList<ScanFilter>()
                                 try {
                                     scanner.startScan(filters, getSettings(), callback)

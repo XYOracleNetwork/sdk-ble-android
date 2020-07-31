@@ -19,6 +19,7 @@ import network.xyo.ble.firmware.XYOtaUpdateListener
 import network.xyo.ble.generic.devices.XYBluetoothDevice
 import network.xyo.ble.generic.devices.XYCreator
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResult
+import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResultErrorCode
 import network.xyo.ble.generic.scanner.XYScanResult
 import network.xyo.ble.generic.services.standard.*
 import network.xyo.ble.services.dialog.SpotaService
@@ -68,9 +69,9 @@ open class XY4BluetoothDevice(
     override suspend fun find() = connection<UByte> {
         log.info("find")
         val unlockResult = unlock()
-        if (unlockResult.error == XYBluetoothResult.ErrorCode.None) {
+        if (unlockResult.error == XYBluetoothResultErrorCode.None) {
             val writeResult = primary.buzzer.set(0xbU)
-            if (writeResult.error == XYBluetoothResult.ErrorCode.None) {
+            if (writeResult.error == XYBluetoothResultErrorCode.None) {
                 return@connection XYBluetoothResult(writeResult.value)
             } else {
                 return@connection XYBluetoothResult(null, writeResult.error)
@@ -109,7 +110,7 @@ open class XY4BluetoothDevice(
         if (scanResult != null) {
             if (pressFromScanResult(scanResult)) {
                 if (now - lastButtonPressTime > BUTTON_ADVERTISEMENT_LENGTH) {
-                    reportButtonPressed(ButtonPress.Single)
+                    reportButtonPressed(XYFinderBluetoothDeviceButtonPress.Single)
                     lastButtonPressTime = now
                 }
             }
@@ -150,7 +151,7 @@ open class XY4BluetoothDevice(
         enableButtonNotifyIfConnected()
     }
 
-    override fun reportButtonPressed(state: ButtonPress) {
+    override fun reportButtonPressed(state: XYFinderBluetoothDeviceButtonPress) {
         super.reportButtonPressed(state)
         // every time a notify fires, we have to re-enable it
         enableButtonNotifyIfConnected()
@@ -199,7 +200,7 @@ open class XY4BluetoothDevice(
             }
         }
 
-        fun reportGlobalButtonPressed(device: XY4BluetoothDevice, state: ButtonPress) {
+        fun reportGlobalButtonPressed(device: XY4BluetoothDevice, state: XYFinderBluetoothDeviceButtonPress) {
             GlobalScope.launch {
                 synchronized(globalListeners) {
                     for (listener in globalListeners) {
@@ -208,9 +209,9 @@ open class XY4BluetoothDevice(
                             log.info("reportButtonPressed: $xyFinderListener")
                             GlobalScope.launch {
                                 when (state) {
-                                    ButtonPress.Single -> xyFinderListener.buttonSinglePressed(device)
-                                    ButtonPress.Double -> xyFinderListener.buttonDoublePressed(device)
-                                    ButtonPress.Long -> xyFinderListener.buttonLongPressed(device)
+                                    XYFinderBluetoothDeviceButtonPress.Single -> xyFinderListener.buttonSinglePressed(device)
+                                    XYFinderBluetoothDeviceButtonPress.Double -> xyFinderListener.buttonDoublePressed(device)
+                                    XYFinderBluetoothDeviceButtonPress.Long -> xyFinderListener.buttonLongPressed(device)
                                     else -> {
                                     }
                                 }

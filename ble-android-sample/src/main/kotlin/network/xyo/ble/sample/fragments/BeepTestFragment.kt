@@ -12,6 +12,7 @@ import network.xyo.ble.devices.xy.XY4BluetoothDevice
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResult
 import network.xyo.ble.sample.R
 import network.xyo.base.XYBase
+import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResultErrorCode
 import java.lang.Exception
 
 @kotlin.ExperimentalUnsignedTypes
@@ -45,11 +46,11 @@ class BeepTestFragment : XYDeviceFragment() {
                     log.info("BeepTest: ${device.id}: Connected")
                     connectCount++
                     updateUI()
-                    if (device.unlock().error == XYBluetoothResult.ErrorCode.None) {
+                    if (device.unlock().error == XYBluetoothResultErrorCode.None) {
                         log.info("BeepTest: ${device.id}: Unlocked")
                         unlockCount++
                         updateUI()
-                        if (device.primary.buzzer.set(0x11U).error == XYBluetoothResult.ErrorCode.None) {
+                        if (device.primary.buzzer.set(0x11U).error == XYBluetoothResultErrorCode.None) {
                             log.info("BeepTest: ${device.id}: Success")
                             beepCount++
                             updateUI()
@@ -61,7 +62,7 @@ class BeepTestFragment : XYDeviceFragment() {
                     }
                     return@connection XYBluetoothResult(true)
                 }
-                if (connectResult.error != XYBluetoothResult.ErrorCode.None) {
+                if (connectResult.error != XYBluetoothResultErrorCode.None) {
                     log.error("BeepTest: ${device.id}: Failed to Connect: ${connectResult.error}")
                 }
             } catch (ex: Exception) {
@@ -80,11 +81,11 @@ class BeepTestFragment : XYDeviceFragment() {
                     log.info("BeepTest: ${device.id}: Connected")
                     connectCount++
                     updateUI()
-                    if (device.unlock().error == XYBluetoothResult.ErrorCode.None) {
+                    if (device.unlock().error == XYBluetoothResultErrorCode.None) {
                         log.info("BeepTest: ${device.id}: Unlocked")
                         unlockCount++
                         updateUI()
-                        if (device.controlService.buzzerSelect.set(0x02U).error == XYBluetoothResult.ErrorCode.None) {
+                        if (device.controlService.buzzerSelect.set(0x02U).error == XYBluetoothResultErrorCode.None) {
                             log.info("BeepTest: ${device.id}: Success")
                             beepCount++
                             updateUI()
@@ -96,7 +97,7 @@ class BeepTestFragment : XYDeviceFragment() {
                     }
                     return@connection XYBluetoothResult(true)
                 }
-                if (connectResult.error != XYBluetoothResult.ErrorCode.None) {
+                if (connectResult.error != XYBluetoothResultErrorCode.None) {
                     log.error("BeepTest: ${device.id}: Failed to Connect: ${connectResult.error}")
                 }
             } catch (ex: Exception) {

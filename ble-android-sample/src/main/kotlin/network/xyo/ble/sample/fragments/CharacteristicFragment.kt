@@ -8,6 +8,8 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import kotlinx.android.synthetic.main.fragment_characteristic.view.*
 import network.xyo.ble.generic.gatt.server.XYBluetoothCharacteristic
+import network.xyo.ble.generic.gatt.server.XYBluetoothCharacteristicPermissions
+import network.xyo.ble.generic.gatt.server.XYBluetoothCharacteristicProperties
 import network.xyo.ble.sample.R
 import java.nio.charset.Charset
 
@@ -50,7 +52,7 @@ class CharacteristicFragment : XYDeviceFragment() {
     private fun getCharacteristicType() : String {
         var string = "Properties: "
 
-        for (property in XYBluetoothCharacteristic.Companion.Properties.values()) {
+        for (property in XYBluetoothCharacteristicProperties.values()) {
             if (characteristic?.properties?.and(property.value) == property.value) {
                 string += "$property "
             }
@@ -62,7 +64,7 @@ class CharacteristicFragment : XYDeviceFragment() {
     private fun getCharacteristicPermissions () : String {
         var string = "Permissions: "
 
-        for (property in XYBluetoothCharacteristic.Companion.Permissions.values()) {
+        for (property in XYBluetoothCharacteristicPermissions.values()) {
             if (characteristic?.properties?.and(property.value) == property.value) {
                 string += "$property "
             }

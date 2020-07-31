@@ -30,11 +30,11 @@ open class XYBluetoothGattClient protected constructor(
         val readResult = readCharacteristic(characteristicToRead)
         var value: Int? = null
         val error = readResult.error
-        if (error == XYBluetoothResult.ErrorCode.None) {
+        if (error == XYBluetoothResultErrorCode.None) {
             value = readResult.value?.getIntValue(formatType, offset)
         }
 
-        if (error != XYBluetoothResult.ErrorCode.None) {
+        if (error != XYBluetoothResultErrorCode.None) {
             log.error(error.toString(), false)
         }
 
@@ -46,11 +46,11 @@ open class XYBluetoothGattClient protected constructor(
         val readResult = readCharacteristic(characteristicToRead)
         var value: String? = null
         val error = readResult.error
-        if (error == XYBluetoothResult.ErrorCode.None) {
+        if (error == XYBluetoothResultErrorCode.None) {
             value = readResult.value?.getStringValue(offset)
         }
 
-        if (error != XYBluetoothResult.ErrorCode.None) {
+        if (error != XYBluetoothResultErrorCode.None) {
             log.error(error.toString(), false)
         }
 
@@ -62,11 +62,11 @@ open class XYBluetoothGattClient protected constructor(
         val readResult = readCharacteristic(characteristicToRead)
         var value: Float? = null
         val error = readResult.error
-        if (error == XYBluetoothResult.ErrorCode.None) {
+        if (error == XYBluetoothResultErrorCode.None) {
             value = readResult.value?.getFloatValue(formatType, offset)
         }
 
-        if (error != XYBluetoothResult.ErrorCode.None) {
+        if (error != XYBluetoothResultErrorCode.None) {
             log.error(error.toString(), false)
         }
 
@@ -78,11 +78,11 @@ open class XYBluetoothGattClient protected constructor(
         val readResult = readCharacteristic(characteristicToRead)
         var value: ByteArray? = null
         val error = readResult.error
-        if (error == XYBluetoothResult.ErrorCode.None) {
+        if (error == XYBluetoothResultErrorCode.None) {
             value = readResult.value?.value
         }
 
-        if (error != XYBluetoothResult.ErrorCode.None) {
+        if (error != XYBluetoothResultErrorCode.None) {
             log.error(error.toString(), false)
         }
 
@@ -95,9 +95,9 @@ open class XYBluetoothGattClient protected constructor(
         val characteristicToRead = findResult.value
         var value: Int? = null
         var error = findResult.error
-        if (error == XYBluetoothResult.ErrorCode.None) {
+        if (error == XYBluetoothResultErrorCode.None) {
             if (characteristicToRead == null) {
-                error = XYBluetoothResult.ErrorCode.NullValue
+                error = XYBluetoothResultErrorCode.NullValue
             } else {
                 val readResult = readCharacteristicInt(characteristicToRead, formatType, offset)
                 error = readResult.error
@@ -105,7 +105,7 @@ open class XYBluetoothGattClient protected constructor(
             }
         }
 
-        if (error != XYBluetoothResult.ErrorCode.None) {
+        if (error != XYBluetoothResultErrorCode.None) {
             log.error(error.toString(), false)
         }
 
@@ -118,9 +118,9 @@ open class XYBluetoothGattClient protected constructor(
         val characteristicToRead = findResult.value
         var value: UByte? = null
         var error = findResult.error
-        if (error == XYBluetoothResult.ErrorCode.None) {
+        if (error == XYBluetoothResultErrorCode.None) {
             if (characteristicToRead == null) {
-                error = XYBluetoothResult.ErrorCode.NullValue
+                error = XYBluetoothResultErrorCode.NullValue
             } else {
                 val readResult = readCharacteristicInt(characteristicToRead, BluetoothGattCharacteristic.FORMAT_UINT8, offset)
                 error = readResult.error
@@ -128,7 +128,7 @@ open class XYBluetoothGattClient protected constructor(
             }
         }
 
-        if (error != XYBluetoothResult.ErrorCode.None) {
+        if (error != XYBluetoothResultErrorCode.None) {
             log.error(error.toString(), false)
         }
 
@@ -141,9 +141,9 @@ open class XYBluetoothGattClient protected constructor(
         val characteristicToRead = findResult.value
         var value: UShort? = null
         var error = findResult.error
-        if (error == XYBluetoothResult.ErrorCode.None) {
+        if (error == XYBluetoothResultErrorCode.None) {
             if (characteristicToRead == null) {
-                error = XYBluetoothResult.ErrorCode.NullValue
+                error = XYBluetoothResultErrorCode.NullValue
             } else {
                 val readResult = readCharacteristicInt(characteristicToRead, BluetoothGattCharacteristic.FORMAT_UINT16, offset)
                 error = readResult.error
@@ -151,7 +151,7 @@ open class XYBluetoothGattClient protected constructor(
             }
         }
 
-        if (error != XYBluetoothResult.ErrorCode.None) {
+        if (error != XYBluetoothResultErrorCode.None) {
             log.error(error.toString(), false)
         }
 
@@ -164,9 +164,9 @@ open class XYBluetoothGattClient protected constructor(
         val characteristicToRead = findResult.value
         var value: Float? = null
         var error = findResult.error
-        if (error == XYBluetoothResult.ErrorCode.None) {
+        if (error == XYBluetoothResultErrorCode.None) {
             if (characteristicToRead == null) {
-                error = XYBluetoothResult.ErrorCode.NullValue
+                error = XYBluetoothResultErrorCode.NullValue
             } else {
                 val readResult = readCharacteristicFloat(characteristicToRead, formatType, offset)
                 error = readResult.error
@@ -174,7 +174,7 @@ open class XYBluetoothGattClient protected constructor(
             }
         }
 
-        if (error != XYBluetoothResult.ErrorCode.None) {
+        if (error != XYBluetoothResultErrorCode.None) {
             log.error(error.toString(), false)
         }
 
@@ -187,9 +187,9 @@ open class XYBluetoothGattClient protected constructor(
         val characteristicToRead = findResult.value
         var value: String? = null
         var error = findResult.error
-        if (error == XYBluetoothResult.ErrorCode.None) {
+        if (error == XYBluetoothResultErrorCode.None) {
             if (characteristicToRead == null) {
-                error = XYBluetoothResult.ErrorCode.NullValue
+                error = XYBluetoothResultErrorCode.NullValue
             } else {
                 val readResult = readCharacteristicString(characteristicToRead, offset)
                 error = readResult.error
@@ -197,7 +197,7 @@ open class XYBluetoothGattClient protected constructor(
             }
         }
 
-        if (error != XYBluetoothResult.ErrorCode.None) {
+        if (error != XYBluetoothResultErrorCode.None) {
             log.error(error.toString(), false)
         }
 
@@ -210,9 +210,9 @@ open class XYBluetoothGattClient protected constructor(
         val characteristicToRead = findResult.value
         var value: ByteArray? = null
         var error = findResult.error
-        if (error == XYBluetoothResult.ErrorCode.None) {
+        if (error == XYBluetoothResultErrorCode.None) {
             if (characteristicToRead == null) {
-                error = XYBluetoothResult.ErrorCode.NullValue
+                error = XYBluetoothResultErrorCode.NullValue
             } else {
                 val readResult = readCharacteristicBytes(characteristicToRead)
                 error = readResult.error
@@ -220,7 +220,7 @@ open class XYBluetoothGattClient protected constructor(
             }
         }
 
-        if (error != XYBluetoothResult.ErrorCode.None) {
+        if (error != XYBluetoothResultErrorCode.None) {
             log.error(error.toString(), false)
         }
 
@@ -237,7 +237,7 @@ open class XYBluetoothGattClient protected constructor(
         log.info("findAndWriteCharacteristic: Found")
         val characteristicToWrite = findResult.value
         var error = findResult.error
-        if (error == XYBluetoothResult.ErrorCode.None) {
+        if (error == XYBluetoothResultErrorCode.None) {
             log.info("findAndWriteCharacteristic: $characteristicToWrite")
             if (characteristicToWrite != null) {
                 characteristicToWrite.setValue(valueToWrite, formatType, offset)
@@ -247,11 +247,11 @@ open class XYBluetoothGattClient protected constructor(
                 value = valueToWrite
                 error = writeResult.error
             } else {
-                error = XYBluetoothResult.ErrorCode.NullValue
+                error = XYBluetoothResultErrorCode.NullValue
             }
         }
 
-        if (error != XYBluetoothResult.ErrorCode.None) {
+        if (error != XYBluetoothResultErrorCode.None) {
             log.error(error.toString(), false)
         }
 
@@ -270,7 +270,7 @@ open class XYBluetoothGattClient protected constructor(
         log.info("findAndWriteCharacteristic: Found")
         val characteristicToWrite = findResult.value
         var error = findResult.error
-        if (error == XYBluetoothResult.ErrorCode.None) {
+        if (error == XYBluetoothResultErrorCode.None) {
             log.info("findAndWriteCharacteristic: $characteristicToWrite")
             if (characteristicToWrite != null) {
                 characteristicToWrite.setValue(valueToWrite.toInt(), BluetoothGattCharacteristic.FORMAT_UINT8, offset)
@@ -280,11 +280,11 @@ open class XYBluetoothGattClient protected constructor(
                 value = valueToWrite
                 error = writeResult.error
             } else {
-                error = XYBluetoothResult.ErrorCode.NullValue
+                error = XYBluetoothResultErrorCode.NullValue
             }
         }
 
-        if (error != XYBluetoothResult.ErrorCode.None) {
+        if (error != XYBluetoothResultErrorCode.None) {
             log.error(error.toString(), false)
         }
 
@@ -302,18 +302,18 @@ open class XYBluetoothGattClient protected constructor(
         val findResult = findCharacteristic(service, characteristic)
         val characteristicToWrite = findResult.value
         var error = findResult.error
-        if (error == XYBluetoothResult.ErrorCode.None) {
+        if (error == XYBluetoothResultErrorCode.None) {
             if (characteristicToWrite != null) {
                 characteristicToWrite.setValue(mantissa, exponent, formatType, offset)
                 val writeResult = writeCharacteristic(characteristicToWrite)
                 value = writeResult.value
                 error = writeResult.error
             } else {
-                error = XYBluetoothResult.ErrorCode.NullValue
+                error = XYBluetoothResultErrorCode.NullValue
             }
         }
 
-        if (error != XYBluetoothResult.ErrorCode.None) {
+        if (error != XYBluetoothResultErrorCode.None) {
             log.error(error.toString(), false)
         }
 
@@ -332,7 +332,7 @@ open class XYBluetoothGattClient protected constructor(
         log.info("findAndWriteCharacteristic: Found")
         val characteristicToWrite = findResult.value
         var error = findResult.error
-        if (error == XYBluetoothResult.ErrorCode.None) {
+        if (error == XYBluetoothResultErrorCode.None) {
             log.info("findAndWriteCharacteristic: $characteristicToWrite")
             if (characteristicToWrite != null) {
                 characteristicToWrite.setValue(valueToWrite.toInt(), BluetoothGattCharacteristic.FORMAT_UINT16, offset)
@@ -342,11 +342,11 @@ open class XYBluetoothGattClient protected constructor(
                 value = valueToWrite
                 error = writeResult.error
             } else {
-                error = XYBluetoothResult.ErrorCode.NullValue
+                error = XYBluetoothResultErrorCode.NullValue
             }
         }
 
-        if (error != XYBluetoothResult.ErrorCode.None) {
+        if (error != XYBluetoothResultErrorCode.None) {
             log.error(error.toString(), false)
         }
 
@@ -365,7 +365,7 @@ open class XYBluetoothGattClient protected constructor(
         log.info("findAndWriteCharacteristic: Found")
         val characteristicToWrite = findResult.value
         var error = findResult.error
-        if (error == XYBluetoothResult.ErrorCode.None) {
+        if (error == XYBluetoothResultErrorCode.None) {
             log.info("findAndWriteCharacteristic: $characteristicToWrite")
             if (characteristicToWrite != null) {
                 characteristicToWrite.setValue(valueToWrite.toInt(), BluetoothGattCharacteristic.FORMAT_UINT32, offset)
@@ -375,11 +375,11 @@ open class XYBluetoothGattClient protected constructor(
                 value = valueToWrite
                 error = writeResult.error
             } else {
-                error = XYBluetoothResult.ErrorCode.NullValue
+                error = XYBluetoothResultErrorCode.NullValue
             }
         }
 
-        if (error != XYBluetoothResult.ErrorCode.None) {
+        if (error != XYBluetoothResultErrorCode.None) {
             log.error(error.toString(), false)
         }
 
@@ -397,18 +397,18 @@ open class XYBluetoothGattClient protected constructor(
         val findResult = findCharacteristic(service, characteristic)
         val characteristicToWrite = findResult.value
         var error = findResult.error
-        if (error == XYBluetoothResult.ErrorCode.None) {
+        if (error == XYBluetoothResultErrorCode.None) {
             if (characteristicToWrite != null) {
                 characteristicToWrite.setValue(valueToWrite)
                 val writeResult = writeCharacteristic(characteristicToWrite)
                 value = valueToWrite
                 error = writeResult.error
             } else {
-                error = XYBluetoothResult.ErrorCode.NullValue
+                error = XYBluetoothResultErrorCode.NullValue
             }
         }
 
-        if (error != XYBluetoothResult.ErrorCode.None) {
+        if (error != XYBluetoothResultErrorCode.None) {
             log.error(error.toString(), false)
         }
 
@@ -431,7 +431,7 @@ open class XYBluetoothGattClient protected constructor(
         val findResult = findCharacteristic(service, characteristic)
         val characteristicToWrite = findResult.value
         var error = findResult.error
-        if (error == XYBluetoothResult.ErrorCode.None) {
+        if (error == XYBluetoothResultErrorCode.None) {
             if (characteristicToWrite != null) {
                 characteristicToWrite.value = bytes
                 val writeResult = writeCharacteristic(
@@ -440,11 +440,11 @@ open class XYBluetoothGattClient protected constructor(
                 value = writeResult.value
                 error = writeResult.error
             } else {
-                error = XYBluetoothResult.ErrorCode.NullValue
+                error = XYBluetoothResultErrorCode.NullValue
             }
         }
 
-        if (error != XYBluetoothResult.ErrorCode.None) {
+        if (error != XYBluetoothResultErrorCode.None) {
             log.error(error.toString(), false)
         }
 
@@ -462,14 +462,14 @@ open class XYBluetoothGattClient protected constructor(
         val findResult = findCharacteristic(service, characteristic)
         val characteristicToWrite = findResult.value
         var error = findResult.error
-        if (error == XYBluetoothResult.ErrorCode.None) {
+        if (error == XYBluetoothResultErrorCode.None) {
             if (characteristicToWrite != null) {
                 val descriptor = characteristicToWrite.getDescriptor(CLIENT_CHARACTERISTIC_CONFIG)
                 descriptor?.value = BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE
                 val setResult = setCharacteristicNotify(characteristicToWrite, enable)
                 value = setResult.value
                 error = setResult.error
-                if (setResult.error == XYBluetoothResult.ErrorCode.None) {
+                if (setResult.error == XYBluetoothResultErrorCode.None) {
                     var retries = 5
                     while (retries > 0) {
                         val writeResult = writeDescriptor(descriptor)
@@ -478,11 +478,11 @@ open class XYBluetoothGattClient protected constructor(
                     }
                 }
             } else {
-                error = XYBluetoothResult.ErrorCode.NullValue
+                error = XYBluetoothResultErrorCode.NullValue
             }
         }
 
-        if (error != XYBluetoothResult.ErrorCode.None) {
+        if (error != XYBluetoothResultErrorCode.None) {
             log.error(error.toString(), false)
         }
 

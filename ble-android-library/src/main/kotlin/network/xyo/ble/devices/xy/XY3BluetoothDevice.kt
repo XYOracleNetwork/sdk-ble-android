@@ -85,11 +85,11 @@ open class XY3BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
     }
 
     override suspend fun stayAwake() = connection {
-        return@connection extendedConfigService.stayAwake.set(StayAwake.On.state)
+        return@connection extendedConfigService.stayAwake.set(XYFinderBluetoothDeviceStayAwake.On.state)
     }
 
     override suspend fun fallAsleep() = connection {
-        return@connection extendedConfigService.stayAwake.set(StayAwake.Off.state)
+        return@connection extendedConfigService.stayAwake.set(XYFinderBluetoothDeviceStayAwake.Off.state)
     }
 
     override fun onDetect(scanResult: XYScanResult?) {
@@ -97,7 +97,7 @@ open class XY3BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
         if (scanResult != null) {
             if (pressFromScanResult(scanResult)) {
                 if (now - lastButtonPressTime > BUTTON_ADVERTISEMENT_LENGTH) {
-                    reportButtonPressed(ButtonPress.Single)
+                    reportButtonPressed(XYFinderBluetoothDeviceButtonPress.Single)
                     lastButtonPressTime = now
                 }
             }
@@ -110,7 +110,7 @@ open class XY3BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
         }
     }*/
 
-    override fun reportButtonPressed(state: ButtonPress) {
+    override fun reportButtonPressed(state: XYFinderBluetoothDeviceButtonPress) {
         super.reportButtonPressed(state)
         // every time a notify fires, we have to re-enable it
         // enableButtonNotifyIfConnected()
@@ -186,7 +186,7 @@ open class XY3BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
             }
         }
 
-        fun reportGlobalButtonPressed(device: XY3BluetoothDevice, state: ButtonPress) {
+        fun reportGlobalButtonPressed(device: XY3BluetoothDevice, state: XYFinderBluetoothDeviceButtonPress) {
             GlobalScope.launch {
                 synchronized(globalListeners) {
                     for (listener in globalListeners) {
@@ -195,9 +195,9 @@ open class XY3BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
                             log.info("reportButtonPressed: $xyFinderListener")
                             GlobalScope.launch {
                                 when (state) {
-                                    ButtonPress.Single -> xyFinderListener.buttonSinglePressed(device)
-                                    ButtonPress.Double -> xyFinderListener.buttonDoublePressed(device)
-                                    ButtonPress.Long -> xyFinderListener.buttonLongPressed(device)
+                                    XYFinderBluetoothDeviceButtonPress.Single -> xyFinderListener.buttonSinglePressed(device)
+                                    XYFinderBluetoothDeviceButtonPress.Double -> xyFinderListener.buttonDoublePressed(device)
+                                    XYFinderBluetoothDeviceButtonPress.Long -> xyFinderListener.buttonLongPressed(device)
                                     else -> {
                                     }
                                 }
