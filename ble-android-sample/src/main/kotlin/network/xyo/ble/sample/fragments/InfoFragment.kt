@@ -17,6 +17,7 @@ import network.xyo.ble.devices.xy.XY3BluetoothDevice
 import network.xyo.ble.devices.xy.XY4BluetoothDevice
 import network.xyo.ble.devices.xy.XYFinderBluetoothDevice
 import network.xyo.ble.generic.devices.XYBluetoothDevice
+import network.xyo.ble.generic.devices.XYBluetoothDeviceListener
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResult
 import network.xyo.ble.sample.R
 import network.xyo.ble.sample.XYDeviceData
@@ -68,7 +69,7 @@ class InfoFragment : XYDeviceFragment(), View.OnClickListener, CompoundButton.On
         updateAdList()
         updateUI()
 
-        device?.addListener("info", object: XYBluetoothDevice.Listener() {
+        device?.addListener("info", object: XYBluetoothDeviceListener() {
             override fun entered(device: XYBluetoothDevice) {
                 super.entered(device)
                 log.info("Entered")

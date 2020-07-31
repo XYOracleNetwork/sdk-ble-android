@@ -18,6 +18,8 @@ import network.xyo.ble.generic.scanner.XYScanResult
 import network.xyo.ble.generic.services.standard.*
 import network.xyo.ble.services.xy.*
 
+open class XYGpsBluetoothDeviceListener : XYFinderBluetoothDeviceListener()
+
 @kotlin.ExperimentalUnsignedTypes
 open class XYGpsBluetoothDevice(context: Context, scanResult: XYScanResult, hash: String) : XYFinderBluetoothDevice(context, scanResult, hash) {
 
@@ -76,14 +78,12 @@ open class XYGpsBluetoothDevice(context: Context, scanResult: XYScanResult, hash
 //        }
 //    }
 
-    open class Listener : XYFinderBluetoothDevice.Listener()
-
     companion object : XYBase() {
 
         private val FAMILY_UUID: UUID = UUID.fromString("9474f7c6-47a4-11e6-beb8-9e71128cae77")
         val DEFAULT_LOCK_CODE = byteArrayOf(0x2f.toByte(), 0xbe.toByte(), 0xa2.toByte(), 0x07.toByte(), 0x52.toByte(), 0xfe.toByte(), 0xbf.toByte(), 0x31.toByte(), 0x1d.toByte(), 0xac.toByte(), 0x5d.toByte(), 0xfa.toByte(), 0x7d.toByte(), 0x77.toByte(), 0x76.toByte(), 0x80.toByte())
 
-        protected val globalListeners = HashMap<String, Listener>()
+        protected val globalListeners = HashMap<String, XYGpsBluetoothDeviceListener>()
 
         enum class StayAwake(val state: Int) {
             Off(0),
@@ -99,7 +99,7 @@ open class XYGpsBluetoothDevice(context: Context, scanResult: XYScanResult, hash
             }
         }
 
-        fun addGlobalListener(key: String, listener: Listener) {
+        fun addGlobalListener(key: String, listener: XYGpsBluetoothDeviceListener) {
             GlobalScope.launch {
                 synchronized(globalListeners) {
                     globalListeners.put(key, listener)
@@ -120,7 +120,7 @@ open class XYGpsBluetoothDevice(context: Context, scanResult: XYScanResult, hash
             GlobalScope.launch {
                 synchronized(globalListeners) {
                     for (listener in globalListeners) {
-                        val xyFinderListener = listener.value as? XYFinderBluetoothDevice.Listener
+                        val xyFinderListener = listener.value as? XYFinderBluetoothDeviceListener
                         if (xyFinderListener != null) {
                             log.info("reportButtonPressed: $xyFinderListener")
                             GlobalScope.launch {

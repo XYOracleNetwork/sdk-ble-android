@@ -10,10 +10,8 @@ import androidx.fragment.app.FragmentPagerAdapter
 import com.google.android.material.tabs.TabLayout
 import kotlinx.android.synthetic.main.activity_device.*
 import network.xyo.base.XYBase
-import network.xyo.ble.devices.xy.XY3BluetoothDevice
-import network.xyo.ble.devices.xy.XY4BluetoothDevice
+import network.xyo.ble.devices.xy.*
 import network.xyo.ble.generic.devices.XYBluetoothDevice
-import network.xyo.ble.devices.xy.XYFinderBluetoothDevice
 import network.xyo.ble.sample.R
 import network.xyo.ble.sample.XYDeviceData
 import network.xyo.ble.sample.fragments.*
@@ -68,7 +66,7 @@ class XYODeviceActivity : XYOAppBaseActivity() {
         frag?.onFileSelected(requestCode, resultCode, data)
     }
 
-    private val xy3DeviceListener = object : XY3BluetoothDevice.Listener() {
+    private val xy3DeviceListener = object : XY3BluetoothDeviceListener() {
         override fun entered(device: XYBluetoothDevice) {
             update()
             log.info("Entered")
@@ -106,7 +104,7 @@ class XYODeviceActivity : XYOAppBaseActivity() {
         }
     }
 
-    private val xy4DeviceListener = object : XY4BluetoothDevice.Listener() {
+    private val xy4DeviceListener = object : XY4BluetoothDeviceListener() {
         override fun entered(device: XYBluetoothDevice) {
             update()
             log.info("Entered")

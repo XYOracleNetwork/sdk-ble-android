@@ -21,6 +21,7 @@ import network.xyo.ble.devices.xy.XY4BluetoothDevice
 import network.xyo.ble.generic.devices.XYBluetoothDevice
 import network.xyo.ble.firmware.XYOtaFile
 import network.xyo.ble.firmware.XYOtaUpdate
+import network.xyo.ble.firmware.XYOtaUpdateListener
 import network.xyo.ble.sample.R
 import network.xyo.ble.sample.XYDeviceData
 import network.xyo.ble.sample.fragments.core.BackFragmentListener
@@ -138,7 +139,7 @@ class FirmwareUpdateFragment : XYDeviceFragment(), BackFragmentListener {
         alertDialog.show()
     }
 
-    private val updateListener = object : XYOtaUpdate.Listener() {
+    private val updateListener = object : XYOtaUpdateListener() {
         override fun updated(device: XYBluetoothDevice) {
             log.info("updateListener: updated")
             updateInProgress = false

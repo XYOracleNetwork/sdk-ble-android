@@ -18,6 +18,8 @@ import network.xyo.ble.generic.scanner.XYScanResult
 import network.xyo.ble.generic.services.standard.*
 import network.xyo.ble.services.xy.*
 
+open class XY3BluetoothDeviceListener : XYFinderBluetoothDeviceListener()
+
 open class XY3BluetoothDevice(context: Context, scanResult: XYScanResult, hash: String) : XYFinderBluetoothDevice(context, scanResult, hash) {
 
     val alertNotification by lazy { AlertNotificationService(this) }
@@ -115,8 +117,6 @@ open class XY3BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
         reportGlobalButtonPressed(this, state)
     }
 
-    open class Listener : XYFinderBluetoothDevice.Listener()
-
     companion object : XYBase() {
 
         private val FAMILY_UUID = UUID.fromString("08885dd0-111b-11e4-9191-0800200c9a66")!!
@@ -126,7 +126,7 @@ open class XY3BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
 
         private val DEFAULT_LOCK_CODE = byteArrayOf(0x2f.toByte(), 0xbe.toByte(), 0xa2.toByte(), 0x07.toByte(), 0x52.toByte(), 0xfe.toByte(), 0xbf.toByte(), 0x31.toByte(), 0x1d.toByte(), 0xac.toByte(), 0x5d.toByte(), 0xfa.toByte(), 0x7d.toByte(), 0x77.toByte(), 0x76.toByte(), 0x80.toByte())
 
-        protected val globalListeners = HashMap<String, Listener>()
+        protected val globalListeners = HashMap<String, XY3BluetoothDeviceListener>()
 
         fun enable(enable: Boolean) {
             if (enable) {
@@ -170,7 +170,7 @@ open class XY3BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
             }
         }
 
-        fun addGlobalListener(key: String, listener: Listener) {
+        fun addGlobalListener(key: String, listener: XY3BluetoothDeviceListener) {
             GlobalScope.launch {
                 synchronized(globalListeners) {
                     globalListeners.put(key, listener)
@@ -190,7 +190,7 @@ open class XY3BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
             GlobalScope.launch {
                 synchronized(globalListeners) {
                     for (listener in globalListeners) {
-                        val xyFinderListener = listener.value as? XYFinderBluetoothDevice.Listener
+                        val xyFinderListener = listener.value as? XYFinderBluetoothDeviceListener
                         if (xyFinderListener != null) {
                             log.info("reportButtonPressed: $xyFinderListener")
                             GlobalScope.launch {

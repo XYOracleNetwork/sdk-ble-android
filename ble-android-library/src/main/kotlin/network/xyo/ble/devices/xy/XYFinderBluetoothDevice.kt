@@ -10,11 +10,21 @@ import kotlinx.coroutines.launch
 import network.xyo.base.XYBase
 import network.xyo.ble.devices.apple.XYAppleBluetoothDevice
 import network.xyo.ble.devices.apple.XYIBeaconBluetoothDevice
+import network.xyo.ble.devices.apple.XYIBeaconBluetoothDeviceListener
 import network.xyo.ble.firmware.XYOtaUpdate
+import network.xyo.ble.firmware.XYOtaUpdateListener
 import network.xyo.ble.generic.devices.XYBluetoothDevice
 import network.xyo.ble.generic.devices.XYCreator
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResult
 import network.xyo.ble.generic.scanner.XYScanResult
+
+open class XYFinderBluetoothDeviceListener : XYIBeaconBluetoothDeviceListener() {
+    open fun buttonSinglePressed(device: XYFinderBluetoothDevice) {}
+
+    open fun buttonDoublePressed(device: XYFinderBluetoothDevice) {}
+
+    open fun buttonLongPressed(device: XYFinderBluetoothDevice) {}
+}
 
 @kotlin.ExperimentalUnsignedTypes
 open class XYFinderBluetoothDevice(context: Context, scanResult: XYScanResult, hash: String) : XYIBeaconBluetoothDevice(context, scanResult, hash) {
@@ -157,10 +167,10 @@ open class XYFinderBluetoothDevice(context: Context, scanResult: XYScanResult, h
         return@connection XYBluetoothResult<UByte>(XYBluetoothResult.ErrorCode.Unsupported)
     }
 
-    open fun updateFirmware(stream: InputStream, listener: XYOtaUpdate.Listener) {
+    open fun updateFirmware(stream: InputStream, listener: XYOtaUpdateListener) {
     }
 
-    open fun updateFirmware(folderName: String, filename: String, listener: XYOtaUpdate.Listener) {
+    open fun updateFirmware(folderName: String, filename: String, listener: XYOtaUpdateListener) {
     }
 
     open fun cancelUpdateFirmware() {
@@ -171,7 +181,7 @@ open class XYFinderBluetoothDevice(context: Context, scanResult: XYScanResult, h
         GlobalScope.launch {
             synchronized(listeners) {
                 for (listener in listeners) {
-                    val xyFinderListener = listener.value as? Listener
+                    val xyFinderListener = listener.value as? XYFinderBluetoothDeviceListener
                     if (xyFinderListener != null) {
                         log.info("reportButtonPressed: $xyFinderListener")
                         GlobalScope.launch {
@@ -187,14 +197,6 @@ open class XYFinderBluetoothDevice(context: Context, scanResult: XYScanResult, h
                 }
             }
         }
-    }
-
-    open class Listener : XYIBeaconBluetoothDevice.Listener() {
-        open fun buttonSinglePressed(device: XYFinderBluetoothDevice) {}
-
-        open fun buttonDoublePressed(device: XYFinderBluetoothDevice) {}
-
-        open fun buttonLongPressed(device: XYFinderBluetoothDevice) {}
     }
 
     companion object : XYBase() {

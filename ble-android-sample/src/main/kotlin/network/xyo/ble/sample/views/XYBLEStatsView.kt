@@ -10,6 +10,7 @@ import network.xyo.ble.generic.devices.XYBluetoothDevice
 import network.xyo.ble.sample.XYApplication
 import network.xyo.ble.generic.scanner.XYSmartScan
 import network.xyo.base.XYBase
+import network.xyo.ble.generic.scanner.XYSmartScanListener
 import java.util.Date
 
 /**
@@ -23,7 +24,7 @@ class XYBLEStatsView(context: Context, attrs: AttributeSet) : LinearLayout(conte
     private var enterCount = 0
     private var exitCount = 0
 
-    private val smartScanListener = object : XYSmartScan.Listener() {
+    private val smartScanListener = object : XYSmartScanListener() {
         override fun entered(device: XYBluetoothDevice) {
             enterCount++
             update()

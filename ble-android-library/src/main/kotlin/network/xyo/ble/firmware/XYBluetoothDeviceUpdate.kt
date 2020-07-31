@@ -8,7 +8,7 @@ import network.xyo.ble.services.dialog.SpotaService
 
 class XYBluetoothDeviceUpdate(private var spotaService: SpotaService, var device: XYBluetoothDevice, private val otaFile: XYOtaFile?) : XYBase() {
 
-    private val listeners = HashMap<String, XYOtaUpdate.Listener>()
+    private val listeners = HashMap<String, XYOtaUpdateListener>()
     private var updateJob: Job? = null
     private var lastBlock = false
     private var lastBlockSent = false
@@ -54,7 +54,7 @@ class XYBluetoothDeviceUpdate(private var spotaService: SpotaService, var device
         }
     }
 
-    fun addListener(key: String, listener: XYOtaUpdate.Listener) {
+    fun addListener(key: String, listener: XYOtaUpdateListener) {
         GlobalScope.launch {
             synchronized(listeners) {
                 listeners.put(key, listener)

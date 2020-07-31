@@ -15,6 +15,7 @@ import network.xyo.ble.devices.apple.XYAppleBluetoothDevice
 import network.xyo.ble.firmware.XYBluetoothDeviceUpdate
 import network.xyo.ble.firmware.XYOtaFile
 import network.xyo.ble.firmware.XYOtaUpdate
+import network.xyo.ble.firmware.XYOtaUpdateListener
 import network.xyo.ble.generic.devices.XYBluetoothDevice
 import network.xyo.ble.generic.devices.XYCreator
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResult
@@ -22,6 +23,8 @@ import network.xyo.ble.generic.scanner.XYScanResult
 import network.xyo.ble.generic.services.standard.*
 import network.xyo.ble.services.dialog.SpotaService
 import network.xyo.ble.services.xy.PrimaryService
+
+open class XY4BluetoothDeviceListener : XYFinderBluetoothDeviceListener()
 
 @kotlin.ExperimentalUnsignedTypes
 open class XY4BluetoothDevice(
@@ -113,7 +116,7 @@ open class XY4BluetoothDevice(
         }
     }
 
-    override fun updateFirmware(folderName: String, filename: String, listener: XYOtaUpdate.Listener) {
+    override fun updateFirmware(folderName: String, filename: String, listener: XYOtaUpdateListener) {
         val otaFile = XYOtaFile.getByName(folderName, filename)
         val updater = XYBluetoothDeviceUpdate(spotaService, this, otaFile)
 
@@ -121,7 +124,7 @@ open class XY4BluetoothDevice(
         updater.start()
     }
 
-    override fun updateFirmware(stream: InputStream, listener: XYOtaUpdate.Listener) {
+    override fun updateFirmware(stream: InputStream, listener: XYOtaUpdateListener) {
 
         val otaFile = XYOtaFile.getByStream(stream)
         updater = XYBluetoothDeviceUpdate(spotaService, this, otaFile)
@@ -160,13 +163,11 @@ open class XY4BluetoothDevice(
             return minorValue.and(0xfff0.toUShort()).or(0x0004.toUShort())
         }
 
-    open class Listener : XYFinderBluetoothDevice.Listener()
-
     companion object : XYBase() {
 
         private val FAMILY_UUID = UUID.fromString("a44eacf4-0104-0000-0000-5f784c9977b5")!!
 
-        protected val globalListeners = HashMap<String, Listener>()
+        protected val globalListeners = HashMap<String, XY4BluetoothDeviceListener>()
 
         val DefaultLockCode = byteArrayOf(0x00.toByte(), 0x01.toByte(), 0x02.toByte(), 0x03.toByte(), 0x04.toByte(), 0x05.toByte(), 0x06.toByte(), 0x07.toByte(), 0x08.toByte(), 0x09.toByte(), 0x0a.toByte(), 0x0b.toByte(), 0x0c.toByte(), 0x0d.toByte(), 0x0e.toByte(), 0x0f.toByte())
 
@@ -182,7 +183,7 @@ open class XY4BluetoothDevice(
             }
         }
 
-        fun addGlobalListener(key: String, listener: Listener) {
+        fun addGlobalListener(key: String, listener: XY4BluetoothDeviceListener) {
             GlobalScope.launch {
                 synchronized(globalListeners) {
                     globalListeners.put(key, listener)
@@ -202,7 +203,7 @@ open class XY4BluetoothDevice(
             GlobalScope.launch {
                 synchronized(globalListeners) {
                     for (listener in globalListeners) {
-                        val xyFinderListener = listener.value as? XYFinderBluetoothDevice.Listener
+                        val xyFinderListener = listener.value as? XYFinderBluetoothDeviceListener
                         if (xyFinderListener != null) {
                             log.info("reportButtonPressed: $xyFinderListener")
                             GlobalScope.launch {
