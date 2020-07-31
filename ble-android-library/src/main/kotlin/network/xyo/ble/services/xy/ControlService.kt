@@ -2,7 +2,9 @@ package network.xyo.ble.services.xy
 
 import java.util.UUID
 import network.xyo.ble.generic.devices.XYBluetoothDevice
+import network.xyo.ble.generic.services.ByteCharacteristic
 import network.xyo.ble.generic.services.Service
+import network.xyo.ble.generic.services.StringCharacteristic
 
 enum class ControlServiceCharacteristics(val uuid: UUID) {
     Buzzer(UUID.fromString("F014FFF1-0439-3000-E001-00001001FFFF")),

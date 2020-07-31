@@ -2,6 +2,8 @@ package network.xyo.ble.services.xy
 
 import java.util.UUID
 import network.xyo.ble.generic.devices.XYBluetoothDevice
+import network.xyo.ble.generic.services.ByteCharacteristic
+import network.xyo.ble.generic.services.BytesCharacteristic
 import network.xyo.ble.generic.services.Service
 
 enum class PrimaryServiceCharacteristics(val uuid: UUID) {

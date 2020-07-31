@@ -4,7 +4,9 @@ package network.xyo.ble.generic.services.standard
 
 import java.util.UUID
 import network.xyo.ble.generic.devices.XYBluetoothDevice
+import network.xyo.ble.generic.services.ByteCharacteristic
 import network.xyo.ble.generic.services.Service
+import network.xyo.ble.generic.services.StringCharacteristic
 
 enum class DeviceInformationServiceCharacteristics(val uuid: UUID) {
     SystemId(UUID.fromString("00002a23-0000-1000-8000-00805f9b34fb")),

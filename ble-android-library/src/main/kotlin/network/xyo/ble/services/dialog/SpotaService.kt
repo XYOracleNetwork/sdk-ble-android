@@ -3,6 +3,9 @@ package network.xyo.ble.services.dialog
 import android.bluetooth.BluetoothGattCharacteristic
 import java.util.UUID
 import network.xyo.ble.generic.devices.XYBluetoothDevice
+import network.xyo.ble.generic.services.ByteCharacteristic
+import network.xyo.ble.generic.services.BytesCharacteristic
+import network.xyo.ble.generic.services.IntCharacteristic
 import network.xyo.ble.generic.services.Service
 
 enum class SpotaServiceCharacteristics(val uuid: UUID) {
