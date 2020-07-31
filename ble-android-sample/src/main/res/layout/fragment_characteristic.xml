@@ -35,7 +35,7 @@
         android:layout_height="wrap_content"
         android:text="@string/characteristics_value_utf8" />
 
-    <network.xyo.ui.views.XYButton
+    <Button
         android:id="@+id/characteristic_button_update"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

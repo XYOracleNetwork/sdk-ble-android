@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:theme="@style/XYTheme">
+    android:layout_height="match_parent">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -13,7 +12,7 @@
         android:layout_marginBottom="6dp"
         android:orientation="vertical">
 
-        <network.xyo.ui.views.XYButton
+        <Button
             android:id="@+id/button_load_from_server"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -25,7 +24,7 @@
             android:paddingStart="20dp"
             android:paddingEnd="20dp">
 
-            <network.xyo.ui.views.XYButton
+            <Button
                 android:id="@+id/button_update"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -52,7 +51,6 @@
                 android:id="@+id/lv_files"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:listSelector="@color/xy_ui_palette_dark_25"
                 android:visibility="visible" />
 
         </LinearLayout>

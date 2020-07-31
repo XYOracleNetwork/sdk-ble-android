@@ -11,7 +11,6 @@ import com.google.android.material.tabs.TabLayout
 import kotlinx.android.synthetic.main.fragment_peripheral.*
 import network.xyo.ble.sample.R
 import network.xyo.ble.sample.fragments.BeepTestFragment
-import network.xyo.ui.XYBaseFragment
 
 @kotlin.ExperimentalUnsignedTypes
 class XYOTestActivity : XYOAppBaseActivity() {
@@ -34,7 +33,7 @@ class XYOTestActivity : XYOAppBaseActivity() {
 
     inner class SectionsPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
         private val size = 1
-        private val fragments: SparseArray<XYBaseFragment> = SparseArray(size)
+        private val fragments: SparseArray<Fragment> = SparseArray(size)
 
         override fun getItem(position: Int): Fragment {
             when (position) {
@@ -49,12 +48,12 @@ class XYOTestActivity : XYOAppBaseActivity() {
         }
 
         override fun instantiateItem(container: ViewGroup, position: Int): Any {
-            val fragment = super.instantiateItem(container, position) as XYBaseFragment
+            val fragment = super.instantiateItem(container, position) as Fragment
             fragments.append(position, fragment)
             return fragment
         }
 
-        fun getFragmentByPosition(position: Int): XYBaseFragment? {
+        fun getFragmentByPosition(position: Int): Fragment? {
             return fragments.get(position)
         }
     }

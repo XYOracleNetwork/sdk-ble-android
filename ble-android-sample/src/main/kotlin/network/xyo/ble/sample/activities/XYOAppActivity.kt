@@ -11,16 +11,17 @@ import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
 import network.xyo.ble.sample.R
 import kotlinx.android.synthetic.main.activity_app.*
+import network.xyo.base.XYBase
 import network.xyo.ble.sample.adapters.XYDeviceAdapter
 import network.xyo.ble.sample.fragments.CentralFragment
 import network.xyo.ble.sample.fragments.ServerFragment
-import network.xyo.ui.XYBaseFragment
 
 @kotlin.ExperimentalUnsignedTypes
 @kotlin.ExperimentalStdlibApi
 class XYOAppActivity : XYOAppBaseActivity() {
     private lateinit var pagerAdapter: SectionsPagerAdapter
     private var deviceAdapter: BaseAdapter? = null
+    private val log = XYBase.log("XYOAppActivity")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         log.info("onCreate")
@@ -41,7 +42,7 @@ class XYOAppActivity : XYOAppBaseActivity() {
 
     inner class SectionsPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
         private val size = 2
-        private val fragments: SparseArray<XYBaseFragment> = SparseArray(size)
+        private val fragments: SparseArray<Fragment> = SparseArray(size)
 
         override fun getItem(position: Int): Fragment {
             when (position) {
@@ -57,12 +58,12 @@ class XYOAppActivity : XYOAppBaseActivity() {
         }
 
         override fun instantiateItem(container: ViewGroup, position: Int): Any {
-            val fragment = super.instantiateItem(container, position) as XYBaseFragment
+            val fragment = super.instantiateItem(container, position) as Fragment
             fragments.append(position, fragment)
             return fragment
         }
 
-        fun getFragmentByPosition(position: Int): XYBaseFragment? {
+        fun getFragmentByPosition(position: Int): Fragment? {
             return fragments.get(position)
         }
     }

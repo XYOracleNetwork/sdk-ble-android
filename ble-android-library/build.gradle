@@ -73,6 +73,14 @@ android {
         }
     }
 
+    sourceSets {
+        main {
+            java {
+                srcDirs += 'src/main/kotlin'
+            }
+        }
+    }
+
     defaultConfig {
         minSdkVersion 21
         targetSdkVersion 29

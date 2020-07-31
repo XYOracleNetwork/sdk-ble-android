@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import kotlinx.android.synthetic.main.fragment_alert.*
+import kotlinx.android.synthetic.main.fragment_basic.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import network.xyo.ble.devices.xy.XY2BluetoothDevice
@@ -14,7 +15,6 @@ import network.xyo.ble.generic.devices.XYBluetoothDevice
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResult
 import network.xyo.ble.sample.R
 import network.xyo.ble.sample.XYDeviceData
-import network.xyo.ui.ui
 
 @kotlin.ExperimentalUnsignedTypes
 class AlertFragment : XYDeviceFragment() {
@@ -45,8 +45,6 @@ class AlertFragment : XYDeviceFragment() {
     }
 
     private fun setAlertValues() {
-        throbber?.show()
-
         when (device) {
             is XY4BluetoothDevice -> {
                 val x4 = (device as? XY4BluetoothDevice)
@@ -64,12 +62,10 @@ class AlertFragment : XYDeviceFragment() {
             }
 
         }
-
-        throbber?.hide()
     }
 
     private fun updateUI() {
-        ui {
+        activity?.runOnUiThread {
             text_control_point?.text = deviceData?.controlPoint
             text_unread_alert_status?.text = deviceData?.unreadAlertStatus
             text_new_alert?.text = deviceData?.newAlert

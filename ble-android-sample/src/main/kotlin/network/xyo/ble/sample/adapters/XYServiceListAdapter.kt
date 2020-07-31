@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import network.xyo.ble.sample.R
-import network.xyo.ui.ui
 
 class XYServiceListAdapter(services : Array<BluetoothGattService>) : RecyclerView.Adapter<XYServiceListAdapter.ViewHolder>() {
     private val listeners = HashMap<String, XYServiceListAdapterListener>()
@@ -40,16 +39,12 @@ class XYServiceListAdapter(services : Array<BluetoothGattService>) : RecyclerVie
 
     fun addItem(item: BluetoothGattService) {
         list.add(item)
-        ui {
-            notifyDataSetChanged()
-        }
+        notifyDataSetChanged()
     }
 
     fun clear() {
         list.clear()
-        ui {
-            notifyDataSetChanged()
-        }
+        notifyDataSetChanged()
     }
 
     class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){

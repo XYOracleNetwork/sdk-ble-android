@@ -9,6 +9,7 @@ import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.BaseAdapter
+import androidx.fragment.app.Fragment
 import com.nabinbhandari.android.permissions.PermissionHandler
 import com.nabinbhandari.android.permissions.Permissions
 import kotlinx.android.synthetic.main.fragment_central.*
@@ -22,7 +23,6 @@ import network.xyo.ble.sample.R
 import network.xyo.ble.sample.activities.XYODeviceActivity
 import network.xyo.ble.sample.activities.XYOTestActivity
 import network.xyo.ble.generic.scanner.XYSmartScan
-import network.xyo.ui.ui
 
 @kotlin.ExperimentalStdlibApi
 @kotlin.ExperimentalUnsignedTypes
@@ -73,34 +73,34 @@ class CentralFragment : XYDeviceFragment() {
         XY4BluetoothDevice.addGlobalListener(tag!!, object : XY4BluetoothDevice.Listener() {
             override fun buttonSinglePressed(device: XYFinderBluetoothDevice) {
                 super.buttonSinglePressed(device)
-                showToast("XY4 Button Single Pressed: ${device.address}")
+                log.info("XY4 Button Single Pressed: ${device.address}")
                 openDevice(device)
             }
 
             override fun buttonDoublePressed(device: XYFinderBluetoothDevice) {
                 super.buttonDoublePressed(device)
-                showToast("XY4 Button Double Pressed")
+                log.info("XY4 Button Double Pressed")
             }
 
             override fun buttonLongPressed(device: XYFinderBluetoothDevice) {
                 super.buttonLongPressed(device)
-                showToast("XY4 Button Long Pressed")
+                log.info("XY4 Button Long Pressed")
             }
         })
         XY3BluetoothDevice.addGlobalListener(tag!!, object : XY3BluetoothDevice.Listener() {
             override fun buttonSinglePressed(device: XYFinderBluetoothDevice) {
                 super.buttonSinglePressed(device)
-                showToast("XY3 Button Single Pressed: ${device.address}")
+                log.info("XY3 Button Single Pressed: ${device.address}")
                 openDevice(device)
             }
             override fun buttonDoublePressed(device: XYFinderBluetoothDevice) {
                 super.buttonDoublePressed(device)
-                showToast("XY3 Button Double Pressed")
+                log.info("XY3 Button Double Pressed")
             }
 
             override fun buttonLongPressed(device: XYFinderBluetoothDevice) {
                 super.buttonLongPressed(device)
-                showToast("XY3 Button Long Pressed")
+                log.info("XY3 Button Long Pressed")
             }
         })
     }
@@ -152,7 +152,7 @@ class CentralFragment : XYDeviceFragment() {
                 }
         )
 
-        ui { adapter?.notifyDataSetChanged() }
+        activity?.runOnUiThread { adapter?.notifyDataSetChanged() }
 
         checkStatus()
     }

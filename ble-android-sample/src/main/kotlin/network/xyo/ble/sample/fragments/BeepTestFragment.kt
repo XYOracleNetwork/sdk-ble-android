@@ -4,30 +4,22 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import kotlinx.android.synthetic.main.fragment_basic.*
 import kotlinx.android.synthetic.main.fragment_test.*
 import kotlinx.coroutines.*
 import network.xyo.ble.devices.xy.XY3BluetoothDevice
 import network.xyo.ble.devices.xy.XY4BluetoothDevice
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResult
 import network.xyo.ble.sample.R
-import network.xyo.ble.sample.XYApplication
-import network.xyo.ble.generic.scanner.XYSmartScan
 import network.xyo.base.XYBase
-import network.xyo.ui.XYBaseFragment
-import network.xyo.ui.ui
 import java.lang.Exception
 
 @kotlin.ExperimentalUnsignedTypes
-class BeepTestFragment : XYBaseFragment() {
+class BeepTestFragment : XYDeviceFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_test, container, false)
     }
-
-    private val scanner: XYSmartScan?
-        get() {
-            return (activity?.applicationContext as? XYApplication)?.scanner
-        }
 
     private var startCount = 0
     private var connectCount = 0
@@ -35,7 +27,7 @@ class BeepTestFragment : XYBaseFragment() {
     private var beepCount = 0
 
     fun updateUI() {
-        ui {
+        activity?.runOnUiThread {
             start_count?.text = "Starts: $startCount"
             connect_count?.text = "Connects: $connectCount"
             unlock_count?.text = "Unlocks: $unlockCount"
@@ -116,7 +108,7 @@ class BeepTestFragment : XYBaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         start_async.setOnClickListener {
-            scanner?.devices?.forEach { (_, value) ->
+            scanner.devices.forEach { (_, value) ->
                 GlobalScope.launch {
                     when (value) {
                         is XY4BluetoothDevice -> {
@@ -135,7 +127,7 @@ class BeepTestFragment : XYBaseFragment() {
 
         start_sync.setOnClickListener {
             GlobalScope.launch {
-                scanner?.devices?.forEach { (_, value) ->
+                scanner.devices.forEach { (_, value) ->
                     when (value) {
                         is XY4BluetoothDevice -> {
                             doBeepXY4(value)
