@@ -83,7 +83,7 @@ class FirmwareUpdateFragment : XYDeviceFragment(), BackFragmentListener {
         }
     }
 
-    private suspend fun readFromServer() = withContext(Dispatchers.Default) {
+    private suspend fun readFromServer() = withContext(Dispatchers.IO) {
         XYOtaFile.createFileDirectory(folderName)
         val url = URL("https://s3.amazonaws.com/xyfirmware.xyo.network/xy4_585-0-v56.img")
         val connection = url.openConnection()
