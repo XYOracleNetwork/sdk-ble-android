@@ -32,6 +32,10 @@ open class XYFinderBluetoothDeviceListener : XYIBeaconBluetoothDeviceListener() 
     open fun buttonLongPressed(device: XYFinderBluetoothDevice) {}
 }
 
+/**
+ * Bluetooth device family options.
+ *
+ */
 enum class XYFinderBluetoothDeviceFamily {
     Unknown,
     XY1,
@@ -44,6 +48,10 @@ enum class XYFinderBluetoothDeviceFamily {
     Webble
 }
 
+/**
+ * Bluetooth device range values.
+ *
+ */
 enum class XYFinderBluetoothDeviceProximity {
     None,
     OutOfRange,
@@ -55,6 +63,11 @@ enum class XYFinderBluetoothDeviceProximity {
     Touching
 }
 
+/**
+ * Presses available on XY find it hardware.
+ *
+ * These values are assigned to start and stop the finder.
+ */
 enum class XYFinderBluetoothDeviceButtonPress(val state: Int) {
     None(0),
     Single(1),
@@ -62,6 +75,10 @@ enum class XYFinderBluetoothDeviceButtonPress(val state: Int) {
     Long(3)
 }
 
+/**
+ * Stay awake, go to sleep toggle.
+ *
+ */
 enum class XYFinderBluetoothDeviceStayAwake(val state: UByte) {
     Off(0U),
     On(1U)
@@ -173,9 +190,11 @@ open class XYFinderBluetoothDevice(context: Context, scanResult: XYScanResult, h
         return@connection XYBluetoothResult<UByte>(XYBluetoothResultErrorCode.Unsupported)
     }
 
+    // update firmware at stream level
     open fun updateFirmware(stream: InputStream, listener: XYOtaUpdateListener) {
     }
 
+    // update firmware at folder level
     open fun updateFirmware(folderName: String, filename: String, listener: XYOtaUpdateListener) {
     }
 
@@ -214,6 +233,7 @@ open class XYFinderBluetoothDevice(context: Context, scanResult: XYScanResult, h
             }
         }
 
+        // grabs enum assigned to type of press from finder user. 
         fun buttonPressFromInt(index: Int): XYFinderBluetoothDeviceButtonPress {
             return when (index) {
                 1 -> XYFinderBluetoothDeviceButtonPress.Single

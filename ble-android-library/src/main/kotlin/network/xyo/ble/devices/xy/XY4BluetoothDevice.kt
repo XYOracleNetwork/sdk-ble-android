@@ -189,6 +189,7 @@ open class XY4BluetoothDevice(
             }
         }
 
+        // global listener from XY Base
         fun addGlobalListener(key: String, listener: XY4BluetoothDeviceListener) {
             GlobalScope.launch {
                 synchronized(globalListeners) {
@@ -205,6 +206,7 @@ open class XY4BluetoothDevice(
             }
         }
 
+        // initiates global listener and reports touch feedback
         fun reportGlobalButtonPressed(device: XY4BluetoothDevice, state: XYFinderBluetoothDeviceButtonPress) {
             GlobalScope.launch {
                 synchronized(globalListeners) {
