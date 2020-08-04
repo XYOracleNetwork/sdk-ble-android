@@ -17,6 +17,7 @@ import network.xyo.ble.generic.devices.XYCreator
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResult
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResultErrorCode
 import network.xyo.ble.generic.scanner.XYScanResult
+import androidx.annotation.WorkerThread
 
 /**
  * Listener for XY Finder.
@@ -25,10 +26,13 @@ import network.xyo.ble.generic.scanner.XYScanResult
  * .listener is now camel cased into the name.
  */
 open class XYFinderBluetoothDeviceListener : XYIBeaconBluetoothDeviceListener() {
+    @WorkerThread
     open fun buttonSinglePressed(device: XYFinderBluetoothDevice) {}
 
+    @WorkerThread
     open fun buttonDoublePressed(device: XYFinderBluetoothDevice) {}
 
+    @WorkerThread
     open fun buttonLongPressed(device: XYFinderBluetoothDevice) {}
 }
 
