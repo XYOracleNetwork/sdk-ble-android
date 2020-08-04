@@ -18,6 +18,12 @@ import network.xyo.ble.generic.scanner.XYScanResult
 import network.xyo.ble.generic.services.standard.*
 import network.xyo.ble.services.xy.*
 
+/**
+ * Listener for XY3 Devices.
+ *
+ * Brings in a renamed Finder Listener.
+ * .listener is now camel cased into the name.
+ */
 open class XY3BluetoothDeviceListener : XYFinderBluetoothDeviceListener()
 
 open class XY3BluetoothDevice(context: Context, scanResult: XYScanResult, hash: String) : XYFinderBluetoothDevice(context, scanResult, hash) {

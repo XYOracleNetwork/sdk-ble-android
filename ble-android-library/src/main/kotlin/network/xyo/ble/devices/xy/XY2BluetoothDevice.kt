@@ -12,6 +12,12 @@ import network.xyo.ble.generic.scanner.XYScanResult
 import network.xyo.ble.generic.services.standard.*
 import network.xyo.ble.services.xy.*
 
+/**
+ * Listener for XY2 Devices.
+ *
+ * Brings in a renamed Finder Listener.
+ * .listener is now camel cased into the name.
+ */
 open class XY2BluetoothDeviceListener : XYFinderBluetoothDeviceListener()
 
 @kotlin.ExperimentalUnsignedTypes

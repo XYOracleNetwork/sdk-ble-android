@@ -18,6 +18,12 @@ import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResult
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResultErrorCode
 import network.xyo.ble.generic.scanner.XYScanResult
 
+/**
+ * Listener for XY Finder.
+ *
+ * Brings in a renamed Finder Listener.
+ * .listener is now camel cased into the name.
+ */
 open class XYFinderBluetoothDeviceListener : XYIBeaconBluetoothDeviceListener() {
     open fun buttonSinglePressed(device: XYFinderBluetoothDevice) {}
 

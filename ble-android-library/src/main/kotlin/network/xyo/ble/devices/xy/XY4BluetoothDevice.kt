@@ -24,6 +24,12 @@ import network.xyo.ble.generic.services.standard.*
 import network.xyo.ble.services.dialog.SpotaService
 import network.xyo.ble.services.xy.PrimaryService
 
+/**
+ * Listener for XY4 Devices.
+ *
+ * Brings in a renamed Finder Listener.
+ * .listener is now camel cased into the name.
+ */
 open class XY4BluetoothDeviceListener : XYFinderBluetoothDeviceListener()
 
 @kotlin.ExperimentalUnsignedTypes
