@@ -36,6 +36,5 @@ allprojects {
         jcenter()
         google()
         maven { url "https://dl.bintray.com/xyoraclenetwork/xyo" }
-        maven { url "https://jitpack.io" }
     }
 }

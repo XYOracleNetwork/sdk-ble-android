@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.RadioButton
+import androidx.fragment.app.Fragment
 import kotlinx.android.synthetic.main.fragment_advertiser.view.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -15,13 +16,11 @@ import network.xyo.ble.generic.gatt.server.XYBluetoothAdvertiser
 import network.xyo.ble.generic.gatt.server.XYIBeaconAdvertiseDataCreator
 import network.xyo.ble.sample.R
 import network.xyo.base.XYBase
-import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResult
-import network.xyo.ui.XYBaseFragment
-import network.xyo.ui.ui
+import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResultErrorCode
 import java.nio.ByteBuffer
 import java.util.UUID
 
-class AdvertiserFragment : XYBaseFragment() {
+class AdvertiserFragment : Fragment() {
     private var isInIBeacon = false
     var advertiser: XYBluetoothAdvertiser? = null
 
@@ -58,13 +57,13 @@ class AdvertiserFragment : XYBaseFragment() {
         val status = advertiser?.startAdvertising()
 
 
-        ui {
-            if (status?.value == 0 && status.error == XYBluetoothResult.ErrorCode.None) {
-                showToast("Success!")
-                return@ui
+        activity?.runOnUiThread {
+            if (status?.value == 0 && status.error == XYBluetoothResultErrorCode.None) {
+                log.info("Success!")
+                return@runOnUiThread
             }
 
-            showToast("Error ${status?.error}!")
+            log.error("Error ${status?.error}!")
         }
     }
 
@@ -97,7 +96,7 @@ class AdvertiserFragment : XYBaseFragment() {
     }
 
     private  fun updateConnectible (view: View) {
-        val radioButtonGroup = view.connectable_selector
+        val radioButtonGroup = view.connectible_selector
         val radioButtonID = radioButtonGroup.checkedRadioButtonId
         val radioButton = radioButtonGroup.findViewById<RadioButton>(radioButtonID)
 
@@ -156,10 +155,10 @@ class AdvertiserFragment : XYBaseFragment() {
             return true
 
         } catch (e: NumberFormatException) {
-            showToast("Error Phrasing Malefactor ID")
+            log.error("Error Phrasing Malefactor ID")
         }  catch (e : IllegalArgumentException) {
-            ui {
-                showToast("Error Phrasing Primary Service UUID")
+            activity?.runOnUiThread {
+                log.error("Error Phrasing Primary Service UUID")
             }
         }
         return false
@@ -176,10 +175,10 @@ class AdvertiserFragment : XYBaseFragment() {
             val data = view.standard_manufacturer_data_input.text.toString().toByteArray()
             builder.addManufacturerData(id, data)
         } catch (e : NumberFormatException) {
-            ui { showToast("Error Phrasing Malefactor ID") }
+            activity?.runOnUiThread { log.error("Error Phrasing Malefactor ID") }
             return false
         } catch (e : IllegalArgumentException) {
-            ui { showToast("Error Phrasing Primary Service UUID") }
+            activity?.runOnUiThread { log.error("Error Phrasing Primary Service UUID") }
             return false
         }
 

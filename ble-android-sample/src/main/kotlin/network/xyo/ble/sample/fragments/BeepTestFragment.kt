@@ -10,24 +10,16 @@ import network.xyo.ble.devices.xy.XY3BluetoothDevice
 import network.xyo.ble.devices.xy.XY4BluetoothDevice
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResult
 import network.xyo.ble.sample.R
-import network.xyo.ble.sample.XYApplication
-import network.xyo.ble.generic.scanner.XYSmartScan
 import network.xyo.base.XYBase
-import network.xyo.ui.XYBaseFragment
-import network.xyo.ui.ui
+import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResultErrorCode
 import java.lang.Exception
 
 @kotlin.ExperimentalUnsignedTypes
-class BeepTestFragment : XYBaseFragment() {
+class BeepTestFragment : XYDeviceFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_test, container, false)
     }
-
-    private val scanner: XYSmartScan?
-        get() {
-            return (activity?.applicationContext as? XYApplication)?.scanner
-        }
 
     private var startCount = 0
     private var connectCount = 0
@@ -35,7 +27,7 @@ class BeepTestFragment : XYBaseFragment() {
     private var beepCount = 0
 
     fun updateUI() {
-        ui {
+        activity?.runOnUiThread {
             start_count?.text = "Starts: $startCount"
             connect_count?.text = "Connects: $connectCount"
             unlock_count?.text = "Unlocks: $unlockCount"
@@ -53,11 +45,11 @@ class BeepTestFragment : XYBaseFragment() {
                     log.info("BeepTest: ${device.id}: Connected")
                     connectCount++
                     updateUI()
-                    if (device.unlock().error == XYBluetoothResult.ErrorCode.None) {
+                    if (device.unlock().error == XYBluetoothResultErrorCode.None) {
                         log.info("BeepTest: ${device.id}: Unlocked")
                         unlockCount++
                         updateUI()
-                        if (device.primary.buzzer.set(0x11U).error == XYBluetoothResult.ErrorCode.None) {
+                        if (device.primary.buzzer.set(0x11U).error == XYBluetoothResultErrorCode.None) {
                             log.info("BeepTest: ${device.id}: Success")
                             beepCount++
                             updateUI()
@@ -69,7 +61,7 @@ class BeepTestFragment : XYBaseFragment() {
                     }
                     return@connection XYBluetoothResult(true)
                 }
-                if (connectResult.error != XYBluetoothResult.ErrorCode.None) {
+                if (connectResult.error != XYBluetoothResultErrorCode.None) {
                     log.error("BeepTest: ${device.id}: Failed to Connect: ${connectResult.error}")
                 }
             } catch (ex: Exception) {
@@ -88,11 +80,11 @@ class BeepTestFragment : XYBaseFragment() {
                     log.info("BeepTest: ${device.id}: Connected")
                     connectCount++
                     updateUI()
-                    if (device.unlock().error == XYBluetoothResult.ErrorCode.None) {
+                    if (device.unlock().error == XYBluetoothResultErrorCode.None) {
                         log.info("BeepTest: ${device.id}: Unlocked")
                         unlockCount++
                         updateUI()
-                        if (device.controlService.buzzerSelect.set(0x02U).error == XYBluetoothResult.ErrorCode.None) {
+                        if (device.controlService.buzzerSelect.set(0x02U).error == XYBluetoothResultErrorCode.None) {
                             log.info("BeepTest: ${device.id}: Success")
                             beepCount++
                             updateUI()
@@ -104,7 +96,7 @@ class BeepTestFragment : XYBaseFragment() {
                     }
                     return@connection XYBluetoothResult(true)
                 }
-                if (connectResult.error != XYBluetoothResult.ErrorCode.None) {
+                if (connectResult.error != XYBluetoothResultErrorCode.None) {
                     log.error("BeepTest: ${device.id}: Failed to Connect: ${connectResult.error}")
                 }
             } catch (ex: Exception) {
@@ -116,7 +108,7 @@ class BeepTestFragment : XYBaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         start_async.setOnClickListener {
-            scanner?.devices?.forEach { (_, value) ->
+            scanner.devices.forEach { (_, value) ->
                 GlobalScope.launch {
                     when (value) {
                         is XY4BluetoothDevice -> {
@@ -135,7 +127,7 @@ class BeepTestFragment : XYBaseFragment() {
 
         start_sync.setOnClickListener {
             GlobalScope.launch {
-                scanner?.devices?.forEach { (_, value) ->
+                scanner.devices.forEach { (_, value) ->
                     when (value) {
                         is XY4BluetoothDevice -> {
                             doBeepXY4(value)

@@ -15,7 +15,6 @@ import network.xyo.ble.generic.devices.XYBluetoothDevice
 import network.xyo.ble.sample.R
 import network.xyo.ble.sample.XYDeviceData
 import network.xyo.ble.services.xy.ControlService
-import network.xyo.ui.ui
 
 @kotlin.ExperimentalUnsignedTypes
 class ControlFragment : XYDeviceFragment() {
@@ -49,25 +48,25 @@ class ControlFragment : XYDeviceFragment() {
 
         control?.let {
             val buzzer = it.buzzer.get()
-            ui { text_buzzer.text = buzzer.toString() }
+            activity?.runOnUiThread { text_buzzer.text = buzzer.toString() }
 
             val handShake = it.handshake.get()
-            ui { text_hand_shake.text = handShake.toString() }
+            activity?.runOnUiThread { text_hand_shake.text = handShake.toString() }
 
             val version = it.version.get()
-            ui { text_version.text = version.toString() }
+            activity?.runOnUiThread { text_version.text = version.toString() }
 
             val buzzerSelect = it.buzzerSelect.get()
-            ui { text_buzzer_select.text = buzzerSelect.toString() }
+            activity?.runOnUiThread { text_buzzer_select.text = buzzerSelect.toString() }
 
             val surge = it.surge.get()
-            ui { text_surge.text = surge.toString() }
+            activity?.runOnUiThread { text_surge.text = surge.toString() }
 
             val button = it.button.get()
-            ui { text_button.text = button.toString() }
+            activity?.runOnUiThread { text_button.text = button.toString() }
 
             val disconnect = it.disconnect.get()
-            ui { text_disconnect.text = disconnect.toString() }
+            activity?.runOnUiThread { text_disconnect.text = disconnect.toString() }
         }
     }
 

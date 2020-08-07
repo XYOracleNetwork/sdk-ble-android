@@ -13,7 +13,6 @@ import network.xyo.ble.generic.devices.XYBluetoothDevice
 import network.xyo.ble.sample.R
 import network.xyo.ble.sample.XYDeviceData
 import network.xyo.ble.services.xy.SensorService
-import network.xyo.ui.ui
 
 @kotlin.ExperimentalUnsignedTypes
 class SensorFragment : XYDeviceFragment() {
@@ -47,19 +46,19 @@ class SensorFragment : XYDeviceFragment() {
         sensor?.let {
 
             val raw = it.raw.get()
-            ui { text_raw.text = raw.toString() }
+            activity?.runOnUiThread { text_raw.text = raw.toString() }
 
             val timeout = it.timeout.get()
-            ui { text_timeout.text = timeout.toString() }
+            activity?.runOnUiThread { text_timeout.text = timeout.toString() }
 
             val threshold = it.threshold.get()
-            ui { text_threshold.text = threshold.toString() }
+            activity?.runOnUiThread { text_threshold.text = threshold.toString() }
 
             val inactive = it.inactive.get()
-            ui { text_inactive.text = inactive.toString() }
+            activity?.runOnUiThread { text_inactive.text = inactive.toString() }
 
             val movementCount = it.movementCount.get()
-            ui { text_movement_count.text = movementCount.toString() }
+            activity?.runOnUiThread { text_movement_count.text = movementCount.toString() }
 
         }
     }

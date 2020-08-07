@@ -19,11 +19,10 @@ import network.xyo.base.XYBase
 import network.xyo.ble.devices.xy.XY4BluetoothDevice
 import network.xyo.ble.generic.devices.XYBluetoothDevice
 import network.xyo.ble.firmware.XYOtaFile
-import network.xyo.ble.firmware.XYOtaUpdate
+import network.xyo.ble.firmware.XYOtaUpdateListener
 import network.xyo.ble.sample.R
 import network.xyo.ble.sample.XYDeviceData
 import network.xyo.ble.sample.fragments.core.BackFragmentListener
-import network.xyo.ui.ui
 import java.io.BufferedInputStream
 import java.io.FileOutputStream
 import java.net.URL
@@ -71,7 +70,7 @@ class FirmwareUpdateFragment : XYDeviceFragment(), BackFragmentListener {
 
             val fileList = XYOtaFile.list(folderName)
             if (fileList == null) {
-                showToast("No Firmware files found. Add files in device folder 'Xyo'")
+                log.error("No Firmware files found. Add files in device folder 'Xyo'")
             } else {
                 for (file in fileList) {
                     fileListAdapter.add(file)
@@ -84,7 +83,7 @@ class FirmwareUpdateFragment : XYDeviceFragment(), BackFragmentListener {
         }
     }
 
-    private suspend fun readFromServer() = withContext(Dispatchers.Default) {
+    private suspend fun readFromServer() = withContext(Dispatchers.IO) {
         XYOtaFile.createFileDirectory(folderName)
         val url = URL("https://s3.amazonaws.com/xyfirmware.xyo.network/xy4_585-0-v56.img")
         val connection = url.openConnection()
@@ -138,13 +137,12 @@ class FirmwareUpdateFragment : XYDeviceFragment(), BackFragmentListener {
         alertDialog.show()
     }
 
-    private val updateListener = object : XYOtaUpdate.Listener() {
+    private val updateListener = object : XYOtaUpdateListener() {
         override fun updated(device: XYBluetoothDevice) {
             log.info("updateListener: updated")
             updateInProgress = false
-            ui {
-                throbber?.hide()
-                showToast("Update complete. Rebooting device...")
+            activity?.runOnUiThread {
+                log.info("Update complete. Rebooting device...")
                 activity?.onBackPressed()
             }
         }
@@ -154,24 +152,22 @@ class FirmwareUpdateFragment : XYDeviceFragment(), BackFragmentListener {
             updateInProgress = false
             val gattError = error.contains("133")
 
-            ui {
-                showToast("Update failed: $error")
+            activity?.runOnUiThread {
+                log.error("Update failed: $error")
                 if (gattError) {
                     promptRefreshAdapter()
                 }
 
-                throbber?.show()
                 button_update?.isEnabled = true
                 lv_files?.visibility = VISIBLE
                 tv_file_name?.visibility = VISIBLE
-                throbber?.hide()
             }
         }
 
         override fun progress(sent: Int, total: Int) {
             val txt = "sending chunk  $sent of $total"
             log.info(txt)
-            ui {
+            activity?.runOnUiThread {
                 tv_file_progress?.text = txt
             }
         }
@@ -194,18 +190,16 @@ class FirmwareUpdateFragment : XYDeviceFragment(), BackFragmentListener {
 
     private fun refreshAdapter() {
         GlobalScope.launch {
-            throbber?.show()
             //need to connect before refreshing
             val result = device?.connect()
             // val result = device?.refreshGatt()?.await()
             if (result?.value as Boolean) {
-                ui { showToast("BLE adapter was reset, performing update") }
+                activity?.runOnUiThread { log.error("BLE adapter was reset, performing update") }
                 performUpdate()
             } else {
-                ui { showToast("Failed to refresh BLE adapter") }
+                activity?.runOnUiThread { log.error("Failed to refresh BLE adapter") }
             }
-            showToast(result.toString())
-            throbber?.hide()
+            log.info(result.toString())
         }
     }
 
@@ -213,7 +207,7 @@ class FirmwareUpdateFragment : XYDeviceFragment(), BackFragmentListener {
         GlobalScope.launch {
             if (firmwareFileName != null) {
                 updateInProgress = true
-                ui {
+                activity?.runOnUiThread {
                     lv_files?.visibility = GONE
                     tv_file_name?.visibility = GONE
                     tv_file_progress?.visibility = VISIBLE
@@ -226,7 +220,7 @@ class FirmwareUpdateFragment : XYDeviceFragment(), BackFragmentListener {
                     (device as? XY4BluetoothDevice)?.updateFirmware(folderName, it, updateListener)
                 }
             } else {
-                ui { showToast("Select a File first") }
+                activity?.runOnUiThread { log.error("Select a File first") }
             }
         }
     }

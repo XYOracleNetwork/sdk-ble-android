@@ -5,10 +5,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import network.xyo.ble.sample.R
-import network.xyo.ui.XYBaseFragment
 
-class RootServicesFragment : XYBaseFragment() {
+@ExperimentalUnsignedTypes
+class RootServicesFragment : Fragment() {
     private var startingServices : Array<BluetoothGattService>? = null
     private var servicesFragment: ServicesFragment? = null
 

@@ -11,11 +11,11 @@ import kotlinx.android.synthetic.main.fragment_services.view.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import network.xyo.ble.generic.devices.XYBluetoothDevice
+import network.xyo.ble.generic.devices.XYBluetoothDeviceListener
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResult
 import network.xyo.ble.sample.R
 import network.xyo.ble.sample.XYDeviceData
 import network.xyo.ble.sample.adapters.XYServiceListAdapter
-import network.xyo.ui.ui
 
 @kotlin.ExperimentalUnsignedTypes
 class DeviceServicesFragment : XYDeviceFragment() {
@@ -52,9 +52,6 @@ class DeviceServicesFragment : XYDeviceFragment() {
     }
 
     private suspend fun updateList() {
-        ui {
-            throbber?.show()
-        }
         val result = device?.connection {
             device?.services()?.let {
                 serviceList.clear()
@@ -64,13 +61,12 @@ class DeviceServicesFragment : XYDeviceFragment() {
             }
             return@connection XYBluetoothResult(true)
         }
-        ui {
-            throbber?.hide()
+        activity?.runOnUiThread {
             result?.let {
                 if (it.hasError()) {
-                    showToast("Error: ${it.error}")
+                    log.error("Error: ${it.error}")
                 } else {
-                    showToast("Loaded Services")
+                    log.info("Loaded Services")
                 }
             }
         }
@@ -83,7 +79,7 @@ class DeviceServicesFragment : XYDeviceFragment() {
 
     override fun onResume() {
         super.onResume()
-        device?.addListener("services", object: XYBluetoothDevice.Listener() {
+        device?.addListener("services", object: XYBluetoothDeviceListener() {
             override fun connectionStateChanged(device: XYBluetoothDevice, newState: Int) {
                 super.connectionStateChanged(device, newState)
                 GlobalScope.launch {

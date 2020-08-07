@@ -16,6 +16,21 @@ import network.xyo.ble.generic.ads.XYBleAd
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothGattClient
 import network.xyo.ble.generic.scanner.XYScanRecord
 import network.xyo.ble.generic.scanner.XYScanResult
+import androidx.annotation.WorkerThread
+
+open class XYBluetoothDeviceListener {
+    @WorkerThread
+    open fun entered(device: XYBluetoothDevice) {}
+
+    @WorkerThread
+    open fun exited(device: XYBluetoothDevice) {}
+
+    @WorkerThread
+    open fun detected(device: XYBluetoothDevice) {}
+
+    @WorkerThread
+    open fun connectionStateChanged(device: XYBluetoothDevice, newState: Int) {}
+}
 
 open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, val hash: String, transport: Int? = null) : XYBluetoothGattClient(context, device, false, null, transport, null, null), Comparable<XYBluetoothDevice> {
 
@@ -24,7 +39,7 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, val has
     // hash that is passed in to create the class is used to make sure that the reuse of existing instances
     // is done based on device specific logic on "sameness"
 
-    protected val listeners = HashMap<String, Listener>()
+    protected val listeners = HashMap<String, XYBluetoothDeviceListener>()
     val ads = SparseArray<XYBleAd>()
 
     var detectCount = 0
@@ -205,7 +220,7 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, val has
         }
     }
 
-    fun addListener(key: String, listener: Listener) {
+    fun addListener(key: String, listener: XYBluetoothDeviceListener) {
         // log.info("addListener:$key:$listener")
         GlobalScope.launch {
             synchronized(listeners) {
@@ -221,16 +236,6 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, val has
                 listeners.remove(key)
             }
         }
-    }
-
-    open class Listener {
-        open fun entered(device: XYBluetoothDevice) {}
-
-        open fun exited(device: XYBluetoothDevice) {}
-
-        open fun detected(device: XYBluetoothDevice) {}
-
-        open fun connectionStateChanged(device: XYBluetoothDevice, newState: Int) {}
     }
 
     internal fun updateAds(record: XYScanRecord) {
@@ -271,7 +276,7 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, val has
         internal var canCreate = false
         val manufacturerToCreator = SparseArray<XYCreator>()
 
-        // Do not serviceToCreator this Private. It's called by other apps
+        // Do not set serviceToCreator as Private. It's called by other apps
         val serviceToCreator = HashMap<UUID, XYCreator>()
 
         // cancel the checkForExit routine so we don't get notifications after service is stopped

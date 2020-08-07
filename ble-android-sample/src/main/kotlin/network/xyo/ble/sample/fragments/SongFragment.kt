@@ -14,7 +14,6 @@ import network.xyo.ble.generic.devices.XYBluetoothDevice
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResult
 import network.xyo.ble.sample.R
 import network.xyo.ble.sample.XYDeviceData
-import network.xyo.ui.ui
 import java.nio.ByteBuffer
 
 @kotlin.ExperimentalUnsignedTypes
@@ -227,14 +226,12 @@ class SongFragment : XYDeviceFragment() {
     }
 
     private fun updateUI() {
-        ui {
+        activity?.runOnUiThread {
             text_current_song.text = currentSong
-            throbber?.hide()
         }
     }
 
     private fun readCurrentSong() {
-        throbber?.show()
 
         when (device) {
             is XY4BluetoothDevice -> {
@@ -253,11 +250,10 @@ class SongFragment : XYDeviceFragment() {
                 text_battery_level.text = getString(R.string.unknown_device)
             }
         }
-        throbber?.hide()
+
     }
 
     private fun setSongOne() {
-        throbber?.show()
 
         when (device) {
             is XY4BluetoothDevice -> {
@@ -298,7 +294,6 @@ class SongFragment : XYDeviceFragment() {
                 text_battery_level.text = getString(R.string.unknown_device)
             }
         }
-        throbber?.hide()
     }
 
     private fun getXY4Values(device: XY4BluetoothDevice) {

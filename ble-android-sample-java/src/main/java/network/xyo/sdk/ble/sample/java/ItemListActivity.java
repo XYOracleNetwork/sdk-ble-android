@@ -20,7 +20,7 @@ import android.widget.TextView;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import network.xyo.ble.generic.scanner.XYSmartScan;
+import network.xyo.ble.generic.scanner.XYSmartScanListener;
 import network.xyo.ble.utilities.XYPromise;
 import network.xyo.ble.devices.xy.XY2BluetoothDevice;
 import network.xyo.ble.devices.xy.XY3BluetoothDevice;
@@ -152,7 +152,7 @@ public class ItemListActivity extends AppCompatActivity {
             mTwoPane = twoPane;
             self = this;
 
-            parent.getScanner().getScanner().addListener("Wrapper", new XYSmartScan.Listener() {
+            parent.getScanner().getScanner().addListener("Wrapper", new XYSmartScanListener() {
                 @Override
                 public void entered(@NotNull XYBluetoothDevice device) {
                     super.entered(device);
@@ -201,7 +201,7 @@ public class ItemListActivity extends AppCompatActivity {
             return mValues.size();
         }
 
-        class ViewHolder extends RecyclerView.ViewHolder {
+        static class ViewHolder extends RecyclerView.ViewHolder {
             final TextView mIdView;
             final TextView mContentView;
 

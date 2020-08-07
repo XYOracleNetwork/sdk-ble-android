@@ -8,9 +8,9 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import network.xyo.ble.generic.devices.XYBluetoothDevice
 import network.xyo.ble.sample.XYApplication
-import network.xyo.ble.generic.scanner.XYSmartScan
 import network.xyo.base.XYBase
-import network.xyo.ui.ui
+import network.xyo.ble.generic.scanner.XYSmartScanListener
+import network.xyo.ble.generic.scanner.XYSmartScanStatus
 import java.util.Date
 
 /**
@@ -24,7 +24,7 @@ class XYBLEStatsView(context: Context, attrs: AttributeSet) : LinearLayout(conte
     private var enterCount = 0
     private var exitCount = 0
 
-    private val smartScanListener = object : XYSmartScan.Listener() {
+    private val smartScanListener = object : XYSmartScanListener() {
         override fun entered(device: XYBluetoothDevice) {
             enterCount++
             update()
@@ -36,9 +36,7 @@ class XYBLEStatsView(context: Context, attrs: AttributeSet) : LinearLayout(conte
         }
 
         override fun detected(device: XYBluetoothDevice) {
-            ui {
-                text_pulses.text = scanner.scanResultCount.toString()
-            }
+            text_pulses.text = scanner.scanResultCount.toString()
         }
 
         override fun connectionStateChanged(device: XYBluetoothDevice, newState: Int) {
@@ -46,7 +44,7 @@ class XYBLEStatsView(context: Context, attrs: AttributeSet) : LinearLayout(conte
             update()
         }
 
-        override fun statusChanged(status: XYSmartScan.Status) {
+        override fun statusChanged(status: XYSmartScanStatus) {
             log.info("statusChanged")
             update()
         }
@@ -60,17 +58,15 @@ class XYBLEStatsView(context: Context, attrs: AttributeSet) : LinearLayout(conte
     }
 
     fun update() {
-        ui {
-            text_host_device_name.text = scanner.hostDevice.name.toString()
-            text_enters.text = enterCount.toString()
-            text_exits.text = exitCount.toString()
-            text_net.text = (enterCount - exitCount).toString()
-            text_start_time.text = scanner.startTime?.let { Date(it).toString() } ?: "--"
-            text_uptime.text = scanner.uptime?.let {("%.2f").format((it / 1000f))} ?: "--"
-            text_pulses.text = scanner.scanResultCount.toString()
-            text_pulses_per_second.text = scanner.resultsPerSecond?.let {("%.2f").format(it)} ?: "--"
-            text_devices.text = scanner.devices.size.toString()
-        }
+        text_host_device_name.text = scanner.hostDevice.name.toString()
+        text_enters.text = enterCount.toString()
+        text_exits.text = exitCount.toString()
+        text_net.text = (enterCount - exitCount).toString()
+        text_start_time.text = scanner.startTime?.let { Date(it).toString() } ?: "--"
+        text_uptime.text = scanner.uptime?.let {("%.2f").format((it / 1000f))} ?: "--"
+        text_pulses.text = scanner.scanResultCount.toString()
+        text_pulses_per_second.text = scanner.resultsPerSecond?.let {("%.2f").format(it)} ?: "--"
+        text_devices.text = scanner.devices.size.toString()
     }
 
     companion object: XYBase()

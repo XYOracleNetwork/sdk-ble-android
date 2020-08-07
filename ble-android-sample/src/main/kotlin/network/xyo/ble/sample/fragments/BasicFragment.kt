@@ -13,7 +13,6 @@ import network.xyo.ble.generic.devices.XYBluetoothDevice
 import network.xyo.ble.sample.R
 import network.xyo.ble.sample.XYDeviceData
 import network.xyo.ble.services.xy.BasicConfigService
-import network.xyo.ui.ui
 
 @kotlin.ExperimentalUnsignedTypes
 class BasicFragment : XYDeviceFragment() {
@@ -47,31 +46,31 @@ class BasicFragment : XYDeviceFragment() {
         basic?.let {
 
             val lock = it.lock.get()
-            ui { text_lock.text = lock.toString() }
+            activity?.runOnUiThread { text_lock.text = lock.toString() }
 
             val unlock = it.unlock.get()
-            ui { text_unlock.text = unlock.toString() }
+            activity?.runOnUiThread { text_unlock.text = unlock.toString() }
 
             val major = it.major.get()
-            ui { text_major.text = major.toString() }
+            activity?.runOnUiThread { text_major.text = major.toString() }
 
             val minor = it.minor.get()
-            ui { text_minor.text = minor.toString() }
+            activity?.runOnUiThread { text_minor.text = minor.toString() }
 
             val uuid = it.uuid.get()
-            ui { text_uuid.text = uuid.toString() }
+            activity?.runOnUiThread { text_uuid.text = uuid.toString() }
 
             val reboot = it.reboot.get()
-            ui { text_uuid.text = reboot.toString() }
+            activity?.runOnUiThread { text_uuid.text = reboot.toString() }
 
             val interval = it.interval.get()
-            ui { text_interval.text = interval.toString() }
+            activity?.runOnUiThread { text_interval.text = interval.toString() }
 
             val lockStatus = it.lockStatus.get()
-            ui { text_lock_status.text = lockStatus.toString() }
+            activity?.runOnUiThread { text_lock_status.text = lockStatus.toString() }
 
             val otaWrite = it.otaWrite.get()
-            ui { text_ota_write.text = otaWrite.toString() }
+            activity?.runOnUiThread { text_ota_write.text = otaWrite.toString() }
         }
     }
 

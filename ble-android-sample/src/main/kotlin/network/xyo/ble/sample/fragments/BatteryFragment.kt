@@ -14,7 +14,6 @@ import network.xyo.ble.generic.devices.XYBluetoothDevice
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResult
 import network.xyo.ble.sample.R
 import network.xyo.ble.sample.XYDeviceData
-import network.xyo.ui.ui
 
 @kotlin.ExperimentalUnsignedTypes
 class BatteryFragment : XYDeviceFragment() {
@@ -44,16 +43,12 @@ class BatteryFragment : XYDeviceFragment() {
     }
 
     private fun updateUI() {
-        ui {
+        activity?.runOnUiThread {
             text_battery_level?.text = deviceData?.level
         }
     }
 
     private fun readBatteryLevel() {
-        ui {
-            throbber?.show()
-        }
-
         when (device) {
             is XY4BluetoothDevice -> {
                 val xy4 = (device as? XY4BluetoothDevice)
@@ -76,9 +71,6 @@ class BatteryFragment : XYDeviceFragment() {
             else -> {
                 text_battery_level.text = getString(R.string.unknown_device)
             }
-        }
-        ui {
-            throbber?.hide()
         }
     }
 

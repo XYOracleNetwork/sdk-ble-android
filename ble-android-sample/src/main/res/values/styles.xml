@@ -3,10 +3,8 @@
     <style name="divider">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">1dp</item>
-        <item name="android:background">@color/xy_ui_palette_primary_dark</item>
     </style>
     <style name="device_item_tv_header">
         <item name="android:padding">@dimen/pad_device_item_tv</item>
-        <item name="android:textColor">@color/black</item>
     </style>
 </resources>

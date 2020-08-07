@@ -23,13 +23,12 @@ import network.xyo.ble.generic.gatt.server.*
 import network.xyo.ble.generic.gatt.server.responders.XYBluetoothReadResponder
 import network.xyo.ble.generic.gatt.server.responders.XYBluetoothWriteResponder
 import network.xyo.ble.sample.R
-import network.xyo.ui.XYBaseFragment
 import java.nio.ByteBuffer
 import java.nio.charset.Charset
 import java.util.UUID
 
 @kotlin.ExperimentalUnsignedTypes
-class ServerFragment : XYDeviceFragment() {
+class ServerFragment : Fragment() {
     private var bleServer : XYBluetoothGattServer? = null
     var bleAdvertiser : XYBluetoothAdvertiser? = null
     private val bluetoothIntentReceiver = BluetoothIntentReceiver()
@@ -123,7 +122,7 @@ class ServerFragment : XYDeviceFragment() {
 
     inner class SectionsPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
         private val size = 2
-        private val fragments: SparseArray<XYBaseFragment> = SparseArray(size)
+        private val fragments: SparseArray<Fragment> = SparseArray(size)
 
         override fun getItem(position: Int): Fragment {
             when (position) {
@@ -139,7 +138,7 @@ class ServerFragment : XYDeviceFragment() {
         }
 
         override fun instantiateItem(container: ViewGroup, position: Int): Any {
-            val fragment = super.instantiateItem(container, position) as XYBaseFragment
+            val fragment = super.instantiateItem(container, position) as Fragment
             fragments.append(position, fragment)
             return fragment
         }

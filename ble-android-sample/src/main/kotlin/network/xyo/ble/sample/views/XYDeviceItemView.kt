@@ -7,11 +7,11 @@ import android.view.View
 import android.widget.RelativeLayout
 import kotlinx.android.synthetic.main.device_item.view.*
 import network.xyo.ble.generic.devices.XYBluetoothDevice
-import network.xyo.ble.devices.xy.XYFinderBluetoothDevice
 import network.xyo.ble.devices.apple.XYIBeaconBluetoothDevice
 import network.xyo.ble.sample.R
 import network.xyo.ble.sample.activities.XYODeviceActivity
 import network.xyo.base.XYBase
+import network.xyo.ble.devices.xy.XYFinderBluetoothDeviceListener
 
 /**
  * Created by arietrouw on 12/27/17.
@@ -67,7 +67,7 @@ class XYDeviceItemView(context: Context, attrs: AttributeSet) : RelativeLayout(c
         }
     }
 
-    private val deviceListener = object : XYFinderBluetoothDevice.Listener() {
+    private val deviceListener = object : XYFinderBluetoothDeviceListener() {
         override fun entered(device: XYBluetoothDevice) {
 
         }

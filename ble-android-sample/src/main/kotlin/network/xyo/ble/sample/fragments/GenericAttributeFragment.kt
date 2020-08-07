@@ -14,7 +14,6 @@ import network.xyo.ble.generic.devices.XYBluetoothDevice
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResult
 import network.xyo.ble.sample.R
 import network.xyo.ble.sample.XYDeviceData
-import network.xyo.ui.ui
 
 @kotlin.ExperimentalUnsignedTypes
 class GenericAttributeFragment : XYDeviceFragment() {
@@ -44,18 +43,12 @@ class GenericAttributeFragment : XYDeviceFragment() {
     }
 
     private fun updateUI() {
-        ui {
-            throbber?.hide()
-
+        activity?.runOnUiThread {
             text_service_changed?.text = deviceData?.serviceChanged
         }
     }
 
     private fun setGattValues() {
-        ui {
-            throbber?.hide()
-        }
-
         when (device) {
             is XY4BluetoothDevice -> {
                 val x4 = (device as? XY4BluetoothDevice)
