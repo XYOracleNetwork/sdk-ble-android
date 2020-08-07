@@ -42,12 +42,6 @@ Not only will this SDK make XYO apps better, but bring XYO functionality to exis
 You can add sdk-ble-android to your existing app by cloning the project and manually adding it
 to your build.gradle:
 
-```bash
-git clone git@github.com:XYOracleNetwork/sdk-ble-android.git
-```
-
-or by using maven:
-
 ```gradle
 allprojects {
     repositories {
