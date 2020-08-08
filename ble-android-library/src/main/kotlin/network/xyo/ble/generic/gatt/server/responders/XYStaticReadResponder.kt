@@ -5,6 +5,7 @@ import java.nio.ByteBuffer
 import kotlin.math.min
 import network.xyo.ble.generic.gatt.server.XYBluetoothGattServer
 
+@Suppress("unused")
 class XYStaticReadResponder(var value: ByteArray, val listener: XYStaticReadResponderListener?) : XYBluetoothReadResponder {
     private var lastTime = 0
 

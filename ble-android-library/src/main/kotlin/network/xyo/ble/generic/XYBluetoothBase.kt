@@ -12,6 +12,7 @@ import kotlin.coroutines.ContinuationInterceptor
 import kotlinx.coroutines.asCoroutineDispatcher
 import network.xyo.base.XYBase
 
+@Suppress("unused")
 enum class XYBluetoothBaseStatus(val status: Short) {
     Success(0x00),
     UnknownBtLeCommand(0x01),
@@ -41,6 +42,7 @@ enum class XYBluetoothBaseStatus(val status: Short) {
     FailedToEstablish(0x3e)
 }
 
+@Suppress("unused")
 open class XYBluetoothBase(context: Context) : XYBase() {
 
     // we store this since on initial creation, the applicationContext may not yet be available

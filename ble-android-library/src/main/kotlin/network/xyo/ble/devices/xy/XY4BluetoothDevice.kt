@@ -39,16 +39,16 @@ open class XY4BluetoothDevice(
     hash: String
 ) : XYFinderBluetoothDevice(context, scanResult, hash) {
 
-    val alertNotification by lazy { AlertNotificationService(this) }
-    val batteryService by lazy { BatteryService(this) }
-    val currentTimeService by lazy { CurrentTimeService(this) }
-    val deviceInformationService by lazy { DeviceInformationService(this) }
-    val genericAccessService by lazy { GenericAccessService(this) }
-    val genericAttributeService by lazy { GenericAttributeService(this) }
-    val linkLossService by lazy { LinkLossService(this) }
-    val txPowerService by lazy { TxPowerService(this) }
-    val primary by lazy { PrimaryService(this) }
-    val spotaService by lazy { SpotaService(this) }
+    open val alertNotification by lazy { AlertNotificationService(this) }
+    open val batteryService by lazy { BatteryService(this) }
+    open val currentTimeService by lazy { CurrentTimeService(this) }
+    open val deviceInformationService by lazy { DeviceInformationService(this) }
+    open val genericAccessService by lazy { GenericAccessService(this) }
+    open val genericAttributeService by lazy { GenericAttributeService(this) }
+    open val linkLossService by lazy { LinkLossService(this) }
+    open val txPowerService by lazy { TxPowerService(this) }
+    open val primary by lazy { PrimaryService(this) }
+    open val spotaService by lazy { SpotaService(this) }
 
     private var lastButtonPressTime = 0L
 

@@ -4,6 +4,7 @@ import java.nio.ByteBuffer
 import kotlin.math.pow
 import network.xyo.base.XYBase
 
+@Suppress("unused")
 enum class XYBleAdAdTypes(val id: UByte) {
     Flags(0x01U),
     Incomplete16BitServiceUuids(0x02U),

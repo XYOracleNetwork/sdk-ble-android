@@ -26,6 +26,7 @@ import network.xyo.ble.services.xy.*
  */
 open class XY3BluetoothDeviceListener : XYFinderBluetoothDeviceListener()
 
+@Suppress("unused")
 open class XY3BluetoothDevice(context: Context, scanResult: XYScanResult, hash: String) : XYFinderBluetoothDevice(context, scanResult, hash) {
 
     val alertNotification by lazy { AlertNotificationService(this) }
@@ -39,7 +40,6 @@ open class XY3BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
 
     val basicConfigService by lazy { BasicConfigService(this) }
     val controlService by lazy { ControlService(this) }
-    val csrOtaService by lazy { CsrOtaService(this) }
     val extendedConfigService by lazy { ExtendedConfigService(this) }
     val sensorService by lazy { SensorService(this) }
 

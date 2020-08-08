@@ -8,6 +8,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import network.xyo.ble.sample.R
 
+@Suppress("unused")
 class XYServiceListAdapter(services : Array<BluetoothGattService>) : RecyclerView.Adapter<XYServiceListAdapter.ViewHolder>() {
     private val listeners = HashMap<String, XYServiceListAdapterListener>()
     private val list: ArrayList<BluetoothGattService> = ArrayList(services.asList())

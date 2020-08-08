@@ -37,7 +37,6 @@ class CentralFragment : XYDeviceFragment() {
         XY4BluetoothDevice.enable(true)
         XY3BluetoothDevice.enable(true)
         XY2BluetoothDevice.enable(true)
-        XYGpsBluetoothDevice.enable(true)
         XYBluetoothDevice.enable(true)
 
         return inflater.inflate(R.layout.fragment_central, container, false)
@@ -64,7 +63,7 @@ class CentralFragment : XYDeviceFragment() {
 
     private fun openDevice(device: XYBluetoothDevice) {
         val intent = Intent(this.context, XYODeviceActivity::class.java)
-        intent.putExtra(XYODeviceActivity.EXTRA_DEVICEHASH, device.hash)
+        intent.putExtra(XYODeviceActivity.EXTRA_DEVICE_HASH, device.hash)
         this.startActivity(intent)
     }
 
@@ -170,7 +169,7 @@ class CentralFragment : XYDeviceFragment() {
     }
 
     private fun onBluetoothUnavailable() {
-        ll_device_nobluetooth.visibility = VISIBLE
+        ll_device_no_bluetooth.visibility = VISIBLE
     }
 
     companion object {
