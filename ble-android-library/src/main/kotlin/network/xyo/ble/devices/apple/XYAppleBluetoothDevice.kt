@@ -10,6 +10,13 @@ import network.xyo.ble.generic.devices.XYBluetoothDeviceListener
 import network.xyo.ble.generic.devices.XYCreator
 import network.xyo.ble.generic.scanner.XYScanResult
 
+/**
+ * Listener for Apple Bluetooth Devices.
+ *
+ * Brings in a renamed Listener.
+ * .listener is now camel cased into the name.
+ */
+
 open class XYAppleBluetoothDeviceListener : XYBluetoothDeviceListener()
 
 open class XYAppleBluetoothDevice(context: Context, device: BluetoothDevice, hash: String) : XYBluetoothDevice(context, device, hash) {

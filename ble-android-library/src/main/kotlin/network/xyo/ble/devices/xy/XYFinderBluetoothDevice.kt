@@ -11,34 +11,51 @@ import network.xyo.base.XYBase
 import network.xyo.ble.devices.apple.XYAppleBluetoothDevice
 import network.xyo.ble.devices.apple.XYIBeaconBluetoothDevice
 import network.xyo.ble.devices.apple.XYIBeaconBluetoothDeviceListener
-import network.xyo.ble.firmware.XYOtaUpdate
 import network.xyo.ble.firmware.XYOtaUpdateListener
 import network.xyo.ble.generic.devices.XYBluetoothDevice
 import network.xyo.ble.generic.devices.XYCreator
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResult
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResultErrorCode
 import network.xyo.ble.generic.scanner.XYScanResult
+import androidx.annotation.WorkerThread
 
+/**
+ * Listener for XY Finder.
+ *
+ * Brings in a renamed Finder Listener.
+ * .listener is now camel cased into the name.
+ */
 open class XYFinderBluetoothDeviceListener : XYIBeaconBluetoothDeviceListener() {
+    @WorkerThread
     open fun buttonSinglePressed(device: XYFinderBluetoothDevice) {}
 
+    @WorkerThread
     open fun buttonDoublePressed(device: XYFinderBluetoothDevice) {}
 
+    @WorkerThread
     open fun buttonLongPressed(device: XYFinderBluetoothDevice) {}
 }
 
+/**
+ * Bluetooth device family options.
+ *
+ */
+@Suppress("unused")
 enum class XYFinderBluetoothDeviceFamily {
     Unknown,
     XY1,
     XY2,
     XY3,
     Mobile,
-    Gps,
     Near,
     XY4,
     Webble
 }
 
+/**
+ * Bluetooth device range values.
+ *
+ */
 enum class XYFinderBluetoothDeviceProximity {
     None,
     OutOfRange,
@@ -50,6 +67,11 @@ enum class XYFinderBluetoothDeviceProximity {
     Touching
 }
 
+/**
+ * Presses available on XY find it hardware.
+ *
+ * These values are assigned to start and stop the finder.
+ */
 enum class XYFinderBluetoothDeviceButtonPress(val state: Int) {
     None(0),
     Single(1),
@@ -57,12 +79,17 @@ enum class XYFinderBluetoothDeviceButtonPress(val state: Int) {
     Long(3)
 }
 
+/**
+ * Stay awake, go to sleep toggle.
+ *
+ */
 enum class XYFinderBluetoothDeviceStayAwake(val state: UByte) {
     Off(0U),
     On(1U)
 }
 
 @kotlin.ExperimentalUnsignedTypes
+@Suppress("unused")
 open class XYFinderBluetoothDevice(context: Context, scanResult: XYScanResult, hash: String) : XYIBeaconBluetoothDevice(context, scanResult, hash) {
 
     override val id: String
@@ -77,9 +104,6 @@ open class XYFinderBluetoothDevice(context: Context, scanResult: XYScanResult, h
             return when (this@XYFinderBluetoothDevice) {
                 is XYMobileBluetoothDevice -> {
                     XYFinderBluetoothDeviceFamily.Mobile
-                }
-                is XYGpsBluetoothDevice -> {
-                    XYFinderBluetoothDeviceFamily.Gps
                 }
                 is XY4BluetoothDevice -> {
                     XYFinderBluetoothDeviceFamily.XY4
@@ -168,9 +192,11 @@ open class XYFinderBluetoothDevice(context: Context, scanResult: XYScanResult, h
         return@connection XYBluetoothResult<UByte>(XYBluetoothResultErrorCode.Unsupported)
     }
 
+    // update firmware at stream level
     open fun updateFirmware(stream: InputStream, listener: XYOtaUpdateListener) {
     }
 
+    // update firmware at folder level
     open fun updateFirmware(folderName: String, filename: String, listener: XYOtaUpdateListener) {
     }
 
@@ -209,6 +235,7 @@ open class XYFinderBluetoothDevice(context: Context, scanResult: XYScanResult, h
             }
         }
 
+        // grabs enum assigned to type of press from finder user. 
         fun buttonPressFromInt(index: Int): XYFinderBluetoothDeviceButtonPress {
             return when (index) {
                 1 -> XYFinderBluetoothDeviceButtonPress.Single

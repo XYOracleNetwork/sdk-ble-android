@@ -8,10 +8,12 @@ import android.bluetooth.BluetoothGattService
 import android.content.Context
 import android.os.Build
 import android.os.Handler
+import com.jaredrummler.android.device.BuildConfig
 import kotlinx.coroutines.*
 import network.xyo.base.XYBase
 import network.xyo.ble.generic.gatt.peripheral.*
 import network.xyo.ble.utilities.XYCallByVersion
+import java.lang.RuntimeException
 
 class XYBluetoothGattConnect(val device: BluetoothDevice) : XYBase() {
 
@@ -102,7 +104,8 @@ class XYBluetoothGattConnect(val device: BluetoothDevice) : XYBase() {
         val phy = null
         val handler = null
 
-        assert(gatt == null)
+        if(BuildConfig.DEBUG && gatt == null)
+            throw RuntimeException("cannot read characteristic")
 
         val result = asyncBle {
             var newGatt: XYThreadSafeBluetoothGatt? = null
@@ -130,7 +133,8 @@ class XYBluetoothGattConnect(val device: BluetoothDevice) : XYBase() {
 
     private suspend fun discover() = GlobalScope.async {
         log.info("discover")
-        assert(state != BluetoothGatt.STATE_CONNECTED)
+        if(BuildConfig.DEBUG && state != BluetoothGatt.STATE_CONNECTED)
+            throw RuntimeException("cannot read characteristic")
         val gatt = this@XYBluetoothGattConnect.gatt // make thread safe
         if (gatt != null) {
             val discover = XYBluetoothGattDiscover(gatt, callback)

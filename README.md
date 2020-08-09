@@ -11,7 +11,7 @@
 [![Sonarcloud Status](https://sonarcloud.io/api/project_badges/measure?project=XYOracleNetwork_sdk-ble-android&metric=alert_status)](https://sonarcloud.io/dashboard?id=XYOracleNetwork_sdk-ble-android)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/b14446847e614a2fae7152892765dac1)](https://www.codacy.com/app/arietrouw/sdk-ble-android?utm_source=github.com&utm_medium=referral&utm_content=XYOracleNetwork/sdk-ble-android&utm_campaign=Badge_Grade) [![Known Vulnerabilities](https://snyk.io/test/github/XYOracleNetwork/sdk-ble-android/badge.svg?targetFile=build.gradle)](https://snyk.io/test/github/XYOracleNetwork/sdk-ble-android?targetFile=build.gradle)
 
-> The XYO Foundation provides this source code available in our efforts to advance the understanding of the XYO Procotol and its possible uses. We continue to maintain this software in the interest of developer education. Usage of this source code is not intended for production.
+> The XYO Foundation provides this source code available in our efforts to advance the understanding of the XYO Protocol and its possible uses. We continue to maintain this software in the interest of developer education. Usage of this source code is not intended for production.
 
 ## Table of Contents
 
@@ -27,7 +27,7 @@
 
 A robust Bluetooth solution for Android. This BLE SDK was written from ground-up, in Kotlin,
  to help developers with the agonizing issues with Android the BLE stack.
-Not only will this SDK make XYO apps better, but bring XYO functionality to existing apps.  In adition to generalized BLE support, the SDK also has specific support for XY spacific hardware.
+Not only will this SDK make XYO apps better, but bring XYO functionality to existing apps.  In addition to generalized BLE support, the SDK also has support for XY specific hardware.
 
 ## Prerequisites
 
@@ -41,12 +41,6 @@ Not only will this SDK make XYO apps better, but bring XYO functionality to exis
 
 You can add sdk-ble-android to your existing app by cloning the project and manually adding it
 to your build.gradle:
-
-```bash
-git clone git@github.com:XYOracleNetwork/sdk-ble-android.git
-```
-
-or by using maven:
 
 ```gradle
 allprojects {
@@ -252,7 +246,7 @@ IMPORTANT:
 //make sure you stop the scanner when no longer needed
 scanner.stop()
 
-//remmove all device listeners when shutting down an activity:
+//remove all device listeners when shutting down an activity:
  override fun onStop() {
     super.onStop()
     device!!.removeListener(TAG)

@@ -1,3 +1,5 @@
+@file:Suppress("BlockingMethodInNonBlockingContext")
+
 package network.xyo.ble.sample.fragments
 
 import android.app.AlertDialog
@@ -10,7 +12,6 @@ import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
-import androidx.fragment.app.Fragment
 import kotlinx.android.synthetic.main.fragment_firmware_update.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -20,7 +21,6 @@ import network.xyo.base.XYBase
 import network.xyo.ble.devices.xy.XY4BluetoothDevice
 import network.xyo.ble.generic.devices.XYBluetoothDevice
 import network.xyo.ble.firmware.XYOtaFile
-import network.xyo.ble.firmware.XYOtaUpdate
 import network.xyo.ble.firmware.XYOtaUpdateListener
 import network.xyo.ble.sample.R
 import network.xyo.ble.sample.XYDeviceData
@@ -85,7 +85,7 @@ class FirmwareUpdateFragment : XYDeviceFragment(), BackFragmentListener {
         }
     }
 
-    private suspend fun readFromServer() = withContext(Dispatchers.Default) {
+    private suspend fun readFromServer() = withContext(Dispatchers.IO) {
         XYOtaFile.createFileDirectory(folderName)
         val url = URL("https://s3.amazonaws.com/xyfirmware.xyo.network/xy4_585-0-v56.img")
         val connection = url.openConnection()
@@ -228,9 +228,7 @@ class FirmwareUpdateFragment : XYDeviceFragment(), BackFragmentListener {
     }
 
     //Callback from XYODeviceActivity.onActivityResult
-    // TODO - Why are we making this dependency? [AT] --
-    @Suppress("UNUSED_PARAMETER")
-    fun onFileSelected(requestCode: Int, resultCode: Int, data: Intent?) {
+    fun onFileSelected(requestCode: Int,  data: Intent?) {
         log.info( "onFileSelected requestCode: $requestCode")
 
         data?.data.let { uri ->

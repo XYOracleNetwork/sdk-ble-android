@@ -16,14 +16,19 @@ import network.xyo.ble.generic.ads.XYBleAd
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothGattClient
 import network.xyo.ble.generic.scanner.XYScanRecord
 import network.xyo.ble.generic.scanner.XYScanResult
+import androidx.annotation.WorkerThread
 
 open class XYBluetoothDeviceListener {
+    @WorkerThread
     open fun entered(device: XYBluetoothDevice) {}
 
+    @WorkerThread
     open fun exited(device: XYBluetoothDevice) {}
 
+    @WorkerThread
     open fun detected(device: XYBluetoothDevice) {}
 
+    @WorkerThread
     open fun connectionStateChanged(device: XYBluetoothDevice, newState: Int) {}
 }
 
@@ -35,19 +40,19 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, val has
     // is done based on device specific logic on "sameness"
 
     protected val listeners = HashMap<String, XYBluetoothDeviceListener>()
-    val ads = SparseArray<XYBleAd>()
+    open val ads = SparseArray<XYBleAd>()
 
-    var detectCount = 0
-    var enterCount = 0
-    var exitCount = 0
-    var averageDetectGap = 0L
-    var lastDetectGap = 0L
-    var maxDetectTime = 0L
+    open var detectCount = 0
+    open var enterCount = 0
+    open var exitCount = 0
+    open var averageDetectGap = 0L
+    open var lastDetectGap = 0L
+    open var maxDetectTime = 0L
 
     // set this to true if the device should report that it is out of
     // range right after disconnect.  Generally used for devices
     // with rotating MAC addresses
-    var exitAfterDisconnect = false
+    open var exitAfterDisconnect = false
 
     private var addressValue: String? = null
     var address: String
@@ -271,8 +276,8 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, val has
         internal var canCreate = false
         val manufacturerToCreator = SparseArray<XYCreator>()
 
-        // Do not serviceToCreator this Private. It's called by other apps
-        val serviceToCreator = HashMap<UUID, XYCreator>()
+        // Do not set serviceToCreator as Private. It's called by other apps
+        private val serviceToCreator = HashMap<UUID, XYCreator>()
 
         // cancel the checkForExit routine so we don't get notifications after service is stopped
         var cancelNotifications: Boolean = false

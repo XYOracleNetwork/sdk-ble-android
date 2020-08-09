@@ -17,10 +17,6 @@ import network.xyo.ble.sample.XYDeviceData
 import network.xyo.ble.sample.fragments.*
 import network.xyo.ble.sample.fragments.core.BackFragmentListener
 
-/**
- * Created by arietrouw on 12/28/17.
- */
-
 @kotlin.ExperimentalStdlibApi
 @kotlin.ExperimentalUnsignedTypes
 class XYODeviceActivity : XYOAppBaseActivity() {
@@ -33,7 +29,7 @@ class XYODeviceActivity : XYOAppBaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val deviceHash = intent.getStringExtra(EXTRA_DEVICEHASH)!!
+        val deviceHash = intent.getStringExtra(EXTRA_DEVICE_HASH)!!
         log.info("onCreate: $deviceHash")
         device = scanner.devices[deviceHash]
         if (device == null) {
@@ -63,7 +59,7 @@ class XYODeviceActivity : XYOAppBaseActivity() {
         log.info(TAG, "onActivityResult requestCode: $requestCode")
 
         val frag = (supportFragmentManager.findFragmentById(R.id.container) as FirmwareUpdateFragment?)
-        frag?.onFileSelected(requestCode, resultCode, data)
+        frag?.onFileSelected(requestCode, data)
     }
 
     private val xy3DeviceListener = object : XY3BluetoothDeviceListener() {
@@ -184,7 +180,7 @@ class XYODeviceActivity : XYOAppBaseActivity() {
     }
 
     companion object {
-        var EXTRA_DEVICEHASH = "DeviceHash"
+        var EXTRA_DEVICE_HASH = "DeviceHash"
         private val TAG = XYODeviceActivity::class.java.simpleName
     }
 

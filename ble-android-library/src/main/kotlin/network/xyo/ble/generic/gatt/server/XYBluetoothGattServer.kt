@@ -13,6 +13,7 @@ import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResult
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResultErrorCode
 import network.xyo.ble.generic.gatt.peripheral.asyncBle
 
+@Suppress("unused")
 open class XYBluetoothGattServer(context: Context) : XYBluetoothBase(context) {
     protected val listeners = ConcurrentHashMap<String, BluetoothGattServerCallback>()
     private val services = HashMap<UUID, XYBluetoothService>()
@@ -64,7 +65,7 @@ open class XYBluetoothGattServer(context: Context) : XYBluetoothBase(context) {
         return services.values.toTypedArray()
     }
 
-    fun isDeviceConnected(bluetoothDevice: BluetoothDevice): Boolean {
+    open fun isDeviceConnected(bluetoothDevice: BluetoothDevice): Boolean {
         log.info("isDeviceConnected")
         val connectedDevices = devices
         if (connectedDevices != null) {

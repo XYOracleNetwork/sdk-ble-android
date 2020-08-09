@@ -40,7 +40,7 @@ class XYBluetoothGattWriteCharacteristic(
                         override fun onCharacteristicWrite(gatt: BluetoothGatt?, characteristic: BluetoothGattCharacteristic?, status: Int) {
                             log.info("onCharacteristicWrite: $status")
                             super.onCharacteristicWrite(gatt, characteristic, status)
-                            // since it is always possible to have a rogue callback from a previously timedout call,
+                            // since it is always possible to have a rogue callback from a previously timed out call,
                             // make sure it is the one we are looking for
                             if (characteristicToWrite.uuid == characteristic?.uuid) {
                                 if (status == BluetoothGatt.GATT_SUCCESS) {

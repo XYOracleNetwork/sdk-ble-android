@@ -16,7 +16,6 @@ import network.xyo.ble.generic.gatt.server.XYBluetoothAdvertiser
 import network.xyo.ble.generic.gatt.server.XYIBeaconAdvertiseDataCreator
 import network.xyo.ble.sample.R
 import network.xyo.base.XYBase
-import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResult
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResultErrorCode
 import java.nio.ByteBuffer
 import java.util.UUID
@@ -97,7 +96,7 @@ class AdvertiserFragment : Fragment() {
     }
 
     private  fun updateConnectible (view: View) {
-        val radioButtonGroup = view.connectable_selector
+        val radioButtonGroup = view.connectible_selector
         val radioButtonID = radioButtonGroup.checkedRadioButtonId
         val radioButton = radioButtonGroup.findViewById<RadioButton>(radioButtonID)
 

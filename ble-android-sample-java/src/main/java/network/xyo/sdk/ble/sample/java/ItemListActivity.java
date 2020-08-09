@@ -20,7 +20,6 @@ import android.widget.TextView;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import network.xyo.ble.generic.scanner.XYSmartScan;
 import network.xyo.ble.generic.scanner.XYSmartScanListener;
 import network.xyo.ble.utilities.XYPromise;
 import network.xyo.ble.devices.xy.XY2BluetoothDevice;
@@ -29,7 +28,6 @@ import network.xyo.ble.devices.xy.XY4BluetoothDevice;
 import network.xyo.ble.devices.apple.XYAppleBluetoothDevice;
 import network.xyo.ble.generic.devices.XYBluetoothDevice;
 import network.xyo.ble.devices.xy.XYFinderBluetoothDevice;
-import network.xyo.ble.devices.xy.XYGpsBluetoothDevice;
 import network.xyo.ble.devices.apple.XYIBeaconBluetoothDevice;
 import network.xyo.ble.generic.scanner.XYSmartScanPromise;
 import network.xyo.ble.generic.scanner.XYSmartScanLegacy;
@@ -64,13 +62,8 @@ public class ItemListActivity extends AppCompatActivity {
         toolbar.setTitle(getTitle());
 
         FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+        fab.setOnClickListener(view -> Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                .setAction("Action", null).show());
 
         if (findViewById(R.id.item_detail_container) != null) {
             // The detail container view will be present only in the
@@ -90,7 +83,6 @@ public class ItemListActivity extends AppCompatActivity {
         XY4BluetoothDevice.Companion.enable(true);
         XY3BluetoothDevice.Companion.enable(true);
         XY2BluetoothDevice.Companion.enable(true);
-        XYGpsBluetoothDevice.Companion.enable(true);
     }
 
     private void setupRecyclerView(@NotNull RecyclerView recyclerView) {
@@ -127,7 +119,6 @@ public class ItemListActivity extends AppCompatActivity {
             extends RecyclerView.Adapter<SimpleItemRecyclerViewAdapter.ViewHolder> {
 
         private final ItemListActivity mParentActivity;
-        final SimpleItemRecyclerViewAdapter self;
         private final List<XYBluetoothDevice> mValues;
         private final boolean mTwoPane;
         private final View.OnClickListener mOnClickListener = new View.OnClickListener() {
@@ -151,31 +142,20 @@ public class ItemListActivity extends AppCompatActivity {
             mValues = new ArrayList<>();
             mParentActivity = parent;
             mTwoPane = twoPane;
-            self = this;
 
             parent.getScanner().getScanner().addListener("Wrapper", new XYSmartScanListener() {
                 @Override
                 public void entered(@NotNull XYBluetoothDevice device) {
                     super.entered(device);
                     mValues.add(device);
-                    self.mParentActivity.runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            self.notifyDataSetChanged();
-                        }
-                    });
+                    mParentActivity.runOnUiThread(() -> notifyDataSetChanged());
                 }
 
                 @Override
                 public void exited(@NotNull XYBluetoothDevice device) {
                     super.exited(device);
                     mValues.remove(device);
-                    self.mParentActivity.runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            self.notifyDataSetChanged();
-                        }
-                    });
+                    mParentActivity.runOnUiThread(() -> notifyDataSetChanged());
                 }
             });
         }
@@ -202,7 +182,7 @@ public class ItemListActivity extends AppCompatActivity {
             return mValues.size();
         }
 
-        class ViewHolder extends RecyclerView.ViewHolder {
+        static class ViewHolder extends RecyclerView.ViewHolder {
             final TextView mIdView;
             final TextView mContentView;
 

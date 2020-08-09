@@ -6,6 +6,7 @@ import java.util.UUID
 import network.xyo.ble.generic.gatt.server.responders.XYBluetoothReadResponder
 import network.xyo.ble.generic.gatt.server.responders.XYBluetoothWriteResponder
 
+@Suppress("unused")
 open class XYBluetoothDescriptor(uuid: UUID, permissions: Int) : BluetoothGattDescriptor(uuid, permissions) {
     private val readResponders = HashMap<String, XYBluetoothReadResponder>()
     private val writeResponders = HashMap<String, XYBluetoothWriteResponder>()
