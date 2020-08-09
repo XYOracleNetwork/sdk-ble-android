@@ -6,7 +6,8 @@ import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResult
 import network.xyo.ble.utilities.XYPromise
 
 @kotlin.ExperimentalUnsignedTypes
-class XYFinderBluetoothDevicePromise(val device: XYFinderBluetoothDevice) {
+@Suppress("unused")
+open class XYFinderBluetoothDevicePromise(val device: XYFinderBluetoothDevice) {
     fun find() {
         find(null)
     }
@@ -22,7 +23,7 @@ class XYFinderBluetoothDevicePromise(val device: XYFinderBluetoothDevice) {
         stopFind(null)
     }
 
-    fun stopFind(promise: XYPromise<XYBluetoothResult<UByte>>? = null) {
+    open fun stopFind(promise: XYPromise<XYBluetoothResult<UByte>>? = null) {
         GlobalScope.launch {
             val result = device.stopFind()
             promise?.resolve(result)
@@ -55,7 +56,7 @@ class XYFinderBluetoothDevicePromise(val device: XYFinderBluetoothDevice) {
         stayAwake(null)
     }
 
-    fun stayAwake(promise: XYPromise<XYBluetoothResult<UByte>>?) {
+    open fun stayAwake(promise: XYPromise<XYBluetoothResult<UByte>>?) {
         GlobalScope.launch {
             val result = device.stayAwake()
             promise?.resolve(result)
@@ -66,18 +67,18 @@ class XYFinderBluetoothDevicePromise(val device: XYFinderBluetoothDevice) {
         fallAsleep(null)
     }
 
-    fun fallAsleep(promise: XYPromise<XYBluetoothResult<UByte>>?) {
+    open fun fallAsleep(promise: XYPromise<XYBluetoothResult<UByte>>?) {
         GlobalScope.launch {
             val result = device.fallAsleep()
             promise?.resolve(result)
         }
     }
 
-    fun restart() {
+    open fun restart() {
         restart(null)
     }
 
-    fun restart(promise: XYPromise<XYBluetoothResult<UByte>>?) {
+    open fun restart(promise: XYPromise<XYBluetoothResult<UByte>>?) {
         GlobalScope.launch {
             val result = device.restart()
             promise?.resolve(result)
@@ -88,7 +89,7 @@ class XYFinderBluetoothDevicePromise(val device: XYFinderBluetoothDevice) {
         batteryLevel(null)
     }
 
-    fun batteryLevel(promise: XYPromise<XYBluetoothResult<UByte>>?) {
+    open fun batteryLevel(promise: XYPromise<XYBluetoothResult<UByte>>?) {
         GlobalScope.launch {
             val result = device.batteryLevel()
             promise?.resolve(result)

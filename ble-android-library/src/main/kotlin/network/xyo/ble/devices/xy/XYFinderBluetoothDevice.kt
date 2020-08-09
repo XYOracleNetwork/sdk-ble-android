@@ -40,13 +40,13 @@ open class XYFinderBluetoothDeviceListener : XYIBeaconBluetoothDeviceListener() 
  * Bluetooth device family options.
  *
  */
+@Suppress("unused")
 enum class XYFinderBluetoothDeviceFamily {
     Unknown,
     XY1,
     XY2,
     XY3,
     Mobile,
-    Gps,
     Near,
     XY4,
     Webble
@@ -89,6 +89,7 @@ enum class XYFinderBluetoothDeviceStayAwake(val state: UByte) {
 }
 
 @kotlin.ExperimentalUnsignedTypes
+@Suppress("unused")
 open class XYFinderBluetoothDevice(context: Context, scanResult: XYScanResult, hash: String) : XYIBeaconBluetoothDevice(context, scanResult, hash) {
 
     override val id: String
@@ -103,9 +104,6 @@ open class XYFinderBluetoothDevice(context: Context, scanResult: XYScanResult, h
             return when (this@XYFinderBluetoothDevice) {
                 is XYMobileBluetoothDevice -> {
                     XYFinderBluetoothDeviceFamily.Mobile
-                }
-                is XYGpsBluetoothDevice -> {
-                    XYFinderBluetoothDeviceFamily.Gps
                 }
                 is XY4BluetoothDevice -> {
                     XYFinderBluetoothDeviceFamily.XY4

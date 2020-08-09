@@ -25,7 +25,7 @@ open class XYBluetoothGattClient protected constructor(
         }
     }
 
-    suspend fun readCharacteristicInt(characteristicToRead: BluetoothGattCharacteristic, formatType: Int, offset: Int) = GlobalScope.async {
+    open suspend fun readCharacteristicInt(characteristicToRead: BluetoothGattCharacteristic, formatType: Int, offset: Int) = GlobalScope.async {
         log.info("readCharacteristicInt")
         val readResult = readCharacteristic(characteristicToRead)
         var value: Int? = null
@@ -41,7 +41,7 @@ open class XYBluetoothGattClient protected constructor(
         return@async XYBluetoothResult(value, error)
     }.await()
 
-    suspend fun readCharacteristicString(characteristicToRead: BluetoothGattCharacteristic, offset: Int) = GlobalScope.async {
+    open suspend fun readCharacteristicString(characteristicToRead: BluetoothGattCharacteristic, offset: Int) = GlobalScope.async {
         log.info("readCharacteristicString")
         val readResult = readCharacteristic(characteristicToRead)
         var value: String? = null
@@ -57,7 +57,7 @@ open class XYBluetoothGattClient protected constructor(
         return@async XYBluetoothResult(value, error)
     }.await()
 
-    suspend fun readCharacteristicFloat(characteristicToRead: BluetoothGattCharacteristic, formatType: Int, offset: Int) = GlobalScope.async {
+    open suspend fun readCharacteristicFloat(characteristicToRead: BluetoothGattCharacteristic, formatType: Int, offset: Int) = GlobalScope.async {
         log.info("readCharacteristicFloat")
         val readResult = readCharacteristic(characteristicToRead)
         var value: Float? = null
@@ -73,7 +73,7 @@ open class XYBluetoothGattClient protected constructor(
         return@async XYBluetoothResult(value, error)
     }.await()
 
-    suspend fun readCharacteristicBytes(characteristicToRead: BluetoothGattCharacteristic) = GlobalScope.async {
+    open suspend fun readCharacteristicBytes(characteristicToRead: BluetoothGattCharacteristic) = GlobalScope.async {
         log.info("readCharacteristicBytes")
         val readResult = readCharacteristic(characteristicToRead)
         var value: ByteArray? = null

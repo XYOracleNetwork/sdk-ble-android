@@ -20,6 +20,7 @@ import network.xyo.ble.generic.scanner.XYScanResult
 // XYBluetoothGatt is a pure wrapper that does not add any functionality
 // other than the ability to call the BluetoothGatt functions using coroutines
 
+@Suppress("unused")
 enum class XYBluetoothGattStatus(val status: Short) {
     NoResources(0x80),
     InternalError(0x81),
@@ -31,6 +32,7 @@ enum class XYBluetoothGattStatus(val status: Short) {
     AuthFail(0x89)
 }
 
+@Suppress("unused")
 open class XYBluetoothGatt protected constructor(
     context: Context,
     protected var device: BluetoothDevice?,
@@ -41,7 +43,7 @@ open class XYBluetoothGatt protected constructor(
     private val handler: Handler?
 ) : XYBluetoothBase(context) {
 
-    val bluetoothQueue = Executors.newSingleThreadExecutor().asCoroutineDispatcher()
+    open val bluetoothQueue = Executors.newSingleThreadExecutor().asCoroutineDispatcher()
 
     protected val centralCallback = object : XYBluetoothGattCallback() {
         override fun onConnectionStateChange(gatt: BluetoothGatt?, status: Int, newState: Int) {
@@ -59,7 +61,7 @@ open class XYBluetoothGatt protected constructor(
     }
 
     private var _references = 0
-    protected var references: Int
+    protected open var references: Int
         get() {
             log.info("References Get: $_references")
             return _references
@@ -91,10 +93,11 @@ open class XYBluetoothGatt protected constructor(
         return@async connection?.services ?: emptyList()
     }.await()
 
-    val defaultTimeout = 15000L
+    open val defaultTimeout = 15000L
 
     // force ble functions for this gatt to run in order
-    suspend fun <T> queueBle(
+    @Suppress("BlockingMethodInNonBlockingContext")
+    open suspend fun <T> queueBle(
         timeout: Long? = null,
         action: String = "Unknown",
         context: CoroutineContext = bluetoothQueue,

@@ -39,6 +39,7 @@ enum class XYSmartScanStatus {
 }
 
 @kotlin.ExperimentalUnsignedTypes
+@Suppress("unused")
 abstract class XYSmartScan(context: Context) : XYBluetoothBase(context) {
 
     var startTime: Long? = null
@@ -131,7 +132,7 @@ abstract class XYSmartScan(context: Context) : XYBluetoothBase(context) {
         return null
     }
 
-    fun getDevicesFromScanResult(scanResult: XYScanResult, globalDevices: ConcurrentHashMap<String, XYBluetoothDevice>, foundDevices: HashMap<String, XYBluetoothDevice>) {
+    open fun getDevicesFromScanResult(scanResult: XYScanResult, globalDevices: ConcurrentHashMap<String, XYBluetoothDevice>, foundDevices: HashMap<String, XYBluetoothDevice>) {
         // only add them if they do not already exist
         XYBluetoothDevice.creator.getDevicesFromScanResult(context, scanResult, globalDevices, foundDevices)
 

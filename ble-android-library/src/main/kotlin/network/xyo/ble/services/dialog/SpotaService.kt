@@ -17,6 +17,7 @@ enum class SpotaServiceCharacteristics(val uuid: UUID) {
     SERV_STATUS(UUID.fromString("5f78df94-798c-46f5-990a-b3eb6a065c88"))
 }
 
+@Suppress("unused")
 class SpotaService(device: XYBluetoothDevice) : Service(device) {
 
     override val serviceUuid: UUID

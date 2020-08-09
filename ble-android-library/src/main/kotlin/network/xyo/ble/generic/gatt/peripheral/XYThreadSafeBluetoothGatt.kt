@@ -9,6 +9,7 @@ import java.lang.ref.WeakReference
 import java.util.UUID
 import network.xyo.base.XYBase
 
+@Suppress("unused")
 open class XYThreadSafeBluetoothGatt(bluetoothGatt: BluetoothGatt?) : XYBase() {
 
     private val gattRef = WeakReference<BluetoothGatt>(bluetoothGatt)

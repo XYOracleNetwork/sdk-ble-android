@@ -10,7 +10,7 @@ import network.xyo.base.XYBase
 /**
  * File format for Over-the-air images
  */
-
+@Suppress("unused")
 class XYOtaFile(private val inputStream: InputStream?) : XYBase() {
 
     private var bytes: ByteArray? = null

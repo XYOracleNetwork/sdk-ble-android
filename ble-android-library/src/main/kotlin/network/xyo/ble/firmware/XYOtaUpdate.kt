@@ -9,5 +9,5 @@ open class XYOtaUpdateListener {
     open fun progress(sent: Int, total: Int) {}
 }
 
-open class XYOtaUpdate : XYBase() {
-}
+@Suppress("unused")
+open class XYOtaUpdate : XYBase()

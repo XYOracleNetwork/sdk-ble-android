@@ -40,19 +40,19 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, val has
     // is done based on device specific logic on "sameness"
 
     protected val listeners = HashMap<String, XYBluetoothDeviceListener>()
-    val ads = SparseArray<XYBleAd>()
+    open val ads = SparseArray<XYBleAd>()
 
-    var detectCount = 0
-    var enterCount = 0
-    var exitCount = 0
-    var averageDetectGap = 0L
-    var lastDetectGap = 0L
-    var maxDetectTime = 0L
+    open var detectCount = 0
+    open var enterCount = 0
+    open var exitCount = 0
+    open var averageDetectGap = 0L
+    open var lastDetectGap = 0L
+    open var maxDetectTime = 0L
 
     // set this to true if the device should report that it is out of
     // range right after disconnect.  Generally used for devices
     // with rotating MAC addresses
-    var exitAfterDisconnect = false
+    open var exitAfterDisconnect = false
 
     private var addressValue: String? = null
     var address: String
@@ -277,7 +277,7 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, val has
         val manufacturerToCreator = SparseArray<XYCreator>()
 
         // Do not set serviceToCreator as Private. It's called by other apps
-        val serviceToCreator = HashMap<UUID, XYCreator>()
+        private val serviceToCreator = HashMap<UUID, XYCreator>()
 
         // cancel the checkForExit routine so we don't get notifications after service is stopped
         var cancelNotifications: Boolean = false

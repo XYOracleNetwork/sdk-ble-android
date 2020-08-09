@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.widget.LinearLayout
 import kotlinx.android.synthetic.main.ble_stats_view.view.*
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import network.xyo.ble.generic.devices.XYBluetoothDevice
@@ -12,10 +13,6 @@ import network.xyo.base.XYBase
 import network.xyo.ble.generic.scanner.XYSmartScanListener
 import network.xyo.ble.generic.scanner.XYSmartScanStatus
 import java.util.Date
-
-/**
- * Created by arietrouw on 12/28/17.
- */
 
 @kotlin.ExperimentalUnsignedTypes
 class XYBLEStatsView(context: Context, attrs: AttributeSet) : LinearLayout(context, attrs) {
@@ -27,32 +24,42 @@ class XYBLEStatsView(context: Context, attrs: AttributeSet) : LinearLayout(conte
     private val smartScanListener = object : XYSmartScanListener() {
         override fun entered(device: XYBluetoothDevice) {
             enterCount++
-            update()
+            GlobalScope.launch(Dispatchers.Main) {
+                update()
+            }
         }
 
         override fun exited(device: XYBluetoothDevice) {
             exitCount++
-            update()
+            GlobalScope.launch(Dispatchers.Main) {
+                update()
+            }
         }
 
         override fun detected(device: XYBluetoothDevice) {
-            text_pulses.text = scanner.scanResultCount.toString()
+            GlobalScope.launch(Dispatchers.Main) {
+                text_pulses.text = scanner.scanResultCount.toString()
+            }
         }
 
         override fun connectionStateChanged(device: XYBluetoothDevice, newState: Int) {
             log.info("connectionStateChanged")
-            update()
+            GlobalScope.launch(Dispatchers.Main) {
+                update()
+            }
         }
 
         override fun statusChanged(status: XYSmartScanStatus) {
             log.info("statusChanged")
-            update()
+            GlobalScope.launch(Dispatchers.Main) {
+                update()
+            }
         }
     }
 
     init {
         scanner.addListener("XYBLEStatsView", smartScanListener)
-        GlobalScope.launch {
+        GlobalScope.launch(Dispatchers.Main) {
             update()
         }
     }

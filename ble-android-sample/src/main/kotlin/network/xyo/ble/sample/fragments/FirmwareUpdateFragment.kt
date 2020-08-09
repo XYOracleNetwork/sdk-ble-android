@@ -1,3 +1,5 @@
+@file:Suppress("BlockingMethodInNonBlockingContext")
+
 package network.xyo.ble.sample.fragments
 
 import android.app.AlertDialog
@@ -226,9 +228,7 @@ class FirmwareUpdateFragment : XYDeviceFragment(), BackFragmentListener {
     }
 
     //Callback from XYODeviceActivity.onActivityResult
-    // TODO - Why are we making this dependency? [AT] --
-    @Suppress("UNUSED_PARAMETER")
-    fun onFileSelected(requestCode: Int, resultCode: Int, data: Intent?) {
+    fun onFileSelected(requestCode: Int,  data: Intent?) {
         log.info( "onFileSelected requestCode: $requestCode")
 
         data?.data.let { uri ->

@@ -6,10 +6,12 @@ import network.xyo.base.XYBase
 import network.xyo.ble.generic.devices.XYBluetoothDevice
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResult
 
+@Suppress("unused")
 open class Characteristic(val service: Service, val uuid: UUID, val name: String) : XYBase() {
     suspend fun enableNotify(enable: Boolean) = service.enableNotify(uuid, enable)
 }
 
+@Suppress("unused")
 class ByteCharacteristic(service: Service, uuid: UUID, name: String, val offset: Int = 0) : Characteristic(service, uuid, name) {
     suspend fun get() = service.readByte(uuid, offset)
     suspend fun set(value: UByte): XYBluetoothResult<UByte> {
@@ -17,6 +19,7 @@ class ByteCharacteristic(service: Service, uuid: UUID, name: String, val offset:
     }
 }
 
+@Suppress("unused")
 class ShortCharacteristic(service: Service, uuid: UUID, name: String, val offset: Int = 0) : Characteristic(service, uuid, name) {
     suspend fun get() = service.readShort(uuid, offset)
     suspend fun set(value: UShort): XYBluetoothResult<UShort> {
@@ -41,6 +44,7 @@ class BytesCharacteristic(service: Service, uuid: UUID, name: String) : Characte
     suspend fun set(value: ByteArray) = service.writeBytes(uuid, value)
 }
 
+@Suppress("unused")
 abstract class Service(val device: XYBluetoothDevice) : XYBase() {
 
     abstract val serviceUuid: UUID

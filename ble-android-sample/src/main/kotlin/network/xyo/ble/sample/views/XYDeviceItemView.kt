@@ -6,16 +6,15 @@ import android.util.AttributeSet
 import android.view.View
 import android.widget.RelativeLayout
 import kotlinx.android.synthetic.main.device_item.view.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import network.xyo.ble.generic.devices.XYBluetoothDevice
 import network.xyo.ble.devices.apple.XYIBeaconBluetoothDevice
 import network.xyo.ble.sample.R
 import network.xyo.ble.sample.activities.XYODeviceActivity
 import network.xyo.base.XYBase
 import network.xyo.ble.devices.xy.XYFinderBluetoothDeviceListener
-
-/**
- * Created by arietrouw on 12/27/17.
- */
 
 @kotlin.ExperimentalStdlibApi
 @kotlin.ExperimentalUnsignedTypes
@@ -34,7 +33,7 @@ class XYDeviceItemView(context: Context, attrs: AttributeSet) : RelativeLayout(c
 
     private fun openDevice(device: XYBluetoothDevice) {
         val intent = Intent(context, XYODeviceActivity::class.java)
-        intent.putExtra(XYODeviceActivity.EXTRA_DEVICEHASH, device.hash)
+        intent.putExtra(XYODeviceActivity.EXTRA_DEVICE_HASH, device.hash)
         context.startActivity(intent)
     }
 
@@ -77,7 +76,9 @@ class XYDeviceItemView(context: Context, attrs: AttributeSet) : RelativeLayout(c
         }
 
         override fun detected(device: XYBluetoothDevice) {
-            update()
+            GlobalScope.launch(Dispatchers.Main) {
+                update()
+            }
         }
 
         override fun connectionStateChanged(device: XYBluetoothDevice, newState: Int) {
