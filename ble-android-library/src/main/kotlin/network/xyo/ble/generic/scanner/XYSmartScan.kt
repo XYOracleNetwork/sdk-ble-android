@@ -39,6 +39,7 @@ enum class XYSmartScanStatus {
 }
 
 @kotlin.ExperimentalUnsignedTypes
+@Suppress("unused")
 abstract class XYSmartScan(context: Context) : XYBluetoothBase(context) {
 
     var startTime: Long? = null
@@ -65,7 +66,7 @@ abstract class XYSmartScan(context: Context) : XYBluetoothBase(context) {
 
     private var oldStatus = XYSmartScanStatus.None
 
-    private val recevier = object : BroadcastReceiver() {
+    private val receiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             if (BluetoothAdapter.ACTION_STATE_CHANGED == intent?.action) {
                 if (intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, -1) == BluetoothAdapter.STATE_OFF) {
@@ -84,7 +85,7 @@ abstract class XYSmartScan(context: Context) : XYBluetoothBase(context) {
 
     init {
         devices[hostDevice.hash] = hostDevice
-        context.registerReceiver(recevier, IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED))
+        context.registerReceiver(receiver, IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED))
         startStatusChecker()
     }
 
@@ -131,7 +132,7 @@ abstract class XYSmartScan(context: Context) : XYBluetoothBase(context) {
         return null
     }
 
-    fun getDevicesFromScanResult(scanResult: XYScanResult, globalDevices: ConcurrentHashMap<String, XYBluetoothDevice>, foundDevices: HashMap<String, XYBluetoothDevice>) {
+    open fun getDevicesFromScanResult(scanResult: XYScanResult, globalDevices: ConcurrentHashMap<String, XYBluetoothDevice>, foundDevices: HashMap<String, XYBluetoothDevice>) {
         // only add them if they do not already exist
         XYBluetoothDevice.creator.getDevicesFromScanResult(context, scanResult, globalDevices, foundDevices)
 

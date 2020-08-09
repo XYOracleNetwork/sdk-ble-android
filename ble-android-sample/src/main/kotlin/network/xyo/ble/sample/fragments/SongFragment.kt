@@ -1,3 +1,5 @@
+@file:Suppress("SpellCheckingInspection")
+
 package network.xyo.ble.sample.fragments
 
 import android.os.Bundle

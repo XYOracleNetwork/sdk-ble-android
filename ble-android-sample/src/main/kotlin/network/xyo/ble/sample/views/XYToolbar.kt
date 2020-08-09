@@ -2,13 +2,13 @@ package network.xyo.ble.sample.views
 
 import android.content.Context
 import android.util.AttributeSet
-import android.view.ContextThemeWrapper
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import network.xyo.ble.sample.R
 import network.xyo.ble.sample.activities.XYOAppBaseActivity
 
 @ExperimentalUnsignedTypes
+@Suppress("unused")
 open class XYToolbar : Toolbar {
 
     open var isBackNavigationEnabled = false

@@ -1,5 +1,6 @@
 package network.xyo.ble.devices.xy
 
+import android.annotation.SuppressLint
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothManager
 import android.content.Context
@@ -13,12 +14,14 @@ import network.xyo.ble.generic.scanner.XYScanResultManual
 open class XYMobileBluetoothDevice(context: Context, scanResult: XYScanResult, hash: String) : XYFinderBluetoothDevice(context, scanResult, hash) {
 
     init {
-        // we use this since the user would prefer for it to survice a resinstall.  DO NOT USE for advertising!
+        // we use this since the user would prefer for it to service a reinstall.  DO NOT USE for advertising!
+        @SuppressLint("HardwareIds")
         val uniqueId = Settings.Secure.getString(context.contentResolver,
                 Settings.Secure.ANDROID_ID).hashCode().toUInt()
         majorValue = uniqueId.and(0xffff0000.toUInt()).shr(16).toUShort()
         minorValue = uniqueId.and(0xffff.toUInt()).toUShort()
         name = "Mobile Device"
+        @SuppressLint("HardwareIds")
         address = device?.address ?: (context.applicationContext.getSystemService(Context.BLUETOOTH_SERVICE) as? BluetoothManager)?.adapter?.address ?: "00:00:00:00:00:00"
     }
 

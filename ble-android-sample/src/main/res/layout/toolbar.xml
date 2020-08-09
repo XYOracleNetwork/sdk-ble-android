@@ -10,7 +10,7 @@
     android:minHeight="?attr/actionBarSize">
 
     <ImageView
-        android:contentDescription="@string/imgdesc_xy_logo"
+        android:contentDescription="@string/img_desc_xy_logo"
         android:src="@mipmap/xy_logo_white"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"

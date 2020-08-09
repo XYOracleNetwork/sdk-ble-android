@@ -41,7 +41,7 @@ class XYBluetoothGattWriteDescriptor(val gatt: XYThreadSafeBluetoothGatt, val ga
                                         cont.completeResume(it)
                                     }
                                 } else {
-                                    error = XYBluetoothResultErrorCode.DiscriptorWriteFailed
+                                    error = XYBluetoothResultErrorCode.DescriptorWriteFailed
                                     gattCallback.removeListener(listenerName)
 
                                     val idempotent = cont.tryResume(null)
@@ -69,7 +69,7 @@ class XYBluetoothGattWriteDescriptor(val gatt: XYThreadSafeBluetoothGatt, val ga
                     gattCallback.addListener(listenerName, listener)
                     GlobalScope.launch {
                         if (gatt.writeDescriptor(descriptorToWrite) != true) {
-                            error = XYBluetoothResultErrorCode.DiscriptorWriteFailedToStart
+                            error = XYBluetoothResultErrorCode.DescriptorWriteFailedToStart
                             gattCallback.removeListener(listenerName)
 
                             val idempotent = cont.tryResume(null)

@@ -18,8 +18,15 @@ import network.xyo.ble.generic.scanner.XYScanResult
 import network.xyo.ble.generic.services.standard.*
 import network.xyo.ble.services.xy.*
 
+/**
+ * Listener for XY3 Devices.
+ *
+ * Brings in a renamed Finder Listener.
+ * .listener is now camel cased into the name.
+ */
 open class XY3BluetoothDeviceListener : XYFinderBluetoothDeviceListener()
 
+@Suppress("unused")
 open class XY3BluetoothDevice(context: Context, scanResult: XYScanResult, hash: String) : XYFinderBluetoothDevice(context, scanResult, hash) {
 
     val alertNotification by lazy { AlertNotificationService(this) }
@@ -33,7 +40,6 @@ open class XY3BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
 
     val basicConfigService by lazy { BasicConfigService(this) }
     val controlService by lazy { ControlService(this) }
-    val csrOtaService by lazy { CsrOtaService(this) }
     val extendedConfigService by lazy { ExtendedConfigService(this) }
     val sensorService by lazy { SensorService(this) }
 
@@ -169,7 +175,7 @@ open class XY3BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
                 false
             }
         }
-
+        // global listener from XY Base
         fun addGlobalListener(key: String, listener: XY3BluetoothDeviceListener) {
             GlobalScope.launch {
                 synchronized(globalListeners) {
@@ -186,6 +192,7 @@ open class XY3BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
             }
         }
 
+        // initiates global listener and reports touch feedback
         fun reportGlobalButtonPressed(device: XY3BluetoothDevice, state: XYFinderBluetoothDeviceButtonPress) {
             GlobalScope.launch {
                 synchronized(globalListeners) {

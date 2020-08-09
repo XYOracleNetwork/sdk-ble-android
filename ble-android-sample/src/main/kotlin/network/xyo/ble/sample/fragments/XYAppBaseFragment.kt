@@ -8,7 +8,7 @@ import network.xyo.ble.generic.scanner.XYSmartScan
 @kotlin.ExperimentalUnsignedTypes
 abstract class XYAppBaseFragment : Fragment() {
 
-    val log = XYBase.log("XYAppBaseFragment");
+    val log = XYBase.log("XYAppBaseFragment")
 
     val scanner: XYSmartScan
         get() {

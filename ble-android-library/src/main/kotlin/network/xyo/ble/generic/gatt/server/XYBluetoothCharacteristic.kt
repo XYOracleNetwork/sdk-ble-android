@@ -11,6 +11,7 @@ import kotlinx.coroutines.async
 import network.xyo.ble.generic.gatt.server.responders.XYBluetoothReadResponder
 import network.xyo.ble.generic.gatt.server.responders.XYBluetoothWriteResponder
 
+@Suppress("unused")
 enum class XYBluetoothCharacteristicProperties constructor(val value: Int) {
     PROPERTY_BROADCAST(BluetoothGattCharacteristic.PROPERTY_BROADCAST),
     PROPERTY_INDICATE(BluetoothGattCharacteristic.PROPERTY_INDICATE),
@@ -21,6 +22,7 @@ enum class XYBluetoothCharacteristicProperties constructor(val value: Int) {
     PROPERTY_WRITE_NO_RESPONSE(BluetoothGattCharacteristic.PROPERTY_WRITE_NO_RESPONSE)
 }
 
+@Suppress("unused")
 enum class XYBluetoothCharacteristicPermissions constructor(val value: Int) {
     PERMISSION_WRITE(BluetoothGattCharacteristic.PERMISSION_WRITE),
     PERMISSION_READ_ENCRYPTED(BluetoothGattCharacteristic.PERMISSION_READ_ENCRYPTED),
@@ -32,6 +34,7 @@ enum class XYBluetoothCharacteristicPermissions constructor(val value: Int) {
     PERMISSION_WRITE_SIGNED_MITM(BluetoothGattCharacteristic.PERMISSION_WRITE_SIGNED_MITM)
 }
 
+@Suppress("unused")
 open class XYBluetoothCharacteristic(uuid: UUID, properties: Int, permissions: Int) : BluetoothGattCharacteristic(uuid, properties, permissions) {
     private val listeners = HashMap<String, XYBluetoothCharacteristicListener>()
     private val readResponders = HashMap<String, XYBluetoothReadResponder>()
@@ -71,7 +74,7 @@ open class XYBluetoothCharacteristic(uuid: UUID, properties: Int, permissions: I
         listeners[key] = listener
     }
 
-    fun removeListiner(key: String) {
+    fun removeListener(key: String) {
         listeners.remove(key)
     }
 

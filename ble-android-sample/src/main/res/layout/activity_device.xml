@@ -16,6 +16,7 @@
 
         <include
             android:id="@+id/toolbar"
+            layout="@layout/toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
@@ -130,7 +131,7 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/ll_device_nobluetooth"
+        android:id="@+id/ll_device_no_bluetooth"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"

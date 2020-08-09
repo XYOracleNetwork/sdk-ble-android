@@ -3,8 +3,10 @@ package network.xyo.ble.generic.gatt.peripheral
 import android.bluetooth.*
 import android.content.Context
 import android.os.Handler
+import com.jaredrummler.android.device.BuildConfig
 import java.util.UUID
 import java.util.concurrent.Executors
+import java.lang.RuntimeException
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.resume
 import kotlinx.coroutines.*
@@ -18,6 +20,7 @@ import network.xyo.ble.generic.scanner.XYScanResult
 // XYBluetoothGatt is a pure wrapper that does not add any functionality
 // other than the ability to call the BluetoothGatt functions using coroutines
 
+@Suppress("unused")
 enum class XYBluetoothGattStatus(val status: Short) {
     NoResources(0x80),
     InternalError(0x81),
@@ -29,6 +32,7 @@ enum class XYBluetoothGattStatus(val status: Short) {
     AuthFail(0x89)
 }
 
+@Suppress("unused")
 open class XYBluetoothGatt protected constructor(
     context: Context,
     protected var device: BluetoothDevice?,
@@ -39,7 +43,7 @@ open class XYBluetoothGatt protected constructor(
     private val handler: Handler?
 ) : XYBluetoothBase(context) {
 
-    val bluetoothQueue = Executors.newSingleThreadExecutor().asCoroutineDispatcher()
+    open val bluetoothQueue = Executors.newSingleThreadExecutor().asCoroutineDispatcher()
 
     protected val centralCallback = object : XYBluetoothGattCallback() {
         override fun onConnectionStateChange(gatt: BluetoothGatt?, status: Int, newState: Int) {
@@ -57,7 +61,7 @@ open class XYBluetoothGatt protected constructor(
     }
 
     private var _references = 0
-    protected var references: Int
+    protected open var references: Int
         get() {
             log.info("References Get: $_references")
             return _references
@@ -89,10 +93,11 @@ open class XYBluetoothGatt protected constructor(
         return@async connection?.services ?: emptyList()
     }.await()
 
-    val defaultTimeout = 15000L
+    open val defaultTimeout = 15000L
 
     // force ble functions for this gatt to run in order
-    suspend fun <T> queueBle(
+    @Suppress("BlockingMethodInNonBlockingContext")
+    open suspend fun <T> queueBle(
         timeout: Long? = null,
         action: String = "Unknown",
         context: CoroutineContext = bluetoothQueue,
@@ -292,7 +297,8 @@ open class XYBluetoothGatt protected constructor(
 
     protected suspend fun readCharacteristic(characteristicToRead: BluetoothGattCharacteristic, timeout: Long = 10000) = queueBle(timeout, "readCharacteristic") {
         log.info("readCharacteristic")
-        assert(connection?.state == BluetoothGatt.STATE_CONNECTED)
+        if(BuildConfig.DEBUG && connection?.state != BluetoothGatt.STATE_CONNECTED)
+            throw RuntimeException("cannot read characteristic")
         val gatt = connection?.gatt
         if (gatt != null) {
             val readCharacteristic = XYBluetoothGattReadCharacteristic(gatt, centralCallback)
@@ -309,7 +315,8 @@ open class XYBluetoothGatt protected constructor(
     ) = queueBle(timeout, "writeCharacteristic") {
 
         log.info("writeCharacteristic")
-        assert(connection?.state == BluetoothGatt.STATE_CONNECTED)
+        if(BuildConfig.DEBUG && connection?.state != BluetoothGatt.STATE_CONNECTED)
+            throw RuntimeException("cannot read characteristic")
         val gatt = connection?.gatt
         if (gatt != null) {
             val writeCharacteristic = XYBluetoothGattWriteCharacteristic(gatt, centralCallback, writeType)
@@ -338,7 +345,8 @@ open class XYBluetoothGatt protected constructor(
 
     protected suspend fun writeDescriptor(descriptorToWrite: BluetoothGattDescriptor, timeout: Long = 1100) = queueBle(timeout, "writeDescriptor") {
         log.info("writeDescriptor")
-        assert(connection?.state == BluetoothGatt.STATE_CONNECTED)
+        if(BuildConfig.DEBUG && connection?.state != BluetoothGatt.STATE_CONNECTED)
+            throw RuntimeException("cannot read characteristic")
         val gatt = connection?.gatt
         if (gatt != null) {
             val writeDescriptor = XYBluetoothGattWriteDescriptor(gatt, centralCallback)

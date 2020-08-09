@@ -18,6 +18,7 @@ import network.xyo.ble.sample.fragments.ServerFragment
 
 @kotlin.ExperimentalUnsignedTypes
 @kotlin.ExperimentalStdlibApi
+@Suppress("unused")
 class XYOAppActivity : XYOAppBaseActivity() {
     private lateinit var pagerAdapter: SectionsPagerAdapter
     private var deviceAdapter: BaseAdapter? = null
