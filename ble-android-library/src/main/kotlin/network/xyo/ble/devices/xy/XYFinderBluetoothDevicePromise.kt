@@ -89,7 +89,7 @@ open class XYFinderBluetoothDevicePromise(val device: XYFinderBluetoothDevice) {
         batteryLevel(null)
     }
 
-    fun batteryLevel(promise: XYPromise<XYBluetoothResult<UByte>>?) {
+    open fun batteryLevel(promise: XYPromise<XYBluetoothResult<UByte>>?) {
         GlobalScope.launch {
             val result = device.batteryLevel()
             promise?.resolve(result)

@@ -57,7 +57,7 @@ enum class XYBleAdAdTypes(val id: UByte) {
 open class XYBleAd(buffer: ByteBuffer) : XYBase() {
 
     val size = buffer.get()
-    val type: UByte
+    private val type: UByte
     var data: ByteArray? = null
 
     init {
