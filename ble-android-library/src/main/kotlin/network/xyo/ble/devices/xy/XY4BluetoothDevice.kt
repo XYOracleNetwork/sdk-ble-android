@@ -71,7 +71,7 @@ open class XY4BluetoothDevice(
 
     override val prefix = "xy:ibeacon"
 
-    override suspend fun find() = connection<UByte> {
+    override suspend fun find() = connection {
         log.info("find")
         val unlockResult = unlock()
         if (unlockResult.error == XYBluetoothResultErrorCode.None) {
@@ -193,7 +193,7 @@ open class XY4BluetoothDevice(
         fun addGlobalListener(key: String, listener: XY4BluetoothDeviceListener) {
             GlobalScope.launch {
                 synchronized(globalListeners) {
-                    globalListeners.put(key, listener)
+                    globalListeners[key] = listener
                 }
             }
         }

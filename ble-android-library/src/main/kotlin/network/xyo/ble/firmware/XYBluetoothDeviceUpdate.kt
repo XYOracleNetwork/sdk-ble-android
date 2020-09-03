@@ -58,7 +58,7 @@ class XYBluetoothDeviceUpdate(private var spotaService: SpotaService, var device
     fun addListener(key: String, listener: XYOtaUpdateListener) {
         GlobalScope.launch {
             synchronized(listeners) {
-                listeners.put(key, listener)
+                listeners[key] = listener
             }
         }
     }

@@ -13,7 +13,7 @@
             android:orientation="vertical"
             android:padding="10dp">
 
-            <Switch
+            <com.google.android.material.switchmaterial.SwitchMaterial
                 android:id="@+id/sw_is_ibeacon"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
