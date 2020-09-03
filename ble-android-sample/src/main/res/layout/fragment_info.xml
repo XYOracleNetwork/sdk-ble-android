@@ -45,7 +45,7 @@
                     />
             </RelativeLayout>
 
-            <Switch
+            <com.google.android.material.switchmaterial.SwitchMaterial
                 android:id="@+id/button_stayConnected"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

@@ -190,7 +190,7 @@ open class XYBluetoothGatt protected constructor(
                     super.onCharacteristicChanged(gatt, characteristic)
                     if (characteristicToWaitFor == characteristic?.uuid) {
                         centralCallback.removeListener(listenerName)
-                        cont.resume(XYBluetoothResult<Any?>(null, XYBluetoothResultErrorCode.None))
+                        cont.resume(XYBluetoothResult(null, XYBluetoothResultErrorCode.None))
                     }
                 }
 
@@ -198,7 +198,7 @@ open class XYBluetoothGatt protected constructor(
                     super.onConnectionStateChange(gatt, status, newState)
                     if (newState != BluetoothGatt.STATE_CONNECTED) {
                         centralCallback.removeListener(listenerName)
-                        cont.resume(XYBluetoothResult<Any?>(null, XYBluetoothResultErrorCode.Disconnected))
+                        cont.resume(XYBluetoothResult(null, XYBluetoothResultErrorCode.Disconnected))
                     }
                 }
             }

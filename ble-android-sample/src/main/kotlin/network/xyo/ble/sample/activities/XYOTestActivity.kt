@@ -32,7 +32,7 @@ class XYOTestActivity : XYOAppBaseActivity() {
     }
 
 
-    inner class SectionsPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
+    class SectionsPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
         private val size = 1
         private val fragments: SparseArray<Fragment> = SparseArray(size)
 
