@@ -224,7 +224,7 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, val has
         // log.info("addListener:$key:$listener")
         GlobalScope.launch {
             synchronized(listeners) {
-                listeners.put(key, listener)
+                listeners[key] = listener
             }
         }
     }

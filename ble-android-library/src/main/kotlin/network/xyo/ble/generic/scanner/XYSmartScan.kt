@@ -208,7 +208,7 @@ abstract class XYSmartScan(context: Context) : XYBluetoothBase(context) {
     fun addListener(key: String, listener: XYSmartScanListener) {
         GlobalScope.launch {
             synchronized(listeners) {
-                listeners.put(key, listener)
+                listeners[key] = listener
             }
         }
     }
