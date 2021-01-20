@@ -39,7 +39,7 @@ class XYDeviceItemView(context: Context, attrs: AttributeSet) : RelativeLayout(c
 
     fun update() {
         post {
-            var binding = DeviceItemBinding.bind(this.rootView)
+            val binding = DeviceItemBinding.bind(this.rootView)
             binding.textFamily.text = device?.javaClass?.simpleName
             binding.textName.text = device?.name
             binding.textConnected.text = (device?.connected == true).toString()

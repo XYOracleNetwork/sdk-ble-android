@@ -9,9 +9,6 @@ import androidx.viewbinding.ViewBinding
 import network.xyo.base.XYBase
 import network.xyo.ble.sample.XYApplication
 import network.xyo.ble.generic.scanner.XYSmartScan
-import network.xyo.ble.sample.R
-import network.xyo.ble.sample.databinding.FragmentBasicBinding
-import network.xyo.ble.sample.databinding.FragmentBatteryBinding
 
 @kotlin.ExperimentalUnsignedTypes
 abstract class XYAppBaseFragment<T> : Fragment() where T: ViewBinding {

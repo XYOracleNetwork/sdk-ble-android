@@ -11,7 +11,6 @@ import network.xyo.ble.devices.xy.XY3BluetoothDevice
 import network.xyo.ble.generic.devices.XYBluetoothDevice
 import network.xyo.ble.sample.XYDeviceData
 import network.xyo.ble.sample.databinding.FragmentBasicBinding
-import network.xyo.ble.sample.databinding.FragmentBatteryBinding
 import network.xyo.ble.services.xy.BasicConfigService
 
 @kotlin.ExperimentalUnsignedTypes

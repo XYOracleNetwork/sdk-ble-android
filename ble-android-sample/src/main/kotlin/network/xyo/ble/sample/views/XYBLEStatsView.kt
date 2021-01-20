@@ -38,7 +38,7 @@ class XYBLEStatsView(context: Context, attrs: AttributeSet) : LinearLayout(conte
 
         override fun detected(device: XYBluetoothDevice) {
             GlobalScope.launch(Dispatchers.Main) {
-                var binding = BleStatsViewBinding.bind(this@XYBLEStatsView.rootView)
+                val binding = BleStatsViewBinding.bind(this@XYBLEStatsView.rootView)
                 binding.textPulses.text = scanner.scanResultCount.toString()
             }
         }
@@ -66,7 +66,7 @@ class XYBLEStatsView(context: Context, attrs: AttributeSet) : LinearLayout(conte
     }
 
     fun update() {
-        var binding = BleStatsViewBinding.bind(this@XYBLEStatsView)
+        val binding = BleStatsViewBinding.bind(this@XYBLEStatsView)
         binding.textHostDeviceName.text = scanner.hostDevice.name.toString()
         binding.textEnters.text = enterCount.toString()
         binding.textExits.text = exitCount.toString()
