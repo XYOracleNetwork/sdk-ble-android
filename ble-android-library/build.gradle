@@ -47,8 +47,8 @@ if (':ble-android-library:assemble' in runTasks) {
     increment = 1
 }
 
-def majorVersion = 3
-def minorVersion = 1
+def majorVersion = 4
+def minorVersion = 0
 def patch = versionProps['VERSION_PATCH'].toInteger() + increment
 
 def verString = majorVersion + '.' + minorVersion + '.' + patch
