@@ -1,5 +1,6 @@
 package network.xyo.ble.sample.activities
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.SparseArray
 import android.view.ViewGroup
@@ -26,6 +27,7 @@ class XYOAppActivity : XYOAppBaseActivity() {
 
     private lateinit var binding: ActivityAppBinding
 
+    @SuppressLint("InflateParams")
     override fun onCreate(savedInstanceState: Bundle?) {
         log.info("onCreate")
         deviceAdapter = XYDeviceAdapter(this)
@@ -34,7 +36,7 @@ class XYOAppActivity : XYOAppBaseActivity() {
 
         binding = ActivityAppBinding.inflate(layoutInflater)
 
-        setContentView(R.layout.activity_app)
+        setContentView(binding.root)
 
         val tabAdapter = SectionsPagerAdapter(supportFragmentManager)
         pagerAdapter = tabAdapter

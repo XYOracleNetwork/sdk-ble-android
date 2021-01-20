@@ -66,7 +66,7 @@ class XYBLEStatsView(context: Context, attrs: AttributeSet) : LinearLayout(conte
     }
 
     fun update() {
-        var binding = BleStatsViewBinding.bind(this@XYBLEStatsView.rootView)
+        var binding = BleStatsViewBinding.bind(this@XYBLEStatsView)
         binding.textHostDeviceName.text = scanner.hostDevice.name.toString()
         binding.textEnters.text = enterCount.toString()
         binding.textExits.text = exitCount.toString()
