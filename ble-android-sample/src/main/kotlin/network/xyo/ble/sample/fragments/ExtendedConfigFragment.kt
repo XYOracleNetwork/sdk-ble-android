@@ -4,29 +4,26 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import kotlinx.android.synthetic.main.fragment_extended_config.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import network.xyo.ble.devices.xy.XY2BluetoothDevice
 import network.xyo.ble.devices.xy.XY3BluetoothDevice
 import network.xyo.ble.generic.devices.XYBluetoothDevice
-import network.xyo.ble.sample.R
 import network.xyo.ble.sample.XYDeviceData
+import network.xyo.ble.sample.databinding.FragmentExtendedConfigBinding
 import network.xyo.ble.services.xy.ExtendedConfigService
 
 @kotlin.ExperimentalUnsignedTypes
-class ExtendedConfigFragment : XYDeviceFragment() {
+class ExtendedConfigFragment : XYDeviceFragment<FragmentExtendedConfigBinding>() {
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-
-        return inflater.inflate(R.layout.fragment_extended_config, container, false)
+    override fun inflate(inflater: LayoutInflater, container: ViewGroup?): FragmentExtendedConfigBinding {
+        return FragmentExtendedConfigBinding.inflate(inflater, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        button_extended_config_refresh.setOnClickListener {
+        binding.buttonExtendedConfigRefresh.setOnClickListener {
             GlobalScope.launch {
                 readCharacteristics()
             }
@@ -46,28 +43,28 @@ class ExtendedConfigFragment : XYDeviceFragment() {
 
         config?.let {
             val gpsInterval = it.gpsInterval.get()
-            activity?.runOnUiThread { text_gps_interval.text = gpsInterval.toString() }
+            activity?.runOnUiThread { binding.textGpsInterval.text = gpsInterval.toString() }
 
             val tone = it.tone.get()
-            activity?.runOnUiThread { text_gps_interval.text = tone.toString() }
+            activity?.runOnUiThread { binding.textGpsInterval.text = tone.toString() }
 
             val stayAwake = it.gpsInterval.get()
-            activity?.runOnUiThread { text_stay_awake.text = stayAwake.toString() }
+            activity?.runOnUiThread { binding.textStayAwake.text = stayAwake.toString() }
 
             val inactiveVirtualBeaconSettings = it.inactiveVirtualBeaconSettings.get()
-            activity?.runOnUiThread { text_inactive_virtual_beacon_settings.text = inactiveVirtualBeaconSettings.toString() }
+            activity?.runOnUiThread { binding.textInactiveVirtualBeaconSettings.text = inactiveVirtualBeaconSettings.toString() }
 
             val inactiveInterval = it.inactiveInterval.get()
-            activity?.runOnUiThread { text_inactive_interval.text = inactiveInterval.toString() }
+            activity?.runOnUiThread { binding.textInactiveInterval.text = inactiveInterval.toString() }
 
             val virtualBeaconSettings = it.virtualBeaconSettings.get()
-            activity?.runOnUiThread { text_virtual_beacon_settings.text = virtualBeaconSettings.toString() }
+            activity?.runOnUiThread { binding.textVirtualBeaconSettings.text = virtualBeaconSettings.toString() }
 
             val gpsMode = it.gpsMode.get()
-            activity?.runOnUiThread { text_gps_mode.text = gpsMode.toString() }
+            activity?.runOnUiThread { binding.textGpsMode.text = gpsMode.toString() }
 
             val simId = it.simId.get()
-            activity?.runOnUiThread { text_sim_id.text = simId.toString() }
+            activity?.runOnUiThread { binding.textSimId.text = simId.toString() }
 
         }
     }

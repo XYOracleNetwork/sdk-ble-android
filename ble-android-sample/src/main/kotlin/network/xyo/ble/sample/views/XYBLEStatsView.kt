@@ -3,7 +3,6 @@ package network.xyo.ble.sample.views
 import android.content.Context
 import android.util.AttributeSet
 import android.widget.LinearLayout
-import kotlinx.android.synthetic.main.ble_stats_view.view.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -12,6 +11,7 @@ import network.xyo.ble.sample.XYApplication
 import network.xyo.base.XYBase
 import network.xyo.ble.generic.scanner.XYSmartScanListener
 import network.xyo.ble.generic.scanner.XYSmartScanStatus
+import network.xyo.ble.sample.databinding.BleStatsViewBinding
 import java.util.Date
 
 @kotlin.ExperimentalUnsignedTypes
@@ -38,7 +38,8 @@ class XYBLEStatsView(context: Context, attrs: AttributeSet) : LinearLayout(conte
 
         override fun detected(device: XYBluetoothDevice) {
             GlobalScope.launch(Dispatchers.Main) {
-                text_pulses.text = scanner.scanResultCount.toString()
+                val binding = BleStatsViewBinding.bind(this@XYBLEStatsView.rootView)
+                binding.textPulses.text = scanner.scanResultCount.toString()
             }
         }
 
@@ -65,15 +66,16 @@ class XYBLEStatsView(context: Context, attrs: AttributeSet) : LinearLayout(conte
     }
 
     fun update() {
-        text_host_device_name.text = scanner.hostDevice.name.toString()
-        text_enters.text = enterCount.toString()
-        text_exits.text = exitCount.toString()
-        text_net.text = (enterCount - exitCount).toString()
-        text_start_time.text = scanner.startTime?.let { Date(it).toString() } ?: "--"
-        text_uptime.text = scanner.uptime?.let {("%.2f").format((it / 1000f))} ?: "--"
-        text_pulses.text = scanner.scanResultCount.toString()
-        text_pulses_per_second.text = scanner.resultsPerSecond?.let {("%.2f").format(it)} ?: "--"
-        text_devices.text = scanner.devices.size.toString()
+        val binding = BleStatsViewBinding.bind(this@XYBLEStatsView)
+        binding.textHostDeviceName.text = scanner.hostDevice.name.toString()
+        binding.textEnters.text = enterCount.toString()
+        binding.textExits.text = exitCount.toString()
+        binding.textNet.text = (enterCount - exitCount).toString()
+        binding.textStartTime.text = scanner.startTime?.let { Date(it).toString() } ?: "--"
+        binding.textUptime.text = scanner.uptime?.let {("%.2f").format((it / 1000f))} ?: "--"
+        binding.textPulses.text = scanner.scanResultCount.toString()
+        binding.textPulsesPerSecond.text = scanner.resultsPerSecond?.let {("%.2f").format(it)} ?: "--"
+        binding.textDevices.text = scanner.devices.size.toString()
     }
 
     companion object: XYBase()

@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import kotlinx.android.synthetic.main.fragment_device.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import network.xyo.ble.devices.xy.XY2BluetoothDevice
@@ -15,20 +14,19 @@ import network.xyo.ble.generic.devices.XYBluetoothDeviceListener
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResult
 import network.xyo.ble.sample.R
 import network.xyo.ble.sample.XYDeviceData
+import network.xyo.ble.sample.databinding.FragmentDeviceBinding
 
 @kotlin.ExperimentalUnsignedTypes
-class DeviceFragment : XYDeviceFragment() {
+class DeviceFragment : XYDeviceFragment<FragmentDeviceBinding>() {
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-
-        return inflater.inflate(R.layout.fragment_device, container, false)
+    override fun inflate(inflater: LayoutInflater, container: ViewGroup?): FragmentDeviceBinding {
+        return FragmentDeviceBinding.inflate(inflater, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        button_device_refresh.setOnClickListener {
+        binding.buttonDeviceRefresh.setOnClickListener {
             setDeviceValues()
         }
     }
@@ -59,15 +57,15 @@ class DeviceFragment : XYDeviceFragment() {
         activity?.runOnUiThread {
 
 
-            text_system_id?.text = deviceData?.systemId
-            text_model_number?.text = deviceData?.modelNumberString
-            text_serial_number?.text = deviceData?.serialNumberString
-            text_firmware_revision?.text = deviceData?.firmwareRevisionString
-            text_hardware_revision?.text = deviceData?.hardwareRevisionString
-            text_software_revision?.text = deviceData?.softwareRevisionString
-            text_mfg_name?.text = deviceData?.manufacturerNameString
-            text_ieee?.text = deviceData?.ieeeRegulatoryCertificationDataList
-            text_pnp_id?.text = deviceData?.pnpId
+            binding.textSystemId.text = deviceData?.systemId
+            binding.textModelNumber.text = deviceData?.modelNumberString
+            binding.textSerialNumber.text = deviceData?.serialNumberString
+            binding.textFirmwareRevision.text = deviceData?.firmwareRevisionString
+            binding.textHardwareRevision.text = deviceData?.hardwareRevisionString
+            binding.textSoftwareRevision.text = deviceData?.softwareRevisionString
+            binding.textMfgName.text = deviceData?.manufacturerNameString
+            binding.textIeee.text = deviceData?.ieeeRegulatoryCertificationDataList
+            binding.textPnpId.text = deviceData?.pnpId
 
         }
     }
@@ -88,7 +86,7 @@ class DeviceFragment : XYDeviceFragment() {
                 x2?.let { getInformationValues(it) }
             }
             else -> {
-                text_system_id.text = getString(R.string.unknown_device)
+                binding.textSystemId.text = getString(R.string.unknown_device)
             }
         }
     }

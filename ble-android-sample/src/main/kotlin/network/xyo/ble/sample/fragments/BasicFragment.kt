@@ -4,29 +4,26 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import kotlinx.android.synthetic.main.fragment_basic.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import network.xyo.ble.devices.xy.XY2BluetoothDevice
 import network.xyo.ble.devices.xy.XY3BluetoothDevice
 import network.xyo.ble.generic.devices.XYBluetoothDevice
-import network.xyo.ble.sample.R
 import network.xyo.ble.sample.XYDeviceData
+import network.xyo.ble.sample.databinding.FragmentBasicBinding
 import network.xyo.ble.services.xy.BasicConfigService
 
 @kotlin.ExperimentalUnsignedTypes
-class BasicFragment : XYDeviceFragment() {
+class BasicFragment : XYDeviceFragment<FragmentBasicBinding>() {
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-
-        return inflater.inflate(R.layout.fragment_basic, container, false)
+    override fun inflate(inflater: LayoutInflater, container: ViewGroup?): FragmentBasicBinding {
+        return FragmentBasicBinding.inflate(inflater, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        button_basic_refresh.setOnClickListener {
+        binding.buttonBasicRefresh.setOnClickListener {
             GlobalScope.launch {
                 readCharacteristics()
             }
@@ -46,31 +43,31 @@ class BasicFragment : XYDeviceFragment() {
         basic?.let {
 
             val lock = it.lock.get()
-            activity?.runOnUiThread { text_lock.text = lock.toString() }
+            activity?.runOnUiThread { binding.textLock.text = lock.toString() }
 
             val unlock = it.unlock.get()
-            activity?.runOnUiThread { text_unlock.text = unlock.toString() }
+            activity?.runOnUiThread { binding.textUnlock.text = unlock.toString() }
 
             val major = it.major.get()
-            activity?.runOnUiThread { text_major.text = major.toString() }
+            activity?.runOnUiThread { binding.textMajor.text = major.toString() }
 
             val minor = it.minor.get()
-            activity?.runOnUiThread { text_minor.text = minor.toString() }
+            activity?.runOnUiThread { binding.textMinor.text = minor.toString() }
 
             val uuid = it.uuid.get()
-            activity?.runOnUiThread { text_uuid.text = uuid.toString() }
+            activity?.runOnUiThread { binding.textUuid.text = uuid.toString() }
 
             val reboot = it.reboot.get()
-            activity?.runOnUiThread { text_uuid.text = reboot.toString() }
+            activity?.runOnUiThread { binding.textReboot.text = reboot.toString() }
 
             val interval = it.interval.get()
-            activity?.runOnUiThread { text_interval.text = interval.toString() }
+            activity?.runOnUiThread { binding.textInterval.text = interval.toString() }
 
             val lockStatus = it.lockStatus.get()
-            activity?.runOnUiThread { text_lock_status.text = lockStatus.toString() }
+            activity?.runOnUiThread { binding.textLockStatus.text = lockStatus.toString() }
 
             val otaWrite = it.otaWrite.get()
-            activity?.runOnUiThread { text_ota_write.text = otaWrite.toString() }
+            activity?.runOnUiThread { binding.textOtaWrite.text = otaWrite.toString() }
         }
     }
 

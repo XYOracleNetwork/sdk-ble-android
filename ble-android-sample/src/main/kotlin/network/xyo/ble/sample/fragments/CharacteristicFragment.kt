@@ -5,33 +5,33 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import kotlinx.android.synthetic.main.fragment_characteristic.view.*
 import network.xyo.ble.generic.gatt.server.XYBluetoothCharacteristicPermissions
 import network.xyo.ble.generic.gatt.server.XYBluetoothCharacteristicProperties
-import network.xyo.ble.sample.R
+import network.xyo.ble.sample.databinding.FragmentCharacteristicBinding
 import java.nio.charset.Charset
 
 @ExperimentalUnsignedTypes
-class CharacteristicFragment : XYDeviceFragment() {
+class CharacteristicFragment : XYDeviceFragment<FragmentCharacteristicBinding>() {
     var characteristic : BluetoothGattCharacteristic? = null
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_characteristic, container, false)
+    override fun inflate(inflater: LayoutInflater, container: ViewGroup?): FragmentCharacteristicBinding {
+        return FragmentCharacteristicBinding.inflate(inflater, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        update(view)
+        update()
 
-        view.characteristic_button_update.setOnClickListener { update(view) }
+        binding.characteristicButtonUpdate.setOnClickListener { update() }
     }
 
-    private fun update (view: View) {
-        view.characteristics_uuid_title.text = characteristic?.uuid.toString()
-        view.characteristics_type.text = getCharacteristicType()
-        view.characteristics_permission.text = getCharacteristicPermissions()
-        view.characteristics_value_hex.text = getCharacteristicValueHex()
-        view.characteristics_value_utf8.text = getCharacteristicValueUtf8()
+    override fun update () {
+        super.update()
+        binding.characteristicsUuidTitle.text = characteristic?.uuid.toString()
+        binding.characteristicsType.text = getCharacteristicType()
+        binding.characteristicsPermission.text = getCharacteristicPermissions()
+        binding.characteristicsValueHex.text = getCharacteristicValueHex()
+        binding.characteristicsValueUtf8.text = getCharacteristicValueUtf8()
     }
 
     private fun getCharacteristicValueHex() : String {
