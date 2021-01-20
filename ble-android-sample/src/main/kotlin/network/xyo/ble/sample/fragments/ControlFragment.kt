@@ -4,31 +4,26 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import kotlinx.android.synthetic.main.fragment_control.*
-import kotlinx.android.synthetic.main.fragment_primary.*
-import kotlinx.android.synthetic.main.fragment_primary.text_buzzer
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import network.xyo.ble.devices.xy.XY2BluetoothDevice
 import network.xyo.ble.devices.xy.XY3BluetoothDevice
 import network.xyo.ble.generic.devices.XYBluetoothDevice
-import network.xyo.ble.sample.R
 import network.xyo.ble.sample.XYDeviceData
+import network.xyo.ble.sample.databinding.FragmentControlBinding
 import network.xyo.ble.services.xy.ControlService
 
 @kotlin.ExperimentalUnsignedTypes
-class ControlFragment : XYDeviceFragment() {
+class ControlFragment : XYDeviceFragment<FragmentControlBinding>() {
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-
-        return inflater.inflate(R.layout.fragment_control, container, false)
+    override fun inflate(inflater: LayoutInflater, container: ViewGroup?): FragmentControlBinding {
+        return FragmentControlBinding.inflate(inflater, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        button_primary_refresh.setOnClickListener {
+        binding.buttonControlRefresh.setOnClickListener {
             GlobalScope.launch {
                 readCharacteristics()
             }
@@ -48,25 +43,25 @@ class ControlFragment : XYDeviceFragment() {
 
         control?.let {
             val buzzer = it.buzzer.get()
-            activity?.runOnUiThread { text_buzzer.text = buzzer.toString() }
+            activity?.runOnUiThread { binding.textBuzzer.text = buzzer.toString() }
 
             val handShake = it.handshake.get()
-            activity?.runOnUiThread { text_hand_shake.text = handShake.toString() }
+            activity?.runOnUiThread { binding.textHandShake.text = handShake.toString() }
 
             val version = it.version.get()
-            activity?.runOnUiThread { text_version.text = version.toString() }
+            activity?.runOnUiThread { binding.textVersion.text = version.toString() }
 
             val buzzerSelect = it.buzzerSelect.get()
-            activity?.runOnUiThread { text_buzzer_select.text = buzzerSelect.toString() }
+            activity?.runOnUiThread { binding.textBuzzerSelect.text = buzzerSelect.toString() }
 
             val surge = it.surge.get()
-            activity?.runOnUiThread { text_surge.text = surge.toString() }
+            activity?.runOnUiThread { binding.textSurge.text = surge.toString() }
 
             val button = it.button.get()
-            activity?.runOnUiThread { text_button.text = button.toString() }
+            activity?.runOnUiThread { binding.textButton.text = button.toString() }
 
             val disconnect = it.disconnect.get()
-            activity?.runOnUiThread { text_disconnect.text = disconnect.toString() }
+            activity?.runOnUiThread { binding.textDisconnect.text = disconnect.toString() }
         }
     }
 

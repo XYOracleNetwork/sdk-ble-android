@@ -1,15 +1,19 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
 apply plugin: 'com.github.dcendents.android-maven'
 
 android {
-    compileSdkVersion 29
-    buildToolsVersion '29.0.3'
+    compileSdkVersion 30
+    buildToolsVersion '30.0.3'
+
+    buildFeatures {
+        viewBinding true
+    }
+
     defaultConfig {
         applicationId "network.xyo.ble.sample"
         minSdkVersion 21
-        targetSdkVersion 29
+        targetSdkVersion 30
     }
 
     buildTypes {
@@ -58,19 +62,19 @@ buildscript {
         google()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:4.0.1'
+        classpath 'com.android.tools.build:gradle:4.2.0-beta03'
         classpath "com.github.dcendents:android-maven-gradle-plugin:2.1"
     }
 }
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.4.0'
-    implementation 'org.jetbrains.kotlin:kotlin-reflect:1.4.0'
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.4.21'
+    implementation 'org.jetbrains.kotlin:kotlin-reflect:1.4.21'
     implementation 'com.google.android.material:material:1.2.1'
-    implementation "androidx.constraintlayout:constraintlayout:2.0.1"
+    implementation "androidx.constraintlayout:constraintlayout:2.0.4"
     implementation 'androidx.coordinatorlayout:coordinatorlayout:1.1.0'
     implementation "com.nabinbhandari.android:permissions:3.8"
-    implementation 'network.xyo:sdk-base-android:2.1.290'
+    implementation 'network.xyo:sdk-base-android:4.1.5'
     implementation project(':ble-android-library')
 }

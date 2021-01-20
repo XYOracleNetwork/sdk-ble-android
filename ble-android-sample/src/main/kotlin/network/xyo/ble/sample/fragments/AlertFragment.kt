@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import kotlinx.android.synthetic.main.fragment_alert.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import network.xyo.ble.devices.xy.XY2BluetoothDevice
@@ -14,20 +13,19 @@ import network.xyo.ble.generic.devices.XYBluetoothDevice
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResult
 import network.xyo.ble.sample.R
 import network.xyo.ble.sample.XYDeviceData
+import network.xyo.ble.sample.databinding.FragmentAlertBinding
 
 @kotlin.ExperimentalUnsignedTypes
-class AlertFragment : XYDeviceFragment() {
+class AlertFragment : XYDeviceFragment<FragmentAlertBinding>() {
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-
-        return inflater.inflate(R.layout.fragment_alert, container, false)
+    override fun inflate(inflater: LayoutInflater, container: ViewGroup?): FragmentAlertBinding {
+        return FragmentAlertBinding.inflate(inflater, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        button_alert_refresh.setOnClickListener {
+        binding.buttonAlertRefresh.setOnClickListener {
             setAlertValues()
         }
     }
@@ -54,10 +52,10 @@ class AlertFragment : XYDeviceFragment() {
                 x3?.let { getXY3Values(it) }
             }
             is XY2BluetoothDevice -> {
-                text_control_point.text = getString(R.string.not_supported_x2)
+                binding.textControlPoint.text = getString(R.string.not_supported_x2)
             }
             else -> {
-                text_control_point.text = getString(R.string.unknown_device)
+                binding.textControlPoint.text = getString(R.string.unknown_device)
             }
 
         }
@@ -65,11 +63,11 @@ class AlertFragment : XYDeviceFragment() {
 
     private fun updateUI() {
         activity?.runOnUiThread {
-            text_control_point?.text = deviceData?.controlPoint
-            text_unread_alert_status?.text = deviceData?.unreadAlertStatus
-            text_new_alert?.text = deviceData?.newAlert
-            text_new_alert_category?.text = deviceData?.supportedNewAlertCategory
-            text_unread_alert_category?.text = deviceData?.supportedUnreadAlertCategory
+            binding.textControlPoint.text = deviceData?.controlPoint
+            binding.textUnreadAlertStatus.text = deviceData?.unreadAlertStatus
+            binding.textNewAlert.text = deviceData?.newAlert
+            binding.textNewAlertCategory.text = deviceData?.supportedNewAlertCategory
+            binding.textUnreadAlertCategory.text = deviceData?.supportedUnreadAlertCategory
         }
     }
 

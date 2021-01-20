@@ -8,27 +8,28 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
-import kotlinx.android.synthetic.main.fragment_peripheral.*
 import network.xyo.ble.sample.R
+import network.xyo.ble.sample.databinding.ActivityTestBinding
 import network.xyo.ble.sample.fragments.BeepTestFragment
 
 @kotlin.ExperimentalUnsignedTypes
 @Suppress("unused")
 class XYOTestActivity : XYOAppBaseActivity() {
     private lateinit var pagerAdapter: SectionsPagerAdapter
+    private lateinit var binding: ActivityTestBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        binding = ActivityTestBinding.inflate(layoutInflater)
         setContentView(R.layout.activity_test)
-
 
         val tabAdapter = SectionsPagerAdapter(supportFragmentManager)
         pagerAdapter = tabAdapter
         val serverPagerContainer = findViewById<ViewPager>(R.id.test_pager_container)
         serverPagerContainer.adapter = pagerAdapter
-        serverPagerContainer.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(server_tabs))
-        serverPagerContainer.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(server_tabs) as ViewPager.OnPageChangeListener)
-        server_tabs.addOnTabSelectedListener(TabLayout.ViewPagerOnTabSelectedListener(server_pager_container))
+        serverPagerContainer.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(binding.serverTabs))
+        serverPagerContainer.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(binding.serverTabs) as ViewPager.OnPageChangeListener)
+        binding.serverTabs.addOnTabSelectedListener(TabLayout.ViewPagerOnTabSelectedListener(binding.testPagerContainer))
     }
 
 

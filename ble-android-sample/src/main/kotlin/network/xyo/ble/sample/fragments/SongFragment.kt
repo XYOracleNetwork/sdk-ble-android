@@ -6,8 +6,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import kotlinx.android.synthetic.main.fragment_battery.*
-import kotlinx.android.synthetic.main.fragment_song.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import network.xyo.ble.devices.xy.XY3BluetoothDevice
@@ -16,11 +14,12 @@ import network.xyo.ble.generic.devices.XYBluetoothDevice
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResult
 import network.xyo.ble.sample.R
 import network.xyo.ble.sample.XYDeviceData
+import network.xyo.ble.sample.databinding.FragmentSongBinding
 import java.nio.ByteBuffer
 
 @kotlin.ExperimentalUnsignedTypes
 @kotlin.ExperimentalStdlibApi
-class SongFragment : XYDeviceFragment() {
+class SongFragment : XYDeviceFragment<FragmentSongBinding>() {
 
     private var currentSong = ""
 
@@ -199,20 +198,18 @@ class SongFragment : XYDeviceFragment() {
         song1.put(Action(Actions.Stop.action, 0x0).value)
     }*/
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-
-        return inflater.inflate(R.layout.fragment_song, container, false)
+    override fun inflate(inflater: LayoutInflater, container: ViewGroup?): FragmentSongBinding {
+        return FragmentSongBinding.inflate(inflater, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        button_song_refresh.setOnClickListener {
+        binding.buttonSongRefresh.setOnClickListener {
             readCurrentSong()
         }
 
-        button_song_one.setOnClickListener {
+        binding.buttonSongOne.setOnClickListener {
             setSongOne()
         }
     }
@@ -229,7 +226,7 @@ class SongFragment : XYDeviceFragment() {
 
     private fun updateUI() {
         activity?.runOnUiThread {
-            text_current_song.text = currentSong
+            binding.textCurrentSong.text = currentSong
         }
     }
 
@@ -249,7 +246,7 @@ class SongFragment : XYDeviceFragment() {
                 }
             }
             else -> {
-                text_battery_level.text = getString(R.string.unknown_device)
+                binding.textCurrentSong.text = getString(R.string.unknown_device)
             }
         }
 
@@ -293,7 +290,7 @@ class SongFragment : XYDeviceFragment() {
                 }
             }
             else -> {
-                text_battery_level.text = getString(R.string.unknown_device)
+                binding.textCurrentSong.text = getString(R.string.unknown_device)
             }
         }
     }

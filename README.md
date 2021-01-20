@@ -81,28 +81,35 @@ val scanner: XYFilteredSmartScan = XYFilteredSmartScanModern(MyApplication.getAp
 Add a listener for the XYFilteredSmartScan:
 
 ```kotlin
-scanner.addListener("myTAG", object : XYFilteredSmartScanListener() {
-    override fun entered(device: XYBluetoothDevice) {
-        super.entered(device)
-        checkMyDeviceTypeAddListener(device)
-    }
 
-    override fun exited(device: XYBluetoothDevice) {
-        super.exited(device)
-        doSomethingOnExit()
-    }
 
-    override fun detected(device: XYBluetoothDevice) {
-        super.detected(device)
-        doSomethingOnDetected()
-    }
 
-    override fun connectionStateChanged(device: XYBluetoothDevice, newState: Int) {
-        super.connectionStateChanged(device, newState)
-        doSomethingOnChanged()
-    }
+  scanner.addListener(
+    "myTAG",
+    object : XYFilteredSmartScanListener() {
 
-})
+        override fun entered(device: XYBluetoothDevice) {
+            super.entered(device)
+            checkMyDeviceTypeAddListener(device)
+        }
+    
+        override fun exited(device: XYBluetoothDevice) {
+            super.exited(device)
+            doSomethingOnExit()
+        }
+    
+        override fun detected(device: XYBluetoothDevice) {
+            super.detected(device)
+            doSomethingOnDetected()
+        }
+    
+        override fun connectionStateChanged(device: XYBluetoothDevice, newState: Int) {
+            super.connectionStateChanged(device, newState)
+            doSomethingOnChanged()
+        }
+
+},)
+
 ```
 
 Start scanning for BLE devices:
@@ -114,8 +121,10 @@ scanner.start()
 Once we know the device type, add a specific device type listener
 
 ```kotlin
+
 private fun checkMyDeviceTypeAddListener(device: XYBluetoothDevice) {
-    (device as? XY4BluetoothDevice)?.addListener("myTAG", object : XY4BluetoothDeviceListener(){
+
+    (device as? XY4BluetoothDevice)?.addListener("myTAG", object : XY4BluetoothDeviceListener() {
         override fun buttonSinglePressed(device: XYFinderBluetoothDevice) {
             super.buttonSinglePressed(device)
             doSomethingOnSinglePressed()
@@ -155,9 +164,11 @@ private fun checkMyDeviceTypeAddListener(device: XYBluetoothDevice) {
     (device as? XY3BluetoothDevice)?.addListener("myTAG", object : XY3BluetoothDeviceListener(){
         //add your logic here
     })
+
     (device as? XY2BluetoothDevice)?.addListener("myTAG", object : XY2BluetoothDeviceListener(){
     //add your logic here
     })
+
     (device as? XYIBeaconBluetoothDevice)?.addListener("myTAG", object : XYIBeaconBluetoothDeviceListener(){
     //add your logic here
     })
@@ -194,7 +205,7 @@ myAwesomeReadCharacteristic.addResponder("myResponder", object : XYBluetoothRead
     override fun onReadRequest(device: BluetoothDevice?): ByteArray? {
         return "Carter is cool".toByteArray()
     }
-})
+},)
 
 myAwesomeWriteCharacteristic.addResponder("myResponder", object : XYBluetoothWriteCharacteristic.XYBluetoothWriteCharacteristicResponder {
     override fun onWriteRequest(value: ByteArray, device: BluetoothDevice?): Boolean? {
@@ -203,7 +214,7 @@ myAwesomeWriteCharacteristic.addResponder("myResponder", object : XYBluetoothWri
         }
         return false
     }
-})
+},)
 
 val myAwesomeService = XYBluetoothService(UUID.fromString("3079ca44-ae64-4797-b4e5-a31e3304c481"), BluetoothGattService.SERVICE_TYPE_PRIMARY)
 myAwesomeService.addCharacteristic(myAwesomeReadCharacteristic)
@@ -224,8 +235,7 @@ myAwesomeService.addCharacteristic(myAwesomeWriteCharacteristic)
 val server = XYBluetoothGattServer(applicationContext)
 server.addService(myAwesomeService).await()
 server.startServer()
-
-IMPORTANT:
+```
 
 ```kotlin
 //make sure you stop the scanner when no longer needed

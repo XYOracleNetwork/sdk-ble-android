@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import kotlinx.android.synthetic.main.fragment_generic_access.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import network.xyo.ble.devices.xy.XY2BluetoothDevice
@@ -14,21 +13,19 @@ import network.xyo.ble.generic.devices.XYBluetoothDevice
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResult
 import network.xyo.ble.sample.R
 import network.xyo.ble.sample.XYDeviceData
+import network.xyo.ble.sample.databinding.FragmentGenericAccessBinding
 
 @kotlin.ExperimentalUnsignedTypes
-class GenericAccessFragment : XYDeviceFragment() {
+class GenericAccessFragment : XYDeviceFragment<FragmentGenericAccessBinding>() {
 
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-
-        return inflater.inflate(R.layout.fragment_generic_access, container, false)
+    override fun inflate(inflater: LayoutInflater, container: ViewGroup?): FragmentGenericAccessBinding {
+        return FragmentGenericAccessBinding.inflate(inflater, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        button_generic_refresh.setOnClickListener {
+        binding.buttonGenericRefresh.setOnClickListener {
             setGenericAccessValues()
         }
     }
@@ -45,11 +42,11 @@ class GenericAccessFragment : XYDeviceFragment() {
 
     private fun updateUI() {
         activity?.runOnUiThread {
-            text_device_name?.text = deviceData?.deviceName
-            text_appearance?.text = deviceData?.appearance
-            text_privacy_flag?.text = deviceData?.privacyFlag
-            text_reconnection_address?.text = deviceData?.reconnectionAddress
-            text_peripheral_params?.text = deviceData?.peripheralPreferredConnectionParameters
+            binding.textDeviceName.text = deviceData?.deviceName
+            binding.textAppearance.text = deviceData?.appearance
+            binding.textPrivacyFlag.text = deviceData?.privacyFlag
+            binding.textReconnectionAddress.text = deviceData?.reconnectionAddress
+            binding.textPeripheralParams.text = deviceData?.peripheralPreferredConnectionParameters
         }
     }
 
@@ -68,7 +65,7 @@ class GenericAccessFragment : XYDeviceFragment() {
                 x2?.let { getXY2Values(it) }
             }
             else -> {
-                text_device_name.text = getString(R.string.unknown_device)
+                binding.textDeviceName.text = getString(R.string.unknown_device)
             }
         }
     }

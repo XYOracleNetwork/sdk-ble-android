@@ -1,11 +1,11 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 29
+    compileSdkVersion 30
     defaultConfig {
         applicationId "network.xyo.ble.sample.java"
         minSdkVersion 21
-        targetSdkVersion 29
+        targetSdkVersion 30
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -46,7 +46,7 @@ android {
         exclude 'META-INF/atomicfu.kotlin_module'
     }
 
-    buildToolsVersion = '29.0.3'
+    buildToolsVersion = '30.0.3'
 }
 
 dependencies {
@@ -55,5 +55,5 @@ dependencies {
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
     implementation 'com.google.android.material:material:1.2.1'
     implementation project(':ble-android-library')
-    api 'network.xyo:sdk-base-android:2.1.290'
+    api 'network.xyo:sdk-base-android:4.1.5'
 }
