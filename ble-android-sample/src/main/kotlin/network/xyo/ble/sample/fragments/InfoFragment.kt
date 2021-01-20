@@ -9,7 +9,6 @@ import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.CompoundButton
-import kotlinx.android.synthetic.main.fragment_info.*
 import kotlinx.coroutines.*
 import network.xyo.base.XYBase
 import network.xyo.ble.devices.apple.XYIBeaconBluetoothDevice
@@ -21,44 +20,43 @@ import network.xyo.ble.generic.devices.XYBluetoothDeviceListener
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResultErrorCode
 import network.xyo.ble.sample.R
 import network.xyo.ble.sample.XYDeviceData
+import network.xyo.ble.sample.databinding.FragmentInfoBinding
 
 @kotlin.ExperimentalUnsignedTypes
-class InfoFragment : XYDeviceFragment(), View.OnClickListener, CompoundButton.OnCheckedChangeListener {
+class InfoFragment : XYDeviceFragment<FragmentInfoBinding>(), View.OnClickListener, CompoundButton.OnCheckedChangeListener {
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-
-        return inflater.inflate(R.layout.fragment_info, container, false)
+    override fun inflate(inflater: LayoutInflater, container: ViewGroup?): FragmentInfoBinding {
+        return FragmentInfoBinding.inflate(inflater, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        button_startTest.setOnClickListener(this)
-        button_connect.setOnClickListener(this)
-        button_disconnect.setOnClickListener(this)
-        button_find.setOnClickListener(this)
-        button_stop_find.setOnClickListener(this)
-        button_stay_awake.setOnClickListener(this)
-        button_fall_asleep.setOnClickListener(this)
-        button_lock.setOnClickListener(this)
-        button_unlock.setOnClickListener(this)
-        button_enable_notify.setOnClickListener(this)
-        button_stayConnected.setOnCheckedChangeListener(this)
+        binding.buttonStartTest.setOnClickListener(this)
+        binding.buttonConnect.setOnClickListener(this)
+        binding.buttonDisconnect.setOnClickListener(this)
+        binding.buttonFind.setOnClickListener(this)
+        binding.buttonStopFind.setOnClickListener(this)
+        binding.buttonStayAwake.setOnClickListener(this)
+        binding.buttonFallAsleep.setOnClickListener(this)
+        binding.buttonLock.setOnClickListener(this)
+        binding.buttonUnlock.setOnClickListener(this)
+        binding.buttonEnableNotify.setOnClickListener(this)
+        binding.buttonStayConnected.setOnCheckedChangeListener(this)
 
         when (device) {
             is XY4BluetoothDevice -> {
-                button_enable_notify.visibility = VISIBLE
-                button_disable_notify.visibility = VISIBLE
+                binding.buttonEnableNotify.visibility = VISIBLE
+                binding.buttonDisableNotify.visibility = VISIBLE
             }
             is XY3BluetoothDevice -> {
-                button_enable_notify.visibility = VISIBLE
-                button_disable_notify.visibility = VISIBLE
+                binding.buttonEnableNotify.visibility = VISIBLE
+                binding.buttonDisableNotify.visibility = VISIBLE
             }
 
             else -> {
-                button_enable_notify.visibility = GONE
-                button_disable_notify.visibility = GONE
+                binding.buttonEnableNotify.visibility = GONE
+                binding.buttonDisableNotify.visibility = GONE
             }
         }
     }
@@ -108,29 +106,29 @@ class InfoFragment : XYDeviceFragment(), View.OnClickListener, CompoundButton.On
             if (device != null) {
 
 
-                text_family.text = device?.name
-                text_rssi.text = device?.rssi.toString()
+                binding.textFamily.text = device?.name
+                binding.textRssi.text = device?.rssi.toString()
 
                 (device as? XYIBeaconBluetoothDevice)?.let {
-                    text_power.text = it.power.toString()
-                    text_major.text = String.format(getString(R.string.hex_placeholder), it.major.toInt().toString(16))
-                    text_minor.text = String.format(getString(R.string.hex_placeholder), it.minor.toInt().toString(16))
+                    binding.textPower.text = it.power.toString()
+                    binding.textMajor.text = String.format(getString(R.string.hex_placeholder), it.major.toInt().toString(16))
+                    binding.textMinor.text = String.format(getString(R.string.hex_placeholder), it.minor.toInt().toString(16))
                 }
 
-                text_pulse_count.text = device?.detectCount.toString()
-                text_enter_count.text = device?.enterCount.toString()
-                text_exit_count.text = device?.exitCount.toString()
-                text_avg_gap_size.text = device?.averageDetectGap.toString()
-                text_last_gap_size.text = device?.lastDetectGap.toString()
-                text_max_gap_size.text = device?.maxDetectTime.toString()
+                binding.textPulseCount.text = device?.detectCount.toString()
+                binding.textEnterCount.text = device?.enterCount.toString()
+                binding.textExitCount.text = device?.exitCount.toString()
+                binding.textAvgGapSize.text = device?.averageDetectGap.toString()
+                binding.textLastGapSize.text = device?.lastDetectGap.toString()
+                binding.textMaxGapSize.text = device?.maxDetectTime.toString()
             }
 
             if (device?.connected == true) {
-                button_connect?.visibility = GONE
-                button_disconnect?.visibility = VISIBLE
+                binding.buttonConnect.visibility = GONE
+                binding.buttonDisconnect.visibility = VISIBLE
             } else {
-                button_connect?.visibility = VISIBLE
-                button_disconnect?.visibility = GONE
+                binding.buttonConnect.visibility = VISIBLE
+                binding.buttonDisconnect.visibility = GONE
             }
         }
     }
@@ -221,13 +219,13 @@ class InfoFragment : XYDeviceFragment(), View.OnClickListener, CompoundButton.On
     private fun find() {
         log.info("beepButton: got xyDevice")
         activity?.runOnUiThread {
-            button_find?.isEnabled = false
+            binding.buttonFind.isEnabled = false
         }
 
         GlobalScope.launch {
             (device as? XYFinderBluetoothDevice)?.find()
             activity?.runOnUiThread {
-                this@InfoFragment.isVisible.let { button_find?.isEnabled = true }
+                this@InfoFragment.isVisible.let { binding.buttonFind.isEnabled = true }
 
             }
         }
@@ -236,13 +234,13 @@ class InfoFragment : XYDeviceFragment(), View.OnClickListener, CompoundButton.On
     private fun stopFind() {
         log.info("beepButton: got xyDevice")
         activity?.runOnUiThread {
-            button_find?.isEnabled = false
+            binding.buttonFind.isEnabled = false
         }
 
         GlobalScope.launch {
             (device as? XYFinderBluetoothDevice)?.stopFind()
             activity?.runOnUiThread {
-                this@InfoFragment.isVisible.let { button_find?.isEnabled = true }
+                this@InfoFragment.isVisible.let { binding.buttonFind.isEnabled = true }
             }
         }
     }
@@ -250,7 +248,7 @@ class InfoFragment : XYDeviceFragment(), View.OnClickListener, CompoundButton.On
     private fun wake() {
         log.info("stayAwakeButton: onClick")
         activity?.runOnUiThread {
-            button_stay_awake?.isEnabled = false
+            binding.buttonStayAwake.isEnabled = false
         }
 
         GlobalScope.launch {
@@ -261,7 +259,7 @@ class InfoFragment : XYDeviceFragment(), View.OnClickListener, CompoundButton.On
                 log.info("Stay Awake Set")
             }
             activity?.runOnUiThread {
-                this@InfoFragment.isVisible.let { button_stay_awake?.isEnabled = true }
+                this@InfoFragment.isVisible.let { binding.buttonStayAwake.isEnabled = true }
             }
         }
     }
@@ -269,7 +267,7 @@ class InfoFragment : XYDeviceFragment(), View.OnClickListener, CompoundButton.On
     private fun sleep() {
         log.info("fallAsleepButton: onClick")
         activity?.runOnUiThread {
-            button_fall_asleep?.isEnabled = false
+            binding.buttonFallAsleep.isEnabled = false
         }
 
         GlobalScope.launch {
@@ -280,7 +278,7 @@ class InfoFragment : XYDeviceFragment(), View.OnClickListener, CompoundButton.On
                 log.info("Fall Asleep Set")
             }
             activity?.runOnUiThread {
-                this@InfoFragment.isVisible.let { button_fall_asleep?.isEnabled = true }
+                this@InfoFragment.isVisible.let { binding.buttonFallAsleep.isEnabled = true }
             }
         }
     }
@@ -288,7 +286,7 @@ class InfoFragment : XYDeviceFragment(), View.OnClickListener, CompoundButton.On
     private fun lock() {
         log.info("lockButton: onClick")
         activity?.runOnUiThread {
-            button_lock?.isEnabled = false
+            binding.buttonLock.isEnabled = false
         }
 
         GlobalScope.launch {
@@ -302,7 +300,7 @@ class InfoFragment : XYDeviceFragment(), View.OnClickListener, CompoundButton.On
                 else -> log.error("Lock Error: ${locked.error}")
             }
             activity?.runOnUiThread {
-                this@InfoFragment.isVisible.let { button_lock?.isEnabled = true }
+                this@InfoFragment.isVisible.let { binding.buttonLock.isEnabled = true }
             }
         }
     }
@@ -310,7 +308,7 @@ class InfoFragment : XYDeviceFragment(), View.OnClickListener, CompoundButton.On
     private fun unlock() {
         log.info("unlockButton: onClick")
         activity?.runOnUiThread {
-            button_unlock?.isEnabled = false
+            binding.buttonUnlock.isEnabled = false
         }
 
         GlobalScope.launch {
@@ -324,7 +322,7 @@ class InfoFragment : XYDeviceFragment(), View.OnClickListener, CompoundButton.On
                 else -> log.error("Unlock Error: ${unlocked.error}")
             }
             activity?.runOnUiThread {
-                this@InfoFragment.isVisible.let { button_unlock?.isEnabled = true }
+                this@InfoFragment.isVisible.let { binding.buttonUnlock.isEnabled = true }
             }
         }
     }
@@ -340,11 +338,11 @@ class InfoFragment : XYDeviceFragment(), View.OnClickListener, CompoundButton.On
                 activity?.runOnUiThread {
                     this@InfoFragment.isVisible.let {
                         if (stayAwake.value != 0x0.toUByte()) {
-                            button_fall_asleep?.isEnabled = true
-                            button_stay_awake?.isEnabled = false
+                            binding.buttonFallAsleep.isEnabled = true
+                            binding.buttonStayAwake.isEnabled = false
                         } else {
-                            button_fall_asleep?.isEnabled = false
-                            button_stay_awake?.isEnabled = true
+                            binding.buttonFallAsleep.isEnabled = false
+                            binding.buttonStayAwake.isEnabled = true
                         }
                     }
                 }
@@ -380,7 +378,7 @@ class InfoFragment : XYDeviceFragment(), View.OnClickListener, CompoundButton.On
                     val key = device.ads.keyAt(i)
                     txt = txt + device.ads[key].data?.toHex() + "\r\n"
                 }
-                adList?.text = txt
+                binding.adList.text = txt
             }
         }
     }

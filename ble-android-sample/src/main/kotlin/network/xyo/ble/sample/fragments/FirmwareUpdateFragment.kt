@@ -12,7 +12,6 @@ import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
-import kotlinx.android.synthetic.main.fragment_firmware_update.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -24,13 +23,14 @@ import network.xyo.ble.firmware.XYOtaFile
 import network.xyo.ble.firmware.XYOtaUpdateListener
 import network.xyo.ble.sample.R
 import network.xyo.ble.sample.XYDeviceData
+import network.xyo.ble.sample.databinding.FragmentFirmwareUpdateBinding
 import network.xyo.ble.sample.fragments.core.BackFragmentListener
 import java.io.BufferedInputStream
 import java.io.FileOutputStream
 import java.net.URL
 
 @kotlin.ExperimentalUnsignedTypes
-class FirmwareUpdateFragment : XYDeviceFragment(), BackFragmentListener {
+class FirmwareUpdateFragment : XYDeviceFragment<FragmentFirmwareUpdateBinding>(), BackFragmentListener {
 
     private var firmwareFileName: String? = null
     private var updateInProgress: Boolean = false
@@ -51,10 +51,8 @@ class FirmwareUpdateFragment : XYDeviceFragment(), BackFragmentListener {
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-
-        return inflater.inflate(R.layout.fragment_firmware_update, container, false)
+    override fun inflate(inflater: LayoutInflater, container: ViewGroup?): FragmentFirmwareUpdateBinding {
+        return FragmentFirmwareUpdateBinding.inflate(inflater, container, false)
     }
 
     private fun loadImageFromServer() {
@@ -68,7 +66,7 @@ class FirmwareUpdateFragment : XYDeviceFragment(), BackFragmentListener {
         val context = context
         if (context != null) {
             val fileListAdapter = ArrayAdapter<String>(context, android.R.layout.simple_list_item_1)
-            lv_files?.adapter = fileListAdapter
+            binding.lvFiles.adapter = fileListAdapter
 
             val fileList = XYOtaFile.list(folderName)
             if (fileList == null) {
@@ -78,7 +76,7 @@ class FirmwareUpdateFragment : XYDeviceFragment(), BackFragmentListener {
                     fileListAdapter.add(file)
                 }
 
-                lv_files.setOnItemClickListener { _, _, i, _ ->
+                binding.lvFiles.setOnItemClickListener { _, _, i, _ ->
                     firmwareFileName = fileList[i]
                 }
             }
@@ -105,11 +103,11 @@ class FirmwareUpdateFragment : XYDeviceFragment(), BackFragmentListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        button_update.setOnClickListener {
+        binding.buttonUpdate.setOnClickListener {
             performUpdate()
         }
 
-        button_load_from_server.setOnClickListener {
+        binding.buttonLoadFromServer.setOnClickListener {
             loadImageFromServer()
         }
 
@@ -160,9 +158,9 @@ class FirmwareUpdateFragment : XYDeviceFragment(), BackFragmentListener {
                     promptRefreshAdapter()
                 }
 
-                button_update?.isEnabled = true
-                lv_files?.visibility = VISIBLE
-                tv_file_name?.visibility = VISIBLE
+                binding.buttonUpdate.isEnabled = true
+                binding.lvFiles.visibility = VISIBLE
+                binding.tvFileName.visibility = VISIBLE
             }
         }
 
@@ -170,7 +168,7 @@ class FirmwareUpdateFragment : XYDeviceFragment(), BackFragmentListener {
             val txt = "sending chunk  $sent of $total"
             log.info(txt)
             activity?.runOnUiThread {
-                tv_file_progress?.text = txt
+                binding.tvFileProgress.text = txt
             }
         }
     }
@@ -210,11 +208,11 @@ class FirmwareUpdateFragment : XYDeviceFragment(), BackFragmentListener {
             if (firmwareFileName != null) {
                 updateInProgress = true
                 activity?.runOnUiThread {
-                    lv_files?.visibility = GONE
-                    tv_file_name?.visibility = GONE
-                    tv_file_progress?.visibility = VISIBLE
-                    button_update?.isEnabled = false
-                    tv_file_progress?.text = getString(R.string.update_started)
+                    binding.lvFiles.visibility = GONE
+                    binding.tvFileName.visibility = GONE
+                    binding.tvFileProgress.visibility = VISIBLE
+                    binding.buttonUpdate.isEnabled = false
+                    binding.tvFileProgress.text = getString(R.string.update_started)
                 }
 
                 log.info("performUpdate started: $String")
@@ -232,7 +230,7 @@ class FirmwareUpdateFragment : XYDeviceFragment(), BackFragmentListener {
         log.info( "onFileSelected requestCode: $requestCode")
 
         data?.data.let { uri ->
-            tv_file_name?.text = uri.toString()
+            binding.tvFileName.text = uri.toString()
         }
 
     }

@@ -4,29 +4,26 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import kotlinx.android.synthetic.main.fragment_sensor.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import network.xyo.ble.devices.xy.XY2BluetoothDevice
 import network.xyo.ble.devices.xy.XY3BluetoothDevice
 import network.xyo.ble.generic.devices.XYBluetoothDevice
-import network.xyo.ble.sample.R
 import network.xyo.ble.sample.XYDeviceData
+import network.xyo.ble.sample.databinding.FragmentSensorBinding
 import network.xyo.ble.services.xy.SensorService
 
 @kotlin.ExperimentalUnsignedTypes
-class SensorFragment : XYDeviceFragment() {
+class SensorFragment : XYDeviceFragment<FragmentSensorBinding>() {
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-
-        return inflater.inflate(R.layout.fragment_sensor, container, false)
+    override fun inflate(inflater: LayoutInflater, container: ViewGroup?): FragmentSensorBinding {
+        return FragmentSensorBinding.inflate(inflater, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        button_sensor_refresh.setOnClickListener {
+        binding.buttonSensorRefresh.setOnClickListener {
             GlobalScope.launch {
                 readCharacteristics()
             }
@@ -46,19 +43,19 @@ class SensorFragment : XYDeviceFragment() {
         sensor?.let {
 
             val raw = it.raw.get()
-            activity?.runOnUiThread { text_raw.text = raw.toString() }
+            activity?.runOnUiThread { binding.textRaw.text = raw.toString() }
 
             val timeout = it.timeout.get()
-            activity?.runOnUiThread { text_timeout.text = timeout.toString() }
+            activity?.runOnUiThread { binding.textTimeout.text = timeout.toString() }
 
             val threshold = it.threshold.get()
-            activity?.runOnUiThread { text_threshold.text = threshold.toString() }
+            activity?.runOnUiThread { binding.textThreshold.text = threshold.toString() }
 
             val inactive = it.inactive.get()
-            activity?.runOnUiThread { text_inactive.text = inactive.toString() }
+            activity?.runOnUiThread { binding.textInactive.text = inactive.toString() }
 
             val movementCount = it.movementCount.get()
-            activity?.runOnUiThread { text_movement_count.text = movementCount.toString() }
+            activity?.runOnUiThread { binding.textMovementCount.text = movementCount.toString() }
 
         }
     }

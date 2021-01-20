@@ -4,21 +4,20 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import kotlinx.android.synthetic.main.fragment_test.*
 import kotlinx.coroutines.*
 import network.xyo.ble.devices.xy.XY3BluetoothDevice
 import network.xyo.ble.devices.xy.XY4BluetoothDevice
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResult
-import network.xyo.ble.sample.R
 import network.xyo.base.XYBase
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResultErrorCode
+import network.xyo.ble.sample.databinding.FragmentTestBinding
 import java.lang.Exception
 
 @kotlin.ExperimentalUnsignedTypes
-class BeepTestFragment : XYDeviceFragment() {
+class BeepTestFragment : XYDeviceFragment<FragmentTestBinding>() {
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_test, container, false)
+    override fun inflate(inflater: LayoutInflater, container: ViewGroup?): FragmentTestBinding {
+        return FragmentTestBinding.inflate(inflater, container, false)
     }
 
     private var startCount = 0
@@ -28,10 +27,10 @@ class BeepTestFragment : XYDeviceFragment() {
 
     fun updateUI() {
         activity?.runOnUiThread {
-            start_count?.text = "Starts: $startCount"
-            connect_count?.text = "Connects: $connectCount"
-            unlock_count?.text = "Unlocks: $unlockCount"
-            beep_count?.text = "Beeps: $beepCount"
+            binding.startCount.text = "Starts: $startCount"
+            binding.connectCount.text = "Connects: $connectCount"
+            binding.unlockCount.text = "Unlocks: $unlockCount"
+            binding.beepCount.text = "Beeps: $beepCount"
         }
     }
 
@@ -107,7 +106,7 @@ class BeepTestFragment : XYDeviceFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        start_async.setOnClickListener {
+        binding.startAsync.setOnClickListener {
             scanner.devices.forEach { (_, value) ->
                 GlobalScope.launch {
                     when (value) {
@@ -125,7 +124,7 @@ class BeepTestFragment : XYDeviceFragment() {
             }
         }
 
-        start_sync.setOnClickListener {
+        binding.startAsync.setOnClickListener {
             GlobalScope.launch {
                 scanner.devices.forEach { (_, value) ->
                     when (value) {

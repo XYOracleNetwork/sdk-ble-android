@@ -8,12 +8,12 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import com.google.android.material.tabs.TabLayout
-import kotlinx.android.synthetic.main.activity_device.*
 import network.xyo.base.XYBase
 import network.xyo.ble.devices.xy.*
 import network.xyo.ble.generic.devices.XYBluetoothDevice
 import network.xyo.ble.sample.R
 import network.xyo.ble.sample.XYDeviceData
+import network.xyo.ble.sample.databinding.ActivityDeviceBinding
 import network.xyo.ble.sample.fragments.*
 import network.xyo.ble.sample.fragments.core.BackFragmentListener
 
@@ -26,9 +26,11 @@ class XYODeviceActivity : XYOAppBaseActivity() {
     lateinit var data: XYDeviceData
     private val log = XYBase.log("XYODeviceActivity")
 
+    private lateinit var binding: ActivityDeviceBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        binding = ActivityDeviceBinding.inflate(layoutInflater)
         val deviceHash = intent.getStringExtra(EXTRA_DEVICE_HASH)!!
         log.info("onCreate: $deviceHash")
         device = scanner.devices[deviceHash]
@@ -42,10 +44,10 @@ class XYODeviceActivity : XYOAppBaseActivity() {
 
         sectionsPagerAdapter = SectionsPagerAdapter(supportFragmentManager)
 
-        container.adapter = sectionsPagerAdapter
+        binding.container.adapter = sectionsPagerAdapter
 
-        container.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tabs))
-        tabs.addOnTabSelectedListener(TabLayout.ViewPagerOnTabSelectedListener(container))
+        binding.container.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(binding.tabs))
+        binding.tabs.addOnTabSelectedListener(TabLayout.ViewPagerOnTabSelectedListener(binding.container))
 
     }
 
@@ -166,7 +168,7 @@ class XYODeviceActivity : XYOAppBaseActivity() {
     }
 
     override fun onBackPressed() {
-        val activeFrag = sectionsPagerAdapter.getFragmentByPosition(container.currentItem)
+        val activeFrag = sectionsPagerAdapter.getFragmentByPosition(binding.container.currentItem)
         if (!(activeFrag is BackFragmentListener && (activeFrag as BackFragmentListener).onBackPressed())) {
             super.onBackPressed()
         }
@@ -174,7 +176,7 @@ class XYODeviceActivity : XYOAppBaseActivity() {
 
     fun update() {
         runOnUiThread {
-            val frag = sectionsPagerAdapter.getFragmentByPosition(container.currentItem)
+            val frag = sectionsPagerAdapter.getFragmentByPosition(binding.container.currentItem)
             (frag as? InfoFragment)?.update()
         }
     }

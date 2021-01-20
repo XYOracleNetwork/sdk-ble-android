@@ -8,46 +8,42 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.RadioButton
-import androidx.fragment.app.Fragment
-import kotlinx.android.synthetic.main.fragment_advertiser.view.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import network.xyo.ble.generic.gatt.server.XYBluetoothAdvertiser
 import network.xyo.ble.generic.gatt.server.XYIBeaconAdvertiseDataCreator
-import network.xyo.ble.sample.R
 import network.xyo.base.XYBase
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResultErrorCode
+import network.xyo.ble.sample.databinding.FragmentAdvertiserBinding
 import java.nio.ByteBuffer
 import java.util.UUID
 
-class AdvertiserFragment : Fragment() {
+@ExperimentalUnsignedTypes
+class AdvertiserFragment : XYAppBaseFragment<FragmentAdvertiserBinding>() {
     private var isInIBeacon = false
     var advertiser: XYBluetoothAdvertiser? = null
 
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_advertiser, container, false)
+    override fun inflate(inflater: LayoutInflater, container: ViewGroup?): FragmentAdvertiserBinding {
+        return FragmentAdvertiserBinding.inflate(inflater, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val updateButton = view.update
-        val iBeaconSwitch = view.sw_is_ibeacon
 
-        updateButton.setOnClickListener {
+        binding.update.setOnClickListener {
             GlobalScope.launch {
-                updateAdvertisingMode(view)
-                updateAdvertisingPower(view)
-                updateConnectible(view)
-                updateTimeout(view)
-                if(updateAdvertiserData(view)) {
+                updateAdvertisingMode()
+                updateAdvertisingPower()
+                updateConnectible()
+                updateTimeout()
+                if(updateAdvertiserData()) {
                     restartAdvertiser()
                 }
 
             }
         }
 
-        iBeaconSwitch.setOnCheckedChangeListener { _, isChecked ->
+        binding.swIsIbeacon.setOnCheckedChangeListener { _, isChecked ->
             isInIBeacon = isChecked
         }
     }
@@ -67,8 +63,8 @@ class AdvertiserFragment : Fragment() {
         }
     }
 
-    private fun updateAdvertisingMode (view: View) {
-        val radioButtonGroup = view.advertising_mode_selector
+    private fun updateAdvertisingMode () {
+        val radioButtonGroup = binding.advertisingModeSelector
         val radioButtonID = radioButtonGroup.checkedRadioButtonId
         val radioButton = radioButtonGroup.findViewById<RadioButton>(radioButtonID)
 
@@ -81,8 +77,8 @@ class AdvertiserFragment : Fragment() {
         }
     }
 
-    private fun updateAdvertisingPower (view: View) {
-        val radioButtonGroup = view.advertising_power_selector
+    private fun updateAdvertisingPower () {
+        val radioButtonGroup = binding.advertisingPowerSelector
         val radioButtonID = radioButtonGroup.checkedRadioButtonId
         val radioButton = radioButtonGroup.findViewById<RadioButton>(radioButtonID)
 
@@ -95,8 +91,8 @@ class AdvertiserFragment : Fragment() {
         }
     }
 
-    private  fun updateConnectible (view: View) {
-        val radioButtonGroup = view.connectible_selector
+    private  fun updateConnectible () {
+        val radioButtonGroup = binding.connectibleSelector
         val radioButtonID = radioButtonGroup.checkedRadioButtonId
         val radioButton = radioButtonGroup.findViewById<RadioButton>(radioButtonID)
 
@@ -106,17 +102,17 @@ class AdvertiserFragment : Fragment() {
         }
     }
 
-    private fun updateTimeout(view: View) {
+    private fun updateTimeout() {
         try {
-            val timeoutTime = Integer.parseInt(view.timeout_input.text.toString())
+            val timeoutTime = Integer.parseInt(binding.timeoutInput.text.toString())
             advertiser?.changeTimeout(timeoutTime)
         } catch (e : NumberFormatException) {
             advertiser?.changeTimeout(null)
         }
     }
 
-    private fun getIncludeDeviceName (view: View) : Boolean {
-        val radioButtonGroup = view.include_device_name_selector
+    private fun getIncludeDeviceName () : Boolean {
+        val radioButtonGroup = binding.includeDeviceNameSelector
         val radioButtonID = radioButtonGroup.checkedRadioButtonId
         val radioButton = radioButtonGroup.findViewById<RadioButton>(radioButtonID)
 
@@ -127,20 +123,20 @@ class AdvertiserFragment : Fragment() {
         return false
     }
 
-    private fun updateAdvertiserData (view: View) : Boolean {
+    private fun updateAdvertiserData () : Boolean {
         if (isInIBeacon) {
-            return updateAdvertiserDataIBeacon(view)
+            return updateAdvertiserDataIBeacon()
         }
-        return updateAdvertiserDataRegular(view)
+        return updateAdvertiserDataRegular()
     }
 
-    private fun updateAdvertiserDataIBeacon (view: View) : Boolean {
+    private fun updateAdvertiserDataIBeacon () : Boolean {
 
         try {
-            val manufacturerId = Integer.parseInt(view.ibeacon_manufacturer_id_input.text.toString())
-            val major = Integer.parseInt(view.ibeacon_major.text.toString())
-            val minor = Integer.parseInt(view.ibeacon_minor.text.toString())
-            val uuid = UUID.fromString(view.ibeacon_primary_service_input.text.toString())
+            val manufacturerId = Integer.parseInt(binding.ibeaconManufacturerIdInput.text.toString())
+            val major = Integer.parseInt(binding.ibeaconMajor.text.toString())
+            val minor = Integer.parseInt(binding.ibeaconMinor.text.toString())
+            val uuid = UUID.fromString(binding.ibeaconPrimaryServiceInput.text.toString())
 
 
 
@@ -149,7 +145,7 @@ class AdvertiserFragment : Fragment() {
                     ByteBuffer.allocate(2).putShort(minor.toShort()).array(),
                     uuid,
                     manufacturerId,
-                    getIncludeDeviceName(view))
+                    getIncludeDeviceName())
 
             advertiser?.advertisingData = data.build()
             return true
@@ -165,14 +161,14 @@ class AdvertiserFragment : Fragment() {
     }
 
 
-    private fun updateAdvertiserDataRegular (view: View) : Boolean {
+    private fun updateAdvertiserDataRegular () : Boolean {
         val builder = AdvertiseData.Builder()
         try {
-            val uuid = ParcelUuid(UUID.fromString(view.standard_primary_service_input.toString()))
+            val uuid = ParcelUuid(UUID.fromString(binding.standardPrimaryServiceInput.toString()))
             builder.addServiceUuid(uuid)
-            builder.addServiceData(uuid, view.standard_primary_service_data_input.toString().toByteArray())
-            val id = Integer.parseInt(view.standard_manufacturer_id_input.text.toString())
-            val data = view.standard_manufacturer_data_input.text.toString().toByteArray()
+            builder.addServiceData(uuid, binding.standardPrimaryServiceDataInput.toString().toByteArray())
+            val id = Integer.parseInt(binding.standardManufacturerIdInput.text.toString())
+            val data = binding.standardManufacturerDataInput.text.toString().toByteArray()
             builder.addManufacturerData(id, data)
         } catch (e : NumberFormatException) {
             activity?.runOnUiThread { log.error("Error Phrasing Malefactor ID") }
@@ -182,14 +178,14 @@ class AdvertiserFragment : Fragment() {
             return false
         }
 
-        builder.setIncludeTxPowerLevel(getIncludeTx(view))
-        builder.setIncludeDeviceName(getIncludeDeviceName(view))
+        builder.setIncludeTxPowerLevel(getIncludeTx())
+        builder.setIncludeDeviceName(getIncludeDeviceName())
         advertiser?.advertisingData = builder.build()
         return true
     }
 
-    private fun getIncludeTx (view: View) : Boolean {
-        val radioButtonGroup = view.include_tx_power_level_selector
+    private fun getIncludeTx () : Boolean {
+        val radioButtonGroup = binding.includeTxPowerLevelSelector
         val radioButtonID = radioButtonGroup.checkedRadioButtonId
         val radioButton = radioButtonGroup.findViewById<RadioButton>(radioButtonID)
 

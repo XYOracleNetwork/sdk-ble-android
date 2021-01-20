@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import kotlinx.android.synthetic.main.fragment_battery.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import network.xyo.ble.devices.xy.XY2BluetoothDevice
@@ -14,20 +13,19 @@ import network.xyo.ble.generic.devices.XYBluetoothDevice
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResult
 import network.xyo.ble.sample.R
 import network.xyo.ble.sample.XYDeviceData
+import network.xyo.ble.sample.databinding.FragmentBatteryBinding
 
 @kotlin.ExperimentalUnsignedTypes
-class BatteryFragment : XYDeviceFragment() {
+class BatteryFragment : XYDeviceFragment<FragmentBatteryBinding>() {
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-
-        return inflater.inflate(R.layout.fragment_battery, container, false)
+    override fun inflate(inflater: LayoutInflater, container: ViewGroup?): FragmentBatteryBinding {
+        return FragmentBatteryBinding.inflate(inflater, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        button_battery_refresh.setOnClickListener {
+        binding.buttonBatteryRefresh.setOnClickListener {
             readBatteryLevel()
         }
     }
@@ -44,7 +42,7 @@ class BatteryFragment : XYDeviceFragment() {
 
     private fun updateUI() {
         activity?.runOnUiThread {
-            text_battery_level?.text = deviceData?.level
+            binding.textBatteryLevel.text = deviceData?.level
         }
     }
 
@@ -69,7 +67,7 @@ class BatteryFragment : XYDeviceFragment() {
                 }
             }
             else -> {
-                text_battery_level.text = getString(R.string.unknown_device)
+                binding.textBatteryLevel.text = getString(R.string.unknown_device)
             }
         }
     }
