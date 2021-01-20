@@ -1,15 +1,14 @@
-name: Release 
+name: Release
 
-on: 
+on:
   push:
     branches:
-      - 'master'
+      - "master"
 
-jobs:         
+jobs:
   publish:
-
     runs-on: ubuntu-latest
-    
+
     steps:
       - uses: actions/checkout@v2
       - name: pre-build
@@ -22,22 +21,26 @@ jobs:
         run: |
           echo "##[set-output name=version;]$(gradle -q printVersion)"
         id: release_version
+        env:
+          ACTIONS_ALLOW_UNSECURE_COMMANDS: "true"
       - name: bintray upload
-        env: 
+        env:
           BINTRAY_USER: ${{ secrets.BINTRAY_USER }}
           BINTRAY_KEY: ${{ secrets.BINTRAY_KEY }}
         run: ./gradlew :ble-android-library:bintrayUpload
       - name: get commit message
         run: |
           echo ::set-env name=commitmsg::$(git log --format=%B -n 1 ${{ github.event.after }})
+        env:
+          ACTIONS_ALLOW_UNSECURE_COMMANDS: "true"
       - name: show commit message
         run: echo $commitmsg
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
-        env: 
+        env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with: 
+        with:
           tag_name: ${{ steps.release_version.outputs.version }}
           release_name: Release ${{ env.commitmsg }}
           draft: true
