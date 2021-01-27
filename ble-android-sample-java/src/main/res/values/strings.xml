@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">XYO BLE SDK Java Sample</string>
     <string name="title_item_detail">Device Information</string>
+    <string name="floating_action_button">Floating Action Button</string>
 </resources>

@@ -99,7 +99,7 @@ class ServerFragment : XYAppBaseFragment<FragmentPeripheralBinding>() {
      * A simple write characteristic that logs whenever it is written to.
      */
     private val logResponder = object : XYBluetoothWriteResponder {
-        override fun onWriteRequest(writeRequestValue: ByteArray?, device: BluetoothDevice?): Boolean? {
+        override fun onWriteRequest(writeRequestValue: ByteArray?, device: BluetoothDevice?): Boolean {
             Log.v("BluetoothGattServer", writeRequestValue?.toString(Charset.defaultCharset())!!)
             return true
         }
@@ -111,7 +111,7 @@ class ServerFragment : XYAppBaseFragment<FragmentPeripheralBinding>() {
     private val countResponder = object : XYBluetoothReadResponder {
         var count = 0
 
-        override fun onReadRequest(device: BluetoothDevice?, offset: Int): XYBluetoothGattServer.XYReadRequest? {
+        override fun onReadRequest(device: BluetoothDevice?, offset: Int): XYBluetoothGattServer.XYReadRequest {
             count++
             return XYBluetoothGattServer.XYReadRequest( ByteBuffer.allocate(4).putInt(count).array(), 0)
         }
