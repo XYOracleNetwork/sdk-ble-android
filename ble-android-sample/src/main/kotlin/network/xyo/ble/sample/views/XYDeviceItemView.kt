@@ -3,6 +3,7 @@ package network.xyo.ble.sample.views
 import android.content.Context
 import android.content.Intent
 import android.util.AttributeSet
+import android.view.LayoutInflater
 import android.view.View
 import android.widget.RelativeLayout
 import kotlinx.coroutines.Dispatchers
@@ -18,9 +19,10 @@ import network.xyo.ble.sample.databinding.DeviceItemBinding
 
 @kotlin.ExperimentalStdlibApi
 @kotlin.ExperimentalUnsignedTypes
-class XYDeviceItemView(context: Context, attrs: AttributeSet) : RelativeLayout(context, attrs) {
+class XYDeviceItemView(context: Context) : RelativeLayout(context) {
 
     private var device: XYBluetoothDevice? = null
+    private var binding: DeviceItemBinding
 
     init {
         setOnClickListener {
@@ -29,17 +31,17 @@ class XYDeviceItemView(context: Context, attrs: AttributeSet) : RelativeLayout(c
                 openDevice(device)
             }
         }
+        binding = DeviceItemBinding.inflate(LayoutInflater.from(context), this, true)
     }
 
     private fun openDevice(device: XYBluetoothDevice) {
-        val intent = Intent(context, XYODeviceActivity::class.java)
+        val intent = Intent(context.applicationContext, XYODeviceActivity::class.java)
         intent.putExtra(XYODeviceActivity.EXTRA_DEVICE_HASH, device.hash)
-        context.startActivity(intent)
+        context.applicationContext.startActivity(intent)
     }
 
     fun update() {
         post {
-            val binding = DeviceItemBinding.bind(this.rootView)
             binding.textFamily.text = device?.javaClass?.simpleName
             binding.textName.text = device?.name
             binding.textConnected.text = (device?.connected == true).toString()

@@ -2,6 +2,7 @@ package network.xyo.ble.sample.views
 
 import android.content.Context
 import android.util.AttributeSet
+import android.view.LayoutInflater
 import android.widget.LinearLayout
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -21,6 +22,8 @@ class XYBLEStatsView(context: Context, attrs: AttributeSet) : LinearLayout(conte
     private var enterCount = 0
     private var exitCount = 0
 
+    private var binding: BleStatsViewBinding = BleStatsViewBinding.inflate(LayoutInflater.from(context), this, true)
+
     private val smartScanListener = object : XYSmartScanListener() {
         override fun entered(device: XYBluetoothDevice) {
             enterCount++
@@ -38,8 +41,7 @@ class XYBLEStatsView(context: Context, attrs: AttributeSet) : LinearLayout(conte
 
         override fun detected(device: XYBluetoothDevice) {
             GlobalScope.launch(Dispatchers.Main) {
-                val binding = BleStatsViewBinding.bind(this@XYBLEStatsView.rootView)
-                binding.textPulses.text = scanner.scanResultCount.toString()
+                this@XYBLEStatsView.binding.textPulses.text = scanner.scanResultCount.toString()
             }
         }
 
@@ -66,7 +68,6 @@ class XYBLEStatsView(context: Context, attrs: AttributeSet) : LinearLayout(conte
     }
 
     fun update() {
-        val binding = BleStatsViewBinding.bind(this@XYBLEStatsView)
         binding.textHostDeviceName.text = scanner.hostDevice.name.toString()
         binding.textEnters.text = enterCount.toString()
         binding.textExits.text = exitCount.toString()

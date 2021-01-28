@@ -12,9 +12,8 @@
         android:layout_height="wrap_content"
         android:paddingTop="8dp">
 
-        <include
+        <network.xyo.ble.sample.views.XYToolbar
             android:id="@+id/toolbar"
-            layout="@layout/toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"

@@ -1,6 +1,7 @@
 package network.xyo.ble.sample.adapters
 
 import android.app.Activity
+import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
@@ -72,7 +73,7 @@ class XYDeviceAdapter(private val activity: Activity) : BaseAdapter() {
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         var view = convertView
         if (view == null) {
-            view = activity.layoutInflater.inflate(R.layout.device_item, parent, false)
+            view = XYDeviceItemView(this.activity.baseContext)
         }
         (view as XYDeviceItemView).setDevice(getItem(position) as XYBluetoothDevice)
 
