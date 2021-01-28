@@ -74,7 +74,7 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, val has
 
     open val connected: Boolean
         get() {
-            return connection?.state == BluetoothGatt.STATE_CONNECTED
+            return state == BluetoothGatt.STATE_CONNECTED
         }
 
     open val id: String
