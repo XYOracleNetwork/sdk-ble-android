@@ -74,12 +74,12 @@ class DeviceServicesFragment : XYDeviceFragment<FragmentServicesBinding>() {
 
     override fun onPause() {
         super.onPause()
-        device?.removeListener("services")
+        device?.reporter?.removeListener("services")
     }
 
     override fun onResume() {
         super.onResume()
-        device?.addListener("services", object: XYBluetoothDeviceListener() {
+        device?.reporter?.addListener("services", object: XYBluetoothDeviceListener() {
             override fun connectionStateChanged(device: XYBluetoothDevice, newState: Int) {
                 super.connectionStateChanged(device, newState)
                 GlobalScope.launch {

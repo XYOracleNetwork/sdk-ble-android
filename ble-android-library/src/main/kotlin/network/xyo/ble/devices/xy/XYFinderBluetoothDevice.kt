@@ -18,6 +18,8 @@ import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResult
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResultErrorCode
 import network.xyo.ble.generic.scanner.XYScanResult
 import androidx.annotation.WorkerThread
+import network.xyo.ble.generic.devices.XYBluetoothDeviceListener
+import network.xyo.ble.generic.devices.XYBluetoothDeviceReporter
 
 /**
  * Listener for XY Finder.
@@ -88,9 +90,36 @@ enum class XYFinderBluetoothDeviceStayAwake(val state: UByte) {
     On(1U)
 }
 
+open class XYFinderBluetoothDeviceReporter<T: XYFinderBluetoothDevice, L: XYFinderBluetoothDeviceListener>: XYBluetoothDeviceReporter<XYBluetoothDevice, XYBluetoothDeviceListener>() {
+    open fun buttonPressed(device: XYFinderBluetoothDevice, state: XYFinderBluetoothDeviceButtonPress) {
+        log.info("reportButtonPressed")
+        GlobalScope.launch {
+            synchronized(listeners) {
+                for (listener in listeners) {
+                    val xyFinderListener = listener.value as? XYFinderBluetoothDeviceListener
+                    if (xyFinderListener != null) {
+                        log.info("reportButtonPressed: $xyFinderListener")
+                        GlobalScope.launch {
+                            when (state) {
+                                XYFinderBluetoothDeviceButtonPress.Single -> xyFinderListener.buttonSinglePressed(device)
+                                XYFinderBluetoothDeviceButtonPress.Double -> xyFinderListener.buttonDoublePressed(device)
+                                XYFinderBluetoothDeviceButtonPress.Long -> xyFinderListener.buttonLongPressed(device)
+                                else -> {
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
 @kotlin.ExperimentalUnsignedTypes
 @Suppress("unused")
 open class XYFinderBluetoothDevice(context: Context, scanResult: XYScanResult, hash: String) : XYIBeaconBluetoothDevice(context, scanResult, hash) {
+
+    override val reporter = XYFinderBluetoothDeviceReporter<XYFinderBluetoothDevice, XYFinderBluetoothDeviceListener>()
 
     override val id: String
         get() {
@@ -201,29 +230,6 @@ open class XYFinderBluetoothDevice(context: Context, scanResult: XYScanResult, h
     }
 
     open fun cancelUpdateFirmware() {
-    }
-
-    internal open fun reportButtonPressed(state: XYFinderBluetoothDeviceButtonPress) {
-        log.info("reportButtonPressed")
-        GlobalScope.launch {
-            synchronized(listeners) {
-                for (listener in listeners) {
-                    val xyFinderListener = listener.value as? XYFinderBluetoothDeviceListener
-                    if (xyFinderListener != null) {
-                        log.info("reportButtonPressed: $xyFinderListener")
-                        GlobalScope.launch {
-                            when (state) {
-                                XYFinderBluetoothDeviceButtonPress.Single -> xyFinderListener.buttonSinglePressed(this@XYFinderBluetoothDevice)
-                                XYFinderBluetoothDeviceButtonPress.Double -> xyFinderListener.buttonDoublePressed(this@XYFinderBluetoothDevice)
-                                XYFinderBluetoothDeviceButtonPress.Long -> xyFinderListener.buttonLongPressed(this@XYFinderBluetoothDevice)
-                                else -> {
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
     }
 
     companion object : XYBase() {

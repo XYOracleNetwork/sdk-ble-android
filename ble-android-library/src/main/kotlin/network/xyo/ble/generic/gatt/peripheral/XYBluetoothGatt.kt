@@ -50,6 +50,7 @@ open class XYBluetoothGatt protected constructor(
         override fun onConnectionStateChange(gatt: BluetoothGatt?, status: Int, newState: Int) {
             super.onConnectionStateChange(gatt, status, newState)
             log.info("onConnectionStateChangeXCentral: $status : $newState")
+            state = newState
             if (newState == BluetoothGatt.STATE_DISCONNECTED) {
                 close()
             }
@@ -262,7 +263,7 @@ open class XYBluetoothGatt protected constructor(
         return@queueBle XYBluetoothResult(true)
     }
 
-    fun disconnect() {
+    open fun disconnect() {
         close()
     }
 

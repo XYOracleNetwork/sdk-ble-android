@@ -16,6 +16,7 @@ import network.xyo.ble.firmware.XYBluetoothDeviceUpdate
 import network.xyo.ble.firmware.XYOtaFile
 import network.xyo.ble.firmware.XYOtaUpdateListener
 import network.xyo.ble.generic.devices.XYBluetoothDevice
+import network.xyo.ble.generic.devices.XYBluetoothDeviceReporter
 import network.xyo.ble.generic.devices.XYCreator
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResult
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResultErrorCode
@@ -58,8 +59,12 @@ open class XY4BluetoothDevice(
         override fun onCharacteristicChanged(gatt: BluetoothGatt?, characteristic: BluetoothGattCharacteristic?) {
             super.onCharacteristicChanged(gatt, characteristic)
             if (characteristic?.uuid == primary.buttonState.uuid) {
+                // every time a notify fires, we have to re-enable it
                 enableButtonNotifyIfConnected()
-                reportButtonPressed(buttonPressFromInt(characteristic.getIntValue(BluetoothGattCharacteristic.FORMAT_UINT8, 0)))
+                reporter.buttonPressed(this@XY4BluetoothDevice,
+                        buttonPressFromInt(characteristic.getIntValue(BluetoothGattCharacteristic.FORMAT_UINT8, 0)))
+                globalReporter.buttonPressed(this@XY4BluetoothDevice,
+                        buttonPressFromInt(characteristic.getIntValue(BluetoothGattCharacteristic.FORMAT_UINT8, 0)))
             }
         }
     }
@@ -115,7 +120,8 @@ open class XY4BluetoothDevice(
         if (scanResult != null) {
             if (pressFromScanResult(scanResult)) {
                 if (now - lastButtonPressTime > BUTTON_ADVERTISEMENT_LENGTH) {
-                    reportButtonPressed(XYFinderBluetoothDeviceButtonPress.Single)
+                    enableButtonNotifyIfConnected()
+                    reporter.buttonPressed(this, XYFinderBluetoothDeviceButtonPress.Single)
                     lastButtonPressTime = now
                 }
             }
@@ -152,16 +158,9 @@ open class XY4BluetoothDevice(
     }
 
     override fun onConnectionStateChange(newState: Int) {
-        log.info("onConnectionStateChangeXY4: $id : $newState: ${listeners.size}")
+        log.info("onConnectionStateChangeXY4: $id : $newState: ${reporter.listeners.size}")
         super.onConnectionStateChange(newState)
         enableButtonNotifyIfConnected()
-    }
-
-    override fun reportButtonPressed(state: XYFinderBluetoothDeviceButtonPress) {
-        super.reportButtonPressed(state)
-        // every time a notify fires, we have to re-enable it
-        enableButtonNotifyIfConnected()
-        reportGlobalButtonPressed(this, state)
     }
 
     override val minor: UShort
@@ -173,8 +172,6 @@ open class XY4BluetoothDevice(
     companion object : XYBase() {
 
         private val FAMILY_UUID = UUID.fromString("a44eacf4-0104-0000-0000-5f784c9977b5")!!
-
-        protected val globalListeners = HashMap<String, XY4BluetoothDeviceListener>()
 
         val DefaultLockCode = byteArrayOf(0x00.toByte(), 0x01.toByte(), 0x02.toByte(), 0x03.toByte(), 0x04.toByte(), 0x05.toByte(), 0x06.toByte(), 0x07.toByte(), 0x08.toByte(), 0x09.toByte(), 0x0a.toByte(), 0x0b.toByte(), 0x0c.toByte(), 0x0d.toByte(), 0x0e.toByte(), 0x0f.toByte())
 
@@ -190,44 +187,16 @@ open class XY4BluetoothDevice(
             }
         }
 
-        // global listener from XY Base
+        val globalReporter = XYFinderBluetoothDeviceReporter<XY4BluetoothDevice, XY4BluetoothDeviceListener>()
+
+        @Deprecated("Deprecated", ReplaceWith("globalReporter.addListener(key, listener)"))
         fun addGlobalListener(key: String, listener: XY4BluetoothDeviceListener) {
-            GlobalScope.launch {
-                synchronized(globalListeners) {
-                    globalListeners[key] = listener
-                }
-            }
+            globalReporter.addListener(key, listener)
         }
 
+        @Deprecated("Deprecated", ReplaceWith("globalReporter.removeListener(key)"))
         fun removeGlobalListener(key: String) {
-            GlobalScope.launch {
-                synchronized(globalListeners) {
-                    globalListeners.remove(key)
-                }
-            }
-        }
-
-        // initiates global listener and reports touch feedback
-        fun reportGlobalButtonPressed(device: XY4BluetoothDevice, state: XYFinderBluetoothDeviceButtonPress) {
-            GlobalScope.launch {
-                synchronized(globalListeners) {
-                    for (listener in globalListeners) {
-                        val xyFinderListener = listener.value as? XYFinderBluetoothDeviceListener
-                        if (xyFinderListener != null) {
-                            log.info("reportButtonPressed: $xyFinderListener")
-                            GlobalScope.launch {
-                                when (state) {
-                                    XYFinderBluetoothDeviceButtonPress.Single -> xyFinderListener.buttonSinglePressed(device)
-                                    XYFinderBluetoothDeviceButtonPress.Double -> xyFinderListener.buttonDoublePressed(device)
-                                    XYFinderBluetoothDeviceButtonPress.Long -> xyFinderListener.buttonLongPressed(device)
-                                    else -> {
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+            globalReporter.removeListener(key)
         }
 
         private val creator = object : XYCreator() {

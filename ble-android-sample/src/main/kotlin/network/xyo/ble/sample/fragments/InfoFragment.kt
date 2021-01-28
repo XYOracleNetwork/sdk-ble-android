@@ -67,7 +67,7 @@ class InfoFragment : XYDeviceFragment<FragmentInfoBinding>(), View.OnClickListen
         updateAdList()
         updateUI()
 
-        device?.addListener("info", object: XYBluetoothDeviceListener() {
+        device?.reporter?.addListener("info", object: XYBluetoothDeviceListener() {
             override fun entered(device: XYBluetoothDevice) {
                 super.entered(device)
                 log.info("Entered")
@@ -80,6 +80,7 @@ class InfoFragment : XYDeviceFragment<FragmentInfoBinding>(), View.OnClickListen
 
             override fun connectionStateChanged(device: XYBluetoothDevice, newState: Int) {
                 super.connectionStateChanged(device, newState)
+                log.info("connectionStateChangedX-InfoFragment : $newState")
                 updateUI()
             }
 
@@ -92,7 +93,7 @@ class InfoFragment : XYDeviceFragment<FragmentInfoBinding>(), View.OnClickListen
 
     override fun onPause() {
         super.onPause()
-        device?.removeListener("info")
+        device?.reporter?.removeListener("info")
     }
 
     override fun update() {

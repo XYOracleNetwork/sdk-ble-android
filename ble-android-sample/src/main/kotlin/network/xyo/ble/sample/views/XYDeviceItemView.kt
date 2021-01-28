@@ -87,20 +87,16 @@ class XYDeviceItemView(context: Context) : LinearLayout(context) {
         }
 
         override fun connectionStateChanged(device: XYBluetoothDevice, newState: Int) {
-            log.info(TAG,"connectionStateChanged")
+            log.info(TAG,"connectionStateChangedX-DeviceItemView")
         }
     }
 
     fun setDevice(device: XYBluetoothDevice?) {
-        if (device != null) {
-            device.removeListener(TAG)
-        } else {
-            log.error("Setting NULL device")
-        }
+        device?.reporter?.removeListener(TAG) ?: log.error("Setting NULL device")
 
         this.device = device
 
-        device?.addListener(TAG, deviceListener)
+        device?.reporter?.addListener(TAG, deviceListener)
         update()
     }
 

@@ -55,7 +55,7 @@ class XYODeviceActivity : XYOAppBaseActivity() {
 
     override fun onStop() {
         super.onStop()
-        device!!.removeListener(TAG)
+        device!!.reporter.removeListener(TAG)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -82,7 +82,7 @@ class XYODeviceActivity : XYOAppBaseActivity() {
         }
 
         override fun connectionStateChanged(device: XYBluetoothDevice, newState: Int) {
-            log.info("connectionStateChanged: $newState")
+            log.info("connectionStateChangedX-DeviceActivity: $newState")
             update()
             if (newState == 2) {
                 log.info("Connected")
@@ -120,7 +120,7 @@ class XYODeviceActivity : XYOAppBaseActivity() {
         }
 
         override fun connectionStateChanged(device: XYBluetoothDevice, newState: Int) {
-            log.info("connectionStateChanged: $newState")
+            log.info("connectionStateChangedX-DeviceActivity: $newState")
             update()
             if (newState == 2) {
                 log.info("Connected")
@@ -144,14 +144,14 @@ class XYODeviceActivity : XYOAppBaseActivity() {
 
     private fun addListener() {
         log.info("addListener: $device")
-        (device as? XY4BluetoothDevice)?.addListener(TAG, xy4DeviceListener)
-        (device as? XY3BluetoothDevice)?.addListener(TAG, xy3DeviceListener)
+        (device as? XY4BluetoothDevice)?.reporter?.addListener(TAG, xy4DeviceListener)
+        (device as? XY3BluetoothDevice)?.reporter?.addListener(TAG, xy3DeviceListener)
     }
 
     private fun removeListener() {
         log.info("removeListener: $device")
-        (device as? XY4BluetoothDevice)?.removeListener(TAG)
-        (device as? XY3BluetoothDevice)?.removeListener(TAG)
+        (device as? XY4BluetoothDevice)?.reporter?.removeListener(TAG)
+        (device as? XY3BluetoothDevice)?.reporter?.removeListener(TAG)
     }
 
     override fun onPostCreate(savedInstanceState: Bundle?) {

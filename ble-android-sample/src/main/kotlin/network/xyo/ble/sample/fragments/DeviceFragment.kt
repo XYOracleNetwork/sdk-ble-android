@@ -33,13 +33,13 @@ class DeviceFragment : XYDeviceFragment<FragmentDeviceBinding>() {
 
     override fun onPause() {
         super.onPause()
-        device?.removeListener("DeviceFragment")
+        device?.reporter?.removeListener("DeviceFragment")
     }
 
     override fun onResume() {
         super.onResume()
 
-        device?.addListener("DeviceFragment", object: XYBluetoothDeviceListener() {
+        device?.reporter?.addListener("DeviceFragment", object: XYBluetoothDeviceListener() {
             override fun detected(device: XYBluetoothDevice) {
                 updateUI()
                 super.detected(device)
