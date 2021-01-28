@@ -18,8 +18,7 @@ class XYOTestActivity : XYOAppBaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val layout = layoutInflater.inflate(R.layout.activity_test, null)
-        setContentView(layout)
+        setContentView(R.layout.activity_test)
     }
 
     override fun onPostCreate(savedInstanceState: Bundle?) {
