@@ -73,7 +73,7 @@ class XYDeviceAdapter(private val activity: Activity) : BaseAdapter() {
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         var view = convertView
         if (view == null) {
-            view = XYDeviceItemView(this.activity.baseContext)
+            view = XYDeviceItemView(this.activity)
         }
         (view as XYDeviceItemView).setDevice(getItem(position) as XYBluetoothDevice)
 

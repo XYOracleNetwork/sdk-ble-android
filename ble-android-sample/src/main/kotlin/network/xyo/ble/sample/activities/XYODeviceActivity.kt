@@ -3,10 +3,12 @@ package network.xyo.ble.sample.activities
 import android.content.Intent
 import android.os.Bundle
 import android.util.SparseArray
+import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
+import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
 import network.xyo.base.XYBase
 import network.xyo.ble.devices.xy.*
@@ -26,11 +28,8 @@ class XYODeviceActivity : XYOAppBaseActivity() {
     lateinit var data: XYDeviceData
     private val log = XYBase.log("XYODeviceActivity")
 
-    private lateinit var binding: ActivityDeviceBinding
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityDeviceBinding.inflate(layoutInflater)
         val deviceHash = intent.getStringExtra(EXTRA_DEVICE_HASH)!!
         log.info("onCreate: $deviceHash")
         device = scanner.devices[deviceHash]
@@ -44,10 +43,13 @@ class XYODeviceActivity : XYOAppBaseActivity() {
 
         sectionsPagerAdapter = SectionsPagerAdapter(supportFragmentManager)
 
-        binding.container.adapter = sectionsPagerAdapter
+        val container = findViewById<ViewPager>(R.id.container)
+        val tabs = findViewById<TabLayout>(R.id.tabs)
 
-        binding.container.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(binding.tabs))
-        binding.tabs.addOnTabSelectedListener(TabLayout.ViewPagerOnTabSelectedListener(binding.container))
+        container.adapter = sectionsPagerAdapter
+
+        container.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tabs))
+        tabs.addOnTabSelectedListener(TabLayout.ViewPagerOnTabSelectedListener(container))
 
     }
 
@@ -168,7 +170,8 @@ class XYODeviceActivity : XYOAppBaseActivity() {
     }
 
     override fun onBackPressed() {
-        val activeFrag = sectionsPagerAdapter.getFragmentByPosition(binding.container.currentItem)
+        val container = findViewById<ViewPager>(R.id.container)
+        val activeFrag = sectionsPagerAdapter.getFragmentByPosition(container.currentItem)
         if (!(activeFrag is BackFragmentListener && (activeFrag as BackFragmentListener).onBackPressed())) {
             super.onBackPressed()
         }
@@ -176,7 +179,8 @@ class XYODeviceActivity : XYOAppBaseActivity() {
 
     fun update() {
         runOnUiThread {
-            val frag = sectionsPagerAdapter.getFragmentByPosition(binding.container.currentItem)
+            val container = findViewById<ViewPager>(R.id.container)
+            val frag = sectionsPagerAdapter.getFragmentByPosition(container.currentItem)
             (frag as? InfoFragment)?.update()
         }
     }
