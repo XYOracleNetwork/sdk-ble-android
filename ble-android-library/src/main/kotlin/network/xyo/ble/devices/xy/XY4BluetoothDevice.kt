@@ -152,6 +152,7 @@ open class XY4BluetoothDevice(
     }
 
     override fun onConnectionStateChange(newState: Int) {
+        log.info("onConnectionStateChangeXY4: $id : $newState: ${listeners.size}")
         super.onConnectionStateChange(newState)
         enableButtonNotifyIfConnected()
     }

@@ -191,7 +191,7 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, val has
     }
 
     override fun onConnectionStateChange(newState: Int) {
-        //log.info("onConnectionStateChange: $id : $newState: $listeners.size")
+        log.info("onConnectionStateChangeX: $id : $newState: ${listeners.size}")
         synchronized(listeners) {
             for ((tag, listener) in listeners) {
                 GlobalScope.launch {

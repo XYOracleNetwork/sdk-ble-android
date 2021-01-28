@@ -77,11 +77,11 @@ open class XYBluetoothGattCallback : BluetoothGattCallback() {
 
     override fun onConnectionStateChange(gatt: BluetoothGatt?, status: Int, newState: Int) {
         super.onConnectionStateChange(gatt, status, newState)
-        log.info("onConnectionStateChange: ${gatt?.device?.address} $newState : $status")
+        log.info("onConnectionStateChangeXCallback: ${gatt?.device?.address} $newState : $status")
         synchronized(_lock) {
             for ((tag, listener) in gattListeners) {
                 GlobalScope.launch {
-                    log.info("onConnectionStateChange: $tag")
+                    log.info("onConnectionStateChangeXCallbackAsync: $tag")
                     listener.onConnectionStateChange(gatt, status, newState)
                 }
             }
