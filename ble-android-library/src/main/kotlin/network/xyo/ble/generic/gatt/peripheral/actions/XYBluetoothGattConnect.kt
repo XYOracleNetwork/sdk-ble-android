@@ -181,6 +181,7 @@ class XYBluetoothGattConnect(val device: BluetoothDevice) : XYBase() {
                 val listener = object : BluetoothGattCallback() {
                     override fun onConnectionStateChange(gatt: BluetoothGatt?, status: Int, newState: Int) {
                         super.onConnectionStateChange(gatt, status, newState)
+                        log.info("onConnectionStateChangeXGattConnect-Internal: $status : $newState")
                         this@XYBluetoothGattConnect.state = newState
                         this@XYBluetoothGattConnect.status = status
                         callback.removeListener(listenerName)
