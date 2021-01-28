@@ -48,6 +48,7 @@ open class XYBluetoothGatt protected constructor(
     protected val centralCallback = object : XYBluetoothGattCallback() {
         override fun onConnectionStateChange(gatt: BluetoothGatt?, status: Int, newState: Int) {
             super.onConnectionStateChange(gatt, status, newState)
+            this@XYBluetoothGatt.onConnectionStateChange(newState)
             if (newState == BluetoothGatt.STATE_DISCONNECTED) {
                 close()
             }
@@ -190,7 +191,7 @@ open class XYBluetoothGatt protected constructor(
                     super.onCharacteristicChanged(gatt, characteristic)
                     if (characteristicToWaitFor == characteristic?.uuid) {
                         centralCallback.removeListener(listenerName)
-                        cont.resume(XYBluetoothResult<Any?>(null, XYBluetoothResultErrorCode.None))
+                        cont.resume(XYBluetoothResult(null, XYBluetoothResultErrorCode.None))
                     }
                 }
 
@@ -198,7 +199,7 @@ open class XYBluetoothGatt protected constructor(
                     super.onConnectionStateChange(gatt, status, newState)
                     if (newState != BluetoothGatt.STATE_CONNECTED) {
                         centralCallback.removeListener(listenerName)
-                        cont.resume(XYBluetoothResult<Any?>(null, XYBluetoothResultErrorCode.Disconnected))
+                        cont.resume(XYBluetoothResult(null, XYBluetoothResultErrorCode.Disconnected))
                     }
                 }
             }

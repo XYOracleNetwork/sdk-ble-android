@@ -179,7 +179,7 @@ open class XY3BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
         fun addGlobalListener(key: String, listener: XY3BluetoothDeviceListener) {
             GlobalScope.launch {
                 synchronized(globalListeners) {
-                    globalListeners.put(key, listener)
+                    globalListeners[key] = listener
                 }
             }
         }

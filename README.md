@@ -1,5 +1,3 @@
-[logo]: https://cdn.xy.company/img/brand/XYO_full_colored.png
-
 [![logo]](https://xyo.network)
 
 # XYO Bluetooth SDK
@@ -52,11 +50,13 @@ allprojects {
 
 ```gradle
 dependencies {
-    implementation 'com.github.XYOracleNetwork:sdk-ble-android:3.0.1145'
+    implementation 'com.github.XYOracleNetwork:sdk-ble-android:3.0.1165'
 }
 ```
 
 ## Usage
+
+> As of version 3.0.1165, listeners have been renamed to streamline class names. Updates to examples below.
 
 A full Working example is included in the project. Look at the ble-android-sample folder for more information.
 
@@ -81,28 +81,35 @@ val scanner: XYFilteredSmartScan = XYFilteredSmartScanModern(MyApplication.getAp
 Add a listener for the XYFilteredSmartScan:
 
 ```kotlin
-scanner.addListener("myTAG", object : XYFilteredSmartScan.Listener() {
-    override fun entered(device: XYBluetoothDevice) {
-        super.entered(device)
-        checkMyDeviceTypeAddListener(device)
-    }
 
-    override fun exited(device: XYBluetoothDevice) {
-        super.exited(device)
-        doSomethingOnExit()
-    }
 
-    override fun detected(device: XYBluetoothDevice) {
-        super.detected(device)
-        doSomethingOnDetected()
-    }
 
-    override fun connectionStateChanged(device: XYBluetoothDevice, newState: Int) {
-        super.connectionStateChanged(device, newState)
-        doSomethingOnChanged()
-    }
+  scanner.addListener(
+    "myTAG",
+    object : XYFilteredSmartScanListener() {
 
-})
+        override fun entered(device: XYBluetoothDevice) {
+            super.entered(device)
+            checkMyDeviceTypeAddListener(device)
+        }
+    
+        override fun exited(device: XYBluetoothDevice) {
+            super.exited(device)
+            doSomethingOnExit()
+        }
+    
+        override fun detected(device: XYBluetoothDevice) {
+            super.detected(device)
+            doSomethingOnDetected()
+        }
+    
+        override fun connectionStateChanged(device: XYBluetoothDevice, newState: Int) {
+            super.connectionStateChanged(device, newState)
+            doSomethingOnChanged()
+        }
+
+},)
+
 ```
 
 Start scanning for BLE devices:
@@ -114,8 +121,10 @@ scanner.start()
 Once we know the device type, add a specific device type listener
 
 ```kotlin
+
 private fun checkMyDeviceTypeAddListener(device: XYBluetoothDevice) {
-    (device as? XY4BluetoothDevice)?.addListener("myTAG", object : XY4BluetoothDevice.Listener(){
+
+    (device as? XY4BluetoothDevice)?.addListener("myTAG", object : XY4BluetoothDeviceListener() {
         override fun buttonSinglePressed(device: XYFinderBluetoothDevice) {
             super.buttonSinglePressed(device)
             doSomethingOnSinglePressed()
@@ -152,18 +161,15 @@ private fun checkMyDeviceTypeAddListener(device: XYBluetoothDevice) {
         }
     })
 
-    (device as? XY3BluetoothDevice)?.addListener("myTAG", object : XY3BluetoothDevice.Listener(){
+    (device as? XY3BluetoothDevice)?.addListener("myTAG", object : XY3BluetoothDeviceListener(){
         //add your logic here
     })
-    (device as? XY2BluetoothDevice)?.addListener("myTAG", object : XY2BluetoothDevice.Listener(){
-    //add your logic here
-    })
-    (device as? XYIBeaconBluetoothDevice)?.addListener("myTAG", object : XYIBeaconBluetoothDevice.Listener(){
+
+    (device as? XY2BluetoothDevice)?.addListener("myTAG", object : XY2BluetoothDeviceListener(){
     //add your logic here
     })
 
-    //or create a custom listener for a custom BLE device
-    (device as? MyCustomBluetoothDevice)?.addListener("myTAG", object : MyCustomBluetoothDevice.Listener(){
+    (device as? XYIBeaconBluetoothDevice)?.addListener("myTAG", object : XYIBeaconBluetoothDeviceListener(){
     //add your logic here
     })
 
@@ -199,7 +205,7 @@ myAwesomeReadCharacteristic.addResponder("myResponder", object : XYBluetoothRead
     override fun onReadRequest(device: BluetoothDevice?): ByteArray? {
         return "Carter is cool".toByteArray()
     }
-})
+},)
 
 myAwesomeWriteCharacteristic.addResponder("myResponder", object : XYBluetoothWriteCharacteristic.XYBluetoothWriteCharacteristicResponder {
     override fun onWriteRequest(value: ByteArray, device: BluetoothDevice?): Boolean? {
@@ -208,7 +214,7 @@ myAwesomeWriteCharacteristic.addResponder("myResponder", object : XYBluetoothWri
         }
         return false
     }
-})
+},)
 
 val myAwesomeService = XYBluetoothService(UUID.fromString("3079ca44-ae64-4797-b4e5-a31e3304c481"), BluetoothGattService.SERVICE_TYPE_PRIMARY)
 myAwesomeService.addCharacteristic(myAwesomeReadCharacteristic)
@@ -222,9 +228,6 @@ server.startServer()
 Basic await server use
 
 ```kotlin
-val myAwesomeReadCharacteristic = XYBluetoothReadCharacteristic(UUID.fromString("01ef8f90-e99f-48ae-87bb-f683b93c692f"))
-val myAwesomeWriteCharacteristic = XYBluetoothWriteCharacteristic(UUID.fromString("01ef8f90-e99f-48ae-87bb-f683b93c692f"))
-
 val myAwesomeService = XYBluetoothService(UUID.fromString("3079ca44-ae64-4797-b4e5-a31e3304c481"), BluetoothGattService.SERVICE_TYPE_PRIMARY)
 myAwesomeService.addCharacteristic(myAwesomeReadCharacteristic)
 myAwesomeService.addCharacteristic(myAwesomeWriteCharacteristic)
@@ -232,15 +235,7 @@ myAwesomeService.addCharacteristic(myAwesomeWriteCharacteristic)
 val server = XYBluetoothGattServer(applicationContext)
 server.addService(myAwesomeService).await()
 server.startServer()
-
-/**
- * Will send "0x1337" on next read
- */
-myAwesomeReadCharacteristic.waitForReadRequest(byteArrayOf(0x13, 0x37), null).await()
-val writeValue = myAwesomeWriteCharacteristic.waitForWriteRequest(null).await()
 ```
-
-IMPORTANT:
 
 ```kotlin
 //make sure you stop the scanner when no longer needed
@@ -260,3 +255,6 @@ See the [LICENSE.md](LICENSE) file for license details.
 ## Credits
 
 Made with 🔥and ❄️ by [XYO](https://www.xyo.network)
+
+[logo]: https://cdn.xy.company/img/brand/XYO_full_colored.png
+

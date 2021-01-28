@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import kotlinx.android.synthetic.main.fragment_current_time.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import network.xyo.ble.devices.xy.XY2BluetoothDevice
@@ -14,20 +13,19 @@ import network.xyo.ble.generic.devices.XYBluetoothDevice
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResult
 import network.xyo.ble.sample.R
 import network.xyo.ble.sample.XYDeviceData
+import network.xyo.ble.sample.databinding.FragmentCurrentTimeBinding
 
 @kotlin.ExperimentalUnsignedTypes
-class CurrentTimeFragment : XYDeviceFragment() {
+class CurrentTimeFragment : XYDeviceFragment<FragmentCurrentTimeBinding>() {
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-
-        return inflater.inflate(R.layout.fragment_current_time, container, false)
+    override fun inflate(inflater: LayoutInflater, container: ViewGroup?): FragmentCurrentTimeBinding {
+        return FragmentCurrentTimeBinding.inflate(inflater, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        button_time_refresh.setOnClickListener {
+        binding.buttonTimeRefresh.setOnClickListener {
             setTimeValues()
         }
     }
@@ -45,9 +43,9 @@ class CurrentTimeFragment : XYDeviceFragment() {
 
     private fun updateUI() {
         activity?.runOnUiThread {
-            text_currentTime?.text = deviceData?.currentTime
-            text_localTimeInformation?.text = deviceData?.localTimeInformation
-            text_referenceTimeInformation?.text = deviceData?.referenceTimeInformation
+            binding.textCurrentTime.text = deviceData?.currentTime
+            binding.textLocalTimeInformation.text = deviceData?.localTimeInformation
+            binding.textReferenceTimeInformation.text = deviceData?.referenceTimeInformation
         }
     }
 
@@ -62,10 +60,10 @@ class CurrentTimeFragment : XYDeviceFragment() {
                 x3?.let { getXY3Values(it) }
             }
             is XY2BluetoothDevice -> {
-                text_currentTime.text = getString(R.string.not_supported_x2)
+                binding.textCurrentTime.text = getString(R.string.not_supported_x2)
             }
             else -> {
-                text_currentTime.text = getString(R.string.unknown_device)
+                binding.textCurrentTime.text = getString(R.string.unknown_device)
             }
         }
     }

@@ -8,28 +8,26 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.android.synthetic.main.fragment_service.view.*
 import network.xyo.ble.sample.R
 import network.xyo.ble.sample.adapters.XYCharacteristicAdapter
+import network.xyo.ble.sample.databinding.FragmentServiceBinding
 
 @ExperimentalUnsignedTypes
-class ServiceFragment : Fragment() {
+class ServiceFragment : XYAppBaseFragment<FragmentServiceBinding>() {
     private var service: BluetoothGattService? = null
 
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_service, container, false)
+    override fun inflate(inflater: LayoutInflater, container: ViewGroup?): FragmentServiceBinding {
+        return FragmentServiceBinding.inflate(inflater, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        view.service_uuid_title.text = service?.uuid.toString()
-        view.service_type.text = getServiceType()
+        binding.serviceUuidTitle.text = service?.uuid.toString()
+        binding.serviceType.text = getServiceType()
 
-        val recyclerView = view.characteristic_list
+        val recyclerView = binding.characteristicList
         val characteristicList = XYCharacteristicAdapter(service?.characteristics?.toTypedArray()
                 ?: arrayOf())
         val manager = LinearLayoutManager(activity?.applicationContext, RecyclerView.VERTICAL, false)

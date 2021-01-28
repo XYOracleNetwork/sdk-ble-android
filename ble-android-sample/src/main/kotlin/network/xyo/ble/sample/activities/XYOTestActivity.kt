@@ -8,7 +8,6 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
-import kotlinx.android.synthetic.main.fragment_peripheral.*
 import network.xyo.ble.sample.R
 import network.xyo.ble.sample.fragments.BeepTestFragment
 
@@ -19,20 +18,25 @@ class XYOTestActivity : XYOAppBaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_test)
+        val layout = layoutInflater.inflate(R.layout.activity_test, null)
+        setContentView(layout)
+    }
 
+    override fun onPostCreate(savedInstanceState: Bundle?) {
+        super.onPostCreate(savedInstanceState)
+
+        val serverTabs = findViewById<TabLayout>(R.id.server_tabs)
+        val testPagerContainer = findViewById<ViewPager>(R.id.test_pager_container)
 
         val tabAdapter = SectionsPagerAdapter(supportFragmentManager)
         pagerAdapter = tabAdapter
-        val serverPagerContainer = findViewById<ViewPager>(R.id.test_pager_container)
-        serverPagerContainer.adapter = pagerAdapter
-        serverPagerContainer.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(server_tabs))
-        serverPagerContainer.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(server_tabs) as ViewPager.OnPageChangeListener)
-        server_tabs.addOnTabSelectedListener(TabLayout.ViewPagerOnTabSelectedListener(server_pager_container))
+        testPagerContainer.adapter = pagerAdapter
+        testPagerContainer.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(serverTabs))
+        testPagerContainer.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(serverTabs) as ViewPager.OnPageChangeListener)
+        serverTabs.addOnTabSelectedListener(TabLayout.ViewPagerOnTabSelectedListener(testPagerContainer))
     }
 
-
-    inner class SectionsPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
+    class SectionsPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
         private val size = 1
         private val fragments: SparseArray<Fragment> = SparseArray(size)
 

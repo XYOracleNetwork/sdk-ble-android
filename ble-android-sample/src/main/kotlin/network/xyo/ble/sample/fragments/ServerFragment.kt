@@ -14,7 +14,6 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
-import kotlinx.android.synthetic.main.fragment_peripheral.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
@@ -22,13 +21,13 @@ import network.xyo.ble.generic.bluetooth.BluetoothIntentReceiver
 import network.xyo.ble.generic.gatt.server.*
 import network.xyo.ble.generic.gatt.server.responders.XYBluetoothReadResponder
 import network.xyo.ble.generic.gatt.server.responders.XYBluetoothWriteResponder
-import network.xyo.ble.sample.R
+import network.xyo.ble.sample.databinding.FragmentPeripheralBinding
 import java.nio.ByteBuffer
 import java.nio.charset.Charset
 import java.util.UUID
 
 @kotlin.ExperimentalUnsignedTypes
-class ServerFragment : Fragment() {
+class ServerFragment : XYAppBaseFragment<FragmentPeripheralBinding>() {
     private var bleServer : XYBluetoothGattServer? = null
     var bleAdvertiser : XYBluetoothAdvertiser? = null
     private val bluetoothIntentReceiver = BluetoothIntentReceiver()
@@ -53,10 +52,8 @@ class ServerFragment : Fragment() {
 
     val services = arrayOf<BluetoothGattService>(simpleService)
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-
-        return inflater.inflate(R.layout.fragment_peripheral, container, false)
+    override fun inflate(inflater: LayoutInflater, container: ViewGroup?): FragmentPeripheralBinding {
+        return FragmentPeripheralBinding.inflate(inflater, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -64,10 +61,10 @@ class ServerFragment : Fragment() {
 
         val tabAdapter = SectionsPagerAdapter(this.childFragmentManager)
         pagerAdapter = tabAdapter
-        server_pager_container.adapter = pagerAdapter
-        server_pager_container.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(server_tabs))
-        server_pager_container.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(server_tabs) as ViewPager.OnPageChangeListener)
-        server_tabs.addOnTabSelectedListener(TabLayout.ViewPagerOnTabSelectedListener(server_pager_container))
+        binding.serverPagerContainer.adapter = pagerAdapter
+        binding.serverPagerContainer.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(binding.serverTabs))
+        binding.serverPagerContainer.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(binding.serverTabs) as ViewPager.OnPageChangeListener)
+        binding.serverTabs.addOnTabSelectedListener(TabLayout.ViewPagerOnTabSelectedListener(binding.serverPagerContainer))
         bleAdvertiser = XYBluetoothAdvertiser(context!!.applicationContext)
 
         activity!!.registerReceiver(bluetoothIntentReceiver, BluetoothIntentReceiver.bluetoothDeviceIntentFilter)
@@ -102,7 +99,7 @@ class ServerFragment : Fragment() {
      * A simple write characteristic that logs whenever it is written to.
      */
     private val logResponder = object : XYBluetoothWriteResponder {
-        override fun onWriteRequest(writeRequestValue: ByteArray?, device: BluetoothDevice?): Boolean? {
+        override fun onWriteRequest(writeRequestValue: ByteArray?, device: BluetoothDevice?): Boolean {
             Log.v("BluetoothGattServer", writeRequestValue?.toString(Charset.defaultCharset())!!)
             return true
         }
@@ -114,7 +111,7 @@ class ServerFragment : Fragment() {
     private val countResponder = object : XYBluetoothReadResponder {
         var count = 0
 
-        override fun onReadRequest(device: BluetoothDevice?, offset: Int): XYBluetoothGattServer.XYReadRequest? {
+        override fun onReadRequest(device: BluetoothDevice?, offset: Int): XYBluetoothGattServer.XYReadRequest {
             count++
             return XYBluetoothGattServer.XYReadRequest( ByteBuffer.allocate(4).putInt(count).array(), 0)
         }

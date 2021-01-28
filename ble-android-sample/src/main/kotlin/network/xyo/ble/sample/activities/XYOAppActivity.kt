@@ -1,5 +1,6 @@
 package network.xyo.ble.sample.activities
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.SparseArray
 import android.view.ViewGroup
@@ -10,9 +11,9 @@ import androidx.fragment.app.FragmentPagerAdapter
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
 import network.xyo.ble.sample.R
-import kotlinx.android.synthetic.main.activity_app.*
 import network.xyo.base.XYBase
 import network.xyo.ble.sample.adapters.XYDeviceAdapter
+import network.xyo.ble.sample.databinding.ActivityAppBinding
 import network.xyo.ble.sample.fragments.CentralFragment
 import network.xyo.ble.sample.fragments.ServerFragment
 
@@ -24,21 +25,26 @@ class XYOAppActivity : XYOAppBaseActivity() {
     private var deviceAdapter: BaseAdapter? = null
     private val log = XYBase.log("XYOAppActivity")
 
+    private lateinit var binding: ActivityAppBinding
+
+    @SuppressLint("InflateParams")
     override fun onCreate(savedInstanceState: Bundle?) {
         log.info("onCreate")
         deviceAdapter = XYDeviceAdapter(this)
 
         super.onCreate(savedInstanceState)
 
-        setContentView(R.layout.activity_app)
+        binding = ActivityAppBinding.inflate(layoutInflater)
+
+        setContentView(binding.root)
 
         val tabAdapter = SectionsPagerAdapter(supportFragmentManager)
         pagerAdapter = tabAdapter
         val pagerContainer = findViewById<ViewPager>(R.id.server_pager_container)
         pagerContainer.adapter = pagerAdapter
-        pagerContainer.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(server_tabs))
-        pagerContainer.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(server_tabs) as ViewPager.OnPageChangeListener)
-        server_tabs.addOnTabSelectedListener(TabLayout.ViewPagerOnTabSelectedListener(server_pager_container))
+        pagerContainer.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(binding.serverTabs))
+        pagerContainer.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(binding.serverTabs) as ViewPager.OnPageChangeListener)
+        binding.serverTabs.addOnTabSelectedListener(TabLayout.ViewPagerOnTabSelectedListener(binding.serverPagerContainer))
     }
 
     inner class SectionsPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {

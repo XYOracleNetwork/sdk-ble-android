@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import kotlinx.android.synthetic.main.fragment_generic_attribute.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import network.xyo.ble.devices.xy.XY2BluetoothDevice
@@ -14,20 +13,19 @@ import network.xyo.ble.generic.devices.XYBluetoothDevice
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResult
 import network.xyo.ble.sample.R
 import network.xyo.ble.sample.XYDeviceData
+import network.xyo.ble.sample.databinding.FragmentGenericAttributeBinding
 
 @kotlin.ExperimentalUnsignedTypes
-class GenericAttributeFragment : XYDeviceFragment() {
+class GenericAttributeFragment : XYDeviceFragment<FragmentGenericAttributeBinding>() {
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-
-        return inflater.inflate(R.layout.fragment_generic_attribute, container, false)
+    override fun inflate(inflater: LayoutInflater, container: ViewGroup?): FragmentGenericAttributeBinding {
+        return FragmentGenericAttributeBinding.inflate(inflater, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        button_gatt_refresh.setOnClickListener {
+        binding.buttonGattRefresh.setOnClickListener {
             setGattValues()
         }
     }
@@ -44,7 +42,7 @@ class GenericAttributeFragment : XYDeviceFragment() {
 
     private fun updateUI() {
         activity?.runOnUiThread {
-            text_service_changed?.text = deviceData?.serviceChanged
+            binding.textServiceChanged.text = deviceData?.serviceChanged
         }
     }
 
@@ -70,7 +68,7 @@ class GenericAttributeFragment : XYDeviceFragment() {
                 }
             }
             else -> {
-                text_service_changed.text = getString(R.string.unknown_device)
+                binding.textServiceChanged.text = getString(R.string.unknown_device)
             }
 
         }

@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.android.synthetic.main.fragment_services.view.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import network.xyo.ble.generic.devices.XYBluetoothDevice
@@ -16,19 +15,20 @@ import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResult
 import network.xyo.ble.sample.R
 import network.xyo.ble.sample.XYDeviceData
 import network.xyo.ble.sample.adapters.XYServiceListAdapter
+import network.xyo.ble.sample.databinding.FragmentServicesBinding
 
 @kotlin.ExperimentalUnsignedTypes
-class DeviceServicesFragment : XYDeviceFragment() {
+class DeviceServicesFragment : XYDeviceFragment<FragmentServicesBinding>() {
     private val serviceList = XYServiceListAdapter(arrayOf())
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_services, container, false)
+    override fun inflate(inflater: LayoutInflater, container: ViewGroup?): FragmentServicesBinding {
+        return FragmentServicesBinding.inflate(inflater, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val recyclerView = view.service_list
+        val recyclerView = binding.serviceList
 
         val manager = LinearLayoutManager(activity?.applicationContext, RecyclerView.VERTICAL, false)
         manager.reverseLayout = true

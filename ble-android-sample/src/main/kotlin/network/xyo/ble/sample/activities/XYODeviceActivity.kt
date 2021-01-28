@@ -3,17 +3,19 @@ package network.xyo.ble.sample.activities
 import android.content.Intent
 import android.os.Bundle
 import android.util.SparseArray
+import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
+import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
-import kotlinx.android.synthetic.main.activity_device.*
 import network.xyo.base.XYBase
 import network.xyo.ble.devices.xy.*
 import network.xyo.ble.generic.devices.XYBluetoothDevice
 import network.xyo.ble.sample.R
 import network.xyo.ble.sample.XYDeviceData
+import network.xyo.ble.sample.databinding.ActivityDeviceBinding
 import network.xyo.ble.sample.fragments.*
 import network.xyo.ble.sample.fragments.core.BackFragmentListener
 
@@ -28,7 +30,6 @@ class XYODeviceActivity : XYOAppBaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         val deviceHash = intent.getStringExtra(EXTRA_DEVICE_HASH)!!
         log.info("onCreate: $deviceHash")
         device = scanner.devices[deviceHash]
@@ -41,6 +42,9 @@ class XYODeviceActivity : XYOAppBaseActivity() {
         data = XYDeviceData()
 
         sectionsPagerAdapter = SectionsPagerAdapter(supportFragmentManager)
+
+        val container = findViewById<ViewPager>(R.id.container)
+        val tabs = findViewById<TabLayout>(R.id.tabs)
 
         container.adapter = sectionsPagerAdapter
 
@@ -166,6 +170,7 @@ class XYODeviceActivity : XYOAppBaseActivity() {
     }
 
     override fun onBackPressed() {
+        val container = findViewById<ViewPager>(R.id.container)
         val activeFrag = sectionsPagerAdapter.getFragmentByPosition(container.currentItem)
         if (!(activeFrag is BackFragmentListener && (activeFrag as BackFragmentListener).onBackPressed())) {
             super.onBackPressed()
@@ -174,6 +179,7 @@ class XYODeviceActivity : XYOAppBaseActivity() {
 
     fun update() {
         runOnUiThread {
+            val container = findViewById<ViewPager>(R.id.container)
             val frag = sectionsPagerAdapter.getFragmentByPosition(container.currentItem)
             (frag as? InfoFragment)?.update()
         }

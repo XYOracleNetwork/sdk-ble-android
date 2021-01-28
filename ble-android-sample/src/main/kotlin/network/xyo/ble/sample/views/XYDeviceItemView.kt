@@ -3,9 +3,9 @@ package network.xyo.ble.sample.views
 import android.content.Context
 import android.content.Intent
 import android.util.AttributeSet
+import android.view.LayoutInflater
 import android.view.View
 import android.widget.RelativeLayout
-import kotlinx.android.synthetic.main.device_item.view.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -15,12 +15,14 @@ import network.xyo.ble.sample.R
 import network.xyo.ble.sample.activities.XYODeviceActivity
 import network.xyo.base.XYBase
 import network.xyo.ble.devices.xy.XYFinderBluetoothDeviceListener
+import network.xyo.ble.sample.databinding.DeviceItemBinding
 
 @kotlin.ExperimentalStdlibApi
 @kotlin.ExperimentalUnsignedTypes
-class XYDeviceItemView(context: Context, attrs: AttributeSet) : RelativeLayout(context, attrs) {
+class XYDeviceItemView(context: Context) : RelativeLayout(context) {
 
     private var device: XYBluetoothDevice? = null
+    private var binding: DeviceItemBinding
 
     init {
         setOnClickListener {
@@ -29,40 +31,42 @@ class XYDeviceItemView(context: Context, attrs: AttributeSet) : RelativeLayout(c
                 openDevice(device)
             }
         }
+        binding = DeviceItemBinding.inflate(LayoutInflater.from(context), this, true)
     }
 
     private fun openDevice(device: XYBluetoothDevice) {
         val intent = Intent(context, XYODeviceActivity::class.java)
         intent.putExtra(XYODeviceActivity.EXTRA_DEVICE_HASH, device.hash)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
         context.startActivity(intent)
     }
 
     fun update() {
         post {
-            text_family.text = device?.javaClass?.simpleName
-            text_name.text = device?.name
-            text_connected.text = (device?.connected == true).toString()
-            text_address.text = device?.address
-            text_rssi.text = device?.rssi.toString()
+            binding.textFamily.text = device?.javaClass?.simpleName
+            binding.textName.text = device?.name
+            binding.textConnected.text = (device?.connected == true).toString()
+            binding.textAddress.text = device?.address
+            binding.textRssi.text = device?.rssi.toString()
 
             val ibeacon = device as? XYIBeaconBluetoothDevice
             if (ibeacon != null) {
-                text_major.text = String.format(context.getString(R.string.hex_placeholder), ibeacon.major.toInt().toString(16))
-                text_minor.text = String.format(context.getString(R.string.hex_placeholder), ibeacon.minor.toInt().toString(16))
-                text_uuid.text = ibeacon.uuid.toString()
-                text_major.visibility = View.VISIBLE
-                text_minor.visibility = View.VISIBLE
-                majorLabel.visibility = View.VISIBLE
-                minorLabel.visibility = View.VISIBLE
+                binding.textMajor.text = String.format(context.getString(R.string.hex_placeholder), ibeacon.major.toInt().toString(16))
+                binding.textMinor.text = String.format(context.getString(R.string.hex_placeholder), ibeacon.minor.toInt().toString(16))
+                binding.textUuid.text = ibeacon.uuid.toString()
+                binding.textMajor.visibility = View.VISIBLE
+                binding.textMinor.visibility = View.VISIBLE
+                binding.majorLabel.visibility = View.VISIBLE
+                binding.minorLabel.visibility = View.VISIBLE
             } else {
-                text_uuid.text = "N/A"
-                text_major.visibility = View.GONE
-                text_minor.visibility = View.GONE
-                majorLabel.visibility = View.GONE
-                minorLabel.visibility = View.GONE
+                binding.textUuid.text = "N/A"
+                binding.textMajor.visibility = View.GONE
+                binding.textMinor.visibility = View.GONE
+                binding.majorLabel.visibility = View.GONE
+                binding.minorLabel.visibility = View.GONE
             }
 
-            text_pulses.text = device!!.detectCount.toString()
+            binding.textPulses.text = device!!.detectCount.toString()
         }
     }
 
