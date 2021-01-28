@@ -48,7 +48,7 @@ open class XYBluetoothGatt protected constructor(
     protected val centralCallback = object : XYBluetoothGattCallback() {
         override fun onConnectionStateChange(gatt: BluetoothGatt?, status: Int, newState: Int) {
             super.onConnectionStateChange(gatt, status, newState)
-            this@XYBluetoothGatt.onConnectionStateChange(newState)
+            log.info("onConnectionStateChangeXCentral: $status : $newState")
             if (newState == BluetoothGatt.STATE_DISCONNECTED) {
                 close()
             }
@@ -152,7 +152,8 @@ open class XYBluetoothGatt protected constructor(
     open fun onDetect(scanResult: XYScanResult?) {
     }
 
-    internal open fun onConnectionStateChange(newState: Int) {
+    open fun onConnectionStateChange(newState: Int) {
+        log.info("onConnectionStateChangeXGatt: $newState")
     }
 
     suspend fun requestMtu(mtu: Int): XYBluetoothResult<Int> = GlobalScope.async {
@@ -239,6 +240,13 @@ open class XYBluetoothGatt protected constructor(
         lastAccessTime = now
         if (connection == null) {
             connection = XYBluetoothGattConnect(device)
+            connection.callback.addListener("Gatt", object : BluetoothGattCallback() {
+                override fun onConnectionStateChange(gatt: BluetoothGatt?, status: Int, newState: Int) {
+                    super.onConnectionStateChange(gatt, status, newState)
+                    log.info("onConnectionStateChangeXInnerConnect: $status : $newState")
+                    this@XYBluetoothGatt.onConnectionStateChange(newState)
+                }
+            })
         }
         val connectionResult = connection.start(context, transport)
         if (connectionResult.error != XYBluetoothResultErrorCode.None) {
