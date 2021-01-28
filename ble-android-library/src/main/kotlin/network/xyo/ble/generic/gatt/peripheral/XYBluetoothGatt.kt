@@ -44,6 +44,7 @@ open class XYBluetoothGatt protected constructor(
 ) : XYBluetoothBase(context) {
 
     open val bluetoothQueue = Executors.newSingleThreadExecutor().asCoroutineDispatcher()
+    protected var state = BluetoothGatt.STATE_DISCONNECTED
 
     protected val centralCallback = object : XYBluetoothGattCallback() {
         override fun onConnectionStateChange(gatt: BluetoothGatt?, status: Int, newState: Int) {
@@ -154,6 +155,7 @@ open class XYBluetoothGatt protected constructor(
 
     open fun onConnectionStateChange(newState: Int) {
         log.info("onConnectionStateChangeXGatt: $newState")
+        state = newState
     }
 
     suspend fun requestMtu(mtu: Int): XYBluetoothResult<Int> = GlobalScope.async {
@@ -198,6 +200,7 @@ open class XYBluetoothGatt protected constructor(
 
                 override fun onConnectionStateChange(gatt: BluetoothGatt?, status: Int, newState: Int) {
                     super.onConnectionStateChange(gatt, status, newState)
+                    state = newState
                     if (newState != BluetoothGatt.STATE_CONNECTED) {
                         centralCallback.removeListener(listenerName)
                         cont.resume(XYBluetoothResult(null, XYBluetoothResultErrorCode.Disconnected))
@@ -243,6 +246,7 @@ open class XYBluetoothGatt protected constructor(
             connection.callback.addListener("Gatt", object : BluetoothGattCallback() {
                 override fun onConnectionStateChange(gatt: BluetoothGatt?, status: Int, newState: Int) {
                     super.onConnectionStateChange(gatt, status, newState)
+                    state = newState
                     log.info("onConnectionStateChangeXInnerConnect: $status : $newState")
                     this@XYBluetoothGatt.onConnectionStateChange(newState)
                 }
