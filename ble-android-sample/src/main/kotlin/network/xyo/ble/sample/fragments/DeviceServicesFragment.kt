@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import network.xyo.ble.generic.devices.XYBluetoothDevice
-import network.xyo.ble.generic.devices.XYBluetoothDeviceListener
+import network.xyo.ble.generic.listeners.XYBluetoothDeviceListener
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResult
 import network.xyo.ble.sample.R
 import network.xyo.ble.sample.XYDeviceData
@@ -74,12 +74,12 @@ class DeviceServicesFragment : XYDeviceFragment<FragmentServicesBinding>() {
 
     override fun onPause() {
         super.onPause()
-        device?.removeListener("services")
+        device?.reporter?.removeListener("services")
     }
 
     override fun onResume() {
         super.onResume()
-        device?.addListener("services", object: XYBluetoothDeviceListener() {
+        device?.reporter?.addListener("services", object: XYBluetoothDeviceListener() {
             override fun connectionStateChanged(device: XYBluetoothDevice, newState: Int) {
                 super.connectionStateChanged(device, newState)
                 GlobalScope.launch {

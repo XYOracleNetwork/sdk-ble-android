@@ -71,7 +71,7 @@ class CentralFragment : XYDeviceFragment<FragmentCentralBinding>() {
     }
 
     private fun connectListeners() {
-        XY4BluetoothDevice.addGlobalListener(tag!!, object : XY4BluetoothDeviceListener() {
+        XY4BluetoothDevice.globalReporter.addListener(tag!!, object : XY4BluetoothDeviceListener() {
             override fun buttonSinglePressed(device: XYFinderBluetoothDevice) {
                 super.buttonSinglePressed(device)
                 log.info("XY4 Button Single Pressed: ${device.address}")
@@ -88,7 +88,7 @@ class CentralFragment : XYDeviceFragment<FragmentCentralBinding>() {
                 log.info("XY4 Button Long Pressed")
             }
         })
-        XY3BluetoothDevice.addGlobalListener(tag!!, object : XY3BluetoothDeviceListener() {
+        XY3BluetoothDevice.globalReporter.addListener(tag!!, object : XY3BluetoothDeviceListener() {
             override fun buttonSinglePressed(device: XYFinderBluetoothDevice) {
                 super.buttonSinglePressed(device)
                 log.info("XY3 Button Single Pressed: ${device.address}")
@@ -125,7 +125,7 @@ class CentralFragment : XYDeviceFragment<FragmentCentralBinding>() {
     }
 
     private fun disconnectListeners() {
-        XY4BluetoothDevice.removeGlobalListener(tag!!)
+        XY4BluetoothDevice.globalReporter.removeListener(tag!!)
     }
 
     override fun onResume() {

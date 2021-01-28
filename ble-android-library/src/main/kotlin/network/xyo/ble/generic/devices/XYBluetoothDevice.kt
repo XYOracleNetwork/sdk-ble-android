@@ -17,20 +17,8 @@ import network.xyo.ble.generic.gatt.peripheral.XYBluetoothGattClient
 import network.xyo.ble.generic.scanner.XYScanRecord
 import network.xyo.ble.generic.scanner.XYScanResult
 import androidx.annotation.WorkerThread
-
-open class XYBluetoothDeviceListener {
-    @WorkerThread
-    open fun entered(device: XYBluetoothDevice) {}
-
-    @WorkerThread
-    open fun exited(device: XYBluetoothDevice) {}
-
-    @WorkerThread
-    open fun detected(device: XYBluetoothDevice) {}
-
-    @WorkerThread
-    open fun connectionStateChanged(device: XYBluetoothDevice, newState: Int) {}
-}
+import network.xyo.ble.generic.listeners.XYBluetoothDeviceListener
+import network.xyo.ble.generic.reporters.XYBluetoothDeviceReporter
 
 open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, val hash: String, transport: Int? = null) : XYBluetoothGattClient(context, device, false, null, transport, null, null), Comparable<XYBluetoothDevice> {
 
@@ -39,7 +27,7 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, val has
     // hash that is passed in to create the class is used to make sure that the reuse of existing instances
     // is done based on device specific logic on "sameness"
 
-    protected val listeners = HashMap<String, XYBluetoothDeviceListener>()
+    open val reporter = XYBluetoothDeviceReporter<XYBluetoothDevice, XYBluetoothDeviceListener>()
     open val ads = SparseArray<XYBleAd>()
 
     open var detectCount = 0
@@ -145,13 +133,7 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, val has
         // log.info("onEnter: $address")
         enterCount++
         enterTime = now
-        synchronized(listeners) {
-            for ((_, listener) in listeners) {
-                GlobalScope.launch {
-                    listener.entered(this@XYBluetoothDevice)
-                }
-            }
-        }
+        reporter.enter(this)
         checkForExit()
     }
 
@@ -159,13 +141,7 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, val has
         // log.info("onExit: $address")
         exitCount++
         enterTime = 0
-        synchronized(listeners) {
-            for ((_, listener) in listeners) {
-                GlobalScope.launch {
-                    listener.exited(this@XYBluetoothDevice)
-                }
-            }
-        }
+        reporter.exit(this)
         if (!closed) {
             close()
         }
@@ -181,28 +157,11 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, val has
         averageDetectGap = ((lastAdTime ?: now) - (enterTime ?: now)) / detectCount
         lastAdTime = now
 
-        synchronized(listeners) {
-            for ((_, listener) in listeners) {
-                GlobalScope.launch {
-                    listener.detected(this@XYBluetoothDevice)
-                }
-            }
-        }
+        reporter.detected(this)
     }
 
     override fun onConnectionStateChange(newState: Int) {
-        log.info("onConnectionStateChangeXBluetoothDevice: $id : $newState: ${listeners.size}")
-        synchronized(listeners) {
-            for ((tag, listener) in listeners) {
-                GlobalScope.launch {
-                    log.info("connectionStateChanged: $tag : $newState")
-                    listener.connectionStateChanged(this@XYBluetoothDevice, newState)
-                    if (newState == BluetoothGatt.STATE_CONNECTED) {
-                        lastAccessTime = now
-                    }
-                }
-            }
-        }
+        reporter.connectionStateChanged(this, newState)
         // if a connection drop means we should mark it as out of range, then lets do it!
         if (exitAfterDisconnect) {
             GlobalScope.launch {
@@ -220,22 +179,14 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, val has
         }
     }
 
+    @Deprecated("Deprecated", ReplaceWith("reporter.addListener(key, listener)"))
     fun addListener(key: String, listener: XYBluetoothDeviceListener) {
-        // log.info("addListener:$key:$listener")
-        GlobalScope.launch {
-            synchronized(listeners) {
-                listeners[key] = listener
-            }
-        }
+        reporter.addListener(key, listener)
     }
 
+    @Deprecated("Deprecated", ReplaceWith("reporter.removeListener(key)"))
     fun removeListener(key: String) {
-        // log.info("removeListener:$key")
-        GlobalScope.launch {
-            synchronized(listeners) {
-                listeners.remove(key)
-            }
-        }
+        reporter.removeListener(key)
     }
 
     internal fun updateAds(record: XYScanRecord) {

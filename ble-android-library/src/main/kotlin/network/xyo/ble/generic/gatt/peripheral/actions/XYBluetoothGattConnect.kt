@@ -31,7 +31,6 @@ class XYBluetoothGattConnect(val device: BluetoothDevice) : XYBase() {
     var callback = object : XYBluetoothGattCallback() {
         override fun onConnectionStateChange(gatt: BluetoothGatt?, status: Int, newState: Int) {
             super.onConnectionStateChange(gatt, status, newState)
-            log.info("onConnectionStateChangeXGattConnect: $status : $newState")
             this@XYBluetoothGattConnect.state = newState
             this@XYBluetoothGattConnect.status = status
         }
@@ -181,7 +180,6 @@ class XYBluetoothGattConnect(val device: BluetoothDevice) : XYBase() {
                 val listener = object : BluetoothGattCallback() {
                     override fun onConnectionStateChange(gatt: BluetoothGatt?, status: Int, newState: Int) {
                         super.onConnectionStateChange(gatt, status, newState)
-                        log.info("onConnectionStateChangeXGattConnect-Internal: $status : $newState")
                         this@XYBluetoothGattConnect.state = newState
                         this@XYBluetoothGattConnect.status = status
                         callback.removeListener(listenerName)
@@ -254,9 +252,13 @@ class XYBluetoothGattConnect(val device: BluetoothDevice) : XYBase() {
         return@async XYBluetoothResult(value, error)
     }.await()
 
+    suspend fun disconnect() = withContext(Dispatchers.Default) {
+        gatt?.disconnect()
+    }
+
     suspend fun close() = withContext(Dispatchers.Default) {
         log.info("disconnect:close")
-        gatt?.disconnect()
+        disconnect()
         gatt?.close()
         gatt = null
     }
