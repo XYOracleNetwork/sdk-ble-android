@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<network.xyo.ble.sample.views.XYBLEStatsView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:theme="@style/Theme.AppCompat.DayNight">
@@ -152,4 +152,4 @@
                 android:layout_height="wrap_content" />
         </LinearLayout>
     </LinearLayout>
-</network.xyo.ble.sample.views.XYBLEStatsView>
+</LinearLayout>

@@ -13,7 +13,7 @@ class XYStaticReadResponder(var value: ByteArray, val listener: XYStaticReadResp
     constructor(int: Int, listener: XYStaticReadResponderListener?) : this(ByteBuffer.allocate(4).putInt(int).array(), listener)
     constructor(byte: Byte, listener: XYStaticReadResponderListener?) : this(byteArrayOf(byte), listener)
 
-    override fun onReadRequest(device: BluetoothDevice?, offset: Int): XYBluetoothGattServer.XYReadRequest? {
+    override fun onReadRequest(device: BluetoothDevice?, offset: Int): XYBluetoothGattServer.XYReadRequest {
         // todo connection MTU
         val size = min((value.size - offset), 26)
         val response = ByteArray(size)
