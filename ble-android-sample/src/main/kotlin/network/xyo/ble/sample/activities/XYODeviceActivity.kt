@@ -82,7 +82,6 @@ class XYODeviceActivity : XYOAppBaseActivity() {
         }
 
         override fun connectionStateChanged(device: XYBluetoothDevice, newState: Int) {
-            log.info("connectionStateChangedX-DeviceActivity: $newState")
             update()
             if (newState == 2) {
                 log.info("Connected")
@@ -120,7 +119,6 @@ class XYODeviceActivity : XYOAppBaseActivity() {
         }
 
         override fun connectionStateChanged(device: XYBluetoothDevice, newState: Int) {
-            log.info("connectionStateChangedX-DeviceActivity: $newState")
             update()
             if (newState == 2) {
                 log.info("Connected")

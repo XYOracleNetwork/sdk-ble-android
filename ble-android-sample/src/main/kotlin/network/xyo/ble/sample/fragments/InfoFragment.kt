@@ -16,7 +16,7 @@ import network.xyo.ble.devices.xy.XY3BluetoothDevice
 import network.xyo.ble.devices.xy.XY4BluetoothDevice
 import network.xyo.ble.devices.xy.XYFinderBluetoothDevice
 import network.xyo.ble.generic.devices.XYBluetoothDevice
-import network.xyo.ble.generic.devices.XYBluetoothDeviceListener
+import network.xyo.ble.generic.listeners.XYBluetoothDeviceListener
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResultErrorCode
 import network.xyo.ble.sample.R
 import network.xyo.ble.sample.XYDeviceData
@@ -80,7 +80,6 @@ class InfoFragment : XYDeviceFragment<FragmentInfoBinding>(), View.OnClickListen
 
             override fun connectionStateChanged(device: XYBluetoothDevice, newState: Int) {
                 super.connectionStateChanged(device, newState)
-                log.info("connectionStateChangedX-InfoFragment : $newState")
                 updateUI()
             }
 
@@ -212,7 +211,7 @@ class InfoFragment : XYDeviceFragment<FragmentInfoBinding>(), View.OnClickListen
 
     private fun disconnect() {
         GlobalScope.launch {
-            device?.disconnect()
+            device?.disconnectAsync()
             updateUI()
         }
     }

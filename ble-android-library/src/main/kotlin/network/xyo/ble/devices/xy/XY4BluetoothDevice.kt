@@ -16,12 +16,13 @@ import network.xyo.ble.firmware.XYBluetoothDeviceUpdate
 import network.xyo.ble.firmware.XYOtaFile
 import network.xyo.ble.firmware.XYOtaUpdateListener
 import network.xyo.ble.generic.devices.XYBluetoothDevice
-import network.xyo.ble.generic.devices.XYBluetoothDeviceReporter
 import network.xyo.ble.generic.devices.XYCreator
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResult
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResultErrorCode
 import network.xyo.ble.generic.scanner.XYScanResult
 import network.xyo.ble.generic.services.standard.*
+import network.xyo.ble.listeners.XYFinderBluetoothDeviceListener
+import network.xyo.ble.reporters.XYFinderBluetoothDeviceReporter
 import network.xyo.ble.services.dialog.SpotaService
 import network.xyo.ble.services.xy.PrimaryService
 
@@ -158,7 +159,6 @@ open class XY4BluetoothDevice(
     }
 
     override fun onConnectionStateChange(newState: Int) {
-        log.info("onConnectionStateChangeXY4: $id : $newState: ${reporter.listeners.size}")
         super.onConnectionStateChange(newState)
         enableButtonNotifyIfConnected()
     }

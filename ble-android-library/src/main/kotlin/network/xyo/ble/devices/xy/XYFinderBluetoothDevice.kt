@@ -5,38 +5,17 @@ import java.io.InputStream
 import java.nio.ByteBuffer
 import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import network.xyo.base.XYBase
 import network.xyo.ble.devices.apple.XYAppleBluetoothDevice
 import network.xyo.ble.devices.apple.XYIBeaconBluetoothDevice
-import network.xyo.ble.devices.apple.XYIBeaconBluetoothDeviceListener
 import network.xyo.ble.firmware.XYOtaUpdateListener
 import network.xyo.ble.generic.devices.XYBluetoothDevice
 import network.xyo.ble.generic.devices.XYCreator
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResult
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResultErrorCode
 import network.xyo.ble.generic.scanner.XYScanResult
-import androidx.annotation.WorkerThread
-import network.xyo.ble.generic.devices.XYBluetoothDeviceListener
-import network.xyo.ble.generic.devices.XYBluetoothDeviceReporter
-
-/**
- * Listener for XY Finder.
- *
- * Brings in a renamed Finder Listener.
- * .listener is now camel cased into the name.
- */
-open class XYFinderBluetoothDeviceListener : XYIBeaconBluetoothDeviceListener() {
-    @WorkerThread
-    open fun buttonSinglePressed(device: XYFinderBluetoothDevice) {}
-
-    @WorkerThread
-    open fun buttonDoublePressed(device: XYFinderBluetoothDevice) {}
-
-    @WorkerThread
-    open fun buttonLongPressed(device: XYFinderBluetoothDevice) {}
-}
+import network.xyo.ble.listeners.XYFinderBluetoothDeviceListener
+import network.xyo.ble.reporters.XYFinderBluetoothDeviceReporter
 
 /**
  * Bluetooth device family options.
@@ -88,31 +67,6 @@ enum class XYFinderBluetoothDeviceButtonPress(val state: Int) {
 enum class XYFinderBluetoothDeviceStayAwake(val state: UByte) {
     Off(0U),
     On(1U)
-}
-
-open class XYFinderBluetoothDeviceReporter<T: XYFinderBluetoothDevice, L: XYFinderBluetoothDeviceListener>: XYBluetoothDeviceReporter<XYBluetoothDevice, XYBluetoothDeviceListener>() {
-    open fun buttonPressed(device: XYFinderBluetoothDevice, state: XYFinderBluetoothDeviceButtonPress) {
-        log.info("reportButtonPressed")
-        GlobalScope.launch {
-            synchronized(listeners) {
-                for (listener in listeners) {
-                    val xyFinderListener = listener.value as? XYFinderBluetoothDeviceListener
-                    if (xyFinderListener != null) {
-                        log.info("reportButtonPressed: $xyFinderListener")
-                        GlobalScope.launch {
-                            when (state) {
-                                XYFinderBluetoothDeviceButtonPress.Single -> xyFinderListener.buttonSinglePressed(device)
-                                XYFinderBluetoothDeviceButtonPress.Double -> xyFinderListener.buttonDoublePressed(device)
-                                XYFinderBluetoothDeviceButtonPress.Long -> xyFinderListener.buttonLongPressed(device)
-                                else -> {
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
 }
 
 @kotlin.ExperimentalUnsignedTypes

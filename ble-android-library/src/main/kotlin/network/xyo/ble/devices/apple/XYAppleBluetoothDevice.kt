@@ -6,7 +6,7 @@ import android.util.SparseArray
 import java.util.concurrent.ConcurrentHashMap
 import network.xyo.base.XYBase
 import network.xyo.ble.generic.devices.XYBluetoothDevice
-import network.xyo.ble.generic.devices.XYBluetoothDeviceListener
+import network.xyo.ble.generic.listeners.XYBluetoothDeviceListener
 import network.xyo.ble.generic.devices.XYCreator
 import network.xyo.ble.generic.scanner.XYScanResult
 

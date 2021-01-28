@@ -17,80 +17,8 @@ import network.xyo.ble.generic.gatt.peripheral.XYBluetoothGattClient
 import network.xyo.ble.generic.scanner.XYScanRecord
 import network.xyo.ble.generic.scanner.XYScanResult
 import androidx.annotation.WorkerThread
-
-open class XYBluetoothDeviceListener {
-    @WorkerThread
-    open fun entered(device: XYBluetoothDevice) {}
-
-    @WorkerThread
-    open fun exited(device: XYBluetoothDevice) {}
-
-    @WorkerThread
-    open fun detected(device: XYBluetoothDevice) {}
-
-    @WorkerThread
-    open fun connectionStateChanged(device: XYBluetoothDevice, newState: Int) {}
-}
-
-open class XYBluetoothDeviceReporter<T: XYBluetoothDevice, L: XYBluetoothDeviceListener>: XYBase() {
-    val listeners = HashMap<String, XYBluetoothDeviceListener>()
-
-    fun addListener(key: String, listener: L) {
-        GlobalScope.launch {
-            synchronized(listeners) {
-                listeners[key] = listener
-            }
-        }
-    }
-
-    fun removeListener(key: String) {
-        GlobalScope.launch {
-            synchronized(listeners) {
-                listeners.remove(key)
-            }
-        }
-    }
-
-    open fun enter(device: T) {
-        synchronized(listeners) {
-            for ((_, listener) in listeners) {
-                GlobalScope.launch {
-                    listener.entered(device)
-                }
-            }
-        }
-    }
-
-    open fun exit(device: T) {
-        synchronized(listeners) {
-            for ((_, listener) in listeners) {
-                GlobalScope.launch {
-                    listener.exited(device)
-                }
-            }
-        }
-    }
-
-    open fun detected(device: T) {
-        synchronized(listeners) {
-            for ((_, listener) in listeners) {
-                GlobalScope.launch {
-                    listener.detected(device)
-                }
-            }
-        }
-    }
-
-    open fun connectionStateChanged(device: T, newState: Int) {
-        synchronized(listeners) {
-            for ((_, listener) in listeners) {
-                GlobalScope.launch {
-                    listener.connectionStateChanged(device, newState)
-                }
-            }
-        }
-    }
-}
+import network.xyo.ble.generic.listeners.XYBluetoothDeviceListener
+import network.xyo.ble.generic.reporters.XYBluetoothDeviceReporter
 
 open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, val hash: String, transport: Int? = null) : XYBluetoothGattClient(context, device, false, null, transport, null, null), Comparable<XYBluetoothDevice> {
 
