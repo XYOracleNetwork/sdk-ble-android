@@ -16,7 +16,7 @@ import network.xyo.ble.devices.xy.XY3BluetoothDevice
 import network.xyo.ble.devices.xy.XY4BluetoothDevice
 import network.xyo.ble.devices.xy.XYFinderBluetoothDevice
 import network.xyo.ble.generic.devices.XYBluetoothDevice
-import network.xyo.ble.generic.devices.XYBluetoothDeviceListener
+import network.xyo.ble.generic.listeners.XYBluetoothDeviceListener
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResultErrorCode
 import network.xyo.ble.sample.R
 import network.xyo.ble.sample.XYDeviceData
@@ -67,7 +67,7 @@ class InfoFragment : XYDeviceFragment<FragmentInfoBinding>(), View.OnClickListen
         updateAdList()
         updateUI()
 
-        device?.addListener("info", object: XYBluetoothDeviceListener() {
+        device?.reporter?.addListener("info", object: XYBluetoothDeviceListener() {
             override fun entered(device: XYBluetoothDevice) {
                 super.entered(device)
                 log.info("Entered")
@@ -92,7 +92,7 @@ class InfoFragment : XYDeviceFragment<FragmentInfoBinding>(), View.OnClickListen
 
     override fun onPause() {
         super.onPause()
-        device?.removeListener("info")
+        device?.reporter?.removeListener("info")
     }
 
     override fun update() {
@@ -211,7 +211,7 @@ class InfoFragment : XYDeviceFragment<FragmentInfoBinding>(), View.OnClickListen
 
     private fun disconnect() {
         GlobalScope.launch {
-            device?.disconnect()
+            device?.disconnectAsync()
             updateUI()
         }
     }

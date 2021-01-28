@@ -15,7 +15,7 @@ import network.xyo.ble.devices.apple.XYIBeaconBluetoothDevice
 import network.xyo.ble.sample.R
 import network.xyo.ble.sample.activities.XYODeviceActivity
 import network.xyo.base.XYBase
-import network.xyo.ble.devices.xy.XYFinderBluetoothDeviceListener
+import network.xyo.ble.listeners.XYFinderBluetoothDeviceListener
 import network.xyo.ble.sample.databinding.DeviceItemBinding
 
 @kotlin.ExperimentalStdlibApi
@@ -87,20 +87,16 @@ class XYDeviceItemView(context: Context) : LinearLayout(context) {
         }
 
         override fun connectionStateChanged(device: XYBluetoothDevice, newState: Int) {
-            log.info(TAG,"connectionStateChanged")
+
         }
     }
 
     fun setDevice(device: XYBluetoothDevice?) {
-        if (device != null) {
-            device.removeListener(TAG)
-        } else {
-            log.error("Setting NULL device")
-        }
+        device?.reporter?.removeListener(TAG) ?: log.error("Setting NULL device")
 
         this.device = device
 
-        device?.addListener(TAG, deviceListener)
+        device?.reporter?.addListener(TAG, deviceListener)
         update()
     }
 

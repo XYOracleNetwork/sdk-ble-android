@@ -49,7 +49,7 @@ open class XYBluetoothGatt protected constructor(
     protected val centralCallback = object : XYBluetoothGattCallback() {
         override fun onConnectionStateChange(gatt: BluetoothGatt?, status: Int, newState: Int) {
             super.onConnectionStateChange(gatt, status, newState)
-            log.info("onConnectionStateChangeXCentral: $status : $newState")
+            state = newState
             if (newState == BluetoothGatt.STATE_DISCONNECTED) {
                 close()
             }
@@ -154,7 +154,6 @@ open class XYBluetoothGatt protected constructor(
     }
 
     open fun onConnectionStateChange(newState: Int) {
-        log.info("onConnectionStateChangeXGatt: $newState")
         state = newState
     }
 
@@ -247,7 +246,6 @@ open class XYBluetoothGatt protected constructor(
                 override fun onConnectionStateChange(gatt: BluetoothGatt?, status: Int, newState: Int) {
                     super.onConnectionStateChange(gatt, status, newState)
                     state = newState
-                    log.info("onConnectionStateChangeXInnerConnect: $status : $newState")
                     this@XYBluetoothGatt.onConnectionStateChange(newState)
                 }
             })
@@ -263,7 +261,14 @@ open class XYBluetoothGatt protected constructor(
     }
 
     fun disconnect() {
-        close()
+        GlobalScope.launch {
+            disconnectAsync()
+        }
+    }
+
+    suspend fun disconnectAsync(timeout: Long = 2900) = queueBle(timeout, "disconnect") {
+        connection?.disconnect()
+        return@queueBle XYBluetoothResult(true)
     }
 
     protected fun close() {
@@ -273,7 +278,6 @@ open class XYBluetoothGatt protected constructor(
     }
 
     private suspend fun closeAsync(timeout: Long = 2900) = queueBle(timeout, "close") {
-        log.info("close:enter($connection?.gatt)")
         connection?.close()
         connection = null
         return@queueBle XYBluetoothResult(true)
