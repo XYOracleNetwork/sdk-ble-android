@@ -5,6 +5,7 @@ import android.content.Intent
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
+import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -19,7 +20,7 @@ import network.xyo.ble.sample.databinding.DeviceItemBinding
 
 @kotlin.ExperimentalStdlibApi
 @kotlin.ExperimentalUnsignedTypes
-class XYDeviceItemView(context: Context) : RelativeLayout(context) {
+class XYDeviceItemView(context: Context) : LinearLayout(context) {
 
     private var device: XYBluetoothDevice? = null
     private var binding: DeviceItemBinding
