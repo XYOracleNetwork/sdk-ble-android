@@ -48,6 +48,7 @@ open class XYBluetoothGatt protected constructor(
     protected val centralCallback = object : XYBluetoothGattCallback() {
         override fun onConnectionStateChange(gatt: BluetoothGatt?, status: Int, newState: Int) {
             super.onConnectionStateChange(gatt, status, newState)
+            this@XYBluetoothGatt.onConnectionStateChange(newState)
             if (newState == BluetoothGatt.STATE_DISCONNECTED) {
                 close()
             }
