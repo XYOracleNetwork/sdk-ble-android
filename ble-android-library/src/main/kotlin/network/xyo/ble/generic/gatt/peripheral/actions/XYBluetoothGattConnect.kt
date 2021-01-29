@@ -172,14 +172,13 @@ class XYBluetoothGattConnect(val device: BluetoothDevice) : XYBase() {
             if (error != XYBluetoothResultErrorCode.None) {
                 close()
             }
-            val idempotent = cont.tryResume(error)
-            idempotent?.let {
-                cont.completeResume(it)
+            cont.tryResume(error)?.let { token ->
+                cont.completeResume(token)
             }
         }
     }
 
-    suspend fun start(context: Context, transport: Int? = null) = GlobalScope.async {
+    suspend fun start(context: Context, transport: Int? = null) : XYBluetoothResult<Boolean> {
         val listenerName = "XYBluetoothGattConnect${hashCode()}"
 
         var error = if (gatt == null) startWithNewGatt(context, transport) else startWithExistingGatt()
@@ -223,8 +222,8 @@ class XYBluetoothGattConnect(val device: BluetoothDevice) : XYBase() {
             }
         }
 
-        return@async XYBluetoothResult(error == XYBluetoothResultErrorCode.None, error)
-    }.await()
+        return XYBluetoothResult(error == XYBluetoothResultErrorCode.None, error)
+    }
 
     suspend fun disconnect() = withContext(Dispatchers.Default) {
         gatt?.disconnect()
@@ -236,6 +235,4 @@ class XYBluetoothGattConnect(val device: BluetoothDevice) : XYBase() {
         gatt?.close()
         gatt = null
     }
-
-    companion object : XYBase()
 }

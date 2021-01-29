@@ -10,7 +10,7 @@ import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResult
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResultErrorCode
 import network.xyo.ble.generic.gatt.peripheral.XYThreadSafeBluetoothGatt
 
-class XYBluetoothGattDiscover(val gatt: XYThreadSafeBluetoothGatt, val gattCallback: XYBluetoothGattCallback) {
+class XYBluetoothGattDiscover(val gatt: XYThreadSafeBluetoothGatt, val gattCallback: XYBluetoothGattCallback): XYBase() {
 
     private var _timeout = 1500000L
 
@@ -20,7 +20,16 @@ class XYBluetoothGattDiscover(val gatt: XYThreadSafeBluetoothGatt, val gattCallb
 
     var services: List<BluetoothGattService>? = null
 
-    suspend fun start() = GlobalScope.async {
+    fun completeStartCoroutine(cont: CancellableContinuation<List<BluetoothGattService>?>, value: List<BluetoothGattService>? = null) {
+        GlobalScope.launch {
+            val idempotent = cont.tryResume(value)
+            idempotent?.let { token ->
+                cont.completeResume(token)
+            }
+        }
+    }
+
+    suspend fun start(): XYBluetoothResult<List<BluetoothGattService>> {
         log.info("discover")
         val listenerName = "XYBluetoothGattDiscover${hashCode()}"
         var error: XYBluetoothResultErrorCode = XYBluetoothResultErrorCode.None
@@ -43,19 +52,12 @@ class XYBluetoothGattDiscover(val gatt: XYThreadSafeBluetoothGatt, val gattCallb
                                 if (status != BluetoothGatt.GATT_SUCCESS) {
                                     error = XYBluetoothResultErrorCode.ServiceDiscoveryFailed
 
-                                    val idempotent = cont.tryResume(null)
-                                    idempotent?.let {
-                                        cont.completeResume(it)
-                                    }
+                                    completeStartCoroutine(cont)
                                 } else {
                                     // success - send back the services
                                     log.info("discover: Returning new services")
                                     this@XYBluetoothGattDiscover.services = gatt?.services
-
-                                    val idempotent = cont.tryResume(this@XYBluetoothGattDiscover.services)
-                                    idempotent?.let {
-                                        cont.completeResume(it)
-                                    }
+                                    completeStartCoroutine(cont, this@XYBluetoothGattDiscover.services)
                                 }
                             }
 
@@ -64,10 +66,7 @@ class XYBluetoothGattDiscover(val gatt: XYThreadSafeBluetoothGatt, val gattCallb
                                 if (newState != BluetoothGatt.STATE_CONNECTED) {
                                     error = XYBluetoothResultErrorCode.Disconnected
                                     gattCallback.removeListener(listenerName)
-                                    val idempotent = cont.tryResume(null)
-                                    idempotent?.let {
-                                        cont.completeResume(it)
-                                    }
+                                    completeStartCoroutine(cont)
                                 }
                             }
                         }
@@ -77,11 +76,7 @@ class XYBluetoothGattDiscover(val gatt: XYThreadSafeBluetoothGatt, val gattCallb
                             if (discoverStarted != true) {
                                 error = XYBluetoothResultErrorCode.DiscoverServicesFailedToStart
                                 gattCallback.removeListener(listenerName)
-
-                                val idempotent = cont.tryResume(null)
-                                idempotent?.let {
-                                    cont.completeResume(it)
-                                }
+                                completeStartCoroutine(cont)
                             }
                         }
                     }
@@ -92,8 +87,6 @@ class XYBluetoothGattDiscover(val gatt: XYThreadSafeBluetoothGatt, val gattCallb
                 log.error(ex)
             }
         }
-        return@async XYBluetoothResult(value, error)
-    }.await()
-
-    companion object : XYBase()
+        return XYBluetoothResult(value, error)
+    }
 }
