@@ -17,7 +17,7 @@
         android:allowBackup="false"
         android:supportsRtl="true">
         <activity
-            android:name="network.xyo.ble.sample.activities.XYOAppActivity" android:theme="@style/Theme.AppCompat.DayNight">
+            android:name="network.xyo.ble.sample.activities.XYOAppActivity" android:theme="@style/Theme.MaterialComponents.DayNight.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.intent.action.VIEW" />
@@ -25,10 +25,10 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="network.xyo.ble.sample.activities.XYODeviceActivity" android:theme="@style/Theme.AppCompat.DayNight" />
+            android:name="network.xyo.ble.sample.activities.XYODeviceActivity" android:theme="@style/Theme.MaterialComponents.DayNight.NoActionBar" />
 
         <activity
-            android:name="network.xyo.ble.sample.activities.XYOTestActivity" android:theme="@style/Theme.AppCompat.DayNight" />
+            android:name="network.xyo.ble.sample.activities.XYOTestActivity" android:theme="@style/Theme.MaterialComponents.DayNight.NoActionBar" />
 
     </application>
 
