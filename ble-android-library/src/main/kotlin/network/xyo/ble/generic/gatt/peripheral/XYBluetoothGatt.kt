@@ -321,14 +321,14 @@ open class XYBluetoothGatt protected constructor(
             val readCharacteristic = XYBluetoothGattReadCharacteristic(gatt, centralCallback)
             return@queueBle readCharacteristic.start(characteristicToRead)
         } else {
-            return@queueBle XYBluetoothResult<BluetoothGattCharacteristic>(XYBluetoothResultErrorCode.NoGatt)
+            return@queueBle XYBluetoothResult<BluetoothGattCharacteristic?>(XYBluetoothResultErrorCode.NoGatt)
         }
     }
 
     protected suspend fun writeCharacteristic(
         characteristicToWrite: BluetoothGattCharacteristic,
         timeout: Long = 10000,
-        writeType: Int? = null
+        writeType: Int = BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT
     ) = queueBle(timeout, "writeCharacteristic") {
 
         log.info("writeCharacteristic")
@@ -336,11 +336,11 @@ open class XYBluetoothGatt protected constructor(
             throw RuntimeException("cannot read characteristic")
         val gatt = connection?.gatt
         if (gatt != null) {
-            val writeCharacteristic = XYBluetoothGattWriteCharacteristic(gatt, centralCallback, writeType)
+            val writeCharacteristic = XYBluetoothGattWriteCharacteristic(gatt, centralCallback)
 
-            return@queueBle writeCharacteristic.start(characteristicToWrite)
+            return@queueBle writeCharacteristic.start(characteristicToWrite, writeType)
         } else {
-            return@queueBle XYBluetoothResult<ByteArray>(XYBluetoothResultErrorCode.NoGatt)
+            return@queueBle XYBluetoothResult<ByteArray?>(XYBluetoothResultErrorCode.NoGatt)
         }
     }
 
@@ -369,7 +369,7 @@ open class XYBluetoothGatt protected constructor(
             val writeDescriptor = XYBluetoothGattWriteDescriptor(gatt, centralCallback)
             return@queueBle writeDescriptor.start(descriptorToWrite)
         } else {
-            return@queueBle XYBluetoothResult<ByteArray>(XYBluetoothResultErrorCode.NoGatt)
+            return@queueBle XYBluetoothResult<ByteArray?>(XYBluetoothResultErrorCode.NoGatt)
         }
     }
 

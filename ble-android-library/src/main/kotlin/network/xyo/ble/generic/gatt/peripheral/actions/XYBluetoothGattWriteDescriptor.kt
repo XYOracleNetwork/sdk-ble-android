@@ -4,28 +4,25 @@ import android.bluetooth.BluetoothGatt
 import android.bluetooth.BluetoothGattCallback
 import android.bluetooth.BluetoothGattDescriptor
 import kotlinx.coroutines.*
-import network.xyo.base.XYBase
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothGattCallback
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResult
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResultErrorCode
 import network.xyo.ble.generic.gatt.peripheral.XYThreadSafeBluetoothGatt
 
-class XYBluetoothGattWriteDescriptor(val gatt: XYThreadSafeBluetoothGatt, val gattCallback: XYBluetoothGattCallback) {
+class XYBluetoothGattWriteDescriptor(
+        gatt: XYThreadSafeBluetoothGatt,
+        gattCallback: XYBluetoothGattCallback,
+        timeout: Long = 15000L)
+    : XYBluetoothGattAction<ByteArray>(gatt, gattCallback, timeout) {
 
-    private var _timeout = 15000L
-
-    fun timeout(timeout: Long) {
-        _timeout = timeout
-    }
-
-    suspend fun start(descriptorToWrite: BluetoothGattDescriptor) = GlobalScope.async {
+    suspend fun start(descriptorToWrite: BluetoothGattDescriptor): XYBluetoothResult<ByteArray?> {
         log.info("writeDescriptor")
         val listenerName = "XYBluetoothGattWriteDescriptor${hashCode()}"
         var error: XYBluetoothResultErrorCode = XYBluetoothResultErrorCode.None
         var value: ByteArray? = null
 
         try {
-            withTimeout(_timeout) {
+            withTimeout(timeout) {
                 value = suspendCancellableCoroutine { cont ->
                     val listener = object : BluetoothGattCallback() {
                         override fun onDescriptorWrite(gatt: BluetoothGatt?, descriptor: BluetoothGattDescriptor?, status: Int) {
@@ -36,18 +33,12 @@ class XYBluetoothGattWriteDescriptor(val gatt: XYThreadSafeBluetoothGatt, val ga
                                 if (status == BluetoothGatt.GATT_SUCCESS) {
                                     gattCallback.removeListener(listenerName)
 
-                                    val idempotent = cont.tryResume(descriptorToWrite.value)
-                                    idempotent?.let {
-                                        cont.completeResume(it)
-                                    }
+                                    completeStartCoroutine(cont, descriptorToWrite.value)
                                 } else {
                                     error = XYBluetoothResultErrorCode.DescriptorWriteFailed
                                     gattCallback.removeListener(listenerName)
 
-                                    val idempotent = cont.tryResume(null)
-                                    idempotent?.let {
-                                        cont.completeResume(it)
-                                    }
+                                    completeStartCoroutine(cont)
                                 }
                             }
                         }
@@ -59,10 +50,7 @@ class XYBluetoothGattWriteDescriptor(val gatt: XYThreadSafeBluetoothGatt, val ga
                                 error = XYBluetoothResultErrorCode.Disconnected
                                 gattCallback.removeListener(listenerName)
 
-                                val idempotent = cont.tryResume(null)
-                                idempotent?.let {
-                                    cont.completeResume(it)
-                                }
+                                completeStartCoroutine(cont)
                             }
                         }
                     }
@@ -72,10 +60,7 @@ class XYBluetoothGattWriteDescriptor(val gatt: XYThreadSafeBluetoothGatt, val ga
                             error = XYBluetoothResultErrorCode.DescriptorWriteFailedToStart
                             gattCallback.removeListener(listenerName)
 
-                            val idempotent = cont.tryResume(null)
-                            idempotent?.let {
-                                cont.completeResume(it)
-                            }
+                            completeStartCoroutine(cont)
                         }
                     }
                 }
@@ -86,8 +71,6 @@ class XYBluetoothGattWriteDescriptor(val gatt: XYThreadSafeBluetoothGatt, val ga
             log.error(ex)
         }
 
-        return@async XYBluetoothResult(value, error)
-    }.await()
-
-    companion object : XYBase()
+        return XYBluetoothResult(value, error)
+    }
 }

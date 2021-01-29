@@ -421,7 +421,7 @@ open class XYBluetoothGattClient protected constructor(
         service: UUID,
         characteristic: UUID,
         bytes: ByteArray,
-        writeType: Int? = null
+        writeType: Int = BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT
     ) = GlobalScope.async {
         // this prevents a queued close from closing while we run
         lastAccessTime = now
