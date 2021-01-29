@@ -118,6 +118,7 @@ open class XY4BluetoothDevice(
                 if (now - lastButtonPressTime > BUTTON_ADVERTISEMENT_LENGTH) {
                     enableButtonNotifyIfConnected()
                     reporter.buttonPressed(this, XYFinderBluetoothDeviceButtonPress.Single)
+                    globalReporter.buttonPressed(this, XYFinderBluetoothDeviceButtonPress.Single)
                     lastButtonPressTime = now
                 }
             }
