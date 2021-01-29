@@ -16,9 +16,8 @@
         android:background="@color/design_default_color_surface"
         >
 
-        <include
+        <network.xyo.ble.sample.views.XYBLEStatsView
             android:id="@+id/include_stats"
-            layout="@layout/ble_stats_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
