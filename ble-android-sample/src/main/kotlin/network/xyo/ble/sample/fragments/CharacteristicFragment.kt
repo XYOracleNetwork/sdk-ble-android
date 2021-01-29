@@ -11,9 +11,7 @@ import network.xyo.ble.sample.databinding.FragmentCharacteristicBinding
 import java.nio.charset.Charset
 
 @ExperimentalUnsignedTypes
-class CharacteristicFragment : XYDeviceFragment<FragmentCharacteristicBinding>() {
-    var characteristic : BluetoothGattCharacteristic? = null
-
+class CharacteristicFragment(var characteristic: BluetoothGattCharacteristic) : XYAppBaseFragment<FragmentCharacteristicBinding>() {
     override fun inflate(inflater: LayoutInflater, container: ViewGroup?): FragmentCharacteristicBinding {
         return FragmentCharacteristicBinding.inflate(inflater, container, false)
     }
@@ -27,7 +25,7 @@ class CharacteristicFragment : XYDeviceFragment<FragmentCharacteristicBinding>()
 
     override fun update () {
         super.update()
-        binding.characteristicsUuidTitle.text = characteristic?.uuid.toString()
+        binding.characteristicsUuidTitle.text = characteristic.uuid.toString()
         binding.characteristicsType.text = getCharacteristicType()
         binding.characteristicsPermission.text = getCharacteristicPermissions()
         binding.characteristicsValueHex.text = getCharacteristicValueHex()
@@ -35,12 +33,12 @@ class CharacteristicFragment : XYDeviceFragment<FragmentCharacteristicBinding>()
     }
 
     private fun getCharacteristicValueHex() : String {
-        return "Hex Value: ${bytesToString(characteristic?.value ?: byteArrayOf())}"
+        return "Hex Value: ${bytesToString(characteristic.value ?: byteArrayOf())}"
     }
 
     private fun getCharacteristicValueUtf8() : String {
         val string = "UTF8 Value: "
-        val value = characteristic?.value
+        val value = characteristic.value
         if (value != null) {
             return string + value.toString(Charset.defaultCharset())
         }
@@ -51,7 +49,7 @@ class CharacteristicFragment : XYDeviceFragment<FragmentCharacteristicBinding>()
         var string = "Properties: "
 
         for (property in XYBluetoothCharacteristicProperties.values()) {
-            if (characteristic?.properties?.and(property.value) == property.value) {
+            if (characteristic.properties.and(property.value) == property.value) {
                 string += "$property "
             }
         }
@@ -63,7 +61,7 @@ class CharacteristicFragment : XYDeviceFragment<FragmentCharacteristicBinding>()
         var string = "Permissions: "
 
         for (property in XYBluetoothCharacteristicPermissions.values()) {
-            if (characteristic?.properties?.and(property.value) == property.value) {
+            if (characteristic.properties.and(property.value) == property.value) {
                 string += "$property "
             }
         }
@@ -72,12 +70,6 @@ class CharacteristicFragment : XYDeviceFragment<FragmentCharacteristicBinding>()
     }
 
     companion object {
-        fun newInstance(characteristic: BluetoothGattCharacteristic): CharacteristicFragment {
-            val frag = CharacteristicFragment()
-            frag.characteristic = characteristic
-            return frag
-        }
-
         fun bytesToString(bytes: ByteArray): String {
             val sb = StringBuilder()
             val it = bytes.iterator()

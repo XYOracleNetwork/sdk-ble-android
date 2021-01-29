@@ -16,7 +16,7 @@ import network.xyo.ble.sample.XYDeviceData
 import network.xyo.ble.sample.databinding.FragmentBatteryBinding
 
 @kotlin.ExperimentalUnsignedTypes
-class BatteryFragment : XYDeviceFragment<FragmentBatteryBinding>() {
+class BatteryFragment(device: XYBluetoothDevice, deviceData : XYDeviceData) : XYDeviceFragment<FragmentBatteryBinding>(device, deviceData) {
 
     override fun inflate(inflater: LayoutInflater, container: ViewGroup?): FragmentBatteryBinding {
         return FragmentBatteryBinding.inflate(inflater, container, false)
@@ -33,7 +33,7 @@ class BatteryFragment : XYDeviceFragment<FragmentBatteryBinding>() {
     override fun onResume() {
         super.onResume()
 
-        if (deviceData?.level.isNullOrEmpty()) {
+        if (deviceData.level.isNullOrEmpty()) {
             readBatteryLevel()
         } else {
             updateUI()
@@ -42,7 +42,7 @@ class BatteryFragment : XYDeviceFragment<FragmentBatteryBinding>() {
 
     private fun updateUI() {
         activity?.runOnUiThread {
-            binding.textBatteryLevel.text = deviceData?.level
+            binding.textBatteryLevel.text = deviceData.level
         }
     }
 
@@ -79,7 +79,7 @@ class BatteryFragment : XYDeviceFragment<FragmentBatteryBinding>() {
             device.connection {
                 hasConnectionError = false
 
-                deviceData?.let {
+                deviceData.let {
                     it.level = device.batteryService.level.get().format()
                 }
 
@@ -98,7 +98,7 @@ class BatteryFragment : XYDeviceFragment<FragmentBatteryBinding>() {
             device.connection {
                 hasConnectionError = false
 
-                deviceData?.let {
+                deviceData.let {
                     it.level = device.batteryService.level.get().format()
                 }
 
@@ -118,7 +118,7 @@ class BatteryFragment : XYDeviceFragment<FragmentBatteryBinding>() {
             device.connection {
                 hasConnectionError = false
 
-                deviceData?.let {
+                deviceData.let {
                     it.level = device.batteryService.level.get().format()
                 }
 
@@ -130,18 +130,4 @@ class BatteryFragment : XYDeviceFragment<FragmentBatteryBinding>() {
             checkConnectionError(hasConnectionError)
         }
     }
-
-    companion object {
-
-        fun newInstance() =
-                BatteryFragment()
-
-        fun newInstance (device: XYBluetoothDevice?, deviceData : XYDeviceData?) : BatteryFragment {
-            val frag = BatteryFragment()
-            frag.device = device
-            frag.deviceData = deviceData
-            return frag
-        }
-    }
-
 }

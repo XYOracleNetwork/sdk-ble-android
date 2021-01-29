@@ -2,11 +2,9 @@ package network.xyo.ble.sample.views
 
 import android.content.Context
 import android.content.Intent
-import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
-import android.widget.RelativeLayout
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch

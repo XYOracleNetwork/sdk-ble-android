@@ -17,8 +17,6 @@ import network.xyo.ble.generic.scanner.XYScanResult
  * .listener is now camel cased into the name.
  */
 
-open class XYAppleBluetoothDeviceListener : XYBluetoothDeviceListener()
-
 open class XYAppleBluetoothDevice(context: Context, device: BluetoothDevice, hash: String) : XYBluetoothDevice(context, device, hash) {
 
     companion object : XYBase() {

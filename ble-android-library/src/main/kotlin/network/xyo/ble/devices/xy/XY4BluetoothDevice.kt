@@ -32,7 +32,6 @@ import network.xyo.ble.services.xy.PrimaryService
  * Brings in a renamed Finder Listener.
  * .listener is now camel cased into the name.
  */
-open class XY4BluetoothDeviceListener : XYFinderBluetoothDeviceListener()
 
 @kotlin.ExperimentalUnsignedTypes
 open class XY4BluetoothDevice(
@@ -77,11 +76,10 @@ open class XY4BluetoothDevice(
 
     override val prefix = "xy:ibeacon"
 
-    override suspend fun find() = connection {
-        log.info("find")
+    override suspend fun find(song: UByte?) = connection {
         val unlockResult = unlock()
         if (unlockResult.error == XYBluetoothResultErrorCode.None) {
-            val writeResult = primary.buzzer.set(0xbU)
+            val writeResult = primary.buzzer.set(song ?: 0xbU)
             if (writeResult.error == XYBluetoothResultErrorCode.None) {
                 return@connection XYBluetoothResult(writeResult.value)
             } else {
@@ -187,10 +185,10 @@ open class XY4BluetoothDevice(
             }
         }
 
-        val globalReporter = XYFinderBluetoothDeviceReporter<XY4BluetoothDevice, XY4BluetoothDeviceListener>()
+        val globalReporter = XYFinderBluetoothDeviceReporter<XY4BluetoothDevice, XYFinderBluetoothDeviceListener>()
 
         @Deprecated("Deprecated", ReplaceWith("globalReporter.addListener(key, listener)"))
-        fun addGlobalListener(key: String, listener: XY4BluetoothDeviceListener) {
+        fun addGlobalListener(key: String, listener: XYFinderBluetoothDeviceListener) {
             globalReporter.addListener(key, listener)
         }
 

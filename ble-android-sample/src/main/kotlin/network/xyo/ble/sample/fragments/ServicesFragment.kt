@@ -13,8 +13,14 @@ import network.xyo.ble.sample.adapters.XYServiceListAdapter
 import network.xyo.ble.sample.databinding.FragmentServicesBinding
 
 @ExperimentalUnsignedTypes
-class ServicesFragment : XYAppBaseFragment<FragmentServicesBinding>() {
+class ServicesFragment(var services : Array<BluetoothGattService>) : XYAppBaseFragment<FragmentServicesBinding>() {
     val serviceList = XYServiceListAdapter(arrayOf())
+
+    init {
+        for (item in services.iterator()) {
+            serviceList.addItem(item)
+        }
+    }
 
     override fun inflate(inflater: LayoutInflater, container: ViewGroup?): FragmentServicesBinding {
         return FragmentServicesBinding.inflate(inflater, container, false)
@@ -35,7 +41,7 @@ class ServicesFragment : XYAppBaseFragment<FragmentServicesBinding>() {
         serviceList.addListener(this.toString(), object : XYServiceListAdapter.Companion.XYServiceListAdapterListener {
             override fun onClick(service: BluetoothGattService) {
                 val transition = fragmentManager?.beginTransaction()
-                val serviceFragment = ServiceFragment.newInstance(service)
+                val serviceFragment = ServiceFragment(service)
                 transition?.replace(R.id.root_frame_services, serviceFragment)
                 transition?.addToBackStack(null)
                 transition?.commit()
@@ -43,25 +49,7 @@ class ServicesFragment : XYAppBaseFragment<FragmentServicesBinding>() {
         })
     }
 
-    /*fun addService(service : BluetoothGattService) {
-        ui {
-            serviceList.addItem(service)
-        }
-    }*/
-
     init {
         println("newServices: ${serviceList.itemCount}")
-    }
-
-    companion object {
-        fun newInstance (services : Array<BluetoothGattService>?) : ServicesFragment {
-            val frag = ServicesFragment()
-
-            for (item in services?.iterator() ?: arrayOf<XYBluetoothService>().iterator()) {
-                frag.serviceList.addItem(item)
-            }
-
-            return frag
-        }
     }
 }

@@ -14,7 +14,7 @@ import network.xyo.ble.sample.databinding.FragmentSensorBinding
 import network.xyo.ble.services.xy.SensorService
 
 @kotlin.ExperimentalUnsignedTypes
-class SensorFragment : XYDeviceFragment<FragmentSensorBinding>() {
+class SensorFragment(device: XYBluetoothDevice, deviceData : XYDeviceData) : XYDeviceFragment<FragmentSensorBinding>(device, deviceData) {
 
     override fun inflate(inflater: LayoutInflater, container: ViewGroup?): FragmentSensorBinding {
         return FragmentSensorBinding.inflate(inflater, container, false)
@@ -59,18 +59,4 @@ class SensorFragment : XYDeviceFragment<FragmentSensorBinding>() {
 
         }
     }
-
-    companion object {
-
-        fun newInstance() =
-                SensorFragment()
-
-        fun newInstance (device: XYBluetoothDevice?, deviceData : XYDeviceData?) : SensorFragment {
-            val frag = SensorFragment()
-            frag.device = device
-            frag.deviceData = deviceData
-            return frag
-        }
-    }
-
 }

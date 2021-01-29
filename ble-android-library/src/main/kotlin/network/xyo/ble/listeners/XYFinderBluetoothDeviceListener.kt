@@ -1,7 +1,6 @@
 package network.xyo.ble.listeners
 
 import androidx.annotation.WorkerThread
-import network.xyo.ble.devices.apple.XYIBeaconBluetoothDeviceListener
 import network.xyo.ble.devices.xy.XYFinderBluetoothDevice
 
 open class XYFinderBluetoothDeviceListener : XYIBeaconBluetoothDeviceListener() {

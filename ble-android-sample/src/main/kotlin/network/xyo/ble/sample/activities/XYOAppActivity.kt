@@ -4,46 +4,39 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.SparseArray
 import android.view.ViewGroup
-import android.widget.BaseAdapter
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
-import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
-import network.xyo.ble.sample.R
-import network.xyo.base.XYBase
 import network.xyo.ble.sample.adapters.XYDeviceAdapter
 import network.xyo.ble.sample.databinding.ActivityAppBinding
 import network.xyo.ble.sample.fragments.CentralFragment
-import network.xyo.ble.sample.fragments.ServerFragment
+import network.xyo.ble.sample.fragments.server.ServerFragment
 
 @kotlin.ExperimentalUnsignedTypes
 @kotlin.ExperimentalStdlibApi
 @Suppress("unused")
 class XYOAppActivity : XYOAppBaseActivity() {
     private lateinit var pagerAdapter: SectionsPagerAdapter
-    private var deviceAdapter: BaseAdapter? = null
-    private val log = XYBase.log("XYOAppActivity")
-
+    private lateinit var deviceAdapter:  XYDeviceAdapter
     private lateinit var binding: ActivityAppBinding
 
     @SuppressLint("InflateParams")
     override fun onCreate(savedInstanceState: Bundle?) {
-        log.info("onCreate")
-        deviceAdapter = XYDeviceAdapter(this)
-
         super.onCreate(savedInstanceState)
-
+        deviceAdapter = XYDeviceAdapter(this)
         binding = ActivityAppBinding.inflate(layoutInflater)
-
         setContentView(binding.root)
+        initServerPagerContainer()
+        initServerTabs()
+    }
 
-        val tabAdapter = SectionsPagerAdapter(supportFragmentManager)
-        pagerAdapter = tabAdapter
-        val pagerContainer = findViewById<ViewPager>(R.id.server_pager_container)
-        pagerContainer.adapter = pagerAdapter
-        pagerContainer.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(binding.serverTabs))
-        pagerContainer.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(binding.serverTabs) as ViewPager.OnPageChangeListener)
+    private fun initServerPagerContainer() {
+        binding.serverPagerContainer.adapter = SectionsPagerAdapter(supportFragmentManager)
+        binding.serverPagerContainer.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(binding.serverTabs))
+    }
+
+    private fun initServerTabs() {
         binding.serverTabs.addOnTabSelectedListener(TabLayout.ViewPagerOnTabSelectedListener(binding.serverPagerContainer))
     }
 
@@ -53,8 +46,8 @@ class XYOAppActivity : XYOAppBaseActivity() {
 
         override fun getItem(position: Int): Fragment {
             when (position) {
-                0 -> return CentralFragment.newInstance(deviceAdapter!!)
-                1 -> return ServerFragment.newInstance()
+                0 -> return CentralFragment(deviceAdapter)
+                1 -> return ServerFragment()
             }
 
             throw Exception("Position out of index!")

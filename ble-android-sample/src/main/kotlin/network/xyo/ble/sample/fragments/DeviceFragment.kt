@@ -17,7 +17,7 @@ import network.xyo.ble.sample.XYDeviceData
 import network.xyo.ble.sample.databinding.FragmentDeviceBinding
 
 @kotlin.ExperimentalUnsignedTypes
-class DeviceFragment : XYDeviceFragment<FragmentDeviceBinding>() {
+class DeviceFragment(device: XYBluetoothDevice, deviceData : XYDeviceData) : XYDeviceFragment<FragmentDeviceBinding>(device, deviceData) {
 
     override fun inflate(inflater: LayoutInflater, container: ViewGroup?): FragmentDeviceBinding {
         return FragmentDeviceBinding.inflate(inflater, container, false)
@@ -33,20 +33,20 @@ class DeviceFragment : XYDeviceFragment<FragmentDeviceBinding>() {
 
     override fun onPause() {
         super.onPause()
-        device?.reporter?.removeListener("DeviceFragment")
+        device.reporter.removeListener("DeviceFragment")
     }
 
     override fun onResume() {
         super.onResume()
 
-        device?.reporter?.addListener("DeviceFragment", object: XYBluetoothDeviceListener() {
+        device.reporter.addListener("DeviceFragment", object: XYBluetoothDeviceListener() {
             override fun detected(device: XYBluetoothDevice) {
                 updateUI()
                 super.detected(device)
             }
         })
 
-        if (deviceData?.systemId.isNullOrEmpty()) {
+        if (deviceData.systemId.isNullOrEmpty()) {
             setDeviceValues()
         } else {
             updateUI()
@@ -57,15 +57,15 @@ class DeviceFragment : XYDeviceFragment<FragmentDeviceBinding>() {
         activity?.runOnUiThread {
 
 
-            binding.textSystemId.text = deviceData?.systemId
-            binding.textModelNumber.text = deviceData?.modelNumberString
-            binding.textSerialNumber.text = deviceData?.serialNumberString
-            binding.textFirmwareRevision.text = deviceData?.firmwareRevisionString
-            binding.textHardwareRevision.text = deviceData?.hardwareRevisionString
-            binding.textSoftwareRevision.text = deviceData?.softwareRevisionString
-            binding.textMfgName.text = deviceData?.manufacturerNameString
-            binding.textIeee.text = deviceData?.ieeeRegulatoryCertificationDataList
-            binding.textPnpId.text = deviceData?.pnpId
+            binding.textSystemId.text = deviceData.systemId
+            binding.textModelNumber.text = deviceData.modelNumberString
+            binding.textSerialNumber.text = deviceData.serialNumberString
+            binding.textFirmwareRevision.text = deviceData.firmwareRevisionString
+            binding.textHardwareRevision.text = deviceData.hardwareRevisionString
+            binding.textSoftwareRevision.text = deviceData.softwareRevisionString
+            binding.textMfgName.text = deviceData.manufacturerNameString
+            binding.textIeee.text = deviceData.ieeeRegulatoryCertificationDataList
+            binding.textPnpId.text = deviceData.pnpId
 
         }
     }
@@ -98,7 +98,7 @@ class DeviceFragment : XYDeviceFragment<FragmentDeviceBinding>() {
             device.connection {
                 hasConnectionError = false
 
-                deviceData?.let {
+                deviceData.let {
                     it.systemId = device.deviceInformationService.systemId.get().format()
                     it.modelNumberString = device.deviceInformationService.modelNumberString.get().format()
                     it.serialNumberString = device.deviceInformationService.serialNumberString.get().format()
@@ -126,7 +126,7 @@ class DeviceFragment : XYDeviceFragment<FragmentDeviceBinding>() {
             device.connection {
                 hasConnectionError = false
 
-                deviceData?.let {
+                deviceData.let {
                     it.systemId = device.deviceInformationService.systemId.get().format()
                     it.modelNumberString = device.deviceInformationService.modelNumberString.get().format()
                     it.serialNumberString = device.deviceInformationService.serialNumberString.get().format()
@@ -154,7 +154,7 @@ class DeviceFragment : XYDeviceFragment<FragmentDeviceBinding>() {
             device.connection {
                 hasConnectionError = false
 
-                deviceData?.let {
+                deviceData.let {
                     it.systemId = device.deviceInformationService.systemId.get().format()
                     it.modelNumberString = device.deviceInformationService.modelNumberString.get().format()
                     it.serialNumberString = device.deviceInformationService.serialNumberString.get().format()
@@ -172,19 +172,6 @@ class DeviceFragment : XYDeviceFragment<FragmentDeviceBinding>() {
 
             updateUI()
             checkConnectionError(hasConnectionError)
-        }
-    }
-
-    companion object {
-
-        fun newInstance() =
-                DeviceFragment()
-
-        fun newInstance (device: XYBluetoothDevice?, deviceData : XYDeviceData?) : DeviceFragment {
-            val frag = DeviceFragment()
-            frag.device = device
-            frag.deviceData = deviceData
-            return frag
         }
     }
 
