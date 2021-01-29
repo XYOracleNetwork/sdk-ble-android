@@ -9,6 +9,7 @@ import kotlin.math.pow
 import network.xyo.base.XYBase
 import network.xyo.ble.generic.devices.XYBluetoothDevice
 import network.xyo.ble.generic.devices.XYCreator
+import network.xyo.ble.generic.listeners.XYBluetoothDeviceListener
 import network.xyo.ble.generic.scanner.XYScanResult
 
 /**
@@ -17,10 +18,6 @@ import network.xyo.ble.generic.scanner.XYScanResult
  * Brings in a renamed Listener.
  * .listener is now camel cased into the name.
  */
-open class XYIBeaconBluetoothDeviceListener : XYAppleBluetoothDeviceListener() {
-    open fun iBeaconDetected(uuid: String, major: UShort, minor: UShort) {
-    }
-}
 
 @kotlin.ExperimentalUnsignedTypes
 open class XYIBeaconBluetoothDevice(context: Context, val scanResult: XYScanResult?, hash: String, transport: Int? = null) :

@@ -19,8 +19,6 @@ import network.xyo.ble.services.xy.*
  * Brings in a renamed Finder Listener.
  * .listener is now camel cased into the name.
  */
-@Suppress("unused")
-open class XY2BluetoothDeviceListener : XYFinderBluetoothDeviceListener()
 
 @kotlin.ExperimentalUnsignedTypes
 open class XY2BluetoothDevice(context: Context, scanResult: XYScanResult, hash: String) : XYFinderBluetoothDevice(context, scanResult, hash) {

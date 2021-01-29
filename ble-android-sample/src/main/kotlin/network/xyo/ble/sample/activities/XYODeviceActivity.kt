@@ -12,6 +12,7 @@ import com.google.android.material.tabs.TabLayout
 import network.xyo.base.XYBase
 import network.xyo.ble.devices.xy.*
 import network.xyo.ble.generic.devices.XYBluetoothDevice
+import network.xyo.ble.listeners.XYFinderBluetoothDeviceListener
 import network.xyo.ble.sample.R
 import network.xyo.ble.sample.XYDeviceData
 import network.xyo.ble.sample.fragments.*
@@ -66,7 +67,7 @@ class XYODeviceActivity : XYOAppBaseActivity() {
         frag?.onFileSelected(requestCode, data)
     }
 
-    private val xy3DeviceListener = object : XY3BluetoothDeviceListener() {
+    private val xy3DeviceListener = object : XYFinderBluetoothDeviceListener() {
         override fun entered(device: XYBluetoothDevice) {
             update()
             log.info("Entered")
@@ -103,7 +104,7 @@ class XYODeviceActivity : XYOAppBaseActivity() {
         }
     }
 
-    private val xy4DeviceListener = object : XY4BluetoothDeviceListener() {
+    private val xy4DeviceListener = object : XYFinderBluetoothDeviceListener() {
         override fun entered(device: XYBluetoothDevice) {
             update()
             log.info("Entered")
