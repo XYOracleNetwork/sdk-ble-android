@@ -2,7 +2,7 @@
 
 # XYO Bluetooth SDK
 
-![](https://github.com/XYOracleNetwork/sdk-xyo-android/workflows/Build/badge.svg?branch=develop)  ![](https://github.com/XYOracleNetwork/sdk-xyo-android/workflows/Release/badge.svg?branch=master) [![Download](https://api.bintray.com/packages/xyoraclenetwork/xyo/sdk-ble-android/images/download.svg)](https://bintray.com/xyoraclenetwork/xyo/sdk-ble-android/_latestVersion) [![](https://jitpack.io/v/XYOracleNetwork/sdk-ble-android.svg)](https://jitpack.io/#XYOracleNetwork/sdk-ble-android)
+![](https://github.com/XYOracleNetwork/sdk-xyo-android/workflows/Build/badge.svg?branch=develop)  ![](https://github.com/XYOracleNetwork/sdk-xyo-android/workflows/Release/badge.svg?branch=master) [![Download](https://api.bintray.com/packages/xyoraclenetwork/xyo/sdk-ble-android/images/download.svg)](https://bintray.com/xyoraclenetwork/xyo/sdk-ble-android/_latestVersion)
 [![Maintainability](https://api.codeclimate.com/v1/badges/73ee685fc9e2c61454b2/maintainability)](https://codeclimate.com/github/XYOracleNetwork/sdk-ble-android/maintainability)
 
 [![BCH compliance](https://bettercodehub.com/edge/badge/XYOracleNetwork/sdk-ble-android?branch=master)](https://bettercodehub.com/results/XYOracleNetwork/sdk-ble-android)
@@ -257,4 +257,3 @@ See the [LICENSE.md](LICENSE) file for license details.
 Made with 🔥and ❄️ by [XYO](https://www.xyo.network)
 
 [logo]: https://cdn.xy.company/img/brand/XYO_full_colored.png
-
