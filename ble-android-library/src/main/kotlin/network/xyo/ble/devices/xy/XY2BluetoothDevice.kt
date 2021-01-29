@@ -21,18 +21,7 @@ import network.xyo.ble.services.xy.*
  */
 
 @kotlin.ExperimentalUnsignedTypes
-open class XY2BluetoothDevice(context: Context, scanResult: XYScanResult, hash: String) : XYFinderBluetoothDevice(context, scanResult, hash) {
-
-    val batteryService by lazy { BatteryService(this) }
-    val deviceInformationService by lazy { DeviceInformationService(this) }
-    val genericAccessService by lazy { GenericAccessService(this) }
-    val genericAttributeService by lazy { GenericAttributeService(this) }
-    val txPowerService by lazy { TxPowerService(this) }
-
-    val basicConfigService by lazy { BasicConfigService(this) }
-    val controlService by lazy { ControlService(this) }
-    val extendedConfigService by lazy { ExtendedConfigService(this) }
-    val sensorService by lazy { SensorService(this) }
+open class XY2BluetoothDevice(context: Context, scanResult: XYScanResult, hash: String) : XYLegacyFinderBluetoothDevice(context, scanResult, hash) {
 
     override suspend fun find(song: UByte?) = connection {
         return@connection controlService.buzzerSelect.set(song ?: 0x02U)
@@ -47,10 +36,6 @@ open class XY2BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
     companion object : XYBase() {
 
         private val FAMILY_UUID = UUID.fromString("07775dd0-111b-11e4-9191-0800200c9a66")!!
-
-        /*val DEFAULT_LOCK_CODE = ubyteArrayOf(
-                0x2fU, 0xbeU, 0xa2U, 0x07U, 0x52U, 0xfeU, 0xbfU, 0x31U, 0x1dU, 0xacU, 0x5dU, 0xfaU, 0x7dU, 0x77U, 0x76U, 0x80U
-        )*/
 
         fun enable(enable: Boolean) {
             if (enable) {
@@ -67,33 +52,6 @@ open class XY2BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
                 foundDevices[hash] = globalDevices[hash]
                         ?: XY2BluetoothDevice(context, scanResult, hash)
             }
-        }
-
-        private fun majorFromScanResult(scanResult: XYScanResult): Int? {
-            val bytes = scanResult.scanRecord?.getManufacturerSpecificData(XYAppleBluetoothDevice.MANUFACTURER_ID)
-            return if (bytes != null) {
-                val buffer = ByteBuffer.wrap(bytes)
-                buffer.getShort(18).toInt()
-            } else {
-                null
-            }
-        }
-
-        private fun minorFromScanResult(scanResult: XYScanResult): Int? {
-            val bytes = scanResult.scanRecord?.getManufacturerSpecificData(XYAppleBluetoothDevice.MANUFACTURER_ID)
-            return if (bytes != null) {
-                val buffer = ByteBuffer.wrap(bytes)
-                buffer.getShort(20).toInt().and(0xfff0).or(0x0004)
-            } else {
-                null
-            }
-        }
-
-        fun hashFromScanResult(scanResult: XYScanResult): String {
-            val uuid = iBeaconUuidFromScanResult(scanResult)
-            val major = majorFromScanResult(scanResult)
-            val minor = minorFromScanResult(scanResult)
-            return "$uuid:$major:$minor"
         }
     }
 }

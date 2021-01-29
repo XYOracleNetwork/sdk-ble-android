@@ -14,6 +14,9 @@ import network.xyo.ble.generic.devices.XYCreator
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResult
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResultErrorCode
 import network.xyo.ble.generic.scanner.XYScanResult
+import network.xyo.ble.generic.services.standard.DeviceInformationService
+import network.xyo.ble.generic.services.standard.GenericAccessService
+import network.xyo.ble.generic.services.standard.GenericAttributeService
 import network.xyo.ble.listeners.XYFinderBluetoothDeviceListener
 import network.xyo.ble.reporters.XYFinderBluetoothDeviceReporter
 
@@ -72,6 +75,10 @@ enum class XYFinderBluetoothDeviceStayAwake(val state: UByte) {
 @kotlin.ExperimentalUnsignedTypes
 @Suppress("unused")
 open class XYFinderBluetoothDevice(context: Context, scanResult: XYScanResult, hash: String) : XYIBeaconBluetoothDevice(context, scanResult, hash) {
+
+    open val deviceInformationService by lazy { DeviceInformationService(this) }
+    open val genericAccessService by lazy { GenericAccessService(this) }
+    open val genericAttributeService by lazy { GenericAttributeService(this) }
 
     override val reporter = XYFinderBluetoothDeviceReporter<XYFinderBluetoothDevice, XYFinderBluetoothDeviceListener>()
 
