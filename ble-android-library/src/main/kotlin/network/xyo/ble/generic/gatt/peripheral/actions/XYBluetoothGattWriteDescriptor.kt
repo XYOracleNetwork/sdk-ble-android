@@ -4,28 +4,16 @@ import android.bluetooth.BluetoothGatt
 import android.bluetooth.BluetoothGattCallback
 import android.bluetooth.BluetoothGattDescriptor
 import kotlinx.coroutines.*
-import network.xyo.base.XYBase
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothGattCallback
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResult
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResultErrorCode
 import network.xyo.ble.generic.gatt.peripheral.XYThreadSafeBluetoothGatt
 
-class XYBluetoothGattWriteDescriptor(val gatt: XYThreadSafeBluetoothGatt, val gattCallback: XYBluetoothGattCallback) {
-
-    private var _timeout = 15000L
-
-    fun timeout(timeout: Long) {
-        _timeout = timeout
-    }
-
-    fun completeStartCoroutine(cont: CancellableContinuation<ByteArray?>, value: ByteArray? = null) {
-        GlobalScope.launch {
-            val idempotent = cont.tryResume(value)
-            idempotent?.let { token ->
-                cont.completeResume(token)
-            }
-        }
-    }
+class XYBluetoothGattWriteDescriptor(
+        gatt: XYThreadSafeBluetoothGatt,
+        gattCallback: XYBluetoothGattCallback,
+        timeout: Long = 15000L)
+    : XYBluetoothGattAction<ByteArray>(gatt, gattCallback, timeout) {
 
     suspend fun start(descriptorToWrite: BluetoothGattDescriptor): XYBluetoothResult<ByteArray?> {
         log.info("writeDescriptor")
@@ -34,7 +22,7 @@ class XYBluetoothGattWriteDescriptor(val gatt: XYThreadSafeBluetoothGatt, val ga
         var value: ByteArray? = null
 
         try {
-            withTimeout(_timeout) {
+            withTimeout(timeout) {
                 value = suspendCancellableCoroutine { cont ->
                     val listener = object : BluetoothGattCallback() {
                         override fun onDescriptorWrite(gatt: BluetoothGatt?, descriptor: BluetoothGattDescriptor?, status: Int) {
@@ -85,6 +73,4 @@ class XYBluetoothGattWriteDescriptor(val gatt: XYThreadSafeBluetoothGatt, val ga
 
         return XYBluetoothResult(value, error)
     }
-
-    companion object : XYBase()
 }

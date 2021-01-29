@@ -336,9 +336,9 @@ open class XYBluetoothGatt protected constructor(
             throw RuntimeException("cannot read characteristic")
         val gatt = connection?.gatt
         if (gatt != null) {
-            val writeCharacteristic = XYBluetoothGattWriteCharacteristic(gatt, centralCallback, writeType)
+            val writeCharacteristic = XYBluetoothGattWriteCharacteristic(gatt, centralCallback)
 
-            return@queueBle writeCharacteristic.start(characteristicToWrite)
+            return@queueBle writeCharacteristic.start(characteristicToWrite, writeType)
         } else {
             return@queueBle XYBluetoothResult<ByteArray?>(XYBluetoothResultErrorCode.NoGatt)
         }

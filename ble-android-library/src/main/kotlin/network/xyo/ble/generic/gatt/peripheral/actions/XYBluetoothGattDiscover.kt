@@ -4,45 +4,28 @@ import android.bluetooth.BluetoothGatt
 import android.bluetooth.BluetoothGattCallback
 import android.bluetooth.BluetoothGattService
 import kotlinx.coroutines.*
-import network.xyo.base.XYBase
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothGattCallback
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResult
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResultErrorCode
 import network.xyo.ble.generic.gatt.peripheral.XYThreadSafeBluetoothGatt
 
-class XYBluetoothGattDiscover(val gatt: XYThreadSafeBluetoothGatt, val gattCallback: XYBluetoothGattCallback): XYBase() {
-
-    private var _timeout = 1500000L
-
-    fun timeout(timeout: Long) {
-        _timeout = timeout
-    }
-
-    var services: List<BluetoothGattService>? = null
-
-    fun completeStartCoroutine(cont: CancellableContinuation<List<BluetoothGattService>?>, value: List<BluetoothGattService>? = null) {
-        GlobalScope.launch {
-            val idempotent = cont.tryResume(value)
-            idempotent?.let { token ->
-                cont.completeResume(token)
-            }
-        }
-    }
+class XYBluetoothGattDiscover(
+        gatt: XYThreadSafeBluetoothGatt,
+        gattCallback: XYBluetoothGattCallback,
+        timeout: Long = 1500000L)
+    : XYBluetoothGattAction<List<BluetoothGattService>>(gatt, gattCallback, timeout) {
 
     suspend fun start(): XYBluetoothResult<List<BluetoothGattService>> {
         log.info("discover")
         val listenerName = "XYBluetoothGattDiscover${hashCode()}"
         var error: XYBluetoothResultErrorCode = XYBluetoothResultErrorCode.None
-        var value: List<BluetoothGattService>? = null
+        var value: List<BluetoothGattService>? = gatt.services
 
-        val services = this@XYBluetoothGattDiscover.services ?: gatt.services
-
-        if (services?.isEmpty() == false) {
-            log.info("discover: Returning previous discover: ${services.size}")
-            value = services
+        if (value?.isEmpty() == false) {
+            log.info("discover: Returning previous discover: ${value.size}")
         } else {
             try {
-                withTimeout(_timeout) {
+                withTimeout(timeout) {
                     value = suspendCancellableCoroutine { cont ->
                         log.info("discover: Doing real discover")
                         val listener = object : BluetoothGattCallback() {
@@ -56,8 +39,8 @@ class XYBluetoothGattDiscover(val gatt: XYThreadSafeBluetoothGatt, val gattCallb
                                 } else {
                                     // success - send back the services
                                     log.info("discover: Returning new services")
-                                    this@XYBluetoothGattDiscover.services = gatt?.services
-                                    completeStartCoroutine(cont, this@XYBluetoothGattDiscover.services)
+                                    this@XYBluetoothGattDiscover.value = gatt?.services
+                                    completeStartCoroutine(cont, this@XYBluetoothGattDiscover.value)
                                 }
                             }
 

@@ -4,34 +4,18 @@ import android.bluetooth.BluetoothGatt
 import android.bluetooth.BluetoothGattCallback
 import android.bluetooth.BluetoothGattCharacteristic
 import kotlinx.coroutines.*
-import network.xyo.base.XYBase
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothGattCallback
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResult
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResultErrorCode
 import network.xyo.ble.generic.gatt.peripheral.XYThreadSafeBluetoothGatt
 
 class XYBluetoothGattWriteCharacteristic(
-    val gatt: XYThreadSafeBluetoothGatt,
-    val gattCallback: XYBluetoothGattCallback,
-    private val writeType: Int = BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT
-): XYBase() {
+        gatt: XYThreadSafeBluetoothGatt,
+        gattCallback: XYBluetoothGattCallback,
+        timeout: Long = 15000L)
+    : XYBluetoothGattAction<ByteArray>(gatt, gattCallback, timeout) {
 
-    private var _timeout = 15000L
-
-    fun timeout(timeout: Long) {
-        _timeout = timeout
-    }
-
-    fun completeStartCoroutine(cont: CancellableContinuation<ByteArray?>, value: ByteArray? = null) {
-        GlobalScope.launch {
-            val idempotent = cont.tryResume(value)
-            idempotent?.let { token ->
-                cont.completeResume(token)
-            }
-        }
-    }
-
-    suspend fun start(characteristicToWrite: BluetoothGattCharacteristic): XYBluetoothResult<ByteArray?> {
+    suspend fun start(characteristicToWrite: BluetoothGattCharacteristic, writeType: Int = BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT): XYBluetoothResult<ByteArray?> {
         log.info("writeCharacteristic")
         characteristicToWrite.writeType = writeType
 
@@ -40,7 +24,7 @@ class XYBluetoothGattWriteCharacteristic(
         var value: ByteArray? = null
 
         try {
-            withTimeoutOrNull(_timeout) {
+            withTimeoutOrNull(timeout) {
                 value = suspendCancellableCoroutine { cont ->
                     val listener = object : BluetoothGattCallback() {
                         override fun onCharacteristicWrite(gatt: BluetoothGatt?, characteristic: BluetoothGattCharacteristic?, status: Int) {

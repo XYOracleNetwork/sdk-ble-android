@@ -3,6 +3,7 @@ package network.xyo.ble.generic.gatt.peripheral.actions
 import android.bluetooth.BluetoothGatt
 import android.bluetooth.BluetoothGattCallback
 import android.bluetooth.BluetoothGattCharacteristic
+import android.bluetooth.BluetoothGattService
 import kotlinx.coroutines.*
 import network.xyo.base.XYBase
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothGattCallback
@@ -10,22 +11,11 @@ import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResult
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResultErrorCode
 import network.xyo.ble.generic.gatt.peripheral.XYThreadSafeBluetoothGatt
 
-class XYBluetoothGattReadCharacteristic(val gatt: XYThreadSafeBluetoothGatt, val gattCallback: XYBluetoothGattCallback) {
-
-    private var _timeout = 15000L
-
-    fun timeout(timeout: Long) {
-        _timeout = timeout
-    }
-
-    fun completeStartCoroutine(cont: CancellableContinuation<BluetoothGattCharacteristic?>, value: BluetoothGattCharacteristic? = null) {
-        GlobalScope.launch {
-            val idempotent = cont.tryResume(value)
-            idempotent?.let { token ->
-                cont.completeResume(token)
-            }
-        }
-    }
+class XYBluetoothGattReadCharacteristic(
+        gatt: XYThreadSafeBluetoothGatt,
+        gattCallback: XYBluetoothGattCallback,
+        timeout: Long = 15000L)
+    : XYBluetoothGattAction<BluetoothGattCharacteristic>(gatt, gattCallback, timeout) {
 
     suspend fun start(characteristicToRead: BluetoothGattCharacteristic): XYBluetoothResult<BluetoothGattCharacteristic?> {
         log.info("readCharacteristic")
@@ -75,6 +65,4 @@ class XYBluetoothGattReadCharacteristic(val gatt: XYThreadSafeBluetoothGatt, val
 
         return XYBluetoothResult(value, error)
     }
-
-    companion object : XYBase()
 }
