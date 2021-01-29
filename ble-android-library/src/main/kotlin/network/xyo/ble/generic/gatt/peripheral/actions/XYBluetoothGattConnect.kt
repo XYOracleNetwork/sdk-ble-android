@@ -10,18 +10,13 @@ import android.os.Build
 import android.os.Handler
 import com.jaredrummler.android.device.BuildConfig
 import kotlinx.coroutines.*
-import network.xyo.base.XYBase
 import network.xyo.ble.generic.gatt.peripheral.*
 import network.xyo.ble.utilities.XYCallByVersion
 import java.lang.RuntimeException
 
-class XYBluetoothGattConnect(val device: BluetoothDevice) : XYBase() {
-
-    private var _timeout = 1500000L
-
-    fun timeout(timeout: Long) {
-        _timeout = timeout
-    }
+class XYBluetoothGattConnect(
+        val device: BluetoothDevice)
+    : XYBluetoothGattActionBase<XYBluetoothResultErrorCode>(1500000L) {
 
     var gatt: XYThreadSafeBluetoothGatt? = null
     var services: List<BluetoothGattService>? = null
@@ -167,21 +162,19 @@ class XYBluetoothGattConnect(val device: BluetoothDevice) : XYBase() {
         }
     }
 
-    fun completeStartCoroutine(cont: CancellableContinuation<XYBluetoothResultErrorCode>, error: XYBluetoothResultErrorCode) {
+    override fun completeStartCoroutine(cont: CancellableContinuation<XYBluetoothResultErrorCode?>, value: XYBluetoothResultErrorCode?) {
         GlobalScope.launch {
-            if (error != XYBluetoothResultErrorCode.None) {
+            if (value != XYBluetoothResultErrorCode.None) {
                 close()
             }
-            cont.tryResume(error)?.let { token ->
-                cont.completeResume(token)
-            }
+            super.completeStartCoroutine(cont, value)
         }
     }
 
     suspend fun start(context: Context, transport: Int? = null) : XYBluetoothResult<Boolean> {
         val listenerName = "XYBluetoothGattConnect${hashCode()}"
 
-        var error = if (gatt == null) startWithNewGatt(context, transport) else startWithExistingGatt()
+        var error: XYBluetoothResultErrorCode? = if (gatt == null) startWithNewGatt(context, transport) else startWithExistingGatt()
         val connectStartSuccess = error == XYBluetoothResultErrorCode.None
 
         //not already connected, so try to connect
@@ -221,8 +214,8 @@ class XYBluetoothGattConnect(val device: BluetoothDevice) : XYBase() {
                 }
             }
         }
-
-        return XYBluetoothResult(error == XYBluetoothResultErrorCode.None, error)
+        val resultError = error ?: XYBluetoothResultErrorCode.None
+        return XYBluetoothResult(error == XYBluetoothResultErrorCode.None, resultError)
     }
 
     suspend fun disconnect() = withContext(Dispatchers.Default) {
