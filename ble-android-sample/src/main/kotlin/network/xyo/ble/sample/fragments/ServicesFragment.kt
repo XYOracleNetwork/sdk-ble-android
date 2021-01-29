@@ -41,7 +41,7 @@ class ServicesFragment(var services : Array<BluetoothGattService>) : XYAppBaseFr
         serviceList.addListener(this.toString(), object : XYServiceListAdapter.Companion.XYServiceListAdapterListener {
             override fun onClick(service: BluetoothGattService) {
                 val transition = fragmentManager?.beginTransaction()
-                val serviceFragment = ServiceFragment.newInstance(service)
+                val serviceFragment = ServiceFragment(service)
                 transition?.replace(R.id.root_frame_services, serviceFragment)
                 transition?.addToBackStack(null)
                 transition?.commit()

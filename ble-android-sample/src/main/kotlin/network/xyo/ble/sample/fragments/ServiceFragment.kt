@@ -15,20 +15,18 @@ import network.xyo.ble.sample.adapters.XYCharacteristicAdapter
 import network.xyo.ble.sample.databinding.FragmentServiceBinding
 
 @ExperimentalUnsignedTypes
-class ServiceFragment : XYAppBaseFragment<FragmentServiceBinding>() {
-    private var service: BluetoothGattService? = null
-
+class ServiceFragment(var service: BluetoothGattService) : XYAppBaseFragment<FragmentServiceBinding>() {
     override fun inflate(inflater: LayoutInflater, container: ViewGroup?): FragmentServiceBinding {
         return FragmentServiceBinding.inflate(inflater, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.serviceUuidTitle.text = service?.uuid.toString()
+        binding.serviceUuidTitle.text = service.uuid.toString()
         binding.serviceType.text = getServiceType()
 
         val recyclerView = binding.characteristicList
-        val characteristicList = XYCharacteristicAdapter(service?.characteristics?.toTypedArray()
+        val characteristicList = XYCharacteristicAdapter(service.characteristics?.toTypedArray()
                 ?: arrayOf())
         val manager = LinearLayoutManager(activity?.applicationContext, RecyclerView.VERTICAL, false)
         manager.reverseLayout = true
@@ -49,18 +47,10 @@ class ServiceFragment : XYAppBaseFragment<FragmentServiceBinding>() {
     }
 
     private fun getServiceType(): String {
-        when (service?.type) {
+        when (service.type) {
             SERVICE_TYPE_PRIMARY -> return "SERVICE_TYPE_PRIMARY"
             SERVICE_TYPE_SECONDARY -> return "SERVICE_TYPE_SECONDARY"
         }
         return "UNKNOWN"
-    }
-
-    companion object {
-        fun newInstance(service: BluetoothGattService): ServiceFragment {
-            val frag = ServiceFragment()
-            frag.service = service
-            return frag
-        }
     }
 }
