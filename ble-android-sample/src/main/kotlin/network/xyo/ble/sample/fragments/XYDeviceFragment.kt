@@ -5,7 +5,6 @@ import network.xyo.ble.generic.devices.XYBluetoothDevice
 import network.xyo.ble.sample.XYDeviceData
 
 @kotlin.ExperimentalUnsignedTypes
-abstract class XYDeviceFragment<T> : XYAppBaseFragment<T>() where T: ViewBinding {
-    var device : XYBluetoothDevice? = null
-    var deviceData : XYDeviceData? = null
+abstract class XYDeviceFragment<T>(var device: XYBluetoothDevice, var deviceData : XYDeviceData) : XYAppBaseFragment<T>() where T: ViewBinding {
+
 }

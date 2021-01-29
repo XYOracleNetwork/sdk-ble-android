@@ -18,7 +18,7 @@ import network.xyo.ble.sample.adapters.XYServiceListAdapter
 import network.xyo.ble.sample.databinding.FragmentServicesBinding
 
 @kotlin.ExperimentalUnsignedTypes
-class DeviceServicesFragment : XYDeviceFragment<FragmentServicesBinding>() {
+class DeviceServicesFragment(device: XYBluetoothDevice, deviceData : XYDeviceData) : XYDeviceFragment<FragmentServicesBinding>(device, deviceData) {
     private val serviceList = XYServiceListAdapter(arrayOf())
 
     override fun inflate(inflater: LayoutInflater, container: ViewGroup?): FragmentServicesBinding {
@@ -52,8 +52,8 @@ class DeviceServicesFragment : XYDeviceFragment<FragmentServicesBinding>() {
     }
 
     private suspend fun updateList() {
-        val result = device?.connection {
-            device?.services()?.let {
+        val result = device.connection {
+            device.services().let {
                 serviceList.clear()
                 for (item in it.iterator()) {
                     serviceList.addItem(item)
@@ -62,7 +62,7 @@ class DeviceServicesFragment : XYDeviceFragment<FragmentServicesBinding>() {
             return@connection XYBluetoothResult(true)
         }
         activity?.runOnUiThread {
-            result?.let {
+            result.let {
                 if (it.hasError()) {
                     log.error("Error: ${it.error}")
                 } else {
@@ -74,12 +74,12 @@ class DeviceServicesFragment : XYDeviceFragment<FragmentServicesBinding>() {
 
     override fun onPause() {
         super.onPause()
-        device?.reporter?.removeListener("services")
+        device.reporter.removeListener("services")
     }
 
     override fun onResume() {
         super.onResume()
-        device?.reporter?.addListener("services", object: XYBluetoothDeviceListener() {
+        device.reporter.addListener("services", object: XYBluetoothDeviceListener() {
             override fun connectionStateChanged(device: XYBluetoothDevice, newState: Int) {
                 super.connectionStateChanged(device, newState)
                 GlobalScope.launch {
@@ -89,15 +89,6 @@ class DeviceServicesFragment : XYDeviceFragment<FragmentServicesBinding>() {
         })
         GlobalScope.launch {
             updateList()
-        }
-    }
-
-    companion object {
-        fun newInstance (device: XYBluetoothDevice?, deviceData : XYDeviceData?) : DeviceServicesFragment {
-            val frag = DeviceServicesFragment()
-            frag.device = device
-            frag.deviceData = deviceData
-            return frag
         }
     }
 }

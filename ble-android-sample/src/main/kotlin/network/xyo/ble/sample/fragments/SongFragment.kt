@@ -19,7 +19,7 @@ import java.nio.ByteBuffer
 
 @kotlin.ExperimentalUnsignedTypes
 @kotlin.ExperimentalStdlibApi
-class SongFragment : XYDeviceFragment<FragmentSongBinding>() {
+class SongFragment(device: XYBluetoothDevice, deviceData : XYDeviceData) : XYDeviceFragment<FragmentSongBinding>(device, deviceData) {
 
     private var currentSong = ""
 
@@ -217,7 +217,7 @@ class SongFragment : XYDeviceFragment<FragmentSongBinding>() {
     override fun onResume() {
         super.onResume()
 
-        if (deviceData?.level.isNullOrEmpty()) {
+        if (deviceData.level.isNullOrEmpty()) {
             readCurrentSong()
         } else {
             updateUI()
@@ -325,18 +325,4 @@ class SongFragment : XYDeviceFragment<FragmentSongBinding>() {
             checkConnectionError(hasConnectionError)
         }
     }
-
-    companion object {
-
-        fun newInstance() =
-                SongFragment()
-
-        fun newInstance (device: XYBluetoothDevice?, deviceData : XYDeviceData?) : SongFragment {
-            val frag = SongFragment()
-            frag.device = device
-            frag.deviceData = deviceData
-            return frag
-        }
-    }
-
 }

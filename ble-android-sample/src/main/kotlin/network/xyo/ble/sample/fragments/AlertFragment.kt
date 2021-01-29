@@ -16,7 +16,7 @@ import network.xyo.ble.sample.XYDeviceData
 import network.xyo.ble.sample.databinding.FragmentAlertBinding
 
 @kotlin.ExperimentalUnsignedTypes
-class AlertFragment : XYDeviceFragment<FragmentAlertBinding>() {
+class AlertFragment(device: XYBluetoothDevice, deviceData : XYDeviceData) : XYDeviceFragment<FragmentAlertBinding>(device, deviceData) {
 
     override fun inflate(inflater: LayoutInflater, container: ViewGroup?): FragmentAlertBinding {
         return FragmentAlertBinding.inflate(inflater, container, false)
@@ -33,7 +33,7 @@ class AlertFragment : XYDeviceFragment<FragmentAlertBinding>() {
     override fun onResume() {
         super.onResume()
 
-        if (deviceData?.controlPoint.isNullOrEmpty()) {
+        if (deviceData.controlPoint.isNullOrEmpty()) {
             setAlertValues()
         } else {
             updateUI()
@@ -63,11 +63,11 @@ class AlertFragment : XYDeviceFragment<FragmentAlertBinding>() {
 
     private fun updateUI() {
         activity?.runOnUiThread {
-            binding.textControlPoint.text = deviceData?.controlPoint
-            binding.textUnreadAlertStatus.text = deviceData?.unreadAlertStatus
-            binding.textNewAlert.text = deviceData?.newAlert
-            binding.textNewAlertCategory.text = deviceData?.supportedNewAlertCategory
-            binding.textUnreadAlertCategory.text = deviceData?.supportedUnreadAlertCategory
+            binding.textControlPoint.text = deviceData.controlPoint
+            binding.textUnreadAlertStatus.text = deviceData.unreadAlertStatus
+            binding.textNewAlert.text = deviceData.newAlert
+            binding.textNewAlertCategory.text = deviceData.supportedNewAlertCategory
+            binding.textUnreadAlertCategory.text = deviceData.supportedUnreadAlertCategory
         }
     }
 
@@ -77,7 +77,7 @@ class AlertFragment : XYDeviceFragment<FragmentAlertBinding>() {
             device.connection {
                 hasConnectionError = false
 
-                deviceData?.let {
+                deviceData.let {
                     it.controlPoint = device.alertNotification.controlPoint.get().format()
                     it.unreadAlertStatus = device.alertNotification.unreadAlertStatus.get().format()
                     it.newAlert = device.alertNotification.newAlert.get().format()
@@ -99,7 +99,7 @@ class AlertFragment : XYDeviceFragment<FragmentAlertBinding>() {
             device.connection {
                 hasConnectionError = false
 
-                deviceData?.let {
+                deviceData.let {
                     it.controlPoint = device.alertNotification.controlPoint.get().format()
                     it.unreadAlertStatus = device.alertNotification.unreadAlertStatus.get().format()
                     it.newAlert = device.alertNotification.newAlert.get().format()
@@ -113,19 +113,6 @@ class AlertFragment : XYDeviceFragment<FragmentAlertBinding>() {
 
             updateUI()
             checkConnectionError(hasConnectionError)
-        }
-    }
-
-    companion object {
-
-        fun newInstance() =
-                AlertFragment()
-
-        fun newInstance (device: XYBluetoothDevice?, deviceData : XYDeviceData?) : AlertFragment {
-            val frag = AlertFragment()
-            frag.device = device
-            frag.deviceData = deviceData
-            return frag
         }
     }
 }

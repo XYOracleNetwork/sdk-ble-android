@@ -14,7 +14,7 @@ import network.xyo.ble.sample.databinding.FragmentControlBinding
 import network.xyo.ble.services.xy.ControlService
 
 @kotlin.ExperimentalUnsignedTypes
-class ControlFragment : XYDeviceFragment<FragmentControlBinding>() {
+class ControlFragment(device: XYBluetoothDevice, deviceData : XYDeviceData) : XYDeviceFragment<FragmentControlBinding>(device, deviceData) {
 
     override fun inflate(inflater: LayoutInflater, container: ViewGroup?): FragmentControlBinding {
         return FragmentControlBinding.inflate(inflater, container, false)
@@ -64,18 +64,4 @@ class ControlFragment : XYDeviceFragment<FragmentControlBinding>() {
             activity?.runOnUiThread { binding.textDisconnect.text = disconnect.toString() }
         }
     }
-
-    companion object {
-
-        fun newInstance() =
-                ControlFragment()
-
-        fun newInstance (device: XYBluetoothDevice?, deviceData : XYDeviceData?) : ControlFragment {
-            val frag = ControlFragment()
-            frag.device = device
-            frag.deviceData = deviceData
-            return frag
-        }
-    }
-
 }

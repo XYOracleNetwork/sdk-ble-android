@@ -24,7 +24,7 @@ import network.xyo.ble.sample.databinding.FragmentCentralBinding
 
 @kotlin.ExperimentalStdlibApi
 @kotlin.ExperimentalUnsignedTypes
-class CentralFragment(var adapter: BaseAdapter) : XYDeviceFragment<FragmentCentralBinding>() {
+class CentralFragment(var adapter: BaseAdapter) : XYAppBaseFragment<FragmentCentralBinding>() {
     override fun inflate(inflater: LayoutInflater, container: ViewGroup?): FragmentCentralBinding {
         return FragmentCentralBinding.inflate(inflater, container, false)
     }

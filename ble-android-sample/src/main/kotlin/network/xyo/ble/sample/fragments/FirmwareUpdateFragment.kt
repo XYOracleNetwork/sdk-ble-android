@@ -30,7 +30,7 @@ import java.io.FileOutputStream
 import java.net.URL
 
 @kotlin.ExperimentalUnsignedTypes
-class FirmwareUpdateFragment : XYDeviceFragment<FragmentFirmwareUpdateBinding>(), BackFragmentListener {
+class FirmwareUpdateFragment(device: XYBluetoothDevice, deviceData : XYDeviceData) : XYDeviceFragment<FragmentFirmwareUpdateBinding>(device, deviceData), BackFragmentListener {
 
     private var firmwareFileName: String? = null
     private var updateInProgress: Boolean = false
@@ -191,9 +191,9 @@ class FirmwareUpdateFragment : XYDeviceFragment<FragmentFirmwareUpdateBinding>()
     private fun refreshAdapter() {
         GlobalScope.launch {
             //need to connect before refreshing
-            val result = device?.connect()
+            val result = device.connect()
             // val result = device?.refreshGatt()?.await()
-            if (result?.value as Boolean) {
+            if (result.value as Boolean) {
                 activity?.runOnUiThread { log.error("BLE adapter was reset, performing update") }
                 performUpdate()
             } else {
@@ -233,16 +233,5 @@ class FirmwareUpdateFragment : XYDeviceFragment<FragmentFirmwareUpdateBinding>()
             binding.tvFileName.text = uri.toString()
         }
 
-    }
-
-    companion object: XYBase() {
-        fun newInstance() = FirmwareUpdateFragment()
-
-        fun newInstance (device: XYBluetoothDevice?, deviceData : XYDeviceData?) : FirmwareUpdateFragment {
-            val frag = FirmwareUpdateFragment()
-            frag.device = device
-            frag.deviceData = deviceData
-            return frag
-        }
     }
 }

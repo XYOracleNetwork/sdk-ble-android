@@ -16,7 +16,7 @@ import network.xyo.ble.sample.XYDeviceData
 import network.xyo.ble.sample.databinding.FragmentGenericAttributeBinding
 
 @kotlin.ExperimentalUnsignedTypes
-class GenericAttributeFragment : XYDeviceFragment<FragmentGenericAttributeBinding>() {
+class GenericAttributeFragment(device: XYBluetoothDevice, deviceData : XYDeviceData) : XYDeviceFragment<FragmentGenericAttributeBinding>(device, deviceData) {
 
     override fun inflate(inflater: LayoutInflater, container: ViewGroup?): FragmentGenericAttributeBinding {
         return FragmentGenericAttributeBinding.inflate(inflater, container, false)
@@ -33,7 +33,7 @@ class GenericAttributeFragment : XYDeviceFragment<FragmentGenericAttributeBindin
     override fun onResume() {
         super.onResume()
 
-        if (deviceData?.serviceChanged.isNullOrEmpty()) {
+        if (deviceData.serviceChanged.isNullOrEmpty()) {
             setGattValues()
         } else {
             updateUI()
@@ -42,7 +42,7 @@ class GenericAttributeFragment : XYDeviceFragment<FragmentGenericAttributeBindin
 
     private fun updateUI() {
         activity?.runOnUiThread {
-            binding.textServiceChanged.text = deviceData?.serviceChanged
+            binding.textServiceChanged.text = deviceData.serviceChanged
         }
     }
 
@@ -81,7 +81,7 @@ class GenericAttributeFragment : XYDeviceFragment<FragmentGenericAttributeBindin
             device.connection {
                 hasConnectionError = false
 
-                deviceData?.let {
+                deviceData.let {
                     it.serviceChanged = device.genericAttributeService.serviceChanged.get().format()
                 }
 
@@ -101,7 +101,7 @@ class GenericAttributeFragment : XYDeviceFragment<FragmentGenericAttributeBindin
             device.connection {
                 hasConnectionError = false
 
-                deviceData?.let {
+                deviceData.let {
                     it.serviceChanged = device.genericAttributeService.serviceChanged.get().format()
                 }
 
@@ -121,7 +121,7 @@ class GenericAttributeFragment : XYDeviceFragment<FragmentGenericAttributeBindin
             device.connection {
                 hasConnectionError = false
 
-                deviceData?.let {
+                deviceData.let {
                     it.serviceChanged = device.genericAttributeService.serviceChanged.get().format()
                 }
 
@@ -131,19 +131,6 @@ class GenericAttributeFragment : XYDeviceFragment<FragmentGenericAttributeBindin
 
             updateUI()
             checkConnectionError(hasConnectionError)
-        }
-    }
-
-    companion object {
-
-        fun newInstance() =
-                GenericAttributeFragment()
-
-        fun newInstance (device: XYBluetoothDevice?, deviceData : XYDeviceData?) : GenericAttributeFragment {
-            val frag = GenericAttributeFragment()
-            frag.device = device
-            frag.deviceData = deviceData
-            return frag
         }
     }
 }

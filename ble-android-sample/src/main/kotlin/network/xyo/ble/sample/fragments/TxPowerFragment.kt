@@ -18,7 +18,7 @@ import network.xyo.ble.sample.databinding.FragmentTxPowerBinding
 
 
 @kotlin.ExperimentalUnsignedTypes
-class TxPowerFragment : XYDeviceFragment<FragmentTxPowerBinding>() {
+class TxPowerFragment(device: XYBluetoothDevice, deviceData : XYDeviceData) : XYDeviceFragment<FragmentTxPowerBinding>(device, deviceData) {
 
     override fun inflate(inflater: LayoutInflater, container: ViewGroup?): FragmentTxPowerBinding {
         return FragmentTxPowerBinding.inflate(inflater, container, false)
@@ -35,7 +35,7 @@ class TxPowerFragment : XYDeviceFragment<FragmentTxPowerBinding>() {
     override fun onResume() {
         super.onResume()
 
-        if (deviceData?.txPowerLevel.isNullOrEmpty()) {
+        if (deviceData.txPowerLevel.isNullOrEmpty()) {
             setTxValues()
         } else {
             updateUI()
@@ -44,7 +44,7 @@ class TxPowerFragment : XYDeviceFragment<FragmentTxPowerBinding>() {
 
     private fun updateUI() {
         activity?.runOnUiThread {
-            binding.textTxPower.text = deviceData?.txPowerLevel
+            binding.textTxPower.text = deviceData.txPowerLevel
         }
     }
 
@@ -85,7 +85,7 @@ class TxPowerFragment : XYDeviceFragment<FragmentTxPowerBinding>() {
             device.connection {
                 hasConnectionError = false
 
-                deviceData?.let {
+                deviceData.let {
                     it.txPowerLevel = device.txPowerService.txPowerLevel.get().format()
                 }
 
@@ -105,7 +105,7 @@ class TxPowerFragment : XYDeviceFragment<FragmentTxPowerBinding>() {
             device.connection {
                 hasConnectionError = false
 
-                deviceData?.let {
+                deviceData.let {
                     it.txPowerLevel = device.txPowerService.txPowerLevel.get().format()
                 }
 
@@ -125,7 +125,7 @@ class TxPowerFragment : XYDeviceFragment<FragmentTxPowerBinding>() {
             device.connection {
                 hasConnectionError = false
 
-                deviceData?.let {
+                deviceData.let {
                     it.txPowerLevel = device.txPowerService.txPowerLevel.get().format()
                 }
 
@@ -137,18 +137,4 @@ class TxPowerFragment : XYDeviceFragment<FragmentTxPowerBinding>() {
             checkConnectionError(hasConnectionError)
         }
     }
-
-    companion object {
-
-        fun newInstance() =
-                TxPowerFragment()
-
-        fun newInstance (device: XYBluetoothDevice?, deviceData : XYDeviceData?) : TxPowerFragment {
-            val frag = TxPowerFragment()
-            frag.device = device
-            frag.deviceData = deviceData
-            return frag
-        }
-    }
-
 }

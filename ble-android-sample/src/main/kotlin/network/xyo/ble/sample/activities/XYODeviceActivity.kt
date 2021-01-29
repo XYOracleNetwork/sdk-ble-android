@@ -21,7 +21,7 @@ import network.xyo.ble.sample.fragments.core.BackFragmentListener
 @kotlin.ExperimentalUnsignedTypes
 class XYODeviceActivity : XYOAppBaseActivity() {
 
-    var device: XYBluetoothDevice? = null
+    lateinit var device: XYBluetoothDevice
     private lateinit var sectionsPagerAdapter: SectionsPagerAdapter
     lateinit var data: XYDeviceData
     private val log = XYBase.log("XYODeviceActivity")
@@ -30,10 +30,12 @@ class XYODeviceActivity : XYOAppBaseActivity() {
         super.onCreate(savedInstanceState)
         val deviceHash = intent.getStringExtra(EXTRA_DEVICE_HASH)!!
         log.info("onCreate: $deviceHash")
-        device = scanner.devices[deviceHash]
-        if (device == null) {
+        val foundDevice = scanner.devices[deviceHash]
+        if (foundDevice == null) {
             log.error("Device not found")
             finish()
+        } else {
+            device = foundDevice
         }
         setContentView(R.layout.activity_device)
 
@@ -53,7 +55,7 @@ class XYODeviceActivity : XYOAppBaseActivity() {
 
     override fun onStop() {
         super.onStop()
-        device!!.reporter.removeListener(TAG)
+        device.reporter.removeListener(TAG)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -196,57 +198,57 @@ class XYODeviceActivity : XYOAppBaseActivity() {
 
             when (position) {
                 0 -> {
-                    frag = InfoFragment.newInstance(device, data)
+                    frag = InfoFragment(device, data)
                 }
                 1 -> {
-                    frag = DeviceServicesFragment.newInstance(device, data)
+                    frag = DeviceServicesFragment(device, data)
                 }
                 2 -> {
-                    frag = AlertFragment.newInstance(device, data)
+                    frag = AlertFragment(device, data)
                 }
                 3 -> {
-                    frag = BatteryFragment.newInstance(device, data)
+                    frag = BatteryFragment(device, data)
                 }
                 4 -> {
-                    frag = CurrentTimeFragment.newInstance(device, data)
+                    frag = CurrentTimeFragment(device, data)
                 }
                 5 -> {
-                    frag = DeviceFragment.newInstance(device, data)
+                    frag = DeviceFragment(device, data)
                 }
                 6 -> {
-                    frag = GenericAccessFragment.newInstance(device, data)
+                    frag = GenericAccessFragment(device, data)
                 }
                 7 -> {
-                    frag = GenericAttributeFragment.newInstance(device, data)
+                    frag = GenericAttributeFragment(device, data)
                 }
                 8 -> {
-                    frag = LinkLossFragment.newInstance(device, data)
+                    frag = LinkLossFragment(device, data)
                 }
                 9 -> {
-                    frag = TxPowerFragment.newInstance(device, data)
+                    frag = TxPowerFragment(device, data)
                 }
                 10 -> {
-                    frag = SongFragment.newInstance(device, data)
+                    frag = SongFragment(device, data)
                 }
                 11 -> {
-                    frag = FirmwareUpdateFragment.newInstance(device, data)
+                    frag = FirmwareUpdateFragment(device, data)
                 }
                 12 -> {
-                    frag = PrimaryFragment.newInstance(device, data)
+                    frag = PrimaryFragment(device, data)
                 }
                 13 -> {
-                    frag = BasicFragment.newInstance(device, data)
+                    frag = BasicFragment(device, data)
                 }
                 14 -> {
-                    frag = ExtendedConfigFragment.newInstance(device, data)
+                    frag = ExtendedConfigFragment(device, data)
                 }
                 15 -> {
-                    frag = ControlFragment.newInstance(device, data)
+                    frag = ControlFragment(device, data)
                 }
                 16 -> {
-                    frag = SensorFragment.newInstance(device, data)
+                    frag = SensorFragment(device, data)
                 }
-                else -> frag = InfoFragment.newInstance(device, data)
+                else -> frag = InfoFragment(device, data)
             }
 
             return frag

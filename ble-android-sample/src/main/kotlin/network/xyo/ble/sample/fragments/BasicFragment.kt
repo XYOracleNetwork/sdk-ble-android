@@ -14,7 +14,7 @@ import network.xyo.ble.sample.databinding.FragmentBasicBinding
 import network.xyo.ble.services.xy.BasicConfigService
 
 @kotlin.ExperimentalUnsignedTypes
-class BasicFragment : XYDeviceFragment<FragmentBasicBinding>() {
+class BasicFragment(device: XYBluetoothDevice, deviceData : XYDeviceData) : XYDeviceFragment<FragmentBasicBinding>(device, deviceData) {
 
     override fun inflate(inflater: LayoutInflater, container: ViewGroup?): FragmentBasicBinding {
         return FragmentBasicBinding.inflate(inflater, container, false)
@@ -70,18 +70,4 @@ class BasicFragment : XYDeviceFragment<FragmentBasicBinding>() {
             activity?.runOnUiThread { binding.textOtaWrite.text = otaWrite.toString() }
         }
     }
-
-    companion object {
-
-        fun newInstance() =
-                BasicFragment()
-
-        fun newInstance (device: XYBluetoothDevice?, deviceData : XYDeviceData?) : BasicFragment {
-            val frag = BasicFragment()
-            frag.device = device
-            frag.deviceData = deviceData
-            return frag
-        }
-    }
-
 }
