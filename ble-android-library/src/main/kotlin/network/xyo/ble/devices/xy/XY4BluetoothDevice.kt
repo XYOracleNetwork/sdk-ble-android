@@ -43,9 +43,6 @@ open class XY4BluetoothDevice(
     open val alertNotification by lazy { AlertNotificationService(this) }
     open val batteryService by lazy { BatteryService(this) }
     open val currentTimeService by lazy { CurrentTimeService(this) }
-    open val deviceInformationService by lazy { DeviceInformationService(this) }
-    open val genericAccessService by lazy { GenericAccessService(this) }
-    open val genericAttributeService by lazy { GenericAttributeService(this) }
     open val linkLossService by lazy { LinkLossService(this) }
     open val txPowerService by lazy { TxPowerService(this) }
     open val primary by lazy { PrimaryService(this) }

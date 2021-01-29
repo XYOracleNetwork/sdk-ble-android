@@ -67,7 +67,7 @@ class XYODeviceActivity : XYOAppBaseActivity() {
         frag?.onFileSelected(requestCode, data)
     }
 
-    private val xy3DeviceListener = object : XYFinderBluetoothDeviceListener() {
+    private val finderDeviceListener = object : XYFinderBluetoothDeviceListener() {
         override fun entered(device: XYBluetoothDevice) {
             update()
             log.info("Entered")
@@ -89,62 +89,13 @@ class XYODeviceActivity : XYOAppBaseActivity() {
             } else {
                 log.info("Disconnected")
             }
-        }
-
-        override fun buttonSinglePressed(device: XYFinderBluetoothDevice) {
-            log.info("Button Pressed: Single")
-        }
-
-        override fun buttonDoublePressed(device: XYFinderBluetoothDevice) {
-            log.info("Button Pressed: Double")
-        }
-
-        override fun buttonLongPressed(device: XYFinderBluetoothDevice) {
-            log.info("Button Pressed: Long")
-        }
-    }
-
-    private val xy4DeviceListener = object : XYFinderBluetoothDeviceListener() {
-        override fun entered(device: XYBluetoothDevice) {
-            update()
-            log.info("Entered")
-        }
-
-        override fun exited(device: XYBluetoothDevice) {
-            update()
-            log.info("Exited")
-        }
-
-        override fun detected(device: XYBluetoothDevice) {
-            update()
-        }
-
-        override fun connectionStateChanged(device: XYBluetoothDevice, newState: Int) {
-            update()
-            if (newState == 2) {
-                log.info("Connected")
-            } else {
-                log.info("Disconnected")
-            }
-        }
-
-        override fun buttonSinglePressed(device: XYFinderBluetoothDevice) {
-            log.info("Button Pressed: Single")
-        }
-
-        override fun buttonDoublePressed(device: XYFinderBluetoothDevice) {
-            log.info("Button Pressed: Double")
-        }
-
-        override fun buttonLongPressed(device: XYFinderBluetoothDevice) {
-            log.info("Button Pressed: Long")
         }
     }
 
     private fun addListener() {
         log.info("addListener: $device")
-        (device as? XY4BluetoothDevice)?.reporter?.addListener(TAG, xy4DeviceListener)
-        (device as? XY3BluetoothDevice)?.reporter?.addListener(TAG, xy3DeviceListener)
+        (device as? XY4BluetoothDevice)?.reporter?.addListener(TAG, finderDeviceListener)
+        (device as? XY3BluetoothDevice)?.reporter?.addListener(TAG, finderDeviceListener)
     }
 
     private fun removeListener() {
