@@ -261,6 +261,7 @@ class SongFragment : XYDeviceFragment<FragmentSongBinding>() {
                     GlobalScope.launch {
                         var hasConnectionError = true
                         it.connection {
+                            it.unlock()
                             hasConnectionError = false
                             val songData = song1.array()
                             var offset = 0

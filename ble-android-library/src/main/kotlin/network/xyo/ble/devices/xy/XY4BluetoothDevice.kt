@@ -77,11 +77,10 @@ open class XY4BluetoothDevice(
 
     override val prefix = "xy:ibeacon"
 
-    override suspend fun find() = connection {
-        log.info("find")
+    override suspend fun find(song: UByte?) = connection {
         val unlockResult = unlock()
         if (unlockResult.error == XYBluetoothResultErrorCode.None) {
-            val writeResult = primary.buzzer.set(0xbU)
+            val writeResult = primary.buzzer.set(song ?: 0xbU)
             if (writeResult.error == XYBluetoothResultErrorCode.None) {
                 return@connection XYBluetoothResult(writeResult.value)
             } else {

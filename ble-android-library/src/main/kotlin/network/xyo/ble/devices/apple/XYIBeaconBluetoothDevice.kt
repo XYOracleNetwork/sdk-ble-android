@@ -18,7 +18,7 @@ import network.xyo.ble.generic.scanner.XYScanResult
  * .listener is now camel cased into the name.
  */
 open class XYIBeaconBluetoothDeviceListener : XYAppleBluetoothDeviceListener() {
-    open fun onIBeaconDetect(uuid: String, major: UShort, minor: UShort) {
+    open fun iBeaconDetected(uuid: String, major: UShort, minor: UShort) {
     }
 }
 

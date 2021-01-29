@@ -4,16 +4,10 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.SparseArray
 import android.view.ViewGroup
-import android.view.Window
-import android.view.WindowManager
-import android.widget.BaseAdapter
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
-import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
-import network.xyo.ble.sample.R
-import network.xyo.base.XYBase
 import network.xyo.ble.sample.adapters.XYDeviceAdapter
 import network.xyo.ble.sample.databinding.ActivityAppBinding
 import network.xyo.ble.sample.fragments.CentralFragment

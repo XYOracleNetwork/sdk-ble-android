@@ -5,7 +5,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.annotation.UiThread
 import androidx.recyclerview.widget.RecyclerView
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import network.xyo.ble.sample.R
 
 @Suppress("unused")
@@ -40,12 +44,16 @@ class XYServiceListAdapter(services : Array<BluetoothGattService>) : RecyclerVie
 
     fun addItem(item: BluetoothGattService) {
         list.add(item)
-        notifyDataSetChanged()
+        GlobalScope.launch(Dispatchers.Main) {
+            notifyDataSetChanged()
+        }
     }
 
     fun clear() {
         list.clear()
-        notifyDataSetChanged()
+        GlobalScope.launch(Dispatchers.Main) {
+            notifyDataSetChanged()
+        }
     }
 
     class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){

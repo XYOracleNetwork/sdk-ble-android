@@ -3,7 +3,6 @@ package network.xyo.ble.sample.activities
 import android.content.Intent
 import android.os.Bundle
 import android.util.SparseArray
-import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -15,7 +14,6 @@ import network.xyo.ble.devices.xy.*
 import network.xyo.ble.generic.devices.XYBluetoothDevice
 import network.xyo.ble.sample.R
 import network.xyo.ble.sample.XYDeviceData
-import network.xyo.ble.sample.databinding.ActivityDeviceBinding
 import network.xyo.ble.sample.fragments.*
 import network.xyo.ble.sample.fragments.core.BackFragmentListener
 

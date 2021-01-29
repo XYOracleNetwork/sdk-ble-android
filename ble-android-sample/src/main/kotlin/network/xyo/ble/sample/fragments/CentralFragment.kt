@@ -75,7 +75,7 @@ class CentralFragment : XYDeviceFragment<FragmentCentralBinding>() {
             override fun buttonSinglePressed(device: XYFinderBluetoothDevice) {
                 super.buttonSinglePressed(device)
                 log.info("XY4 Button Single Pressed: ${device.address}")
-                openDevice(device)
+                //openDevice(device)
             }
 
             override fun buttonDoublePressed(device: XYFinderBluetoothDevice) {
@@ -92,7 +92,7 @@ class CentralFragment : XYDeviceFragment<FragmentCentralBinding>() {
             override fun buttonSinglePressed(device: XYFinderBluetoothDevice) {
                 super.buttonSinglePressed(device)
                 log.info("XY3 Button Single Pressed: ${device.address}")
-                openDevice(device)
+                //openDevice(device)
             }
             override fun buttonDoublePressed(device: XYFinderBluetoothDevice) {
                 super.buttonDoublePressed(device)

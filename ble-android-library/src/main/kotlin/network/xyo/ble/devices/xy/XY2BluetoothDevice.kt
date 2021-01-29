@@ -36,8 +36,8 @@ open class XY2BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
     val extendedConfigService by lazy { ExtendedConfigService(this) }
     val sensorService by lazy { SensorService(this) }
 
-    override suspend fun find() = connection {
-        return@connection controlService.buzzerSelect.set(0x02U)
+    override suspend fun find(song: UByte?) = connection {
+        return@connection controlService.buzzerSelect.set(song ?: 0x02U)
     }
 
     override suspend fun stopFind() = connection {
