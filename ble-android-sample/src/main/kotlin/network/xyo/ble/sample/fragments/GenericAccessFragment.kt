@@ -9,6 +9,7 @@ import kotlinx.coroutines.launch
 import network.xyo.ble.devices.xy.XY2BluetoothDevice
 import network.xyo.ble.devices.xy.XY3BluetoothDevice
 import network.xyo.ble.devices.xy.XY4BluetoothDevice
+import network.xyo.ble.devices.xy.XYFinderBluetoothDevice
 import network.xyo.ble.generic.devices.XYBluetoothDevice
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResult
 import network.xyo.ble.sample.R
@@ -52,17 +53,9 @@ class GenericAccessFragment(device: XYBluetoothDevice, deviceData : XYDeviceData
 
     private fun setGenericAccessValues() {
         when (device) {
-            is XY4BluetoothDevice -> {
-                val x4 = (device as? XY4BluetoothDevice)
-                x4?.let { getXY4Values(it) }
-            }
-            is XY3BluetoothDevice -> {
-                val x3 = (device as? XY3BluetoothDevice)
-                x3?.let { getXY3Values(it) }
-            }
-            is XY2BluetoothDevice -> {
-                val x2 = (device as? XY2BluetoothDevice)
-                x2?.let { getXY2Values(it) }
+            is XYFinderBluetoothDevice -> {
+                val xyFinder = (device as? XYFinderBluetoothDevice)
+                xyFinder?.let { getValues(it) }
             }
             else -> {
                 binding.textDeviceName.text = getString(R.string.unknown_device)
@@ -70,79 +63,7 @@ class GenericAccessFragment(device: XYBluetoothDevice, deviceData : XYDeviceData
         }
     }
 
-    private fun getXY4Values(device: XY4BluetoothDevice) {
-        GlobalScope.launch {
-            var hasConnectionError = true
-
-            device.connection {
-                hasConnectionError = false
-
-                device.genericAccessService.deviceName.get().let {
-                    deviceData.deviceName = "${it.value ?: it.error}"
-                }
-
-                device.genericAccessService.appearance.get().let {
-                    deviceData.appearance = "${it.value ?: it.error}"
-                }
-
-                device.genericAccessService.privacyFlag.get().let {
-                    deviceData.privacyFlag = "${it.value ?: it.error}"
-                }
-
-                device.genericAccessService.reconnectionAddress.get().let {
-                    deviceData.reconnectionAddress = "${it.value ?: it.error}"
-                }
-
-                device.genericAccessService.peripheralPreferredConnectionParameters.get().let {
-                    deviceData.peripheralPreferredConnectionParameters = "${it.value ?: it.error}"
-                }
-
-                return@connection XYBluetoothResult(true)
-
-            }
-
-            updateUI()
-            checkConnectionError(hasConnectionError)
-        }
-    }
-
-    private fun getXY3Values(device: XY3BluetoothDevice) {
-        GlobalScope.launch {
-            var hasConnectionError = true
-
-            device.connection {
-                hasConnectionError = false
-
-                device.genericAccessService.deviceName.get().let {
-                    deviceData.deviceName = "${it.value ?: it.error}"
-                }
-
-                device.genericAccessService.appearance.get().let {
-                    deviceData.appearance = "${it.value ?: it.error}"
-                }
-
-                device.genericAccessService.privacyFlag.get().let {
-                    deviceData.privacyFlag = "${it.value ?: it.error}"
-                }
-
-                device.genericAccessService.reconnectionAddress.get().let {
-                    deviceData.reconnectionAddress = "${it.value ?: it.error}"
-                }
-
-                device.genericAccessService.peripheralPreferredConnectionParameters.get().let {
-                    deviceData.peripheralPreferredConnectionParameters = "${it.value ?: it.error}"
-                }
-
-                return@connection XYBluetoothResult(true)
-
-            }
-
-            updateUI()
-            checkConnectionError(hasConnectionError)
-        }
-    }
-
-    private fun getXY2Values(device: XY2BluetoothDevice) {
+    private fun getValues(device: XYFinderBluetoothDevice) {
         GlobalScope.launch {
             var hasConnectionError = true
 
