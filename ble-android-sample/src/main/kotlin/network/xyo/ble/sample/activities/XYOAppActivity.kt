@@ -11,7 +11,7 @@ import com.google.android.material.tabs.TabLayout
 import network.xyo.ble.sample.adapters.XYDeviceAdapter
 import network.xyo.ble.sample.databinding.ActivityAppBinding
 import network.xyo.ble.sample.fragments.CentralFragment
-import network.xyo.ble.sample.fragments.ServerFragment
+import network.xyo.ble.sample.fragments.server.ServerFragment
 
 @kotlin.ExperimentalUnsignedTypes
 @kotlin.ExperimentalStdlibApi
@@ -46,8 +46,8 @@ class XYOAppActivity : XYOAppBaseActivity() {
 
         override fun getItem(position: Int): Fragment {
             when (position) {
-                0 -> return CentralFragment.newInstance(deviceAdapter)
-                1 -> return ServerFragment.newInstance()
+                0 -> return CentralFragment(deviceAdapter)
+                1 -> return ServerFragment()
             }
 
             throw Exception("Position out of index!")
