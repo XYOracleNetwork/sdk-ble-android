@@ -13,7 +13,7 @@ import network.xyo.ble.sample.databinding.FragmentPrimaryBinding
 import network.xyo.ble.services.xy.PrimaryService
 
 @kotlin.ExperimentalUnsignedTypes
-class PrimaryFragment : XYDeviceFragment<FragmentPrimaryBinding>() {
+class PrimaryFragment(device: XYBluetoothDevice, deviceData : XYDeviceData) : XYDeviceFragment<FragmentPrimaryBinding>(device, deviceData) {
 
     override fun inflate(inflater: LayoutInflater, container: ViewGroup?): FragmentPrimaryBinding {
         return FragmentPrimaryBinding.inflate(inflater, container, false)
@@ -91,18 +91,4 @@ class PrimaryFragment : XYDeviceFragment<FragmentPrimaryBinding>() {
             activity?.runOnUiThread { binding.textUuid.text = uuid.toString() }
         }
     }
-
-    companion object {
-
-        fun newInstance() =
-                PrimaryFragment()
-
-        fun newInstance (device: XYBluetoothDevice?, deviceData : XYDeviceData?) : PrimaryFragment {
-            val frag = PrimaryFragment()
-            frag.device = device
-            frag.deviceData = deviceData
-            return frag
-        }
-    }
-
 }

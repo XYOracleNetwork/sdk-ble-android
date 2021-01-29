@@ -14,7 +14,7 @@ import network.xyo.ble.sample.databinding.FragmentExtendedConfigBinding
 import network.xyo.ble.services.xy.ExtendedConfigService
 
 @kotlin.ExperimentalUnsignedTypes
-class ExtendedConfigFragment : XYDeviceFragment<FragmentExtendedConfigBinding>() {
+class ExtendedConfigFragment(device: XYBluetoothDevice, deviceData : XYDeviceData) : XYDeviceFragment<FragmentExtendedConfigBinding>(device, deviceData) {
 
     override fun inflate(inflater: LayoutInflater, container: ViewGroup?): FragmentExtendedConfigBinding {
         return FragmentExtendedConfigBinding.inflate(inflater, container, false)
@@ -68,18 +68,4 @@ class ExtendedConfigFragment : XYDeviceFragment<FragmentExtendedConfigBinding>()
 
         }
     }
-
-    companion object {
-
-        fun newInstance() =
-                ExtendedConfigFragment()
-
-        fun newInstance (device: XYBluetoothDevice?, deviceData : XYDeviceData?) : ExtendedConfigFragment {
-            val frag = ExtendedConfigFragment()
-            frag.device = device
-            frag.deviceData = deviceData
-            return frag
-        }
-    }
-
 }

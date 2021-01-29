@@ -8,13 +8,12 @@ import kotlinx.coroutines.*
 import network.xyo.ble.devices.xy.XY3BluetoothDevice
 import network.xyo.ble.devices.xy.XY4BluetoothDevice
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResult
-import network.xyo.base.XYBase
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResultErrorCode
 import network.xyo.ble.sample.databinding.FragmentTestBinding
 import java.lang.Exception
 
 @kotlin.ExperimentalUnsignedTypes
-class BeepTestFragment : XYDeviceFragment<FragmentTestBinding>() {
+class BeepTestFragment : XYAppBaseFragment<FragmentTestBinding>() {
 
     override fun inflate(inflater: LayoutInflater, container: ViewGroup?): FragmentTestBinding {
         return FragmentTestBinding.inflate(inflater, container, false)
@@ -140,12 +139,6 @@ class BeepTestFragment : XYDeviceFragment<FragmentTestBinding>() {
                     }
                 }
             }
-        }
-    }
-
-    companion object: XYBase() {
-        fun newInstance() : BeepTestFragment {
-            return BeepTestFragment()
         }
     }
 }

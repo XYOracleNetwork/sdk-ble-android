@@ -24,16 +24,12 @@ import network.xyo.ble.sample.databinding.FragmentCentralBinding
 
 @kotlin.ExperimentalStdlibApi
 @kotlin.ExperimentalUnsignedTypes
-class CentralFragment : XYDeviceFragment<FragmentCentralBinding>() {
-    var adapter: BaseAdapter? = null
-
+class CentralFragment(var adapter: BaseAdapter) : XYAppBaseFragment<FragmentCentralBinding>() {
     override fun inflate(inflater: LayoutInflater, container: ViewGroup?): FragmentCentralBinding {
         return FragmentCentralBinding.inflate(inflater, container, false)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-
+    private fun enableDevices() {
         XYAppleBluetoothDevice.enable(true)
         XYIBeaconBluetoothDevice.enable(true, canCreate = true)
         XYFinderBluetoothDevice.enable(true, canCreate = true)
@@ -41,7 +37,12 @@ class CentralFragment : XYDeviceFragment<FragmentCentralBinding>() {
         XY3BluetoothDevice.enable(true)
         XY2BluetoothDevice.enable(true)
         XYBluetoothDevice.enable(true)
+    }
 
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
+                              savedInstanceState: Bundle?): View? {
+
+        enableDevices()
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
@@ -70,42 +71,6 @@ class CentralFragment : XYDeviceFragment<FragmentCentralBinding>() {
         this.startActivity(intent)
     }
 
-    private fun connectListeners() {
-        XY4BluetoothDevice.globalReporter.addListener(tag!!, object : XY4BluetoothDeviceListener() {
-            override fun buttonSinglePressed(device: XYFinderBluetoothDevice) {
-                super.buttonSinglePressed(device)
-                log.info("XY4 Button Single Pressed: ${device.address}")
-                openDevice(device)
-            }
-
-            override fun buttonDoublePressed(device: XYFinderBluetoothDevice) {
-                super.buttonDoublePressed(device)
-                log.info("XY4 Button Double Pressed")
-            }
-
-            override fun buttonLongPressed(device: XYFinderBluetoothDevice) {
-                super.buttonLongPressed(device)
-                log.info("XY4 Button Long Pressed")
-            }
-        })
-        XY3BluetoothDevice.globalReporter.addListener(tag!!, object : XY3BluetoothDeviceListener() {
-            override fun buttonSinglePressed(device: XYFinderBluetoothDevice) {
-                super.buttonSinglePressed(device)
-                log.info("XY3 Button Single Pressed: ${device.address}")
-                openDevice(device)
-            }
-            override fun buttonDoublePressed(device: XYFinderBluetoothDevice) {
-                super.buttonDoublePressed(device)
-                log.info("XY3 Button Double Pressed")
-            }
-
-            override fun buttonLongPressed(device: XYFinderBluetoothDevice) {
-                super.buttonLongPressed(device)
-                log.info("XY3 Button Long Pressed")
-            }
-        })
-    }
-
     private fun checkStatus() {
         when (scanner.status) {
             XYSmartScanStatus.Enabled -> {
@@ -128,11 +93,7 @@ class CentralFragment : XYDeviceFragment<FragmentCentralBinding>() {
         XY4BluetoothDevice.globalReporter.removeListener(tag!!)
     }
 
-    override fun onResume() {
-        log.info("onResume")
-        super.onResume()
-        connectListeners()
-
+    private fun checkPermissions() {
         Permissions.check(
                 this.context,
                 Manifest.permission.ACCESS_FINE_LOCATION,
@@ -152,8 +113,15 @@ class CentralFragment : XYDeviceFragment<FragmentCentralBinding>() {
                     }
                 }
         )
+    }
 
-        activity?.runOnUiThread { adapter?.notifyDataSetChanged() }
+    override fun onResume() {
+        log.info("onResume")
+        super.onResume()
+
+        checkPermissions()
+
+        activity?.runOnUiThread { adapter.notifyDataSetChanged() }
 
         checkStatus()
     }
@@ -173,13 +141,5 @@ class CentralFragment : XYDeviceFragment<FragmentCentralBinding>() {
 
     private fun onBluetoothUnavailable() {
         binding.llDeviceNoBluetooth.visibility = VISIBLE
-    }
-
-    companion object {
-        fun newInstance (adapter: BaseAdapter) : CentralFragment {
-            val frag = CentralFragment()
-            frag.adapter = adapter
-            return frag
-        }
     }
 }

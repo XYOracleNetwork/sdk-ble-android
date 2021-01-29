@@ -18,16 +18,10 @@ import network.xyo.ble.sample.databinding.FragmentLinkLossBinding
 
 
 @kotlin.ExperimentalUnsignedTypes
-class LinkLossFragment : XYDeviceFragment<FragmentLinkLossBinding>() {
+class LinkLossFragment(device: XYBluetoothDevice, deviceData : XYDeviceData) : XYDeviceFragment<FragmentLinkLossBinding>(device, deviceData) {
 
     override fun inflate(inflater: LayoutInflater, container: ViewGroup?): FragmentLinkLossBinding {
         return FragmentLinkLossBinding.inflate(inflater, container, false)
-    }
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-
-        return inflater.inflate(R.layout.fragment_link_loss, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -41,7 +35,7 @@ class LinkLossFragment : XYDeviceFragment<FragmentLinkLossBinding>() {
     override fun onResume() {
         super.onResume()
 
-        if (deviceData?.alertLevel.isNullOrEmpty()) {
+        if (deviceData.alertLevel.isNullOrEmpty()) {
             initLinkLossValues()
         } else {
             updateUI()
@@ -50,7 +44,7 @@ class LinkLossFragment : XYDeviceFragment<FragmentLinkLossBinding>() {
 
     private fun updateUI() {
         activity?.runOnUiThread {
-            binding.textAlertLevel.text = deviceData?.alertLevel
+            binding.textAlertLevel.text = deviceData.alertLevel
         }
     }
 
@@ -86,7 +80,7 @@ class LinkLossFragment : XYDeviceFragment<FragmentLinkLossBinding>() {
             device.connection {
                 hasConnectionError = false
 
-                deviceData?.let {
+                deviceData.let {
                     it.alertLevel = device.linkLossService.alertLevel.get().format()
                 }
 
@@ -106,7 +100,7 @@ class LinkLossFragment : XYDeviceFragment<FragmentLinkLossBinding>() {
             device.connection {
                 hasConnectionError = false
 
-                deviceData?.let {
+                deviceData.let {
                     it.alertLevel = device.linkLossService.alertLevel.get().format()
                 }
 
@@ -118,18 +112,4 @@ class LinkLossFragment : XYDeviceFragment<FragmentLinkLossBinding>() {
             checkConnectionError(hasConnectionError)
         }
     }
-
-    companion object {
-
-        fun newInstance() =
-                LinkLossFragment()
-
-        fun newInstance (device: XYBluetoothDevice?, deviceData : XYDeviceData?) : LinkLossFragment {
-            val frag = LinkLossFragment()
-            frag.device = device
-            frag.deviceData = deviceData
-            return frag
-        }
-    }
-
 }

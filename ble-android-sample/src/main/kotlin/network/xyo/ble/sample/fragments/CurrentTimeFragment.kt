@@ -16,7 +16,7 @@ import network.xyo.ble.sample.XYDeviceData
 import network.xyo.ble.sample.databinding.FragmentCurrentTimeBinding
 
 @kotlin.ExperimentalUnsignedTypes
-class CurrentTimeFragment : XYDeviceFragment<FragmentCurrentTimeBinding>() {
+class CurrentTimeFragment(device: XYBluetoothDevice, deviceData : XYDeviceData) : XYDeviceFragment<FragmentCurrentTimeBinding>(device, deviceData) {
 
     override fun inflate(inflater: LayoutInflater, container: ViewGroup?): FragmentCurrentTimeBinding {
         return FragmentCurrentTimeBinding.inflate(inflater, container, false)
@@ -33,7 +33,7 @@ class CurrentTimeFragment : XYDeviceFragment<FragmentCurrentTimeBinding>() {
     override fun onResume() {
         super.onResume()
 
-        if (deviceData?.currentTime.isNullOrEmpty()) {
+        if (deviceData.currentTime.isNullOrEmpty()) {
             setTimeValues()
         } else {
             updateUI()
@@ -43,9 +43,9 @@ class CurrentTimeFragment : XYDeviceFragment<FragmentCurrentTimeBinding>() {
 
     private fun updateUI() {
         activity?.runOnUiThread {
-            binding.textCurrentTime.text = deviceData?.currentTime
-            binding.textLocalTimeInformation.text = deviceData?.localTimeInformation
-            binding.textReferenceTimeInformation.text = deviceData?.referenceTimeInformation
+            binding.textCurrentTime.text = deviceData.currentTime
+            binding.textLocalTimeInformation.text = deviceData.localTimeInformation
+            binding.textReferenceTimeInformation.text = deviceData.referenceTimeInformation
         }
     }
 
@@ -75,7 +75,7 @@ class CurrentTimeFragment : XYDeviceFragment<FragmentCurrentTimeBinding>() {
             device.connection {
                 hasConnectionError = false
 
-                deviceData?.let {
+                deviceData.let {
                     it.currentTime = device.currentTimeService.currentTime.get().format()
                     it.localTimeInformation = device.currentTimeService.localTimeInformation.get().format()
                     it.referenceTimeInformation = device.currentTimeService.referenceTimeInformation.get().format()
@@ -98,7 +98,7 @@ class CurrentTimeFragment : XYDeviceFragment<FragmentCurrentTimeBinding>() {
             device.connection {
                 hasConnectionError = false
 
-                deviceData?.let {
+                deviceData.let {
                     it.currentTime = device.currentTimeService.currentTime.get().format()
                     it.localTimeInformation = device.currentTimeService.localTimeInformation.get().format()
                     it.referenceTimeInformation = device.currentTimeService.referenceTimeInformation.get().format()
@@ -111,18 +111,4 @@ class CurrentTimeFragment : XYDeviceFragment<FragmentCurrentTimeBinding>() {
             checkConnectionError(hasConnectionError)
         }
     }
-
-    companion object {
-
-        fun newInstance() =
-                CurrentTimeFragment()
-
-        fun newInstance (device: XYBluetoothDevice?, deviceData : XYDeviceData?) : CurrentTimeFragment {
-            val frag = CurrentTimeFragment()
-            frag.device = device
-            frag.deviceData = deviceData
-            return frag
-        }
-    }
-
 }

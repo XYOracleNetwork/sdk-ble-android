@@ -41,7 +41,7 @@ class XYOTestActivity : XYOAppBaseActivity() {
 
         override fun getItem(position: Int): Fragment {
             when (position) {
-                0 -> return BeepTestFragment.newInstance()
+                0 -> return BeepTestFragment()
             }
 
             throw Exception("Position out of index!")

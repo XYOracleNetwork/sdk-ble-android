@@ -1,4 +1,4 @@
-package network.xyo.ble.sample.fragments
+package network.xyo.ble.sample.fragments.server
 
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothGattCharacteristic
@@ -22,6 +22,9 @@ import network.xyo.ble.generic.gatt.server.*
 import network.xyo.ble.generic.gatt.server.responders.XYBluetoothReadResponder
 import network.xyo.ble.generic.gatt.server.responders.XYBluetoothWriteResponder
 import network.xyo.ble.sample.databinding.FragmentPeripheralBinding
+import network.xyo.ble.sample.fragments.AdvertiserFragment
+import network.xyo.ble.sample.fragments.RootServicesFragment
+import network.xyo.ble.sample.fragments.XYAppBaseFragment
 import java.nio.ByteBuffer
 import java.nio.charset.Charset
 import java.util.UUID
@@ -59,7 +62,7 @@ class ServerFragment : XYAppBaseFragment<FragmentPeripheralBinding>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val tabAdapter = SectionsPagerAdapter(this.childFragmentManager)
+        val tabAdapter = SectionsPagerAdapter(this.childFragmentManager, services, bleAdvertiser)
         pagerAdapter = tabAdapter
         binding.serverPagerContainer.adapter = pagerAdapter
         binding.serverPagerContainer.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(binding.serverTabs))
@@ -114,36 +117,6 @@ class ServerFragment : XYAppBaseFragment<FragmentPeripheralBinding>() {
         override fun onReadRequest(device: BluetoothDevice?, offset: Int): XYBluetoothGattServer.XYReadRequest {
             count++
             return XYBluetoothGattServer.XYReadRequest( ByteBuffer.allocate(4).putInt(count).array(), 0)
-        }
-    }
-
-    inner class SectionsPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
-        private val size = 2
-        private val fragments: SparseArray<Fragment> = SparseArray(size)
-
-        override fun getItem(position: Int): Fragment {
-            when (position) {
-                0 -> return AdvertiserFragment.newInstance(bleAdvertiser)
-                1 -> return RootServicesFragment.newInstance(services)
-            }
-
-            throw Exception("Position out of index!")
-        }
-
-        override fun getCount(): Int {
-            return size
-        }
-
-        override fun instantiateItem(container: ViewGroup, position: Int): Any {
-            val fragment = super.instantiateItem(container, position) as Fragment
-            fragments.append(position, fragment)
-            return fragment
-        }
-    }
-
-    companion object {
-        fun newInstance () : ServerFragment {
-            return ServerFragment()
         }
     }
 }

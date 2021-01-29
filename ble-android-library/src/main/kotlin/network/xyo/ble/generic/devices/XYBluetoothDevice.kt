@@ -16,7 +16,6 @@ import network.xyo.ble.generic.ads.XYBleAd
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothGattClient
 import network.xyo.ble.generic.scanner.XYScanRecord
 import network.xyo.ble.generic.scanner.XYScanResult
-import androidx.annotation.WorkerThread
 import network.xyo.ble.generic.listeners.XYBluetoothDeviceListener
 import network.xyo.ble.generic.reporters.XYBluetoothDeviceReporter
 

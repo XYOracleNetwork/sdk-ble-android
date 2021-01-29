@@ -19,8 +19,6 @@ import network.xyo.ble.services.xy.*
  * Brings in a renamed Finder Listener.
  * .listener is now camel cased into the name.
  */
-@Suppress("unused")
-open class XY2BluetoothDeviceListener : XYFinderBluetoothDeviceListener()
 
 @kotlin.ExperimentalUnsignedTypes
 open class XY2BluetoothDevice(context: Context, scanResult: XYScanResult, hash: String) : XYFinderBluetoothDevice(context, scanResult, hash) {
@@ -36,8 +34,8 @@ open class XY2BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
     val extendedConfigService by lazy { ExtendedConfigService(this) }
     val sensorService by lazy { SensorService(this) }
 
-    override suspend fun find() = connection {
-        return@connection controlService.buzzerSelect.set(0x02U)
+    override suspend fun find(song: UByte?) = connection {
+        return@connection controlService.buzzerSelect.set(song ?: 0x02U)
     }
 
     override suspend fun stopFind() = connection {

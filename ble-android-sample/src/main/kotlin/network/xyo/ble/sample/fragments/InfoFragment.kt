@@ -23,7 +23,7 @@ import network.xyo.ble.sample.XYDeviceData
 import network.xyo.ble.sample.databinding.FragmentInfoBinding
 
 @kotlin.ExperimentalUnsignedTypes
-class InfoFragment : XYDeviceFragment<FragmentInfoBinding>(), View.OnClickListener, CompoundButton.OnCheckedChangeListener {
+class InfoFragment(device: XYBluetoothDevice, deviceData : XYDeviceData) : XYDeviceFragment<FragmentInfoBinding>(device, deviceData), View.OnClickListener, CompoundButton.OnCheckedChangeListener {
 
     override fun inflate(inflater: LayoutInflater, container: ViewGroup?): FragmentInfoBinding {
         return FragmentInfoBinding.inflate(inflater, container, false)
@@ -67,7 +67,7 @@ class InfoFragment : XYDeviceFragment<FragmentInfoBinding>(), View.OnClickListen
         updateAdList()
         updateUI()
 
-        device?.reporter?.addListener("info", object: XYBluetoothDeviceListener() {
+        device.reporter.addListener("info", object: XYBluetoothDeviceListener() {
             override fun entered(device: XYBluetoothDevice) {
                 super.entered(device)
                 log.info("Entered")
@@ -92,7 +92,7 @@ class InfoFragment : XYDeviceFragment<FragmentInfoBinding>(), View.OnClickListen
 
     override fun onPause() {
         super.onPause()
-        device?.reporter?.removeListener("info")
+        device.reporter.removeListener("info")
     }
 
     override fun update() {
@@ -103,27 +103,23 @@ class InfoFragment : XYDeviceFragment<FragmentInfoBinding>(), View.OnClickListen
         activity?.runOnUiThread {
             log.info("update")
 
-            if (device != null) {
+            binding.textFamily.text = device.name
+            binding.textRssi.text = device.rssi.toString()
 
-
-                binding.textFamily.text = device?.name
-                binding.textRssi.text = device?.rssi.toString()
-
-                (device as? XYIBeaconBluetoothDevice)?.let {
-                    binding.textPower.text = it.power.toString()
-                    binding.textMajor.text = String.format(getString(R.string.hex_placeholder), it.major.toInt().toString(16))
-                    binding.textMinor.text = String.format(getString(R.string.hex_placeholder), it.minor.toInt().toString(16))
-                }
-
-                binding.textPulseCount.text = device?.detectCount.toString()
-                binding.textEnterCount.text = device?.enterCount.toString()
-                binding.textExitCount.text = device?.exitCount.toString()
-                binding.textAvgGapSize.text = device?.averageDetectGap.toString()
-                binding.textLastGapSize.text = device?.lastDetectGap.toString()
-                binding.textMaxGapSize.text = device?.maxDetectTime.toString()
+            (device as? XYIBeaconBluetoothDevice)?.let {
+                binding.textPower.text = it.power.toString()
+                binding.textMajor.text = String.format(getString(R.string.hex_placeholder), it.major.toInt().toString(16))
+                binding.textMinor.text = String.format(getString(R.string.hex_placeholder), it.minor.toInt().toString(16))
             }
 
-            if (device?.connected == true) {
+            binding.textPulseCount.text = device.detectCount.toString()
+            binding.textEnterCount.text = device.enterCount.toString()
+            binding.textExitCount.text = device.exitCount.toString()
+            binding.textAvgGapSize.text = device.averageDetectGap.toString()
+            binding.textLastGapSize.text = device.lastDetectGap.toString()
+            binding.textMaxGapSize.text = device.maxDetectTime.toString()
+
+            if (device.connected == true) {
                 binding.buttonConnect.visibility = GONE
                 binding.buttonDisconnect.visibility = VISIBLE
             } else {
@@ -137,7 +133,7 @@ class InfoFragment : XYDeviceFragment<FragmentInfoBinding>(), View.OnClickListen
         when (buttonView?.id) {
             R.id.button_stayConnected -> {
                 GlobalScope.launch {
-                    device?.stayConnected = isChecked
+                    device.stayConnected = isChecked
                     updateUI()
                 }
             }
@@ -198,8 +194,8 @@ class InfoFragment : XYDeviceFragment<FragmentInfoBinding>(), View.OnClickListen
 
     private fun connect() {
         GlobalScope.launch {
-            val result = device?.connect()
-            val error = result?.error
+            val result = device.connect()
+            val error = result.error
             if (error != XYBluetoothResultErrorCode.None) {
                 log.error(error.toString())
             } else {
@@ -211,7 +207,7 @@ class InfoFragment : XYDeviceFragment<FragmentInfoBinding>(), View.OnClickListen
 
     private fun disconnect() {
         GlobalScope.launch {
-            device?.disconnectAsync()
+            device.disconnectAsync()
             updateUI()
         }
     }
@@ -373,7 +369,7 @@ class InfoFragment : XYDeviceFragment<FragmentInfoBinding>(), View.OnClickListen
     private fun updateAdList() {
         activity?.runOnUiThread {
             var txt = ""
-            device?.let { device ->
+            device.let { device ->
                 for (i in 0 until device.ads.size()) {
                     val key = device.ads.keyAt(i)
                     txt = txt + device.ads[key].data?.toHex() + "\r\n"
@@ -396,16 +392,5 @@ class InfoFragment : XYDeviceFragment<FragmentInfoBinding>(), View.OnClickListen
         }
 
         return result.toString()
-    }
-
-    companion object : XYBase() {
-        fun newInstance() = InfoFragment()
-
-        fun newInstance (device: XYBluetoothDevice?, deviceData : XYDeviceData?) : InfoFragment {
-            val frag = InfoFragment()
-            frag.device = device
-            frag.deviceData = deviceData
-            return frag
-        }
     }
 }
