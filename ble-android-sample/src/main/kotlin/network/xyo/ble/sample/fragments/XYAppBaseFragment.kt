@@ -7,13 +7,14 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.viewbinding.ViewBinding
 import network.xyo.base.XYBase
+import network.xyo.base.XYLogging
 import network.xyo.ble.sample.XYApplication
 import network.xyo.ble.generic.scanner.XYSmartScan
 
 @kotlin.ExperimentalUnsignedTypes
 abstract class XYAppBaseFragment<T> : Fragment() where T: ViewBinding {
 
-    val log = XYBase.log("XYAppBaseFragment")
+    val log = XYLogging(this)
 
     private var _binding: T? = null
     val binding get() = _binding!!
