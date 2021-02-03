@@ -9,7 +9,6 @@ import kotlin.math.pow
 import network.xyo.base.XYBase
 import network.xyo.ble.generic.devices.XYBluetoothDevice
 import network.xyo.ble.generic.devices.XYCreator
-import network.xyo.ble.generic.listeners.XYBluetoothDeviceListener
 import network.xyo.ble.generic.scanner.XYScanResult
 
 /**
@@ -133,7 +132,7 @@ open class XYIBeaconBluetoothDevice(context: Context, val scanResult: XYScanResu
                     UUID(high, low)
                 } catch (ex: BufferUnderflowException) {
                     // can throw a BufferUnderflowException if the beacon sends an invalid value for UUID.
-                    log.error("BufferUnderflowException: $ex", true)
+                    this.log.error("BufferUnderflowException: $ex", true)
                     return null
                 }
             } else {

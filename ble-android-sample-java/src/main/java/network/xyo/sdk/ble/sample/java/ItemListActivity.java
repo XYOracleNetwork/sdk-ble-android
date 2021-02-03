@@ -17,9 +17,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
 import network.xyo.ble.generic.scanner.XYSmartScanListener;
 import network.xyo.ble.utilities.XYPromise;
 import network.xyo.ble.devices.xy.XY2BluetoothDevice;
@@ -85,7 +82,7 @@ public class ItemListActivity extends AppCompatActivity {
         XY2BluetoothDevice.Companion.enable(true);
     }
 
-    private void setupRecyclerView(@NotNull RecyclerView recyclerView) {
+    private void setupRecyclerView(RecyclerView recyclerView) {
         recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(this, mTwoPane));
     }
 
@@ -108,7 +105,7 @@ public class ItemListActivity extends AppCompatActivity {
     protected void onPause() {
         getScanner().stop(new XYPromise<Boolean>() {
             @Override
-            public void resolve(@Nullable Boolean value) {
+            public void resolve(Boolean value) {
                 super.resolve(value);
             }
         });
@@ -145,14 +142,14 @@ public class ItemListActivity extends AppCompatActivity {
 
             parent.getScanner().getScanner().addListener("Wrapper", new XYSmartScanListener() {
                 @Override
-                public void entered(@NotNull XYBluetoothDevice device) {
+                public void entered(XYBluetoothDevice device) {
                     super.entered(device);
                     mValues.add(device);
                     mParentActivity.runOnUiThread(() -> notifyDataSetChanged());
                 }
 
                 @Override
-                public void exited(@NotNull XYBluetoothDevice device) {
+                public void exited(XYBluetoothDevice device) {
                     super.exited(device);
                     mValues.remove(device);
                     mParentActivity.runOnUiThread(() -> notifyDataSetChanged());
@@ -160,7 +157,6 @@ public class ItemListActivity extends AppCompatActivity {
             });
         }
 
-        @NotNull
         @Override
         public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             View view = LayoutInflater.from(parent.getContext())
