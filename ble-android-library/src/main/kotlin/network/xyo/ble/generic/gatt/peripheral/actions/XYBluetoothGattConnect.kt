@@ -8,7 +8,6 @@ import android.bluetooth.BluetoothGattService
 import android.content.Context
 import android.os.Build
 import android.os.Handler
-import com.jaredrummler.android.device.BuildConfig
 import kotlinx.coroutines.*
 import network.xyo.ble.generic.gatt.peripheral.*
 import network.xyo.ble.utilities.XYCallByVersion
@@ -99,7 +98,7 @@ class XYBluetoothGattConnect(
         val handler = null
         var error = XYBluetoothResultErrorCode.None
 
-        if(BuildConfig.DEBUG && gatt == null)
+        if(gatt == null)
             throw RuntimeException("cannot read characteristic")
 
         val result = asyncBle {
@@ -128,7 +127,7 @@ class XYBluetoothGattConnect(
 
     private suspend fun discover() = GlobalScope.async {
         log.info("discover")
-        if(BuildConfig.DEBUG && state != BluetoothGatt.STATE_CONNECTED)
+        if(state != BluetoothGatt.STATE_CONNECTED)
             throw RuntimeException("cannot read characteristic")
         val gatt = this@XYBluetoothGattConnect.gatt // make thread safe
         if (gatt != null) {

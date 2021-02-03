@@ -1,7 +1,5 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
-apply plugin: 'com.jfrog.bintray'
-apply plugin: 'maven-publish'
 
 group = 'network.xyo'
 
@@ -113,53 +111,6 @@ android {
     }
 }
 
-publishing {
-    publications {
-        Production(MavenPublication) {
-            artifact("$buildDir/outputs/aar/ble-android-library-release.aar")
-            groupId 'network.xyo'
-            artifactId 'sdk-ble-android'
-            version verString
-
-            //The publication doesn't know about our dependencies, so we have to manually add them to the pom
-            pom.withXml {
-                def dependenciesNode = asNode().getAt('dependencies')[0] ?: asNode().appendNode('dependencies')
-                //Iterate over the compile dependencies (we don't want the test ones), adding a <dependency> node for each
-                configurations.implementation.allDependencies.each {
-                    if (it.name != 'unspecified') {
-                        def dependencyNode = dependenciesNode.appendNode('dependency')
-                        dependencyNode.appendNode('groupId', it.group)
-                        dependencyNode.appendNode('artifactId', it.name)
-                        dependencyNode.appendNode('version', it.version)
-                    }
-                }
-            }
-        }
-    }
-}
-
-bintray {
-    user = System.getenv('BINTRAY_USER')
-    key = System.getenv('BINTRAY_KEY')
-    dryRun = false
-    override = false
-    publish = true
-    pkg {
-        repo = 'xyo'
-        name = 'sdk-ble-android'
-        userOrg = 'xyoraclenetwork'
-        licenses = ['LGPL-3.0']
-        desc = 'Android Base Classes'
-        vcsUrl = 'https://github.com/xyoraclenetwork/sdk-ble-android.git'
-
-        version {
-            name = verString
-            vcsTag = verString
-        }
-    }
-    publications = ['Production']
-}
-
 ktlint {
     disabledRules = ["no-wildcard-imports"]
 }
@@ -168,9 +119,11 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.4.21'
     implementation 'org.jetbrains.kotlin:kotlin-reflect:1.4.21'
-    implementation 'network.xyo:sdk-base-android:4.1.5'
+    implementation 'com.github.XYOracleNetwork:sdk-base-android:4.2.12'
     implementation 'org.jetbrains:annotations:17.0.0'
     implementation 'org.bouncycastle:bcpkix-jdk15on:1.64'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.2'
+    implementation "androidx.annotation:annotation:1.1.0"
 }
 
 tasks.withType(org.jetbrains.kotlin.gradle.tasks.AbstractKotlinCompile).all { task ->

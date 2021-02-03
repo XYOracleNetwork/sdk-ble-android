@@ -10,6 +10,7 @@ import androidx.fragment.app.FragmentPagerAdapter
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
 import network.xyo.base.XYBase
+import network.xyo.base.XYLogging
 import network.xyo.ble.devices.xy.*
 import network.xyo.ble.generic.devices.XYBluetoothDevice
 import network.xyo.ble.listeners.XYFinderBluetoothDeviceListener
@@ -25,7 +26,7 @@ class XYODeviceActivity : XYOAppBaseActivity() {
     lateinit var device: XYBluetoothDevice
     private lateinit var sectionsPagerAdapter: SectionsPagerAdapter
     lateinit var data: XYDeviceData
-    private val log = XYBase.log("XYODeviceActivity")
+    private val log = XYLogging(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
