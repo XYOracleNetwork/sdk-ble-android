@@ -1,5 +1,6 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
+apply plugin: 'maven-publish'
 
 group = 'network.xyo'
 
@@ -108,6 +109,31 @@ android {
     packagingOptions {
         exclude 'META-INF/build.kotlin_module'
         exclude 'META-INF/atomicfu.kotlin_module'
+    }
+}
+
+publishing {
+    publications {
+        Production(MavenPublication) {
+            artifact("$buildDir/outputs/aar/ble-android-library-release.aar")
+            groupId 'network.xyo'
+            artifactId 'sdk-ble-android'
+            version verString
+
+            //The publication doesn't know about our dependencies, so we have to manually add them to the pom
+            pom.withXml {
+                def dependenciesNode = asNode().getAt('dependencies')[0] ?: asNode().appendNode('dependencies')
+                //Iterate over the compile dependencies (we don't want the test ones), adding a <dependency> node for each
+                configurations.implementation.allDependencies.each {
+                    if (it.name != 'unspecified') {
+                        def dependencyNode = dependenciesNode.appendNode('dependency')
+                        dependencyNode.appendNode('groupId', it.group)
+                        dependencyNode.appendNode('artifactId', it.name)
+                        dependencyNode.appendNode('version', it.version)
+                    }
+                }
+            }
+        }
     }
 }
 
