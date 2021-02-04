@@ -9,6 +9,7 @@ import android.content.Context
 import android.os.Build
 import android.os.Handler
 import kotlinx.coroutines.*
+import network.xyo.base.hasDebugger
 import network.xyo.ble.generic.gatt.peripheral.*
 import network.xyo.ble.utilities.XYCallByVersion
 import java.lang.RuntimeException
@@ -90,7 +91,7 @@ class XYBluetoothGattConnect(
         }
     }
 
-    private suspend fun connectGatt(context: Context, transport: Int? = null) = GlobalScope.async {
+    private suspend fun connectGatt(context: Context, transport: Int? = null): XYBluetoothResult<XYThreadSafeBluetoothGatt> {
         log.info("connectGatt")
         var value: XYThreadSafeBluetoothGatt? = null
         val autoConnect = false
@@ -98,23 +99,43 @@ class XYBluetoothGattConnect(
         val handler = null
         var error = XYBluetoothResultErrorCode.None
 
-        if(gatt == null)
-            throw RuntimeException("cannot read characteristic")
+        if (gatt != null) {
+            return XYBluetoothResult(gatt)
+        }
 
         val result = asyncBle {
             var newGatt: XYThreadSafeBluetoothGatt? = null
             XYCallByVersion()
-                    .add(Build.VERSION_CODES.O) {
-                        newGatt = XYThreadSafeBluetoothGatt(connectGatt26(context, device, autoConnect, transport, phy, handler))
-                    }
-                    .add(Build.VERSION_CODES.M) {
-                        newGatt = XYThreadSafeBluetoothGatt(connectGatt23(context, device, autoConnect, transport))
-                    }
-                    .add(Build.VERSION_CODES.KITKAT) {
-                        newGatt = XYThreadSafeBluetoothGatt(connectGatt19(context, device, autoConnect))
-                    }.call()
+                .add(Build.VERSION_CODES.O) {
+                    newGatt = XYThreadSafeBluetoothGatt(
+                        connectGatt26(
+                            context,
+                            device,
+                            autoConnect,
+                            transport,
+                            phy,
+                            handler
+                        )
+                    )
+                }
+                .add(Build.VERSION_CODES.M) {
+                    newGatt = XYThreadSafeBluetoothGatt(
+                        connectGatt23(
+                            context,
+                            device,
+                            autoConnect,
+                            transport
+                        )
+                    )
+                }
+                .add(Build.VERSION_CODES.KITKAT) {
+                    newGatt =
+                        XYThreadSafeBluetoothGatt(connectGatt19(context, device, autoConnect))
+                }.call()
             return@asyncBle XYBluetoothResult(newGatt)
         }
+
+        gatt = result?.value
 
         if (result?.value == null) {
             error = XYBluetoothResultErrorCode.FailedToConnectGatt
@@ -122,13 +143,19 @@ class XYBluetoothGattConnect(
             value = result.value
         }
 
-        return@async XYBluetoothResult(value, error)
-    }.await()
+        return XYBluetoothResult(value, error)
+    }
 
-    private suspend fun discover() = GlobalScope.async {
+    private suspend fun discover(): XYBluetoothResult<List<BluetoothGattService>> {
         log.info("discover")
-        if(state != BluetoothGatt.STATE_CONNECTED)
-            throw RuntimeException("cannot read characteristic")
+        if(state != BluetoothGatt.STATE_CONNECTED) {
+            if (hasDebugger) {
+                throw RuntimeException("cannot read characteristic")
+            } else {
+                return XYBluetoothResult(XYBluetoothResultErrorCode.FailedToConnect)
+            }
+        }
+
         val gatt = this@XYBluetoothGattConnect.gatt // make thread safe
         if (gatt != null) {
             val discover = XYBluetoothGattDiscover(gatt, callback)
@@ -136,11 +163,11 @@ class XYBluetoothGattConnect(
             if (discoverResult.error == XYBluetoothResultErrorCode.None) {
                 services = discoverResult.value
             }
-            return@async discoverResult
+            return discoverResult
         } else {
-            return@async XYBluetoothResult<List<BluetoothGattService>>(XYBluetoothResultErrorCode.NoGatt)
+            return XYBluetoothResult(XYBluetoothResultErrorCode.NoGatt)
         }
-    }.await()
+    }
 
     private suspend  fun startWithNewGatt(context: Context, transport: Int? = null): XYBluetoothResultErrorCode {
         val gattConnectResult = connectGatt(context, transport)

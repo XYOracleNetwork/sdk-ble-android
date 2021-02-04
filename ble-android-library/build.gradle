@@ -97,6 +97,10 @@ android {
         }
     }
 
+    dexOptions {
+        javaMaxHeapSize "4G"
+    }
+
     packagingOptions {
         exclude 'META-INF/build.kotlin_module'
         exclude 'META-INF/atomicfu.kotlin_module'

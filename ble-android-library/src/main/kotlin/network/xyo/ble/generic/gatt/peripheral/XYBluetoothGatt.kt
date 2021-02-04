@@ -9,6 +9,7 @@ import java.lang.RuntimeException
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.resume
 import kotlinx.coroutines.*
+import network.xyo.base.hasDebugger
 import network.xyo.ble.generic.XYBluetoothBase
 import network.xyo.ble.generic.gatt.peripheral.actions.XYBluetoothGattConnect
 import network.xyo.ble.generic.gatt.peripheral.actions.XYBluetoothGattReadCharacteristic
@@ -90,9 +91,9 @@ open class XYBluetoothGatt protected constructor(
 
     protected var connection: XYBluetoothGattConnect? = null
 
-    suspend fun services() = GlobalScope.async {
-        return@async connection?.services ?: emptyList()
-    }.await()
+    fun services(): List<BluetoothGattService> {
+        return connection?.services ?: emptyList()
+    }
 
     open val defaultTimeout = 15000L
 
@@ -313,7 +314,7 @@ open class XYBluetoothGatt protected constructor(
 
     protected suspend fun readCharacteristic(characteristicToRead: BluetoothGattCharacteristic, timeout: Long = 10000) = queueBle(timeout, "readCharacteristic") {
         log.info("readCharacteristic")
-        if(connection?.state != BluetoothGatt.STATE_CONNECTED)
+        if(hasDebugger && connection?.state != BluetoothGatt.STATE_CONNECTED)
             throw RuntimeException("cannot read characteristic")
         val gatt = connection?.gatt
         if (gatt != null) {
@@ -331,7 +332,7 @@ open class XYBluetoothGatt protected constructor(
     ) = queueBle(timeout, "writeCharacteristic") {
 
         log.info("writeCharacteristic")
-        if(connection?.state != BluetoothGatt.STATE_CONNECTED)
+        if(hasDebugger && connection?.state != BluetoothGatt.STATE_CONNECTED)
             throw RuntimeException("cannot read characteristic")
         val gatt = connection?.gatt
         if (gatt != null) {
@@ -361,7 +362,7 @@ open class XYBluetoothGatt protected constructor(
 
     protected suspend fun writeDescriptor(descriptorToWrite: BluetoothGattDescriptor, timeout: Long = 1100) = queueBle(timeout, "writeDescriptor") {
         log.info("writeDescriptor")
-        if(connection?.state != BluetoothGatt.STATE_CONNECTED)
+        if(hasDebugger && connection?.state != BluetoothGatt.STATE_CONNECTED)
             throw RuntimeException("cannot read characteristic")
         val gatt = connection?.gatt
         if (gatt != null) {
