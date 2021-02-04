@@ -72,11 +72,7 @@ android {
     }
 
     sourceSets {
-        main {
-            java {
-                srcDirs += 'src/main/kotlin'
-            }
-        }
+        main.java.srcDirs += 'src/main/kotlin'
     }
 
     defaultConfig {
@@ -109,6 +105,7 @@ android {
     packagingOptions {
         exclude 'META-INF/build.kotlin_module'
         exclude 'META-INF/atomicfu.kotlin_module'
+        exclude 'META-INF/library_release.kotlin_module'
     }
 }
 
@@ -122,7 +119,7 @@ publishing {
 
             //The publication doesn't know about our dependencies, so we have to manually add them to the pom
             pom.withXml {
-                def dependenciesNode = asNode().getAt('dependencies')[0] ?: asNode().appendNode('dependencies')
+                def dependenciesNode = asNode()['dependencies'][0] ?: asNode().appendNode('dependencies')
                 //Iterate over the compile dependencies (we don't want the test ones), adding a <dependency> node for each
                 configurations.implementation.allDependencies.each {
                     if (it.name != 'unspecified') {
