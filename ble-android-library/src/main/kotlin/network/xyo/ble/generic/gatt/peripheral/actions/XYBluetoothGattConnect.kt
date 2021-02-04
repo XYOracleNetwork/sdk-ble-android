@@ -135,6 +135,10 @@ class XYBluetoothGattConnect(
             return@asyncBle XYBluetoothResult(newGatt)
         }
 
+        if (gatt != null) {
+            throw Exception("Gatt Unexpectedly Appeared")
+        }
+        
         gatt = result?.value
 
         if (result?.value == null) {
