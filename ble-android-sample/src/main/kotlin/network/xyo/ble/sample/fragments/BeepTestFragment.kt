@@ -33,7 +33,7 @@ class BeepTestFragment : XYAppBaseFragment<FragmentTestBinding>() {
         }
     }
 
-    private suspend fun doBeepXY4(device: XY4BluetoothDevice) = GlobalScope.async {
+    private suspend fun doBeepXY4(device: XY4BluetoothDevice) {
         if ((device.rssi ?: -100) > -60) {
             log.info("BeepTest(Async): ${device.id}: Trying to Beep [${device.rssi}]")
             startCount++
@@ -66,9 +66,9 @@ class BeepTestFragment : XYAppBaseFragment<FragmentTestBinding>() {
                 log.error("BeepTest: ${ex.message}")
             }
         }
-    }.await()
+    }
 
-    private suspend fun doBeepXY3(device: XY3BluetoothDevice) = GlobalScope.async {
+    private suspend fun doBeepXY3(device: XY3BluetoothDevice) {
         if ((device.rssi ?: -100) > -60) {
             log.info("BeepTest(Async): ${device.id}: Trying to Beep [${device.rssi}]")
             startCount++
@@ -101,7 +101,7 @@ class BeepTestFragment : XYAppBaseFragment<FragmentTestBinding>() {
                 log.error("BeepTest: ${ex.message}")
             }
         }
-    }.await()
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

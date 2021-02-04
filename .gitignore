@@ -13,3 +13,5 @@ google-services.json
 .project
 
 .scannerwork
+
+*.hprof
