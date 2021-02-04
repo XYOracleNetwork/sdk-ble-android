@@ -5,13 +5,9 @@ import android.bluetooth.BluetoothGattCharacteristic
 import android.bluetooth.BluetoothGattService
 import android.os.Bundle
 import android.util.Log
-import android.util.SparseArray
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentPagerAdapter
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
 import kotlinx.coroutines.GlobalScope
@@ -22,8 +18,6 @@ import network.xyo.ble.generic.gatt.server.*
 import network.xyo.ble.generic.gatt.server.responders.XYBluetoothReadResponder
 import network.xyo.ble.generic.gatt.server.responders.XYBluetoothWriteResponder
 import network.xyo.ble.sample.databinding.FragmentPeripheralBinding
-import network.xyo.ble.sample.fragments.AdvertiserFragment
-import network.xyo.ble.sample.fragments.RootServicesFragment
 import network.xyo.ble.sample.fragments.XYAppBaseFragment
 import java.nio.ByteBuffer
 import java.nio.charset.Charset

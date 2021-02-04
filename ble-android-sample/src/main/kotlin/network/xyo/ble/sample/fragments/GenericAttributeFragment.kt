@@ -32,12 +32,7 @@ class GenericAttributeFragment(device: XYBluetoothDevice, deviceData : XYDeviceD
 
     override fun onResume() {
         super.onResume()
-
-        if (deviceData.serviceChanged.isNullOrEmpty()) {
-            setGattValues()
-        } else {
-            updateUI()
-        }
+        updateUI()
     }
 
     private fun updateUI() {
@@ -80,10 +75,7 @@ class GenericAttributeFragment(device: XYBluetoothDevice, deviceData : XYDeviceD
 
             device.connection {
                 hasConnectionError = false
-
-                deviceData.let {
-                    it.serviceChanged = device.genericAttributeService.serviceChanged.get().format()
-                }
+                deviceData.serviceChanged = device.genericAttributeService.serviceChanged.get().format()
 
                 return@connection XYBluetoothResult(true)
 
@@ -100,10 +92,7 @@ class GenericAttributeFragment(device: XYBluetoothDevice, deviceData : XYDeviceD
 
             device.connection {
                 hasConnectionError = false
-
-                deviceData.let {
-                    it.serviceChanged = device.genericAttributeService.serviceChanged.get().format()
-                }
+                deviceData.serviceChanged = device.genericAttributeService.serviceChanged.get().format()
 
                 return@connection XYBluetoothResult(true)
 
@@ -120,10 +109,7 @@ class GenericAttributeFragment(device: XYBluetoothDevice, deviceData : XYDeviceD
 
             device.connection {
                 hasConnectionError = false
-
-                deviceData.let {
-                    it.serviceChanged = device.genericAttributeService.serviceChanged.get().format()
-                }
+                deviceData.serviceChanged = device.genericAttributeService.serviceChanged.get().format()
 
                 return@connection XYBluetoothResult(true)
 

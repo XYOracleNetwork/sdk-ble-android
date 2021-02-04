@@ -1,16 +1,13 @@
 package network.xyo.ble.devices.xy
 
 import android.content.Context
-import java.nio.ByteBuffer
 import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
 import network.xyo.base.XYBase
-import network.xyo.ble.devices.apple.XYAppleBluetoothDevice
 import network.xyo.ble.generic.devices.XYBluetoothDevice
 import network.xyo.ble.generic.devices.XYCreator
 import network.xyo.ble.generic.scanner.XYScanResult
 import network.xyo.ble.generic.services.standard.*
-import network.xyo.ble.listeners.XYFinderBluetoothDeviceListener
 import network.xyo.ble.services.xy.*
 
 /**

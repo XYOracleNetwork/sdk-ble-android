@@ -32,12 +32,7 @@ class BatteryFragment(device: XYBluetoothDevice, deviceData : XYDeviceData) : XY
 
     override fun onResume() {
         super.onResume()
-
-        if (deviceData.level.isNullOrEmpty()) {
-            readBatteryLevel()
-        } else {
-            updateUI()
-        }
+        updateUI()
     }
 
     private fun updateUI() {
@@ -78,10 +73,7 @@ class BatteryFragment(device: XYBluetoothDevice, deviceData : XYDeviceData) : XY
 
             device.connection {
                 hasConnectionError = false
-
-                deviceData.let {
-                    it.level = device.batteryService.level.get().format()
-                }
+                deviceData.level = device.batteryService.level.get().format()
 
                 return@connection XYBluetoothResult(true)
             }
@@ -97,10 +89,7 @@ class BatteryFragment(device: XYBluetoothDevice, deviceData : XYDeviceData) : XY
 
             device.connection {
                 hasConnectionError = false
-
-                deviceData.let {
-                    it.level = device.batteryService.level.get().format()
-                }
+                deviceData.level = device.batteryService.level.get().format()
 
                 return@connection XYBluetoothResult(true)
 
@@ -117,10 +106,7 @@ class BatteryFragment(device: XYBluetoothDevice, deviceData : XYDeviceData) : XY
 
             device.connection {
                 hasConnectionError = false
-
-                deviceData.let {
-                    it.level = device.batteryService.level.get().format()
-                }
+                deviceData.level = device.batteryService.level.get().format()
 
                 return@connection XYBluetoothResult(true)
 

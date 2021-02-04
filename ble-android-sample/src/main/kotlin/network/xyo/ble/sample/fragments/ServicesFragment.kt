@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import network.xyo.ble.generic.gatt.server.XYBluetoothService
 import network.xyo.ble.sample.R
 import network.xyo.ble.sample.adapters.XYServiceListAdapter
 import network.xyo.ble.sample.databinding.FragmentServicesBinding

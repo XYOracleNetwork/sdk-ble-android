@@ -217,11 +217,7 @@ class SongFragment(device: XYBluetoothDevice, deviceData : XYDeviceData) : XYDev
     override fun onResume() {
         super.onResume()
 
-        if (deviceData.level.isNullOrEmpty()) {
-            readCurrentSong()
-        } else {
-            updateUI()
-        }
+        updateUI()
     }
 
     private fun updateUI() {

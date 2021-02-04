@@ -76,6 +76,6 @@ dependencies {
     implementation "androidx.constraintlayout:constraintlayout:2.0.4"
     implementation 'androidx.coordinatorlayout:coordinatorlayout:1.1.0'
     implementation "com.nabinbhandari.android:permissions:3.8"
-    implementation 'com.github.XYOracleNetwork:sdk-base-android:4.2.12'
+    implementation 'com.github.XYOracleNetwork:sdk-base-android:4.2.13'
     implementation project(':ble-android-library')
 }

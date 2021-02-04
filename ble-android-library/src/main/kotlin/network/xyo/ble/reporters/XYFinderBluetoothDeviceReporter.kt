@@ -9,8 +9,8 @@ import network.xyo.ble.generic.devices.XYBluetoothDevice
 import network.xyo.ble.generic.listeners.XYBluetoothDeviceListener
 import network.xyo.ble.generic.reporters.XYBluetoothDeviceReporter
 
-open class XYFinderBluetoothDeviceReporter<T: XYFinderBluetoothDevice, L: XYFinderBluetoothDeviceListener>: XYBluetoothDeviceReporter<XYBluetoothDevice, XYBluetoothDeviceListener>() {
-    open fun buttonPressed(device: XYFinderBluetoothDevice, state: XYFinderBluetoothDeviceButtonPress) {
+open class XYFinderBluetoothDeviceReporter<T: XYFinderBluetoothDevice>: XYBluetoothDeviceReporter<XYBluetoothDevice, XYBluetoothDeviceListener>() {
+    open fun buttonPressed(device: T, state: XYFinderBluetoothDeviceButtonPress) {
         log.info("reportButtonPressed")
         GlobalScope.launch {
             synchronized(listeners) {
