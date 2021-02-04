@@ -1,3 +1,5 @@
-include ':ble-android-sample'
 include ':ble-android-library'
+include ':ble-android-sample'
 include ':ble-android-sample-java'
+
+rootProject.name='sdk-ble-android'

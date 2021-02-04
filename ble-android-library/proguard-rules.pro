@@ -30,7 +30,6 @@
 -keepattributes *Annotation*
 -keepattributes EnclosingMethod
 
-#noinspection ShrinkerUnresolvedReference
--dontshrink
 -keep public class network.xyo.ble.** { *; }
--keep class androidx.core.app.CoreComponentFactory { *; }
+
+-verbose
