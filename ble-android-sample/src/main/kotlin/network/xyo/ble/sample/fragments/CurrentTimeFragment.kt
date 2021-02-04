@@ -32,13 +32,7 @@ class CurrentTimeFragment(device: XYBluetoothDevice, deviceData : XYDeviceData) 
 
     override fun onResume() {
         super.onResume()
-
-        if (deviceData.currentTime.isNullOrEmpty()) {
-            setTimeValues()
-        } else {
-            updateUI()
-        }
-
+        updateUI()
     }
 
     private fun updateUI() {

@@ -35,11 +35,7 @@ class TxPowerFragment(device: XYBluetoothDevice, deviceData : XYDeviceData) : XY
     override fun onResume() {
         super.onResume()
 
-        if (deviceData.txPowerLevel.isNullOrEmpty()) {
-            setTxValues()
-        } else {
-            updateUI()
-        }
+        updateUI()
     }
 
     private fun updateUI() {
@@ -84,10 +80,7 @@ class TxPowerFragment(device: XYBluetoothDevice, deviceData : XYDeviceData) : XY
 
             device.connection {
                 hasConnectionError = false
-
-                deviceData.let {
-                    it.txPowerLevel = device.txPowerService.txPowerLevel.get().format()
-                }
+                deviceData.txPowerLevel = device.txPowerService.txPowerLevel.get().format()
 
                 return@connection XYBluetoothResult(true)
 
@@ -104,10 +97,7 @@ class TxPowerFragment(device: XYBluetoothDevice, deviceData : XYDeviceData) : XY
 
             device.connection {
                 hasConnectionError = false
-
-                deviceData.let {
-                    it.txPowerLevel = device.txPowerService.txPowerLevel.get().format()
-                }
+                deviceData.txPowerLevel = device.txPowerService.txPowerLevel.get().format()
 
                 return@connection XYBluetoothResult(true)
 
@@ -124,10 +114,7 @@ class TxPowerFragment(device: XYBluetoothDevice, deviceData : XYDeviceData) : XY
 
             device.connection {
                 hasConnectionError = false
-
-                deviceData.let {
-                    it.txPowerLevel = device.txPowerService.txPowerLevel.get().format()
-                }
+                deviceData.txPowerLevel = device.txPowerService.txPowerLevel.get().format()
 
                 return@connection XYBluetoothResult(true)
 

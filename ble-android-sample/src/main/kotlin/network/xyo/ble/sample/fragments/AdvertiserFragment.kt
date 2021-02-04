@@ -12,7 +12,6 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import network.xyo.ble.generic.gatt.server.XYBluetoothAdvertiser
 import network.xyo.ble.generic.gatt.server.XYIBeaconAdvertiseDataCreator
-import network.xyo.base.XYBase
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResultErrorCode
 import network.xyo.ble.sample.databinding.FragmentAdvertiserBinding
 import java.nio.ByteBuffer

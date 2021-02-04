@@ -135,7 +135,7 @@ open class XY3BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
             }
         }
 
-        val globalReporter = XYFinderBluetoothDeviceReporter<XY3BluetoothDevice, XYFinderBluetoothDeviceListener>()
+        val globalReporter = XYFinderBluetoothDeviceReporter<XY3BluetoothDevice>()
 
         @Deprecated("Deprecated", ReplaceWith("globalReporter.addListener(key, listener)"))
         fun addGlobalListener(key: String, listener: XYFinderBluetoothDeviceListener) {

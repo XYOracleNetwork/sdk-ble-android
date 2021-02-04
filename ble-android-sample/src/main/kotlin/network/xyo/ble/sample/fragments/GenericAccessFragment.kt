@@ -6,9 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import network.xyo.ble.devices.xy.XY2BluetoothDevice
-import network.xyo.ble.devices.xy.XY3BluetoothDevice
-import network.xyo.ble.devices.xy.XY4BluetoothDevice
 import network.xyo.ble.devices.xy.XYFinderBluetoothDevice
 import network.xyo.ble.generic.devices.XYBluetoothDevice
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResult
@@ -33,12 +30,7 @@ class GenericAccessFragment(device: XYBluetoothDevice, deviceData : XYDeviceData
 
     override fun onResume() {
         super.onResume()
-
-        if (deviceData.deviceName.isNullOrEmpty()) {
-            setGenericAccessValues()
-        } else {
-            updateUI()
-        }
+        updateUI()
     }
 
     private fun updateUI() {

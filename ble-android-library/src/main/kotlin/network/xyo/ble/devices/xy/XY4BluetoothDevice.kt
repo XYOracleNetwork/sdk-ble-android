@@ -183,7 +183,7 @@ open class XY4BluetoothDevice(
             }
         }
 
-        val globalReporter = XYFinderBluetoothDeviceReporter<XY4BluetoothDevice, XYFinderBluetoothDeviceListener>()
+        val globalReporter = XYFinderBluetoothDeviceReporter<XY4BluetoothDevice>()
 
         @Deprecated("Deprecated", ReplaceWith("globalReporter.addListener(key, listener)"))
         fun addGlobalListener(key: String, listener: XYFinderBluetoothDeviceListener) {
