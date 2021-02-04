@@ -6,13 +6,13 @@ import kotlinx.coroutines.async
 
 @kotlin.ExperimentalUnsignedTypes
 class XYSmartScanLegacy(context: Context) : XYSmartScan(context) {
-    override suspend fun start() = GlobalScope.async {
+    override suspend fun start(): Boolean {
         super.start()
-        return@async true
-    }.await()
+        return true
+    }
 
-    override suspend fun stop() = GlobalScope.async {
+    override suspend fun stop(): Boolean {
         super.stop()
-        return@async true
-    }.await()
+        return true
+    }
 }

@@ -26,6 +26,10 @@ android {
         }
     }
 
+    dexOptions {
+        javaMaxHeapSize "4G"
+    }
+
     lintOptions {
         htmlReport true
         abortOnError true
