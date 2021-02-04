@@ -6,9 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import network.xyo.ble.devices.xy.XY2BluetoothDevice
-import network.xyo.ble.devices.xy.XY3BluetoothDevice
-import network.xyo.ble.devices.xy.XY4BluetoothDevice
 import network.xyo.ble.devices.xy.XYFinderBluetoothDevice
 import network.xyo.ble.generic.devices.XYBluetoothDevice
 import network.xyo.ble.generic.listeners.XYBluetoothDeviceListener
@@ -47,11 +44,7 @@ class DeviceFragment(device: XYBluetoothDevice, deviceData : XYDeviceData) : XYD
             }
         })
 
-        if (deviceData.systemId.isNullOrEmpty()) {
-            setDeviceValues()
-        } else {
-            updateUI()
-        }
+        updateUI()
     }
 
     fun updateUI() {

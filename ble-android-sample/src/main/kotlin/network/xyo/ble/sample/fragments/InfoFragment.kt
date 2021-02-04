@@ -10,7 +10,6 @@ import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.CompoundButton
 import kotlinx.coroutines.*
-import network.xyo.base.XYBase
 import network.xyo.ble.devices.apple.XYIBeaconBluetoothDevice
 import network.xyo.ble.devices.xy.XY3BluetoothDevice
 import network.xyo.ble.devices.xy.XY4BluetoothDevice
@@ -119,7 +118,7 @@ class InfoFragment(device: XYBluetoothDevice, deviceData : XYDeviceData) : XYDev
             binding.textLastGapSize.text = device.lastDetectGap.toString()
             binding.textMaxGapSize.text = device.maxDetectTime.toString()
 
-            if (device.connected == true) {
+            if (device.connected) {
                 binding.buttonConnect.visibility = GONE
                 binding.buttonDisconnect.visibility = VISIBLE
             } else {

@@ -32,13 +32,7 @@ class AlertFragment(device: XYBluetoothDevice, deviceData : XYDeviceData) : XYDe
 
     override fun onResume() {
         super.onResume()
-
-        if (deviceData.controlPoint.isNullOrEmpty()) {
-            setAlertValues()
-        } else {
-            updateUI()
-        }
-
+        updateUI()
     }
 
     private fun setAlertValues() {

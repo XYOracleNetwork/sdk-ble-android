@@ -55,5 +55,5 @@ dependencies {
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
     implementation 'com.google.android.material:material:1.2.1'
     implementation project(':ble-android-library')
-    implementation 'com.github.XYOracleNetwork:sdk-base-android:4.2.12'
+    implementation 'com.github.XYOracleNetwork:sdk-base-android:4.2.13'
 }

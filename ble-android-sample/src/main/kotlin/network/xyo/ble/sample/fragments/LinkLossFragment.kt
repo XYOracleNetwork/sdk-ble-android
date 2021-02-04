@@ -34,12 +34,7 @@ class LinkLossFragment(device: XYBluetoothDevice, deviceData : XYDeviceData) : X
 
     override fun onResume() {
         super.onResume()
-
-        if (deviceData.alertLevel.isNullOrEmpty()) {
-            initLinkLossValues()
-        } else {
-            updateUI()
-        }
+        updateUI()
     }
 
     private fun updateUI() {
@@ -79,10 +74,7 @@ class LinkLossFragment(device: XYBluetoothDevice, deviceData : XYDeviceData) : X
 
             device.connection {
                 hasConnectionError = false
-
-                deviceData.let {
-                    it.alertLevel = device.linkLossService.alertLevel.get().format()
-                }
+                deviceData.alertLevel = device.linkLossService.alertLevel.get().format()
 
                 return@connection XYBluetoothResult(true)
 
@@ -99,10 +91,7 @@ class LinkLossFragment(device: XYBluetoothDevice, deviceData : XYDeviceData) : X
 
             device.connection {
                 hasConnectionError = false
-
-                deviceData.let {
-                    it.alertLevel = device.linkLossService.alertLevel.get().format()
-                }
+                deviceData.alertLevel = device.linkLossService.alertLevel.get().format()
 
                 return@connection XYBluetoothResult(true)
 
