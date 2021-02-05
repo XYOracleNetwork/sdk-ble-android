@@ -74,15 +74,21 @@ open class XY4BluetoothDevice(
     override val prefix = "xy:ibeacon"
 
     override suspend fun find(song: UByte?) = connection {
+        log.info("Arie:find:start: $song")
         val unlockResult = unlock()
+        log.info("Arie:find:unlock: ${unlockResult.error}")
         if (unlockResult.error == XYBluetoothResultErrorCode.None) {
+            log.info("Arie:find:setting song")
             val writeResult = primary.buzzer.set(song ?: 0xbU)
             if (writeResult.error == XYBluetoothResultErrorCode.None) {
+                log.info("Arie:find:success")
                 return@connection XYBluetoothResult(writeResult.value)
             } else {
+                log.info("Arie:find:fail1")
                 return@connection XYBluetoothResult(null, writeResult.error)
             }
         } else {
+            log.info("Arie:find:fail2")
             return@connection XYBluetoothResult(null, unlockResult.error)
         }
     }

@@ -18,32 +18,34 @@ open class XYThreadSafeBluetoothGatt(bluetoothGatt: BluetoothGatt?) : XYBase() {
             return gattRef.get()
         }
 
-    suspend fun close() = asyncBle {
+    suspend fun close() = bleAsync {
         gatt?.disconnect()
         gatt?.close()
-    }
+        return@bleAsync XYBluetoothResult(true)
+    }.await()
 
-    suspend fun disconnect() = asyncBle {
+    suspend fun disconnect() = bleAsync {
         gatt?.disconnect()
-    }
+        return@bleAsync XYBluetoothResult(true)
+    }.await()
 
-    suspend fun connect() = asyncBle {
-        return@asyncBle gatt?.connect()
-    }
-
-    @TargetApi(26)
-    suspend fun setPreferredPhy(txPhy: Int, rxPhy: Int, phyOptions: Int) = asyncBle {
-        return@asyncBle gatt?.setPreferredPhy(txPhy, rxPhy, phyOptions)
-    }
+    suspend fun connect() = bleAsync {
+        return@bleAsync XYBluetoothResult(gatt?.connect())
+    }.await()
 
     @TargetApi(26)
-    suspend fun readPhy() = asyncBle {
-        return@asyncBle gatt?.readPhy()
-    }
+    suspend fun setPreferredPhy(txPhy: Int, rxPhy: Int, phyOptions: Int) = bleAsync {
+        return@bleAsync XYBluetoothResult(gatt?.setPreferredPhy(txPhy, rxPhy, phyOptions))
+    }.await()
 
-    suspend fun discoverServices() = asyncBle {
-        return@asyncBle gatt?.discoverServices()
-    }
+    @TargetApi(26)
+    suspend fun readPhy() = bleAsync {
+        return@bleAsync XYBluetoothResult(gatt?.readPhy())
+    }.await()
+
+    suspend fun discoverServices() = bleAsync {
+        return@bleAsync XYBluetoothResult(gatt?.discoverServices())
+    }.await()
 
     val services: List<BluetoothGattService>?
         get() {
@@ -54,31 +56,31 @@ open class XYThreadSafeBluetoothGatt(bluetoothGatt: BluetoothGatt?) : XYBase() {
         return gatt?.getService(uuid)
     }
 
-    suspend fun readCharacteristic(characteristic: BluetoothGattCharacteristic) = asyncBle {
-        return@asyncBle gatt?.readCharacteristic(characteristic)
-    }
+    suspend fun readCharacteristic(characteristic: BluetoothGattCharacteristic) = bleAsync {
+        return@bleAsync XYBluetoothResult(gatt?.readCharacteristic(characteristic))
+    }.await()
 
-    suspend fun writeCharacteristic(characteristic: BluetoothGattCharacteristic) = asyncBle {
-        return@asyncBle gatt?.writeCharacteristic(characteristic)
-    }
+    suspend fun writeCharacteristic(characteristic: BluetoothGattCharacteristic) = bleAsync {
+        return@bleAsync XYBluetoothResult(gatt?.writeCharacteristic(characteristic))
+    }.await()
 
-    suspend fun readDescriptor(descriptor: BluetoothGattDescriptor) = asyncBle {
-        return@asyncBle gatt?.readDescriptor(descriptor)
-    }
+    suspend fun readDescriptor(descriptor: BluetoothGattDescriptor) = bleAsync {
+        return@bleAsync XYBluetoothResult(gatt?.readDescriptor(descriptor))
+    }.await()
 
-    suspend fun writeDescriptor(descriptor: BluetoothGattDescriptor) = asyncBle {
-        return@asyncBle gatt?.writeDescriptor(descriptor)
-    }
+    suspend fun writeDescriptor(descriptor: BluetoothGattDescriptor) = bleAsync {
+        return@bleAsync XYBluetoothResult(gatt?.writeDescriptor(descriptor))
+    }.await()
 
-    suspend fun setCharacteristicNotification(characteristic: BluetoothGattCharacteristic, enable: Boolean) = asyncBle {
-        return@asyncBle gatt?.setCharacteristicNotification(characteristic, enable)
-    }
+    suspend fun setCharacteristicNotification(characteristic: BluetoothGattCharacteristic, enable: Boolean) = bleAsync {
+        return@bleAsync XYBluetoothResult(gatt?.setCharacteristicNotification(characteristic, enable))
+    }.await()
 
-    suspend fun readRemoteRssi() = asyncBle {
-        return@asyncBle gatt?.readRemoteRssi()
-    }
+    suspend fun readRemoteRssi() = bleAsync {
+        return@bleAsync XYBluetoothResult(gatt?.readRemoteRssi())
+    }.await()
 
-    suspend fun requestMtu(mtu: Int) = asyncBle {
-        return@asyncBle gatt?.requestMtu(mtu)
-    }
+    suspend fun requestMtu(mtu: Int) = bleAsync {
+        return@bleAsync XYBluetoothResult(gatt?.requestMtu(mtu))
+    }.await()
 }

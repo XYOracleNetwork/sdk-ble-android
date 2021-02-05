@@ -178,5 +178,6 @@
     <string name="net">Net</string>
 
     <string name="img_desc_xy_logo">xyo logo</string>
+    <string name="button_beep">Beep</string>
 
 </resources>

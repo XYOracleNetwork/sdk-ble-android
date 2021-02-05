@@ -141,7 +141,7 @@ open class XYFinderBluetoothDevice(context: Context, scanResult: XYScanResult, h
         }
 
     // signal the user to where it is, usually make it beep
-    open suspend fun find(song: UByte? = 0U) = connection {
+    open suspend fun find(song: UByte? = null) = connection {
         log.error(UnsupportedOperationException().toString(), true)
         return@connection XYBluetoothResult<UByte>(XYBluetoothResultErrorCode.Unsupported)
     }
