@@ -13,7 +13,6 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:layout_alignParentTop="true"
-        android:background="@color/design_default_color_surface"
         >
 
         <network.xyo.ble.sample.views.XYBLEStatsView
@@ -60,7 +59,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="@android:color/holo_red_light"
+        android:background="@color/design_default_color_error"
         android:gravity="center_horizontal"
         android:orientation="horizontal"
         android:visibility="gone">
@@ -77,7 +76,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="@android:color/holo_red_light"
+        android:background="@color/design_default_color_error"
         android:gravity="center_horizontal"
         android:orientation="horizontal"
         android:visibility="gone">

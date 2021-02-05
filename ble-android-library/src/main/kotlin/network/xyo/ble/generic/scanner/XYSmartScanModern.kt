@@ -12,7 +12,8 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResult
-import network.xyo.ble.generic.gatt.peripheral.asyncBle
+import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResultErrorCode
+import network.xyo.ble.generic.gatt.peripheral.bleAsync
 import network.xyo.ble.utilities.XYCallByVersion
 
 @TargetApi(21)
@@ -22,7 +23,7 @@ class XYSmartScanModern(context: Context) : XYSmartScan(context) {
         log.info("start")
         super.start()
 
-        val result = asyncBle {
+        val result = bleAsync {
 
             val bluetoothAdapter = bluetoothManager?.adapter
 
@@ -30,7 +31,7 @@ class XYSmartScanModern(context: Context) : XYSmartScan(context) {
                 val scanner = it.bluetoothLeScanner
                 if (scanner == null) {
                     log.info("startScan:Failed to get Bluetooth Scanner. Disabled?")
-                    return@asyncBle XYBluetoothResult(false)
+                    return@bleAsync XYBluetoothResult(false)
                 } else {
                     // this loop is for Android 7 to prevent getting nuked for scanning too much
                     GlobalScope.launch {
@@ -64,17 +65,17 @@ class XYSmartScanModern(context: Context) : XYSmartScan(context) {
                     }
                 }
 
-                return@asyncBle XYBluetoothResult(true)
+                return@bleAsync XYBluetoothResult(true)
             }
 
             log.info("Bluetooth Disabled")
-            return@asyncBle XYBluetoothResult(false)
-        }
+            return@bleAsync XYBluetoothResult(false)
+        }.await()
 
-        if (result?.error != null) {
+        if (result.error != XYBluetoothResultErrorCode.None) {
             return@async false
         }
-        return@async result?.value ?: false
+        return@async result.value ?: false
     }.await()
 
     private val callback = object : ScanCallback() {
@@ -168,27 +169,27 @@ class XYSmartScanModern(context: Context) : XYSmartScan(context) {
     override suspend fun stop() = GlobalScope.async {
         log.info("stop")
         super.stop()
-        val result = asyncBle {
+        val result = bleAsync {
             val bluetoothAdapter = this@XYSmartScanModern.bluetoothAdapter
 
             if (bluetoothAdapter == null) {
                 log.info("stop: Bluetooth Disabled")
-                return@asyncBle XYBluetoothResult(false)
+                return@bleAsync XYBluetoothResult(false)
             }
 
             val scanner = bluetoothAdapter.bluetoothLeScanner
             if (scanner == null) {
                 log.info("stop:Failed to get Bluetooth Scanner. Disabled?")
-                return@asyncBle XYBluetoothResult(false)
+                return@bleAsync XYBluetoothResult(false)
             }
 
             scanner.stopScan(callback)
-            return@asyncBle XYBluetoothResult(true)
-        }
+            return@bleAsync XYBluetoothResult(true)
+        }.await()
 
-        if (result?.error != null) {
+        if (result.error != XYBluetoothResultErrorCode.None) {
             return@async false
         }
-        return@async result?.value ?: false
+        return@async result.value ?: false
     }.await()
 }

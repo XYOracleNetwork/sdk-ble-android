@@ -14,6 +14,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import network.xyo.ble.generic.bluetooth.BluetoothIntentReceiver
+import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResult
 import network.xyo.ble.generic.gatt.server.*
 import network.xyo.ble.generic.gatt.server.responders.XYBluetoothReadResponder
 import network.xyo.ble.generic.gatt.server.responders.XYBluetoothWriteResponder
@@ -77,12 +78,12 @@ class ServerFragment : XYAppBaseFragment<FragmentPeripheralBinding>() {
         bleServer?.stopServer()
     }
 
-    private suspend fun createTestServer() = GlobalScope.async {
+    private suspend fun createTestServer(): XYBluetoothResult<Int> {
         val server = XYBluetoothGattServer(context!!.applicationContext)
         server.startServer()
         bleServer = server
-        return@async server.addService(simpleService)
-    }.await()
+        return server.addService(simpleService)
+    }
 
     private suspend fun spinUpServer () = GlobalScope.async {
         simpleService.addCharacteristic(characteristicRead)

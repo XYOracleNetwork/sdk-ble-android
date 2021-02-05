@@ -13,6 +13,7 @@ import network.xyo.ble.devices.apple.XYIBeaconBluetoothDevice
 import network.xyo.ble.sample.R
 import network.xyo.ble.sample.activities.XYODeviceActivity
 import network.xyo.base.XYBase
+import network.xyo.ble.devices.xy.XY4BluetoothDevice
 import network.xyo.ble.listeners.XYFinderBluetoothDeviceListener
 import network.xyo.ble.sample.databinding.DeviceItemBinding
 

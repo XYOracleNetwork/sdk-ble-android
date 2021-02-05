@@ -264,19 +264,19 @@ open class XYBluetoothGattClient protected constructor(
         // this prevents a queued close from closing while we run
         lastAccessTime = now
 
-        log.info("findAndWriteCharacteristic")
+        log.info("Arie:findAndWriteCharacteristic")
         var value: UByte? = null
         val findResult = findCharacteristic(service, characteristic)
-        log.info("findAndWriteCharacteristic: Found")
+        log.info("Arie:findAndWriteCharacteristic: Found")
         val characteristicToWrite = findResult.value
         var error = findResult.error
         if (error == XYBluetoothResultErrorCode.None) {
-            log.info("findAndWriteCharacteristic: $characteristicToWrite")
+            log.info("Arie:findAndWriteCharacteristic: $characteristicToWrite")
             if (characteristicToWrite != null) {
                 characteristicToWrite.setValue(valueToWrite.toInt(), BluetoothGattCharacteristic.FORMAT_UINT8, offset)
-                log.info("findAndWriteCharacteristic: Set")
+                log.info("Arie:findAndWriteCharacteristic: Set")
                 val writeResult = writeCharacteristic(characteristicToWrite)
-                log.info("findAndWriteCharacteristic: Write Complete: $writeResult")
+                log.info("Arie:findAndWriteCharacteristic: Write Complete: $writeResult")
                 value = valueToWrite
                 error = writeResult.error
             } else {
