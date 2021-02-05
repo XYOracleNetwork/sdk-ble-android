@@ -16,7 +16,7 @@ class XYBluetoothGattWriteCharacteristic(
     : XYBluetoothGattAction<ByteArray>(gatt, gattCallback, timeout) {
 
     suspend fun start(characteristicToWrite: BluetoothGattCharacteristic, writeType: Int = BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT): XYBluetoothResult<ByteArray?> {
-        log.info("writeCharacteristic")
+        log.info("Arie:start start: ${characteristicToWrite.value.size}")
         characteristicToWrite.writeType = writeType
 
         val listenerName = "XYBluetoothGattWriteCharacteristic${hashCode()}"
@@ -28,7 +28,7 @@ class XYBluetoothGattWriteCharacteristic(
                 value = suspendCancellableCoroutine { cont ->
                     val listener = object : BluetoothGattCallback() {
                         override fun onCharacteristicWrite(gatt: BluetoothGatt?, characteristic: BluetoothGattCharacteristic?, status: Int) {
-                            log.info("onCharacteristicWrite: $status")
+                            log.info("Arie:start onCharacteristicWrite: $status")
                             super.onCharacteristicWrite(gatt, characteristic, status)
                             // since it is always possible to have a rogue callback from a previously timed out call,
                             // make sure it is the one we are looking for
@@ -49,6 +49,7 @@ class XYBluetoothGattWriteCharacteristic(
 
                         override fun onConnectionStateChange(gatt: BluetoothGatt?, status: Int, newState: Int) {
                             super.onConnectionStateChange(gatt, status, newState)
+                            log.info("Arie:start onConnectionStateChange: $status")
                             //since we started as connected, any change in that status results in a failure
                             if (newState != BluetoothGatt.STATE_CONNECTED) {
                                 error = XYBluetoothResultErrorCode.Disconnected
@@ -63,8 +64,10 @@ class XYBluetoothGattWriteCharacteristic(
                     }
                     gattCallback.addListener(listenerName, listener)
                     GlobalScope.launch {
-                        val writeStarted = gatt.writeCharacteristic(characteristicToWrite)
+                        log.info("Arie:start launch")
+                        val writeStarted = gatt.writeCharacteristic(characteristicToWrite).value
                         if (writeStarted != true) {
+                            log.info("Arie:start writeStarted failed")
                             error = XYBluetoothResultErrorCode.WriteCharacteristicFailedToStart
                             gattCallback.removeListener(listenerName)
                             if (!isActive) {
@@ -77,11 +80,12 @@ class XYBluetoothGattWriteCharacteristic(
                 }
             }
         } catch (ex: TimeoutCancellationException) {
+            log.info("Arie:start timeout")
             error = XYBluetoothResultErrorCode.Timeout
             gattCallback.removeListener(listenerName)
             log.error(ex)
         }
-
+        log.info("Arie:start done")
         return XYBluetoothResult(value, error)
     }
 }

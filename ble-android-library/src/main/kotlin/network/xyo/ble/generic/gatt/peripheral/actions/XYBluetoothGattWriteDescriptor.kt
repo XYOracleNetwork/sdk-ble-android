@@ -56,7 +56,7 @@ class XYBluetoothGattWriteDescriptor(
                     }
                     gattCallback.addListener(listenerName, listener)
                     GlobalScope.launch {
-                        if (gatt.writeDescriptor(descriptorToWrite) != true) {
+                        if (gatt.writeDescriptor(descriptorToWrite).value != true) {
                             error = XYBluetoothResultErrorCode.DescriptorWriteFailedToStart
                             gattCallback.removeListener(listenerName)
 

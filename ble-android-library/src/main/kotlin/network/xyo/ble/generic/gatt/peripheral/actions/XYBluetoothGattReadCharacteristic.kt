@@ -52,7 +52,7 @@ class XYBluetoothGattReadCharacteristic(
             }
             gattCallback.addListener(listenerName, listener)
             GlobalScope.launch {
-                if (gatt.readCharacteristic(characteristicToRead) != true) {
+                if (gatt.readCharacteristic(characteristicToRead).value != true) {
                     error = XYBluetoothResultErrorCode.ReadCharacteristicFailedToStart
                     gattCallback.removeListener(listenerName)
 

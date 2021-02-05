@@ -55,7 +55,7 @@ class XYBluetoothGattDiscover(
                         }
                         gattCallback.addListener(listenerName, listener)
                         GlobalScope.launch {
-                            val discoverStarted = gatt.discoverServices()
+                            val discoverStarted = gatt.discoverServices().value
                             if (discoverStarted != true) {
                                 error = XYBluetoothResultErrorCode.DiscoverServicesFailedToStart
                                 gattCallback.removeListener(listenerName)

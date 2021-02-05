@@ -59,7 +59,7 @@ abstract class Service(val device: XYBluetoothDevice) : XYBase() {
     }
 
     suspend fun writeByte(characteristic: UUID, value: UByte, offset: Int = 0) = device.connection {
-        log.info("writeInt: connection")
+        log.info("Arie:writeByte")
         return@connection device.findAndWriteCharacteristicByte(
                 serviceUuid,
                 characteristic,

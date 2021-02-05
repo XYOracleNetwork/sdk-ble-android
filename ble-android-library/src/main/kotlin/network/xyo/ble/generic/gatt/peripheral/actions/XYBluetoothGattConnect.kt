@@ -100,10 +100,11 @@ class XYBluetoothGattConnect(
         var error = XYBluetoothResultErrorCode.None
 
         if (gatt != null) {
+            log.info("Arie: Returning Known Gatt")
             return XYBluetoothResult(gatt)
         }
 
-        val result = asyncBle {
+        val result = bleAsync {
             var newGatt: XYThreadSafeBluetoothGatt? = null
             XYCallByVersion()
                 .add(Build.VERSION_CODES.O) {
@@ -132,16 +133,16 @@ class XYBluetoothGattConnect(
                     newGatt =
                         XYThreadSafeBluetoothGatt(connectGatt19(context, device, autoConnect))
                 }.call()
-            return@asyncBle XYBluetoothResult(newGatt)
-        }
+            return@bleAsync XYBluetoothResult(newGatt)
+        }.await()
 
         if (gatt != null) {
             throw Exception("Gatt Unexpectedly Appeared")
         }
         
-        gatt = result?.value
+        gatt = result.value
 
-        if (result?.value == null) {
+        if (result.value == null) {
             error = XYBluetoothResultErrorCode.FailedToConnectGatt
         } else {
             value = result.value
@@ -184,11 +185,10 @@ class XYBluetoothGattConnect(
     }
 
     private suspend fun startWithExistingGatt(): XYBluetoothResultErrorCode {
-        val connectStarted = gatt?.connect()
-        if (connectStarted != true) {
-            return XYBluetoothResultErrorCode.ConnectFailedToStart
+        return if (gatt?.connect()?.value != true) {
+            XYBluetoothResultErrorCode.ConnectFailedToStart
         } else {
-            return XYBluetoothResultErrorCode.None
+            XYBluetoothResultErrorCode.None
         }
     }
 
