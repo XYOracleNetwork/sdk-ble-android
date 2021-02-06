@@ -11,7 +11,7 @@ import network.xyo.ble.sample.databinding.FragmentCharacteristicBinding
 import java.nio.charset.Charset
 
 @ExperimentalUnsignedTypes
-class CharacteristicFragment(var characteristic: BluetoothGattCharacteristic) : XYAppBaseFragment<FragmentCharacteristicBinding>() {
+class CharacteristicFragment(private var characteristic: BluetoothGattCharacteristic) : XYAppBaseFragment<FragmentCharacteristicBinding>() {
     override fun inflate(inflater: LayoutInflater, container: ViewGroup?): FragmentCharacteristicBinding {
         return FragmentCharacteristicBinding.inflate(inflater, container, false)
     }

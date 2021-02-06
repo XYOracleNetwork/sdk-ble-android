@@ -15,7 +15,7 @@ import network.xyo.ble.sample.adapters.XYCharacteristicAdapter
 import network.xyo.ble.sample.databinding.FragmentServiceBinding
 
 @ExperimentalUnsignedTypes
-class ServiceFragment(var service: BluetoothGattService) : XYAppBaseFragment<FragmentServiceBinding>() {
+class ServiceFragment(private var service: BluetoothGattService) : XYAppBaseFragment<FragmentServiceBinding>() {
     override fun inflate(inflater: LayoutInflater, container: ViewGroup?): FragmentServiceBinding {
         return FragmentServiceBinding.inflate(inflater, container, false)
     }

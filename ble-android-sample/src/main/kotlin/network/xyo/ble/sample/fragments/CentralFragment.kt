@@ -65,12 +65,6 @@ class CentralFragment(var adapter: BaseAdapter) : XYAppBaseFragment<FragmentCent
         binding.launchTest.setOnClickListener { startActivity(Intent(this@CentralFragment.context, XYOTestActivity::class.java)) }
     }
 
-    private fun openDevice(device: XYBluetoothDevice) {
-        val intent = Intent(this.context, XYODeviceActivity::class.java)
-        intent.putExtra(XYODeviceActivity.EXTRA_DEVICE_HASH, device.hash)
-        this.startActivity(intent)
-    }
-
     private fun checkStatus() {
         when (scanner.status) {
             XYSmartScanStatus.Enabled -> {

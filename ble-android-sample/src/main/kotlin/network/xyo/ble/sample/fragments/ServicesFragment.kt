@@ -12,7 +12,7 @@ import network.xyo.ble.sample.adapters.XYServiceListAdapter
 import network.xyo.ble.sample.databinding.FragmentServicesBinding
 
 @ExperimentalUnsignedTypes
-class ServicesFragment(var services : Array<BluetoothGattService>) : XYAppBaseFragment<FragmentServicesBinding>() {
+class ServicesFragment(private var services : Array<BluetoothGattService>) : XYAppBaseFragment<FragmentServicesBinding>() {
     val serviceList = XYServiceListAdapter(arrayOf())
 
     init {
