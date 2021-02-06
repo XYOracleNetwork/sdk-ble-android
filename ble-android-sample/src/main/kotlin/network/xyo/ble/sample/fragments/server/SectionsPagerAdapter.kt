@@ -13,8 +13,8 @@ import network.xyo.ble.sample.fragments.RootServicesFragment
 @ExperimentalUnsignedTypes
 class SectionsPagerAdapter(
         fm: FragmentManager,
-        var startingServices : Array<BluetoothGattService>,
-        var bleAdvertiser : XYBluetoothAdvertiser?
+        private var startingServices : Array<BluetoothGattService>,
+        private var bleAdvertiser : XYBluetoothAdvertiser?
         ) : FragmentPagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
     private val size = 2
     private val fragments: SparseArray<Fragment> = SparseArray(size)

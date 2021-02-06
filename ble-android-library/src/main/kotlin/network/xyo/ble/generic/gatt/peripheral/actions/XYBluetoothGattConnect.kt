@@ -162,25 +162,25 @@ class XYBluetoothGattConnect(
         }
 
         val gatt = this@XYBluetoothGattConnect.gatt // make thread safe
-        if (gatt != null) {
+        return if (gatt != null) {
             val discover = XYBluetoothGattDiscover(gatt, callback)
             val discoverResult = discover.start()
             if (discoverResult.error == XYBluetoothResultErrorCode.None) {
                 services = discoverResult.value
             }
-            return discoverResult
+            discoverResult
         } else {
-            return XYBluetoothResult(XYBluetoothResultErrorCode.NoGatt)
+            XYBluetoothResult(XYBluetoothResultErrorCode.NoGatt)
         }
     }
 
     private suspend  fun startWithNewGatt(context: Context, transport: Int? = null): XYBluetoothResultErrorCode {
         val gattConnectResult = connectGatt(context, transport)
-        if (gattConnectResult.error != XYBluetoothResultErrorCode.None) {
-            return gattConnectResult.error
+        return if (gattConnectResult.error != XYBluetoothResultErrorCode.None) {
+            gattConnectResult.error
         } else {
             gatt = gattConnectResult.value
-            return XYBluetoothResultErrorCode.None
+            XYBluetoothResultErrorCode.None
         }
     }
 

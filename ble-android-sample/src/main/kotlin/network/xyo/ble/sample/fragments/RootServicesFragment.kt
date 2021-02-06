@@ -9,7 +9,7 @@ import androidx.fragment.app.Fragment
 import network.xyo.ble.sample.R
 
 @ExperimentalUnsignedTypes
-class RootServicesFragment(var startingServices : Array<BluetoothGattService>) : Fragment() {
+class RootServicesFragment(private var startingServices : Array<BluetoothGattService>) : Fragment() {
     private var servicesFragment: ServicesFragment? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

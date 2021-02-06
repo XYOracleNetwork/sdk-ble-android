@@ -18,7 +18,7 @@ import java.nio.ByteBuffer
 import java.util.UUID
 
 @ExperimentalUnsignedTypes
-class AdvertiserFragment(var advertiser: XYBluetoothAdvertiser?) : XYAppBaseFragment<FragmentAdvertiserBinding>() {
+class AdvertiserFragment(private var advertiser: XYBluetoothAdvertiser?) : XYAppBaseFragment<FragmentAdvertiserBinding>() {
     private var isInIBeacon = false
 
     override fun inflate(inflater: LayoutInflater, container: ViewGroup?): FragmentAdvertiserBinding {

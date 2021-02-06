@@ -143,8 +143,7 @@ class XYOtaFile(private val inputStream: InputStream?) : XYBase() {
 
         fun createFileDirectory(folderName: String): Boolean {
             val directoryName = folderPath(folderName)
-            val directory: java.io.File
-            directory = java.io.File(directoryName)
+            val directory: java.io.File = java.io.File(directoryName)
             return directory.exists() || directory.mkdirs()
         }
 

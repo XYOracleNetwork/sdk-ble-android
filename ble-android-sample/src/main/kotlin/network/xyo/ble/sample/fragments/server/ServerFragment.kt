@@ -27,7 +27,7 @@ import java.util.UUID
 @kotlin.ExperimentalUnsignedTypes
 class ServerFragment : XYAppBaseFragment<FragmentPeripheralBinding>() {
     private var bleServer : XYBluetoothGattServer? = null
-    var bleAdvertiser : XYBluetoothAdvertiser? = null
+    private var bleAdvertiser : XYBluetoothAdvertiser? = null
     private val bluetoothIntentReceiver = BluetoothIntentReceiver()
     private lateinit var pagerAdapter: SectionsPagerAdapter
 
