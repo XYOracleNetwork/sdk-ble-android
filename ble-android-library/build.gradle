@@ -163,6 +163,7 @@ dependencies {
     implementation 'org.jetbrains:annotations:17.0.0'
     implementation 'org.bouncycastle:bcpkix-jdk15on:1.64'
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.2'
+
     implementation "androidx.annotation:annotation:1.1.0"
 }
 

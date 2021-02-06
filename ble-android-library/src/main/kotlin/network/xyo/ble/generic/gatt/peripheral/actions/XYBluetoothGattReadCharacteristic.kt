@@ -19,9 +19,8 @@ class XYBluetoothGattReadCharacteristic(
         log.info("readCharacteristic")
         val listenerName = "XYBluetoothGattReadCharacteristic${hashCode()}"
         var error: XYBluetoothResultErrorCode = XYBluetoothResultErrorCode.None
-        val value: BluetoothGattCharacteristic?
 
-        value = suspendCancellableCoroutine { cont ->
+        val value: BluetoothGattCharacteristic? = suspendCancellableCoroutine { cont ->
             val listener = object : BluetoothGattCallback() {
 
                 override fun onCharacteristicRead(gatt: BluetoothGatt?, characteristic: BluetoothGattCharacteristic?, status: Int) {
