@@ -227,7 +227,17 @@ abstract class XYSmartScan(context: Context) : XYBluetoothBase(context) {
         reportExited(device)
     }
 
+    //we send the scanner active times to the devices so they know if there
+    //has been dead time that they should ignore for exit detection
+    internal fun updateLastScannerActivityTimes() {
+        val time = now
+        this.devices.values.forEach { device ->
+            device.lastScannerActivityTime = time
+        }
+    }
+
     internal fun onScanResult(scanResults: List<XYScanResult>): List<XYScanResult> {
+        updateLastScannerActivityTimes()
         scanResultCount += scanResults.size
         for (scanResult in scanResults) {
             val foundDevices = HashMap<String, XYBluetoothDevice>()

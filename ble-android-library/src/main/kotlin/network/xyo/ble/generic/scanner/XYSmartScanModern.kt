@@ -81,7 +81,7 @@ class XYSmartScanModern(context: Context) : XYSmartScan(context) {
     private val callback = object : ScanCallback() {
         override fun onBatchScanResults(results: MutableList<ScanResult>?) {
             super.onBatchScanResults(results)
-            // log.info("onBatchScanResults: $results")
+            updateLastScannerActivityTimes()
             results?.let {
                 val xyResults = ArrayList<XYScanResult>()
                 for (result in it) {
@@ -101,7 +101,7 @@ class XYSmartScanModern(context: Context) : XYSmartScan(context) {
 
         override fun onScanResult(callbackType: Int, result: ScanResult?) {
             super.onScanResult(callbackType, result)
-            // log.info("onScanResult: $result")
+            updateLastScannerActivityTimes()
             result?.let {
                 val xyResults = ArrayList<XYScanResult>()
                 xyResults.add(XYScanResultModern(it))
