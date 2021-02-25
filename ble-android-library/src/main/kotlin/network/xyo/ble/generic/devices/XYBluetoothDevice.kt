@@ -36,6 +36,8 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, val has
     open var lastDetectGap = 0L
     open var maxDetectTime = 0L
 
+    open var lastScannerActivityTime = now
+
     // set this to true if the device should report that it is out of
     // range right after disconnect.  Generally used for devices
     // with rotating MAC addresses
@@ -96,6 +98,7 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, val has
     // this should only be called from the onEnter function so that
     // there is one onExit for every onEnter
     private fun checkForExit() {
+        val lastActivityTimeGap = now - lastScannerActivityTime
         lastAccessTime = now
         if (checkingForExit) {
             return
@@ -109,7 +112,7 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, val has
                 // check if something else has already marked it as exited
                 // this should only happen if another system (exit on connection drop for example)
                 // marks this as out of range
-                if ((now - (lastAdTime ?: now)) > outOfRangeDelay && (now - (lastAccessTime ?: now)) > outOfRangeDelay) {
+                if ((now - (lastAdTime ?: now) - lastActivityTimeGap) > outOfRangeDelay && (now - (lastAccessTime ?: now) - lastActivityTimeGap) > outOfRangeDelay) {
                     if (rssi != null) {
                         rssi = null
                         onExit()
