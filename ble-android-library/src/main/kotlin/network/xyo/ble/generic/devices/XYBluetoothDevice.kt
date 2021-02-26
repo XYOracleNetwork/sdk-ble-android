@@ -112,19 +112,52 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, val has
                 // check if something else has already marked it as exited
                 // this should only happen if another system (exit on connection drop for example)
                 // marks this as out of range
-                if ((now - (lastAdTime ?: now) - lastActivityTimeGap) > outOfRangeDelay && (now - (lastAccessTime ?: now) - lastActivityTimeGap) > outOfRangeDelay) {
-                    if (rssi != null) {
-                        rssi = null
-                        onExit()
+                now.let { now ->
+                    outOfRangeDelay.let { outOfRangeDelay ->
+                        lastAccessTime.let { lastAccessTime ->
+                            lastAdTime.let { lastAdTime ->
+                                now.let { now ->
+                                    if ((now - (lastAdTime
+                                            ?: now) - lastActivityTimeGap) > outOfRangeDelay && (now - (lastAccessTime
+                                            ?: now) - lastActivityTimeGap) > outOfRangeDelay
+                                    ) {
+                                        if (rssi != null) {
+                                            rssi = null
+                                            onExit()
 
-                        // make it thread safe
-                        val localNotifyExit = notifyExit
-                        if (localNotifyExit != null) {
-                            GlobalScope.launch {
-                                localNotifyExit(this@XYBluetoothDevice)
+                                            val functionName = "checkForExit"
+
+                                            log.info(functionName, "Exiting: now: $now")
+                                            log.info(
+                                                functionName,
+                                                "Exiting: lastAdTime: $lastAdTime"
+                                            )
+                                            log.info(
+                                                functionName,
+                                                "Exiting: lastActivityTimeGap: $lastActivityTimeGap"
+                                            )
+                                            log.info(
+                                                functionName,
+                                                "Exiting: lastAccessTime: $lastAccessTime"
+                                            )
+                                            log.info(
+                                                functionName,
+                                                "Exiting: outOfRangeDelay: $outOfRangeDelay"
+                                            )
+
+                                            // make it thread safe
+                                            val localNotifyExit = notifyExit
+                                            if (localNotifyExit != null) {
+                                                GlobalScope.launch {
+                                                    localNotifyExit(this@XYBluetoothDevice)
+                                                }
+                                            }
+                                            checkingForExit = false
+                                        }
+                                    }
+                                }
                             }
                         }
-                        checkingForExit = false
                     }
                 }
             }
