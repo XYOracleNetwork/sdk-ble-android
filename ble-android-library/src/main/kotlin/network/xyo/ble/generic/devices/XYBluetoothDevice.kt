@@ -265,11 +265,13 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, val has
         // if we have not gotten any ads or been connected to it
         const val OUT_OF_RANGE_DELAY = 15000L
 
-        fun enable(canCreate: Boolean) {
-            this.canCreate = canCreate
+        fun enable(enable: Boolean, canCreate: Boolean? = null) {
+            enabled = enable
+            this.canCreate = canCreate ?: this.canCreate
         }
 
         internal var canCreate = false
+        internal var enabled = false
         val manufacturerToCreator = SparseArray<XYCreator>()
 
         // Do not set serviceToCreator as Private. It's called by other apps

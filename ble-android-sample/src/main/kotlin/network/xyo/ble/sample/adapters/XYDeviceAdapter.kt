@@ -1,6 +1,7 @@
 package network.xyo.ble.sample.adapters
 
 import android.app.Activity
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
@@ -44,10 +45,12 @@ class XYDeviceAdapter(private val activity: Activity) : BaseAdapter() {
         //we want to prevent multiple updates to go at the same time
         if (sortLock.tryLock()) {
             devices = XYBluetoothDevice.sortedList(scanner.devices.values.toList())
-            activity.runOnUiThread {
-                notifyDataSetChanged()
-            }
+            Log.i("refreshDevices", "sorted: ${devices.size}")
             lastSort = System.currentTimeMillis()
+        }
+        activity.runOnUiThread {
+            notifyDataSetChanged()
+            Log.i("refreshDevices", "notifyDataSetChanged: ${devices.size}")
         }
     }
 
