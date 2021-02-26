@@ -171,6 +171,43 @@ open class XY4BluetoothDevice(
             return minorValue.and(0xfff0.toUShort()).or(0x0004.toUShort())
         }
 
+    fun ensureStayAwake() {
+        val functionName = "ensureStayAwake"
+        log.info(functionName, "started")
+
+        GlobalScope.launch {
+            var result = false
+            log.info(functionName, "async")
+            connection {
+                log.info(functionName, "connected")
+                val unlockResult = unlock()
+                if (unlockResult.hasError()) {
+                    log.error(unlockResult.error.toString())
+                } else {
+                    log.info(functionName, "unlocked")
+                    val currentStayAwakeResult = primary.stayAwake.get()
+                    if (currentStayAwakeResult.hasError()) {
+                        log.error(currentStayAwakeResult.error.toString())
+                    } else {
+                        if (currentStayAwakeResult.value?.equals(1u) == true) {
+                            log.info(functionName, "complete [already set ${currentStayAwakeResult.value}]")
+                        } else {
+                            log.info(functionName, "current [not set ${currentStayAwakeResult.value}]")
+                            val stayAwakeResult = stayAwake()
+                            if (stayAwakeResult.hasError()) {
+                                log.error(stayAwakeResult.error.toString())
+                            } else {
+                                log.info(functionName, "complete")
+                                result = true
+                            }
+                        }
+                    }
+                }
+                return@connection XYBluetoothResult(result)
+            }
+        }
+    }
+
     companion object : XYBase() {
 
         private val FAMILY_UUID = UUID.fromString("a44eacf4-0104-0000-0000-5f784c9977b5")!!
