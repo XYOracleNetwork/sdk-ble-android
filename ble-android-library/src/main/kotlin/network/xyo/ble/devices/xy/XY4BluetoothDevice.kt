@@ -189,7 +189,7 @@ open class XY4BluetoothDevice(
                     if (currentStayAwakeResult.hasError()) {
                         log.error(currentStayAwakeResult.error.toString())
                     } else {
-                        if (currentStayAwakeResult.value?.equals(1u) == true) {
+                        if (currentStayAwakeResult.value?.compareTo(1u) == 0) {
                             log.info(functionName, "complete [already set ${currentStayAwakeResult.value}]")
                         } else {
                             log.info(functionName, "current [not set ${currentStayAwakeResult.value}]")
