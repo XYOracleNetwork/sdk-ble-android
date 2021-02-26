@@ -80,6 +80,10 @@ open class XYFinderBluetoothDevice(context: Context, scanResult: XYScanResult, h
     open val genericAccessService by lazy { GenericAccessService(this) }
     open val genericAttributeService by lazy { GenericAttributeService(this) }
 
+    init {
+        exitEnabled = true
+    }
+
     override val reporter = XYFinderBluetoothDeviceReporter<XYFinderBluetoothDevice>()
 
     override val id: String
