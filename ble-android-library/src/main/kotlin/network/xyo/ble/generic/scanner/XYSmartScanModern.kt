@@ -144,6 +144,7 @@ class XYSmartScanModern(context: Context) : XYSmartScan(context) {
                 .setNumOfMatches(ScanSettings.MATCH_NUM_MAX_ADVERTISEMENT)
                 .setCallbackType(ScanSettings.CALLBACK_TYPE_ALL_MATCHES)
                 .setMatchMode(ScanSettings.MATCH_MODE_STICKY)
+                .setReportDelay(0)
                 .build()
     }
 
@@ -156,6 +157,7 @@ class XYSmartScanModern(context: Context) : XYSmartScan(context) {
                 .setCallbackType(ScanSettings.CALLBACK_TYPE_ALL_MATCHES)
                 .setMatchMode(ScanSettings.MATCH_MODE_STICKY)
                 .setPhy(ScanSettings.PHY_LE_ALL_SUPPORTED)
+                .setReportDelay(0)
                 .build()
     }
 
@@ -168,6 +170,7 @@ class XYSmartScanModern(context: Context) : XYSmartScan(context) {
                 .setCallbackType(ScanSettings.CALLBACK_TYPE_ALL_MATCHES)
                 .setMatchMode(ScanSettings.MATCH_MODE_STICKY)
                 .setPhy(ScanSettings.PHY_LE_ALL_SUPPORTED)
+                .setReportDelay(0)
                 .build()
     }
 
