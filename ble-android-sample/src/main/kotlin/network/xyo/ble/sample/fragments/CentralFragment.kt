@@ -30,13 +30,9 @@ class CentralFragment(var adapter: BaseAdapter) : XYAppBaseFragment<FragmentCent
     }
 
     private fun enableDevices() {
-        XYAppleBluetoothDevice.enable(true)
-        XYIBeaconBluetoothDevice.enable(true, canCreate = true)
-        XYFinderBluetoothDevice.enable(true, canCreate = true)
         XY4BluetoothDevice.enable(true)
         XY3BluetoothDevice.enable(true)
         XY2BluetoothDevice.enable(true)
-        XYBluetoothDevice.enable(true)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,

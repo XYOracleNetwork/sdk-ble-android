@@ -24,8 +24,10 @@ open class XYAppleBluetoothDevice(context: Context, device: BluetoothDevice, has
 
         var canCreate = false
 
-        fun enable(enable: Boolean) {
+        fun enable(enable: Boolean, canCreate: Boolean? = null) {
+            this.canCreate = canCreate ?: this.canCreate
             if (enable) {
+                XYBluetoothDevice.enable(true)
                 manufacturerToCreator.append(MANUFACTURER_ID, creator)
             } else {
                 manufacturerToCreator.remove(MANUFACTURER_ID)
