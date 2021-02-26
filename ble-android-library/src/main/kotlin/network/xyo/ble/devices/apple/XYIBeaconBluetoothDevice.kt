@@ -108,9 +108,11 @@ open class XYIBeaconBluetoothDevice(context: Context, val scanResult: XYScanResu
         private const val APPLE_IBEACON_ID = 0x02
 
         var canCreate = false
+        var enabled = false
 
         fun enable(enable: Boolean, canCreate: Boolean? = null) {
             this.canCreate = canCreate ?: this.canCreate
+            this.enabled = enabled
             if (enable) {
                 XYAppleBluetoothDevice.enable(true)
                 XYAppleBluetoothDevice.typeToCreator.append(APPLE_IBEACON_ID, creator)

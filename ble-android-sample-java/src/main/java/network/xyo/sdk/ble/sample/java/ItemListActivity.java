@@ -74,9 +74,6 @@ public class ItemListActivity extends AppCompatActivity {
         assert recyclerView != null;
         setupRecyclerView((RecyclerView) recyclerView);
 
-        XYAppleBluetoothDevice.Companion.enable(true);
-        XYIBeaconBluetoothDevice.Companion.enable(true, true);
-        XYFinderBluetoothDevice.Companion.enable(true, true);
         XY4BluetoothDevice.Companion.enable(true);
         XY3BluetoothDevice.Companion.enable(true);
         XY2BluetoothDevice.Companion.enable(true);

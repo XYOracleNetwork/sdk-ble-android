@@ -131,7 +131,7 @@ class XYSmartScanModern(context: Context) : XYSmartScan(context) {
     // Android 5 and 6
     private fun getSettings21(): ScanSettings {
         return ScanSettings.Builder()
-                .setScanMode(ScanSettings.SCAN_MODE_LOW_POWER)
+                .setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY)
                 .setReportDelay(500)
                 .build()
     }
@@ -140,7 +140,8 @@ class XYSmartScanModern(context: Context) : XYSmartScan(context) {
     @TargetApi(Build.VERSION_CODES.M)
     private fun getSettings23(): ScanSettings {
         return ScanSettings.Builder()
-                .setScanMode(ScanSettings.SCAN_MODE_LOW_POWER)
+                .setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY)
+                .setNumOfMatches(ScanSettings.MATCH_NUM_MAX_ADVERTISEMENT)
                 .setCallbackType(ScanSettings.CALLBACK_TYPE_ALL_MATCHES)
                 .setMatchMode(ScanSettings.MATCH_MODE_STICKY)
                 .build()
@@ -150,9 +151,11 @@ class XYSmartScanModern(context: Context) : XYSmartScan(context) {
     @TargetApi(Build.VERSION_CODES.O)
     private fun getSettings26(): ScanSettings {
         return ScanSettings.Builder()
-                .setScanMode(ScanSettings.SCAN_MODE_BALANCED)
+                .setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY)
+                .setNumOfMatches(ScanSettings.MATCH_NUM_MAX_ADVERTISEMENT)
                 .setCallbackType(ScanSettings.CALLBACK_TYPE_ALL_MATCHES)
                 .setMatchMode(ScanSettings.MATCH_MODE_STICKY)
+                .setPhy(ScanSettings.PHY_LE_ALL_SUPPORTED)
                 .build()
     }
 
@@ -160,9 +163,11 @@ class XYSmartScanModern(context: Context) : XYSmartScan(context) {
     @TargetApi(Build.VERSION_CODES.Q)
     private fun getSettings29(): ScanSettings {
         return ScanSettings.Builder()
-                .setScanMode(ScanSettings.SCAN_MODE_BALANCED)
+                .setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY)
+                .setNumOfMatches(ScanSettings.MATCH_NUM_MAX_ADVERTISEMENT)
                 .setCallbackType(ScanSettings.CALLBACK_TYPE_ALL_MATCHES)
                 .setMatchMode(ScanSettings.MATCH_MODE_STICKY)
+                .setPhy(ScanSettings.PHY_LE_ALL_SUPPORTED)
                 .build()
     }
 

@@ -202,7 +202,7 @@ open class XYFinderBluetoothDevice(context: Context, scanResult: XYScanResult, h
         fun enable(enable: Boolean, canCreate: Boolean? = null) {
             this.canCreate = canCreate ?: this.canCreate
             if (enable) {
-                XYIBeaconBluetoothDevice.enable(true)
+                XYIBeaconBluetoothDevice.enable(true, canCreate)
             }
         }
 
