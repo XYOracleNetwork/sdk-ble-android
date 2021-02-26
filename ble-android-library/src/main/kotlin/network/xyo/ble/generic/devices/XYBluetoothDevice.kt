@@ -12,6 +12,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import network.xyo.base.XYBase
+import network.xyo.ble.devices.xy.XY4BluetoothDevice
 import network.xyo.ble.generic.ads.XYBleAd
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothGattClient
 import network.xyo.ble.generic.scanner.XYScanRecord
@@ -35,6 +36,7 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, val has
     open var averageDetectGap = 0L
     open var lastDetectGap = 0L
     open var maxDetectTime = 0L
+    open var exitEnabled = false
 
     open var lastScannerActivityTime = now
 
@@ -98,6 +100,9 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, val has
     // this should only be called from the onEnter function so that
     // there is one onExit for every onEnter
     private fun checkForExit() {
+        if (!exitEnabled) {
+            return
+        }
         val lastActivityTimeGap = now - lastScannerActivityTime
         lastAccessTime = now
         if (checkingForExit) {
@@ -116,7 +121,8 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, val has
                     outOfRangeDelay.let { outOfRangeDelay ->
                         lastAccessTime.let { lastAccessTime ->
                             lastAdTime.let { lastAdTime ->
-                                now.let { now ->
+                                val adjustedNow = now - lastActivityTimeGap
+                                adjustedNow.let { now ->
                                     if ((now - (lastAdTime
                                             ?: now) - lastActivityTimeGap) > outOfRangeDelay && (now - (lastAccessTime
                                             ?: now) - lastActivityTimeGap) > outOfRangeDelay
@@ -125,25 +131,29 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, val has
                                             rssi = null
                                             onExit()
 
-                                            val functionName = "checkForExit"
+                                            when(this) {
+                                                is XY4BluetoothDevice -> {
+                                                    val functionName = "checkForExit"
 
-                                            log.info(functionName, "Exiting: now: $now")
-                                            log.info(
-                                                functionName,
-                                                "Exiting: lastAdTime: $lastAdTime"
-                                            )
-                                            log.info(
-                                                functionName,
-                                                "Exiting: lastActivityTimeGap: $lastActivityTimeGap"
-                                            )
-                                            log.info(
-                                                functionName,
-                                                "Exiting: lastAccessTime: $lastAccessTime"
-                                            )
-                                            log.info(
-                                                functionName,
-                                                "Exiting: outOfRangeDelay: $outOfRangeDelay"
-                                            )
+                                                    log.info(functionName, "Exiting: now: $now")
+                                                    log.info(
+                                                        functionName,
+                                                        "Exiting: lastAdTime: $lastAdTime [$now - $lastAdTime]"
+                                                    )
+                                                    log.info(
+                                                        functionName,
+                                                        "Exiting: lastActivityTimeGap: $lastActivityTimeGap"
+                                                    )
+                                                    log.info(
+                                                        functionName,
+                                                        "Exiting: lastAccessTime: $lastAccessTime [$now - $lastAccessTime]"
+                                                    )
+                                                    log.info(
+                                                        functionName,
+                                                        "Exiting: outOfRangeDelay: $outOfRangeDelay"
+                                                    )
+                                                }
+                                            }
 
                                             // make it thread safe
                                             val localNotifyExit = notifyExit
@@ -255,11 +265,13 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, val has
         // if we have not gotten any ads or been connected to it
         const val OUT_OF_RANGE_DELAY = 15000L
 
-        fun enable(canCreate: Boolean) {
-            this.canCreate = canCreate
+        fun enable(enable: Boolean, canCreate: Boolean? = null) {
+            enabled = enable
+            this.canCreate = canCreate ?: this.canCreate
         }
 
         internal var canCreate = false
+        internal var enabled = false
         val manufacturerToCreator = SparseArray<XYCreator>()
 
         // Do not set serviceToCreator as Private. It's called by other apps

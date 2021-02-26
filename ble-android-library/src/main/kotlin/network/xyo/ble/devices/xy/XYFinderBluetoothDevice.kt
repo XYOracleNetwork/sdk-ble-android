@@ -80,6 +80,10 @@ open class XYFinderBluetoothDevice(context: Context, scanResult: XYScanResult, h
     open val genericAccessService by lazy { GenericAccessService(this) }
     open val genericAttributeService by lazy { GenericAttributeService(this) }
 
+    init {
+        exitEnabled = true
+    }
+
     override val reporter = XYFinderBluetoothDeviceReporter<XYFinderBluetoothDevice>()
 
     override val id: String
@@ -198,7 +202,7 @@ open class XYFinderBluetoothDevice(context: Context, scanResult: XYScanResult, h
         fun enable(enable: Boolean, canCreate: Boolean? = null) {
             this.canCreate = canCreate ?: this.canCreate
             if (enable) {
-                XYIBeaconBluetoothDevice.enable(true)
+                XYIBeaconBluetoothDevice.enable(true, canCreate)
             }
         }
 
