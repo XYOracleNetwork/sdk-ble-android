@@ -206,7 +206,7 @@ class InfoFragment(device: XYBluetoothDevice, deviceData : XYDeviceData) : XYDev
 
     private fun disconnect() {
         GlobalScope.launch {
-            device.disconnectAsync()
+            device.disconnectAsync().await()
             updateUI()
         }
     }
