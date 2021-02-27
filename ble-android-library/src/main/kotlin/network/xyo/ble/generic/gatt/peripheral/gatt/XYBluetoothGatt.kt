@@ -5,17 +5,13 @@ import android.content.Context
 import android.os.Handler
 import java.util.UUID
 import java.util.concurrent.Executors
-import java.lang.RuntimeException
 import kotlin.coroutines.CoroutineContext
 import kotlinx.coroutines.*
-import network.xyo.base.hasDebugger
 import network.xyo.ble.generic.XYBluetoothBase
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothGattCallback
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResult
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResultErrorCode
 import network.xyo.ble.generic.gatt.peripheral.actions.XYBluetoothGattConnect
-import network.xyo.ble.generic.gatt.peripheral.actions.XYBluetoothGattWriteCharacteristic
-import network.xyo.ble.generic.gatt.peripheral.actions.XYBluetoothGattWriteDescriptor
 import network.xyo.ble.generic.scanner.XYScanResult
 
 // XYBluetoothGatt is a pure wrapper that does not add any functionality
