@@ -1,4 +1,4 @@
-package network.xyo.ble.generic.gatt.peripheral.gatt
+package network.xyo.ble.generic.gatt.peripheral.impl
 
 import android.bluetooth.BluetoothGatt
 import android.bluetooth.BluetoothGattCallback
@@ -10,7 +10,6 @@ import network.xyo.ble.generic.gatt.peripheral.XYBluetoothGattCallback
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResult
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResultErrorCode
 import network.xyo.ble.generic.gatt.peripheral.actions.XYBluetoothGattConnect
-import kotlin.coroutines.resume
 
 suspend fun requestMtuImpl(connection: XYBluetoothGattConnect, mtu: Int, callback: XYBluetoothGattCallback): XYBluetoothResult<Int> {
     return suspendCancellableCoroutine { cont ->
@@ -23,17 +22,17 @@ suspend fun requestMtuImpl(connection: XYBluetoothGattConnect, mtu: Int, callbac
                 callback.removeListener(key)
 
                 if (status == BluetoothGatt.GATT_SUCCESS) {
-                    cont.resume(XYBluetoothResult(mtu))
+                    cont.resume(XYBluetoothResult(mtu), null)
                     return
                 }
 
-                cont.resume(XYBluetoothResult(XYBluetoothResultErrorCode.Unknown))
+                cont.resume(XYBluetoothResult(XYBluetoothResultErrorCode.Unknown), null)
             }
         })
 
         GlobalScope.launch {
             if (connection.gatt?.requestMtu(mtu)?.value != true) {
-                cont.resume(XYBluetoothResult(XYBluetoothResultErrorCode.Unknown))
+                cont.resume(XYBluetoothResult(XYBluetoothResultErrorCode.Unknown), null)
             }
         }
     }

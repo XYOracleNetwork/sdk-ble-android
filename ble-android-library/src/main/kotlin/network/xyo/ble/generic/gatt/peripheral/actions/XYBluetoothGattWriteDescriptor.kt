@@ -7,15 +7,15 @@ import kotlinx.coroutines.*
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothGattCallback
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResult
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResultErrorCode
-import network.xyo.ble.generic.gatt.peripheral.XYThreadSafeBluetoothGatt
+import network.xyo.ble.generic.gatt.peripheral.ThreadSafeBluetoothGattWrapper
 
 class XYBluetoothGattWriteDescriptor(
-        gatt: XYThreadSafeBluetoothGatt,
-        gattCallback: XYBluetoothGattCallback,
-        timeout: Long = 15000L)
-    : XYBluetoothGattAction<ByteArray>(gatt, gattCallback, timeout) {
+    gatt: ThreadSafeBluetoothGattWrapper,
+    gattCallback: XYBluetoothGattCallback,
+    timeout: Long = 15000L
+) : XYBluetoothGattAction<ByteArray>(gatt, gattCallback, timeout) {
 
-    suspend fun start(descriptorToWrite: BluetoothGattDescriptor): XYBluetoothResult<ByteArray?> {
+    suspend fun start(descriptorToWrite: BluetoothGattDescriptor): XYBluetoothResult<ByteArray> {
         log.info("writeDescriptor")
         val listenerName = "XYBluetoothGattWriteDescriptor${hashCode()}"
         var error: XYBluetoothResultErrorCode = XYBluetoothResultErrorCode.None
@@ -25,7 +25,11 @@ class XYBluetoothGattWriteDescriptor(
             withTimeout(timeout) {
                 value = suspendCancellableCoroutine { cont ->
                     val listener = object : BluetoothGattCallback() {
-                        override fun onDescriptorWrite(gatt: BluetoothGatt?, descriptor: BluetoothGattDescriptor?, status: Int) {
+                        override fun onDescriptorWrite(
+                            gatt: BluetoothGatt?,
+                            descriptor: BluetoothGattDescriptor?,
+                            status: Int
+                        ) {
                             log.info("onDescriptorWrite: $status")
                             super.onDescriptorWrite(gatt, descriptor, status)
                             // since it is always possible to have a rogue callback, make sure it is the one we are looking for
@@ -43,7 +47,11 @@ class XYBluetoothGattWriteDescriptor(
                             }
                         }
 
-                        override fun onConnectionStateChange(gatt: BluetoothGatt?, status: Int, newState: Int) {
+                        override fun onConnectionStateChange(
+                            gatt: BluetoothGatt?,
+                            status: Int,
+                            newState: Int
+                        ) {
                             log.info("onConnectionStateChange")
                             super.onConnectionStateChange(gatt, status, newState)
                             if (newState != BluetoothGatt.STATE_CONNECTED) {

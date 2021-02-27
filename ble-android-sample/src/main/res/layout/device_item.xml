@@ -26,6 +26,14 @@
             android:layout_height="wrap_content"
             android:padding="@dimen/pad_device_item_tv" />
 
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="@dimen/pad_device_item">
+
         <TextView
             style="@style/device_item_tv_header"
             android:layout_width="wrap_content"
@@ -158,6 +166,25 @@
 
         <TextView
             android:id="@+id/text_uuid"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/pad_device_item_tv" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="@dimen/pad_device_item">
+
+        <TextView
+            style="@style/device_item_tv_header"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/connectable" />
+
+        <TextView
+            android:id="@+id/text_connectable"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="@dimen/pad_device_item_tv" />

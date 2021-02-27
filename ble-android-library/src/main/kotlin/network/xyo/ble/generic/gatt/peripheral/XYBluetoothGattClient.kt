@@ -6,7 +6,6 @@ import android.bluetooth.BluetoothGattDescriptor
 import android.content.Context
 import android.os.Handler
 import java.util.UUID
-import network.xyo.ble.generic.gatt.peripheral.gatt.XYBluetoothGatt
 
 open class XYBluetoothGattClient protected constructor(
     context: Context,
@@ -24,8 +23,12 @@ open class XYBluetoothGattClient protected constructor(
         }
     }
 
-    open suspend fun readCharacteristicInt(characteristicToRead: BluetoothGattCharacteristic, formatType: Int, offset: Int): XYBluetoothResult<Int> {
-        val readResult = readCharacteristicAsync(characteristicToRead).await()
+    open suspend fun readCharacteristicInt(
+        characteristicToRead: BluetoothGattCharacteristic,
+        formatType: Int,
+        offset: Int
+    ): XYBluetoothResult<Int> {
+        val readResult = readCharacteristic(characteristicToRead)
         var value: Int? = null
         val error = readResult.error
         if (error == XYBluetoothResultErrorCode.None) {
@@ -39,8 +42,11 @@ open class XYBluetoothGattClient protected constructor(
         return XYBluetoothResult(value, error)
     }
 
-    open suspend fun readCharacteristicString(characteristicToRead: BluetoothGattCharacteristic, offset: Int): XYBluetoothResult<String> {
-        val readResult = readCharacteristicAsync(characteristicToRead).await()
+    open suspend fun readCharacteristicString(
+        characteristicToRead: BluetoothGattCharacteristic,
+        offset: Int
+    ): XYBluetoothResult<String> {
+        val readResult = readCharacteristic(characteristicToRead)
         var value: String? = null
         val error = readResult.error
         if (error == XYBluetoothResultErrorCode.None) {
@@ -54,8 +60,12 @@ open class XYBluetoothGattClient protected constructor(
         return XYBluetoothResult(value, error)
     }
 
-    open suspend fun readCharacteristicFloat(characteristicToRead: BluetoothGattCharacteristic, formatType: Int, offset: Int): XYBluetoothResult<Float> {
-        val readResult = readCharacteristicAsync(characteristicToRead).await()
+    open suspend fun readCharacteristicFloat(
+        characteristicToRead: BluetoothGattCharacteristic,
+        formatType: Int,
+        offset: Int
+    ): XYBluetoothResult<Float> {
+        val readResult = readCharacteristic(characteristicToRead)
         var value: Float? = null
         val error = readResult.error
         if (error == XYBluetoothResultErrorCode.None) {
@@ -70,7 +80,7 @@ open class XYBluetoothGattClient protected constructor(
     }
 
     open suspend fun readCharacteristicBytes(characteristicToRead: BluetoothGattCharacteristic): XYBluetoothResult<ByteArray> {
-        val readResult = readCharacteristicAsync(characteristicToRead).await()
+        val readResult = readCharacteristic(characteristicToRead)
         var value: ByteArray? = null
         val error = readResult.error
         if (error == XYBluetoothResultErrorCode.None) {
@@ -84,7 +94,12 @@ open class XYBluetoothGattClient protected constructor(
         return XYBluetoothResult(value, error)
     }
 
-    suspend fun findAndReadCharacteristicInt(service: UUID, characteristic: UUID, formatType: Int, offset: Int = 0): XYBluetoothResult<Int> {
+    suspend fun findAndReadCharacteristicInt(
+        service: UUID,
+        characteristic: UUID,
+        formatType: Int,
+        offset: Int = 0
+    ): XYBluetoothResult<Int> {
         val findResult = findCharacteristicAsync(service, characteristic).await()
         val characteristicToRead = findResult.value
         var value: Int? = null
@@ -106,7 +121,11 @@ open class XYBluetoothGattClient protected constructor(
         return XYBluetoothResult(value, error)
     }
 
-    suspend fun findAndReadCharacteristicByte(service: UUID, characteristic: UUID, offset: Int = 0): XYBluetoothResult<UByte> {
+    suspend fun findAndReadCharacteristicByte(
+        service: UUID,
+        characteristic: UUID,
+        offset: Int = 0
+    ): XYBluetoothResult<UByte> {
         val findResult = findCharacteristicAsync(service, characteristic).await()
         val characteristicToRead = findResult.value
         var value: UByte? = null
@@ -115,7 +134,11 @@ open class XYBluetoothGattClient protected constructor(
             if (characteristicToRead == null) {
                 error = XYBluetoothResultErrorCode.NullValue
             } else {
-                val readResult = readCharacteristicInt(characteristicToRead, BluetoothGattCharacteristic.FORMAT_UINT8, offset)
+                val readResult = readCharacteristicInt(
+                    characteristicToRead,
+                    BluetoothGattCharacteristic.FORMAT_UINT8,
+                    offset
+                )
                 error = readResult.error
                 value = readResult.value?.toUByte()
             }
@@ -128,7 +151,11 @@ open class XYBluetoothGattClient protected constructor(
         return XYBluetoothResult(value, error)
     }
 
-    suspend fun findAndReadCharacteristicShort(service: UUID, characteristic: UUID, offset: Int = 0): XYBluetoothResult<UShort> {
+    suspend fun findAndReadCharacteristicShort(
+        service: UUID,
+        characteristic: UUID,
+        offset: Int = 0
+    ): XYBluetoothResult<UShort> {
         val findResult = findCharacteristicAsync(service, characteristic).await()
         val characteristicToRead = findResult.value
         var value: UShort? = null
@@ -137,7 +164,11 @@ open class XYBluetoothGattClient protected constructor(
             if (characteristicToRead == null) {
                 error = XYBluetoothResultErrorCode.NullValue
             } else {
-                val readResult = readCharacteristicInt(characteristicToRead, BluetoothGattCharacteristic.FORMAT_UINT16, offset)
+                val readResult = readCharacteristicInt(
+                    characteristicToRead,
+                    BluetoothGattCharacteristic.FORMAT_UINT16,
+                    offset
+                )
                 error = readResult.error
                 value = readResult.value?.toUShort()
             }
@@ -150,7 +181,12 @@ open class XYBluetoothGattClient protected constructor(
         return XYBluetoothResult(value, error)
     }
 
-    suspend fun findAndReadCharacteristicFloat(service: UUID, characteristic: UUID, formatType: Int, offset: Int = 0): XYBluetoothResult<Float> {
+    suspend fun findAndReadCharacteristicFloat(
+        service: UUID,
+        characteristic: UUID,
+        formatType: Int,
+        offset: Int = 0
+    ): XYBluetoothResult<Float> {
         val findResult = findCharacteristicAsync(service, characteristic).await()
         val characteristicToRead = findResult.value
         var value: Float? = null
@@ -172,7 +208,11 @@ open class XYBluetoothGattClient protected constructor(
         return XYBluetoothResult(value, error)
     }
 
-    suspend fun findAndReadCharacteristicString(service: UUID, characteristic: UUID, offset: Int = 0): XYBluetoothResult<String> {
+    suspend fun findAndReadCharacteristicString(
+        service: UUID,
+        characteristic: UUID,
+        offset: Int = 0
+    ): XYBluetoothResult<String> {
         val findResult = findCharacteristicAsync(service, characteristic).await()
         val characteristicToRead = findResult.value
         var value: String? = null
@@ -194,7 +234,10 @@ open class XYBluetoothGattClient protected constructor(
         return XYBluetoothResult(value, error)
     }
 
-    suspend fun findAndReadCharacteristicBytes(service: UUID, characteristic: UUID): XYBluetoothResult<ByteArray> {
+    suspend fun findAndReadCharacteristicBytes(
+        service: UUID,
+        characteristic: UUID
+    ): XYBluetoothResult<ByteArray> {
         val findResult = findCharacteristicAsync(service, characteristic).await()
         val characteristicToRead = findResult.value
         var value: ByteArray? = null
@@ -216,7 +259,13 @@ open class XYBluetoothGattClient protected constructor(
         return XYBluetoothResult(value, error)
     }
 
-    suspend fun findAndWriteCharacteristic(service: UUID, characteristic: UUID, valueToWrite: Int, formatType: Int, offset: Int): XYBluetoothResult<Int> {
+    suspend fun findAndWriteCharacteristic(
+        service: UUID,
+        characteristic: UUID,
+        valueToWrite: Int,
+        formatType: Int,
+        offset: Int
+    ): XYBluetoothResult<Int> {
         // this prevents a queued close from closing while we run
         lastAccessTime = now
 
@@ -244,7 +293,12 @@ open class XYBluetoothGattClient protected constructor(
         return XYBluetoothResult(value, error)
     }
 
-    suspend fun findAndWriteCharacteristicByte(service: UUID, characteristic: UUID, valueToWrite: UByte, offset: Int): XYBluetoothResult<UByte> {
+    suspend fun findAndWriteCharacteristicByte(
+        service: UUID,
+        characteristic: UUID,
+        valueToWrite: UByte,
+        offset: Int
+    ): XYBluetoothResult<UByte> {
         // this prevents a queued close from closing while we run
         lastAccessTime = now
 
@@ -254,7 +308,11 @@ open class XYBluetoothGattClient protected constructor(
         var error = findResult.error
         if (error == XYBluetoothResultErrorCode.None) {
             if (characteristicToWrite != null) {
-                characteristicToWrite.setValue(valueToWrite.toInt(), BluetoothGattCharacteristic.FORMAT_UINT8, offset)
+                characteristicToWrite.setValue(
+                    valueToWrite.toInt(),
+                    BluetoothGattCharacteristic.FORMAT_UINT8,
+                    offset
+                )
                 val writeResult = writeCharacteristicAsync(characteristicToWrite).await()
                 value = valueToWrite
                 error = writeResult.error
@@ -272,7 +330,14 @@ open class XYBluetoothGattClient protected constructor(
         return XYBluetoothResult(value, error)
     }
 
-    suspend fun findAndWriteCharacteristicFloat(service: UUID, characteristic: UUID, mantissa: Int, exponent: Int, formatType: Int, offset: Int): XYBluetoothResult<ByteArray> {
+    suspend fun findAndWriteCharacteristicFloat(
+        service: UUID,
+        characteristic: UUID,
+        mantissa: Int,
+        exponent: Int,
+        formatType: Int,
+        offset: Int
+    ): XYBluetoothResult<ByteArray> {
         // this prevents a queued close from closing while we run
         lastAccessTime = now
 
@@ -300,7 +365,12 @@ open class XYBluetoothGattClient protected constructor(
         return XYBluetoothResult(value, error)
     }
 
-    suspend fun findAndWriteCharacteristicShort(service: UUID, characteristic: UUID, valueToWrite: UShort, offset: Int): XYBluetoothResult<UShort> {
+    suspend fun findAndWriteCharacteristicShort(
+        service: UUID,
+        characteristic: UUID,
+        valueToWrite: UShort,
+        offset: Int
+    ): XYBluetoothResult<UShort> {
         // this prevents a queued close from closing while we run
         lastAccessTime = now
 
@@ -310,7 +380,11 @@ open class XYBluetoothGattClient protected constructor(
         var error = findResult.error
         if (error == XYBluetoothResultErrorCode.None) {
             if (characteristicToWrite != null) {
-                characteristicToWrite.setValue(valueToWrite.toInt(), BluetoothGattCharacteristic.FORMAT_UINT16, offset)
+                characteristicToWrite.setValue(
+                    valueToWrite.toInt(),
+                    BluetoothGattCharacteristic.FORMAT_UINT16,
+                    offset
+                )
                 val writeResult = writeCharacteristicAsync(characteristicToWrite).await()
                 value = valueToWrite
                 error = writeResult.error
@@ -328,7 +402,12 @@ open class XYBluetoothGattClient protected constructor(
         return XYBluetoothResult(value, error)
     }
 
-    suspend fun findAndWriteCharacteristicInt(service: UUID, characteristic: UUID, valueToWrite: UInt, offset: Int): XYBluetoothResult<UInt> {
+    suspend fun findAndWriteCharacteristicInt(
+        service: UUID,
+        characteristic: UUID,
+        valueToWrite: UInt,
+        offset: Int
+    ): XYBluetoothResult<UInt> {
         // this prevents a queued close from closing while we run
         lastAccessTime = now
 
@@ -338,7 +417,11 @@ open class XYBluetoothGattClient protected constructor(
         var error = findResult.error
         if (error == XYBluetoothResultErrorCode.None) {
             if (characteristicToWrite != null) {
-                characteristicToWrite.setValue(valueToWrite.toInt(), BluetoothGattCharacteristic.FORMAT_UINT32, offset)
+                characteristicToWrite.setValue(
+                    valueToWrite.toInt(),
+                    BluetoothGattCharacteristic.FORMAT_UINT32,
+                    offset
+                )
                 val writeResult = writeCharacteristicAsync(characteristicToWrite).await()
                 value = valueToWrite
                 error = writeResult.error
@@ -356,7 +439,11 @@ open class XYBluetoothGattClient protected constructor(
         return XYBluetoothResult(value, error)
     }
 
-    suspend fun findAndWriteCharacteristic(service: UUID, characteristic: UUID, valueToWrite: String): XYBluetoothResult<String> {
+    suspend fun findAndWriteCharacteristic(
+        service: UUID,
+        characteristic: UUID,
+        valueToWrite: String
+    ): XYBluetoothResult<String> {
         // this prevents a queued close from closing while we run
         lastAccessTime = now
 
@@ -401,8 +488,9 @@ open class XYBluetoothGattClient protected constructor(
             if (characteristicToWrite != null) {
                 characteristicToWrite.value = bytes
                 val writeResult = writeCharacteristicAsync(
-                        characteristicToWrite = characteristicToWrite,
-                        writeType = writeType).await()
+                    characteristicToWrite = characteristicToWrite,
+                    writeType = writeType
+                ).await()
                 value = writeResult.value
                 error = writeResult.error
             } else {
@@ -419,7 +507,11 @@ open class XYBluetoothGattClient protected constructor(
         return XYBluetoothResult(value, error)
     }
 
-    suspend fun findAndWriteCharacteristicNotify(service: UUID, characteristic: UUID, enable: Boolean): XYBluetoothResult<Boolean> {
+    suspend fun findAndWriteCharacteristicNotify(
+        service: UUID,
+        characteristic: UUID,
+        enable: Boolean
+    ): XYBluetoothResult<Boolean> {
         // this prevents a queued close from closing while we run
         lastAccessTime = now
 
@@ -457,6 +549,7 @@ open class XYBluetoothGattClient protected constructor(
     }
 
     companion object {
-        val CLIENT_CHARACTERISTIC_CONFIG: UUID = UUID.fromString("00002902-0000-1000-8000-00805f9b34fb")
+        val CLIENT_CHARACTERISTIC_CONFIG: UUID =
+            UUID.fromString("00002902-0000-1000-8000-00805f9b34fb")
     }
 }

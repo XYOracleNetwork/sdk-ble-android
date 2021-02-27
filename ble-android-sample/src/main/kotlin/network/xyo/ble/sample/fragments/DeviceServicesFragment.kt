@@ -45,6 +45,9 @@ class DeviceServicesFragment(device: XYBluetoothDevice, deviceData : XYDeviceDat
                 transition?.commit()
             }
         })
+        GlobalScope.launch {
+            updateList()
+        }
     }
 
     init {
