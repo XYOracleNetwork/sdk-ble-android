@@ -1,6 +1,8 @@
-package network.xyo.ble.generic.gatt.peripheral
+package network.xyo.ble.generic.gatt.peripheral.gatt
 
 import android.bluetooth.BluetoothGattCharacteristic
+import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResult
+import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResultErrorCode
 import network.xyo.ble.generic.gatt.peripheral.actions.XYBluetoothGattConnect
 import java.util.*
 
