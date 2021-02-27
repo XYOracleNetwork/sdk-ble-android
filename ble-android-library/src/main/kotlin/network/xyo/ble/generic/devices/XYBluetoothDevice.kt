@@ -75,6 +75,8 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, val has
 
     open var outOfRangeDelay = OUT_OF_RANGE_DELAY
 
+    var connectable = false
+
     var notifyExit: ((device: XYBluetoothDevice) -> (Unit))? = null
 
     private var checkingForExit = false
@@ -201,6 +203,8 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, val has
         }
         averageDetectGap = ((lastAdTime ?: now) - (enterTime ?: now)) / detectCount
         lastAdTime = now
+
+        connectable = ((scanResult?.scanRecord?.advertiseFlags ?: 0) and 0x02) == 0x02
 
         reporter.detected(this)
     }

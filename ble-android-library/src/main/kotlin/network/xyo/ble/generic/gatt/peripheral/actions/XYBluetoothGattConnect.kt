@@ -11,6 +11,7 @@ import android.os.Handler
 import kotlinx.coroutines.*
 import network.xyo.base.hasDebugger
 import network.xyo.ble.generic.gatt.peripheral.*
+import network.xyo.ble.generic.gatt.peripheral.ThreadSafeBluetoothGattWrapper
 import network.xyo.ble.utilities.XYCallByVersion
 import java.lang.RuntimeException
 
@@ -18,7 +19,7 @@ class XYBluetoothGattConnect(
         val device: BluetoothDevice)
     : XYBluetoothGattActionBase<XYBluetoothResultErrorCode>(1500000L) {
 
-    var gatt: XYThreadSafeBluetoothGatt? = null
+    var gatt: ThreadSafeBluetoothGattWrapper? = null
     var services: List<BluetoothGattService>? = null
 
     // we make sure we always monitor the connection state so that we do not miss a message and
@@ -33,6 +34,12 @@ class XYBluetoothGattConnect(
 
     var state = BluetoothGatt.STATE_DISCONNECTED
     var status = BluetoothGatt.GATT_SUCCESS
+
+    val disconnected
+        get() = state != BluetoothGatt.STATE_CONNECTED
+
+    val connected
+        get() = state == BluetoothGatt.STATE_CONNECTED
 
     // make sure we always close connections
     protected fun finalize() {
@@ -91,9 +98,9 @@ class XYBluetoothGattConnect(
         }
     }
 
-    private suspend fun connectGatt(context: Context, transport: Int? = null): XYBluetoothResult<XYThreadSafeBluetoothGatt> {
+    private suspend fun connectGatt(context: Context, transport: Int? = null): XYBluetoothResult<ThreadSafeBluetoothGattWrapper> {
         log.info("connectGatt")
-        var value: XYThreadSafeBluetoothGatt? = null
+        var value: ThreadSafeBluetoothGattWrapper? = null
         val autoConnect = false
         val phy = null
         val handler = null
@@ -105,10 +112,10 @@ class XYBluetoothGattConnect(
         }
 
         val result = bleAsync {
-            var newGatt: XYThreadSafeBluetoothGatt? = null
+            var newGatt: ThreadSafeBluetoothGattWrapper? = null
             XYCallByVersion()
                 .add(Build.VERSION_CODES.O) {
-                    newGatt = XYThreadSafeBluetoothGatt(
+                    newGatt = ThreadSafeBluetoothGattWrapper(
                         connectGatt26(
                             context,
                             device,
@@ -120,7 +127,7 @@ class XYBluetoothGattConnect(
                     )
                 }
                 .add(Build.VERSION_CODES.M) {
-                    newGatt = XYThreadSafeBluetoothGatt(
+                    newGatt = ThreadSafeBluetoothGattWrapper(
                         connectGatt23(
                             context,
                             device,
@@ -131,7 +138,7 @@ class XYBluetoothGattConnect(
                 }
                 .add(Build.VERSION_CODES.KITKAT) {
                     newGatt =
-                        XYThreadSafeBluetoothGatt(connectGatt19(context, device, autoConnect))
+                        ThreadSafeBluetoothGattWrapper(connectGatt19(context, device, autoConnect))
                 }.call()
             return@bleAsync XYBluetoothResult(newGatt)
         }.await()
@@ -185,11 +192,7 @@ class XYBluetoothGattConnect(
     }
 
     private suspend fun startWithExistingGatt(): XYBluetoothResultErrorCode {
-        return if (gatt?.connect()?.value != true) {
-            XYBluetoothResultErrorCode.ConnectFailedToStart
-        } else {
-            XYBluetoothResultErrorCode.None
-        }
+        return gatt?.connect()?.error ?: XYBluetoothResultErrorCode.NoGatt
     }
 
     override fun completeStartCoroutine(cont: CancellableContinuation<XYBluetoothResultErrorCode?>, value: XYBluetoothResultErrorCode?) {

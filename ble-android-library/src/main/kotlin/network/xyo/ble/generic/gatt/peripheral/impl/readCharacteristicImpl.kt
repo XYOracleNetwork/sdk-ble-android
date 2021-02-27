@@ -1,27 +1,29 @@
-package network.xyo.ble.generic.gatt.peripheral.gatt
+package network.xyo.ble.generic.gatt.peripheral.impl
 
-import android.bluetooth.BluetoothGatt
 import android.bluetooth.BluetoothGattCharacteristic
-import network.xyo.base.hasDebugger
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothGattCallback
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResult
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResultErrorCode
 import network.xyo.ble.generic.gatt.peripheral.actions.XYBluetoothGattConnect
 import network.xyo.ble.generic.gatt.peripheral.actions.XYBluetoothGattReadCharacteristic
-import java.lang.RuntimeException
 
 suspend fun readCharacteristicImpl(
     connection: XYBluetoothGattConnect,
     characteristicToRead: BluetoothGattCharacteristic,
     callback: XYBluetoothGattCallback
-) : XYBluetoothResult<BluetoothGattCharacteristic?> {
-    if(hasDebugger && connection.state != BluetoothGatt.STATE_CONNECTED)
-        throw RuntimeException("cannot read characteristic")
-    val gatt = connection.gatt
-    return if (gatt != null) {
-        val readCharacteristic = XYBluetoothGattReadCharacteristic(gatt, callback)
-        readCharacteristic.start(characteristicToRead)
+) : XYBluetoothResult<BluetoothGattCharacteristic> {
+
+    var result = XYBluetoothResult<BluetoothGattCharacteristic>()
+
+    if (connection.disconnected) {
+        result.error = XYBluetoothResultErrorCode.Disconnected
     } else {
-        XYBluetoothResult(XYBluetoothResultErrorCode.NoGatt)
+        connection.gatt?.let { gatt ->
+            val readCharacteristic = XYBluetoothGattReadCharacteristic(gatt, callback)
+            result = readCharacteristic.start(characteristicToRead)
+        } ?: run {
+            result.error = XYBluetoothResultErrorCode.NoGatt
+        }
     }
+    return result
 }

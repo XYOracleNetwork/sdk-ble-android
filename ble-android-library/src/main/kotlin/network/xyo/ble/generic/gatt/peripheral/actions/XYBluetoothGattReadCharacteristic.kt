@@ -7,15 +7,15 @@ import kotlinx.coroutines.*
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothGattCallback
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResult
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResultErrorCode
-import network.xyo.ble.generic.gatt.peripheral.XYThreadSafeBluetoothGatt
+import network.xyo.ble.generic.gatt.peripheral.ThreadSafeBluetoothGattWrapper
 
 class XYBluetoothGattReadCharacteristic(
-        gatt: XYThreadSafeBluetoothGatt,
-        gattCallback: XYBluetoothGattCallback,
-        timeout: Long = 15000L)
-    : XYBluetoothGattAction<BluetoothGattCharacteristic>(gatt, gattCallback, timeout) {
+    gatt: ThreadSafeBluetoothGattWrapper,
+    gattCallback: XYBluetoothGattCallback,
+    timeout: Long = 15000L
+) : XYBluetoothGattAction<BluetoothGattCharacteristic>(gatt, gattCallback, timeout) {
 
-    suspend fun start(characteristicToRead: BluetoothGattCharacteristic): XYBluetoothResult<BluetoothGattCharacteristic?> {
+    suspend fun start(characteristicToRead: BluetoothGattCharacteristic): XYBluetoothResult<BluetoothGattCharacteristic> {
         log.info("readCharacteristic")
         val listenerName = "XYBluetoothGattReadCharacteristic${hashCode()}"
         var error: XYBluetoothResultErrorCode = XYBluetoothResultErrorCode.None
@@ -23,7 +23,11 @@ class XYBluetoothGattReadCharacteristic(
         val value: BluetoothGattCharacteristic? = suspendCancellableCoroutine { cont ->
             val listener = object : BluetoothGattCallback() {
 
-                override fun onCharacteristicRead(gatt: BluetoothGatt?, characteristic: BluetoothGattCharacteristic?, status: Int) {
+                override fun onCharacteristicRead(
+                    gatt: BluetoothGatt?,
+                    characteristic: BluetoothGattCharacteristic?,
+                    status: Int
+                ) {
                     super.onCharacteristicRead(gatt, characteristic, status)
                     if (characteristicToRead == characteristic) {
                         if (status == BluetoothGatt.GATT_SUCCESS) {
@@ -39,7 +43,11 @@ class XYBluetoothGattReadCharacteristic(
                     }
                 }
 
-                override fun onConnectionStateChange(gatt: BluetoothGatt?, status: Int, newState: Int) {
+                override fun onConnectionStateChange(
+                    gatt: BluetoothGatt?,
+                    status: Int,
+                    newState: Int
+                ) {
                     super.onConnectionStateChange(gatt, status, newState)
                     if (newState != BluetoothGatt.STATE_CONNECTED) {
                         error = XYBluetoothResultErrorCode.Disconnected
@@ -51,7 +59,7 @@ class XYBluetoothGattReadCharacteristic(
             }
             gattCallback.addListener(listenerName, listener)
             GlobalScope.launch {
-                if (gatt.readCharacteristic(characteristicToRead).value != true) {
+                if (gatt.readCharacteristic(characteristicToRead).hasError()) {
                     error = XYBluetoothResultErrorCode.ReadCharacteristicFailedToStart
                     gattCallback.removeListener(listenerName)
 
