@@ -21,7 +21,6 @@ class XYOAppActivity : XYOAppBaseActivity() {
     private lateinit var deviceAdapter:  XYDeviceAdapter
     private lateinit var binding: ActivityAppBinding
 
-    @SuppressLint("InflateParams")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         deviceAdapter = XYDeviceAdapter(this)

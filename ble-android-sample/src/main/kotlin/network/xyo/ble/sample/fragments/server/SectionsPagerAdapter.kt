@@ -25,7 +25,7 @@ class SectionsPagerAdapter(
             1 -> return RootServicesFragment(startingServices)
         }
 
-        throw Exception("Position out of index!")
+        throw Exception("Position out of index [${position}]")
     }
 
     override fun getCount(): Int {

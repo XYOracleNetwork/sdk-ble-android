@@ -13,11 +13,8 @@ import com.nabinbhandari.android.permissions.PermissionHandler
 import com.nabinbhandari.android.permissions.Permissions
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import network.xyo.ble.devices.apple.XYAppleBluetoothDevice
-import network.xyo.ble.devices.apple.XYIBeaconBluetoothDevice
 import network.xyo.ble.devices.xy.*
 import network.xyo.ble.generic.devices.XYBluetoothDevice
-import network.xyo.ble.sample.activities.XYODeviceActivity
 import network.xyo.ble.sample.activities.XYOTestActivity
 import network.xyo.ble.generic.scanner.XYSmartScanStatus
 import network.xyo.ble.sample.databinding.FragmentCentralBinding
@@ -33,6 +30,7 @@ class CentralFragment(var adapter: BaseAdapter) : XYAppBaseFragment<FragmentCent
         XY4BluetoothDevice.enable(true)
         XY3BluetoothDevice.enable(true)
         XY2BluetoothDevice.enable(true)
+        XYBluetoothDevice.enable(true, canCreate = true)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,

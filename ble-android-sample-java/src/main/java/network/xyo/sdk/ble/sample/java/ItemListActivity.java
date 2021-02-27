@@ -30,6 +30,8 @@ import network.xyo.ble.generic.scanner.XYSmartScanModern;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.jetbrains.annotations.NotNull;
+
 /**
  * An activity representing a list of Items. This activity
  * has different presentations for handset and tablet-size devices. On
@@ -136,14 +138,14 @@ public class ItemListActivity extends AppCompatActivity {
 
             parent.getScanner().getScanner().addListener("Wrapper", new XYSmartScanListener() {
                 @Override
-                public void entered(XYBluetoothDevice device) {
+                public void entered(@NotNull XYBluetoothDevice device) {
                     super.entered(device);
                     mValues.add(device);
                     mParentActivity.runOnUiThread(() -> notifyDataSetChanged());
                 }
 
                 @Override
-                public void exited(XYBluetoothDevice device) {
+                public void exited(@NotNull XYBluetoothDevice device) {
                     super.exited(device);
                     mValues.remove(device);
                     mParentActivity.runOnUiThread(() -> notifyDataSetChanged());
@@ -152,7 +154,7 @@ public class ItemListActivity extends AppCompatActivity {
         }
 
         @Override
-        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        public @NotNull ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             View view = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.item_list_content, parent, false);
             return new ViewHolder(view);

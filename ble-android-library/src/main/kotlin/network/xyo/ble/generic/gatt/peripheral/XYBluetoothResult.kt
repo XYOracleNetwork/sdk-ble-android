@@ -15,10 +15,12 @@ open class XYBluetoothResult<T> {
             debug {
                 when (error) {
                     XYBluetoothResultErrorCode.NoGatt -> {
+                        println("Error: No Gatt")
                         throw NoGattRuntimeException()
                     }
 
                     else -> {
+                        println("Bluetooth call failed [${value}]")
                         throw RuntimeException("Bluetooth call failed [${value}]")
                     }
                 }
