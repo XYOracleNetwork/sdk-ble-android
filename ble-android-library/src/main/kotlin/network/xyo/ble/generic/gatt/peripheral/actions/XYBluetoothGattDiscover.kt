@@ -7,12 +7,12 @@ import kotlinx.coroutines.*
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothGattCallback
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResult
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResultErrorCode
-import network.xyo.ble.generic.gatt.peripheral.XYThreadSafeBluetoothGatt
+import network.xyo.ble.generic.gatt.peripheral.gatt.ThreadSafeBluetoothGattWrapper
 
 class XYBluetoothGattDiscover(
-        gatt: XYThreadSafeBluetoothGatt,
-        gattCallback: XYBluetoothGattCallback,
-        timeout: Long = 1500000L)
+    gatt: ThreadSafeBluetoothGattWrapper,
+    gattCallback: XYBluetoothGattCallback,
+    timeout: Long = 1500000L)
     : XYBluetoothGattAction<List<BluetoothGattService>>(gatt, gattCallback, timeout) {
 
     suspend fun start(): XYBluetoothResult<List<BluetoothGattService>> {

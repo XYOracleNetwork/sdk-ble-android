@@ -162,13 +162,18 @@ open class XYBluetoothGatt protected constructor(
     suspend fun connect(timeout: Long = 60000) = queueBleAsync(timeout, "connect") {
         log.info("connect: start")
         val device = this@XYBluetoothGatt.device
-                ?: return@queueBleAsync XYBluetoothResult(false, XYBluetoothResultErrorCode.NoDevice)
-        var connection = this@XYBluetoothGatt.connection // make it thread safe by putting it on the stack
+            ?: return@queueBleAsync XYBluetoothResult(false, XYBluetoothResultErrorCode.NoDevice)
+        var connection =
+            this@XYBluetoothGatt.connection // make it thread safe by putting it on the stack
         lastAccessTime = now
         if (connection == null) {
             connection = XYBluetoothGattConnect(device)
             connection.callback.addListener("Gatt", object : BluetoothGattCallback() {
-                override fun onConnectionStateChange(gatt: BluetoothGatt?, status: Int, newState: Int) {
+                override fun onConnectionStateChange(
+                    gatt: BluetoothGatt?,
+                    status: Int,
+                    newState: Int
+                ) {
                     super.onConnectionStateChange(gatt, status, newState)
                     state = newState
                     this@XYBluetoothGatt.onConnectionStateChange(newState)
@@ -223,7 +228,7 @@ open class XYBluetoothGatt protected constructor(
         }
     }
 
-    protected suspend fun readCharacteristicAsync(
+    protected suspend fun readCharacteristic(
         characteristicToRead: BluetoothGattCharacteristic,
         timeout: Long = 10000
     ) = queueBleAsync(timeout, "readCharacteristic") {
@@ -234,7 +239,7 @@ open class XYBluetoothGatt protected constructor(
                 XYBluetoothResult(XYBluetoothResultErrorCode.Disconnected)
             }
         }
-    }
+    }.await()
 
     protected suspend fun writeCharacteristicAsync(
         characteristicToWrite: BluetoothGattCharacteristic,
@@ -243,7 +248,12 @@ open class XYBluetoothGatt protected constructor(
     ) = queueBleAsync(timeout, "writeCharacteristic") {
         connection.let { connection ->
             return@queueBleAsync if (connection != null) {
-                writeCharacteristicImpl(connection, characteristicToWrite, writeType, centralCallback)
+                writeCharacteristicImpl(
+                    connection,
+                    characteristicToWrite,
+                    writeType,
+                    centralCallback
+                )
             } else {
                 XYBluetoothResult(XYBluetoothResultErrorCode.Disconnected)
             }
@@ -253,8 +263,8 @@ open class XYBluetoothGatt protected constructor(
     protected suspend fun setCharacteristicNotifyAsync(
         characteristic: BluetoothGattCharacteristic,
         notify: Boolean,
-        timeout: Long = 10000)
-    = queueBleAsync(timeout, "setCharacteristicNotify") {
+        timeout: Long = 10000
+    ) = queueBleAsync(timeout, "setCharacteristicNotify") {
         connection.let { connection ->
             return@queueBleAsync if (connection != null) {
                 setCharacteristicNotifyImpl(connection, characteristic, notify)

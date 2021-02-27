@@ -9,25 +9,24 @@ import java.util.*
 // this can only be called after a successful discover
 fun findCharacteristicImpl(connection: XYBluetoothGattConnect, service: UUID, characteristic: UUID)
     : XYBluetoothResult<BluetoothGattCharacteristic> {
-    var error: XYBluetoothResultErrorCode = XYBluetoothResultErrorCode.None
-    var value: BluetoothGattCharacteristic? = null
+    val result = XYBluetoothResult<BluetoothGattCharacteristic>()
 
-    val callingGatt = connection.gatt
-
-    if (callingGatt == null) {
-        error = XYBluetoothResultErrorCode.NoGatt
+    if (connection.disconnected) {
+        result.error = XYBluetoothResultErrorCode.Disconnected
     } else {
-        val services = connection.services
-        if (services?.isEmpty() == false) {
-            val foundService = callingGatt.getService(service)
-            if (foundService == null) {
-                error = XYBluetoothResultErrorCode.FailedToFindService
+        connection.gatt?.let { gatt ->
+            val services = connection.services
+            if (services?.isEmpty() == false) {
+                val foundService = gatt.service(service)
+                if (foundService == null) {
+                    result.error = XYBluetoothResultErrorCode.FailedToFindService
+                } else {
+                    result.value = foundService.getCharacteristic(characteristic)
+                }
             } else {
-                value = foundService.getCharacteristic(characteristic)
+                result.error = XYBluetoothResultErrorCode.ServicesNotDiscovered
             }
-        } else {
-            error = XYBluetoothResultErrorCode.ServicesNotDiscovered
-        }
+        } ?: run {result.error = XYBluetoothResultErrorCode.NoGatt}
     }
-    return XYBluetoothResult(value, error)
+    return result
 }

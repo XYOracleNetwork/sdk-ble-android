@@ -29,7 +29,10 @@ open class XYBluetoothGattCallback : BluetoothGattCallback() {
         }
     }
 
-    override fun onCharacteristicChanged(gatt: BluetoothGatt?, characteristic: BluetoothGattCharacteristic?) {
+    override fun onCharacteristicChanged(
+        gatt: BluetoothGatt?,
+        characteristic: BluetoothGattCharacteristic?
+    ) {
         super.onCharacteristicChanged(gatt, characteristic)
         log.info("onCharacteristicChanged: $characteristic")
 
@@ -51,7 +54,11 @@ open class XYBluetoothGattCallback : BluetoothGattCallback() {
         }
     }
 
-    override fun onCharacteristicRead(gatt: BluetoothGatt?, characteristic: BluetoothGattCharacteristic?, status: Int) {
+    override fun onCharacteristicRead(
+        gatt: BluetoothGatt?,
+        characteristic: BluetoothGattCharacteristic?,
+        status: Int
+    ) {
         super.onCharacteristicRead(gatt, characteristic, status)
         log.info("onCharacteristicRead: $characteristic : $status")
         synchronized(_lock) {
@@ -63,7 +70,11 @@ open class XYBluetoothGattCallback : BluetoothGattCallback() {
         }
     }
 
-    override fun onCharacteristicWrite(gatt: BluetoothGatt?, characteristic: BluetoothGattCharacteristic?, status: Int) {
+    override fun onCharacteristicWrite(
+        gatt: BluetoothGatt?,
+        characteristic: BluetoothGattCharacteristic?,
+        status: Int
+    ) {
         super.onCharacteristicWrite(gatt, characteristic, status)
         synchronized(_lock) {
             for ((_, listener) in gattListeners) {
@@ -85,7 +96,11 @@ open class XYBluetoothGattCallback : BluetoothGattCallback() {
         }
     }
 
-    override fun onDescriptorRead(gatt: BluetoothGatt?, descriptor: BluetoothGattDescriptor?, status: Int) {
+    override fun onDescriptorRead(
+        gatt: BluetoothGatt?,
+        descriptor: BluetoothGattDescriptor?,
+        status: Int
+    ) {
         super.onDescriptorRead(gatt, descriptor, status)
         synchronized(_lock) {
             for ((_, listener) in gattListeners) {
@@ -96,7 +111,11 @@ open class XYBluetoothGattCallback : BluetoothGattCallback() {
         }
     }
 
-    override fun onDescriptorWrite(gatt: BluetoothGatt?, descriptor: BluetoothGattDescriptor?, status: Int) {
+    override fun onDescriptorWrite(
+        gatt: BluetoothGatt?,
+        descriptor: BluetoothGattDescriptor?,
+        status: Int
+    ) {
         super.onDescriptorWrite(gatt, descriptor, status)
         log.info("onDescriptorWrite: $descriptor : $status")
         synchronized(_lock) {

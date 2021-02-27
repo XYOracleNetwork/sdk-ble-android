@@ -1,4 +1,4 @@
-package network.xyo.ble.generic.gatt.peripheral
+package network.xyo.ble.generic.gatt.peripheral.gatt
 
 import android.annotation.TargetApi
 import android.bluetooth.BluetoothGatt
@@ -8,6 +8,8 @@ import android.bluetooth.BluetoothGattService
 import java.lang.ref.WeakReference
 import java.util.UUID
 import network.xyo.base.XYBase
+import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResult
+import network.xyo.ble.generic.gatt.peripheral.bleAsync
 
 @Suppress("unused")
 open class XYThreadSafeBluetoothGatt(bluetoothGatt: BluetoothGatt?) : XYBase() {

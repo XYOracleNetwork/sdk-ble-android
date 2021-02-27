@@ -4,22 +4,24 @@ import android.bluetooth.BluetoothGattCharacteristic
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResult
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResultErrorCode
 import network.xyo.ble.generic.gatt.peripheral.actions.XYBluetoothGattConnect
+import network.xyo.ble.generic.gatt.peripheral.actions.XYBluetoothGattWriteDescriptor
 
 suspend fun setCharacteristicNotifyImpl(
     connection: XYBluetoothGattConnect,
     characteristicToWrite: BluetoothGattCharacteristic,
     notify: Boolean
 ) : XYBluetoothResult<Boolean>{
-    var error: XYBluetoothResultErrorCode = XYBluetoothResultErrorCode.None
-    var value: Boolean? = null
+    var result = XYBluetoothResult<Boolean>()
 
-    val gatt = connection.gatt
-
-    if (gatt == null) {
-        error = XYBluetoothResultErrorCode.NoGatt
+    if (connection.disconnected) {
+        result.error = XYBluetoothResultErrorCode.Disconnected
     } else {
-        value = gatt.setCharacteristicNotification(characteristicToWrite, notify).value
+        connection.gatt?.let { gatt ->
+            result = gatt.setCharacteristicNotification(characteristicToWrite, notify)
+        } ?: run {
+            result.error = XYBluetoothResultErrorCode.NoGatt
+        }
     }
 
-    return XYBluetoothResult(value, error)
+    return result
 }
