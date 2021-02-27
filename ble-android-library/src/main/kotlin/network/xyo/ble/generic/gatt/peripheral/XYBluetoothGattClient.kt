@@ -6,7 +6,6 @@ import android.bluetooth.BluetoothGattDescriptor
 import android.content.Context
 import android.os.Handler
 import java.util.UUID
-import network.xyo.ble.generic.gatt.peripheral.gatt.XYBluetoothGatt
 
 open class XYBluetoothGattClient protected constructor(
     context: Context,

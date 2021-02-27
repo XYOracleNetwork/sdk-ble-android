@@ -1,4 +1,4 @@
-package network.xyo.ble.generic.gatt.peripheral.gatt
+package network.xyo.ble.generic.gatt.peripheral.impl
 
 import android.bluetooth.BluetoothGatt
 import android.bluetooth.BluetoothGattCallback
@@ -9,7 +9,6 @@ import network.xyo.ble.generic.gatt.peripheral.XYBluetoothGattCallback
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResult
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResultErrorCode
 import java.util.*
-import kotlin.coroutines.resume
 
 suspend fun waitForNotificationImpl(characteristicToWaitFor: UUID, callback: XYBluetoothGattCallback): XYBluetoothResult<Any?> {
     return suspendCancellableCoroutine { cont ->
@@ -19,7 +18,7 @@ suspend fun waitForNotificationImpl(characteristicToWaitFor: UUID, callback: XYB
                 super.onCharacteristicChanged(gatt, characteristic)
                 if (characteristicToWaitFor == characteristic?.uuid) {
                     callback.removeListener(listenerName)
-                    cont.resume(XYBluetoothResult(null, XYBluetoothResultErrorCode.None))
+                    cont.resume(XYBluetoothResult(null, XYBluetoothResultErrorCode.None), null)
                 }
             }
 
@@ -27,7 +26,7 @@ suspend fun waitForNotificationImpl(characteristicToWaitFor: UUID, callback: XYB
                 super.onConnectionStateChange(gatt, status, newState)
                 if (newState != BluetoothGatt.STATE_CONNECTED) {
                     callback.removeListener(listenerName)
-                    cont.resume(XYBluetoothResult(null, XYBluetoothResultErrorCode.Disconnected))
+                    cont.resume(XYBluetoothResult(null, XYBluetoothResultErrorCode.Disconnected), null)
                 }
             }
         }

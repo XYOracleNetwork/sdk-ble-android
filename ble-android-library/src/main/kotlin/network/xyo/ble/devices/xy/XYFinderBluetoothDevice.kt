@@ -17,7 +17,6 @@ import network.xyo.ble.generic.scanner.XYScanResult
 import network.xyo.ble.generic.services.standard.DeviceInformationService
 import network.xyo.ble.generic.services.standard.GenericAccessService
 import network.xyo.ble.generic.services.standard.GenericAttributeService
-import network.xyo.ble.listeners.XYFinderBluetoothDeviceListener
 import network.xyo.ble.reporters.XYFinderBluetoothDeviceReporter
 
 /**
@@ -81,7 +80,7 @@ open class XYFinderBluetoothDevice(context: Context, scanResult: XYScanResult, h
     open val genericAttributeService by lazy { GenericAttributeService(this) }
 
     init {
-        exitEnabled = true
+        super.exitEnabled = true
     }
 
     override val reporter = XYFinderBluetoothDeviceReporter<XYFinderBluetoothDevice>()

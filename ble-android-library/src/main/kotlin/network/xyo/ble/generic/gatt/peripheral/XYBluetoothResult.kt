@@ -25,8 +25,7 @@ open class XYBluetoothResult<T> {
             }
         }
 
-    constructor() {
-    }
+    constructor()
 
     constructor(value: T?, error: XYBluetoothResultErrorCode = XYBluetoothResultErrorCode.None) {
         this.value = value

@@ -1,4 +1,4 @@
-package network.xyo.ble.generic.gatt.peripheral.gatt
+package network.xyo.ble.generic.gatt.peripheral.impl
 
 import android.bluetooth.BluetoothGattCharacteristic
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothGattCallback

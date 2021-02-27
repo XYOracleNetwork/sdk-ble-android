@@ -7,7 +7,7 @@ import kotlinx.coroutines.*
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothGattCallback
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResult
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResultErrorCode
-import network.xyo.ble.generic.gatt.peripheral.gatt.ThreadSafeBluetoothGattWrapper
+import network.xyo.ble.generic.gatt.peripheral.ThreadSafeBluetoothGattWrapper
 
 class XYBluetoothGattDiscover(
     gatt: ThreadSafeBluetoothGattWrapper,

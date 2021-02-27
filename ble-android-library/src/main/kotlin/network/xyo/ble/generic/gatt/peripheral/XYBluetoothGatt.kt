@@ -1,4 +1,4 @@
-package network.xyo.ble.generic.gatt.peripheral.gatt
+package network.xyo.ble.generic.gatt.peripheral
 
 import android.bluetooth.*
 import android.content.Context
@@ -8,10 +8,8 @@ import java.util.concurrent.Executors
 import kotlin.coroutines.CoroutineContext
 import kotlinx.coroutines.*
 import network.xyo.ble.generic.XYBluetoothBase
-import network.xyo.ble.generic.gatt.peripheral.XYBluetoothGattCallback
-import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResult
-import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResultErrorCode
 import network.xyo.ble.generic.gatt.peripheral.actions.XYBluetoothGattConnect
+import network.xyo.ble.generic.gatt.peripheral.impl.*
 import network.xyo.ble.generic.scanner.XYScanResult
 
 // XYBluetoothGatt is a pure wrapper that does not add any functionality
@@ -144,9 +142,9 @@ open class XYBluetoothGatt protected constructor(
                 return@queueBleAsync XYBluetoothResult(XYBluetoothResultErrorCode.Disconnected)
             }
         }
-    }
+    }.await()
 
-    suspend fun waitForNotificationAsync(characteristicToWaitFor: UUID): XYBluetoothResult<Any?> {
+    suspend fun waitForNotification(characteristicToWaitFor: UUID): XYBluetoothResult<Any?> {
         return waitForNotificationImpl(characteristicToWaitFor, centralCallback)
     }
 

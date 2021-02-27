@@ -11,7 +11,7 @@ import android.os.Handler
 import kotlinx.coroutines.*
 import network.xyo.base.hasDebugger
 import network.xyo.ble.generic.gatt.peripheral.*
-import network.xyo.ble.generic.gatt.peripheral.gatt.ThreadSafeBluetoothGattWrapper
+import network.xyo.ble.generic.gatt.peripheral.ThreadSafeBluetoothGattWrapper
 import network.xyo.ble.utilities.XYCallByVersion
 import java.lang.RuntimeException
 
