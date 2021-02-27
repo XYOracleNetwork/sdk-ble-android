@@ -21,18 +21,6 @@ import network.xyo.ble.generic.scanner.XYScanResult
 // other than the ability to call the BluetoothGatt functions using coroutines
 
 @Suppress("unused")
-enum class XYBluetoothGattStatus(val status: Short) {
-    NoResources(0x80),
-    InternalError(0x81),
-    WrongState(0x82),
-    DBFull(0x83),
-    Busy(0x84),
-    Error(0x85),
-    IllegalParameter(0x87),
-    AuthFail(0x89)
-}
-
-@Suppress("unused")
 open class XYBluetoothGatt protected constructor(
     context: Context,
     protected var device: BluetoothDevice?,
@@ -284,31 +272,13 @@ open class XYBluetoothGatt protected constructor(
 
     // this can only be called after a successful discover
     protected suspend fun findCharacteristic(service: UUID, characteristic: UUID, timeout: Long = 1500) = queueBleAsync(timeout, "findCharacteristic") {
-
-        log.info("findCharacteristic")
-        var error: XYBluetoothResultErrorCode = XYBluetoothResultErrorCode.None
-        var value: BluetoothGattCharacteristic? = null
-
-        val callingGatt = connection?.gatt
-
-        if (callingGatt == null) {
-            error = XYBluetoothResultErrorCode.NoGatt
-        } else {
-            val services = connection?.services
-            if (services?.isEmpty() == false) {
-                val foundService = callingGatt.getService(service)
-                if (foundService == null) {
-                    error = XYBluetoothResultErrorCode.FailedToFindService
-                } else {
-                    log.info("findCharacteristic:service:$foundService")
-                    value = foundService.getCharacteristic(characteristic)
-                }
+        connection.let { connection ->
+            if (connection != null) {
+                return@queueBleAsync findCharacteristicImpl(connection, service, characteristic)
             } else {
-                error = XYBluetoothResultErrorCode.ServicesNotDiscovered
+                return@queueBleAsync XYBluetoothResult(XYBluetoothResultErrorCode.Disconnected)
             }
         }
-        log.info("findCharacteristic: Returning: $value")
-        return@queueBleAsync XYBluetoothResult(value, error)
     }.await()
 
     protected suspend fun readCharacteristic(characteristicToRead: BluetoothGattCharacteristic, timeout: Long = 10000) = queueBleAsync(timeout, "readCharacteristic") {

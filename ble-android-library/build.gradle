@@ -10,10 +10,7 @@ buildscript {
 
     ext {
         experimentalsEnabled = [
-                "-Xuse-experimental=kotlin.Experimental",
                 "-Xuse-experimental=kotlin.ExperimentalUnsignedTypes",
-                "-Xuse-experimental=kotlin.ExperimentalStdlibApi",
-                "-Xuse-experimental=kotlinx.coroutines.ExperimentalCoroutinesApi",
                 "-Xuse-experimental=kotlinx.coroutines.InternalCoroutinesApi"
         ]
     }
@@ -159,7 +156,7 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.4.31'
     implementation 'org.jetbrains.kotlin:kotlin-reflect:1.4.31'
-    implementation 'com.github.XYOracleNetwork:sdk-base-android:4.2.14'
+    implementation 'com.github.XYOracleNetwork:sdk-base-android:4.2.15'
     implementation 'org.jetbrains:annotations:17.0.0'
     implementation 'org.bouncycastle:bcpkix-jdk15on:1.64'
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.2'
