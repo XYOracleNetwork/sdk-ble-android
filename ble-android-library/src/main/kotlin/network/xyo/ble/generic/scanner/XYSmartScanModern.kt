@@ -131,8 +131,6 @@ class XYSmartScanModern(context: Context) : XYSmartScan(context) {
                 .setScanMode(ScanSettings.SCAN_MODE_BALANCED)
                 .setCallbackType(ScanSettings.CALLBACK_TYPE_ALL_MATCHES)
                 .setMatchMode(ScanSettings.MATCH_MODE_STICKY)
-                .setPhy(ScanSettings.PHY_LE_ALL_SUPPORTED)
-                .setReportDelay(500)
                 .build()
     }
 
@@ -143,8 +141,6 @@ class XYSmartScanModern(context: Context) : XYSmartScan(context) {
                 .setScanMode(ScanSettings.SCAN_MODE_BALANCED)
                 .setCallbackType(ScanSettings.CALLBACK_TYPE_ALL_MATCHES)
                 .setMatchMode(ScanSettings.MATCH_MODE_STICKY)
-                .setPhy(ScanSettings.PHY_LE_ALL_SUPPORTED)
-                .setReportDelay(500)
                 .build()
     }
 
