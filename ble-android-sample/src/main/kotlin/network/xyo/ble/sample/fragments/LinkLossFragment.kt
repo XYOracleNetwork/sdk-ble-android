@@ -17,7 +17,7 @@ import network.xyo.ble.sample.XYDeviceData
 import network.xyo.ble.sample.databinding.FragmentLinkLossBinding
 
 
-
+@kotlin.ExperimentalUnsignedTypes
 class LinkLossFragment(device: XYBluetoothDevice, deviceData : XYDeviceData) : XYDeviceFragment<FragmentLinkLossBinding>(device, deviceData) {
 
     override fun inflate(inflater: LayoutInflater, container: ViewGroup?): FragmentLinkLossBinding {

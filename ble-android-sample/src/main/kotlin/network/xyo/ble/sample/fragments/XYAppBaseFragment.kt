@@ -11,7 +11,7 @@ import network.xyo.base.XYLogging
 import network.xyo.ble.sample.XYApplication
 import network.xyo.ble.generic.scanner.XYSmartScan
 
-
+@kotlin.ExperimentalUnsignedTypes
 abstract class XYAppBaseFragment<T> : Fragment() where T: ViewBinding {
 
     val log = XYLogging(XYAppBaseFragment)

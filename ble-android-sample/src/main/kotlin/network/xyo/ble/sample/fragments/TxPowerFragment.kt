@@ -17,7 +17,7 @@ import network.xyo.ble.sample.XYDeviceData
 import network.xyo.ble.sample.databinding.FragmentTxPowerBinding
 
 
-
+@kotlin.ExperimentalUnsignedTypes
 class TxPowerFragment(device: XYBluetoothDevice, deviceData : XYDeviceData) : XYDeviceFragment<FragmentTxPowerBinding>(device, deviceData) {
 
     override fun inflate(inflater: LayoutInflater, container: ViewGroup?): FragmentTxPowerBinding {

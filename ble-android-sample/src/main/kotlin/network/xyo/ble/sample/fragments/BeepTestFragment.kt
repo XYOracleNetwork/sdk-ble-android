@@ -12,7 +12,7 @@ import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResultErrorCode
 import network.xyo.ble.sample.databinding.FragmentTestBinding
 import java.lang.Exception
 
-
+@kotlin.ExperimentalUnsignedTypes
 class BeepTestFragment : XYAppBaseFragment<FragmentTestBinding>() {
 
     override fun inflate(inflater: LayoutInflater, container: ViewGroup?): FragmentTestBinding {

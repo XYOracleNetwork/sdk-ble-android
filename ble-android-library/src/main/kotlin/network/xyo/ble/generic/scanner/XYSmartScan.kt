@@ -38,7 +38,7 @@ enum class XYSmartScanStatus {
     LocationDisabled
 }
 
-
+@kotlin.ExperimentalUnsignedTypes
 @Suppress("unused")
 abstract class XYSmartScan(context: Context) : XYBluetoothBase(context) {
 

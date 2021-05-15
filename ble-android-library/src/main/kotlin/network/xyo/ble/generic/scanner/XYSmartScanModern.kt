@@ -16,7 +16,7 @@ import network.xyo.ble.generic.gatt.peripheral.bleAsync
 import network.xyo.ble.utilities.XYCallByVersion
 
 @TargetApi(21)
-
+@kotlin.ExperimentalUnsignedTypes
 class XYSmartScanModern(context: Context) : XYSmartScan(context) {
     override suspend fun start() = GlobalScope.async {
         log.info("start")

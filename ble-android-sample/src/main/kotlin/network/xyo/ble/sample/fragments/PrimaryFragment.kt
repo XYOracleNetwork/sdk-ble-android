@@ -12,7 +12,7 @@ import network.xyo.ble.sample.XYDeviceData
 import network.xyo.ble.sample.databinding.FragmentPrimaryBinding
 import network.xyo.ble.services.xy.PrimaryService
 
-
+@kotlin.ExperimentalUnsignedTypes
 class PrimaryFragment(device: XYBluetoothDevice, deviceData : XYDeviceData) : XYDeviceFragment<FragmentPrimaryBinding>(device, deviceData) {
 
     override fun inflate(inflater: LayoutInflater, container: ViewGroup?): FragmentPrimaryBinding {

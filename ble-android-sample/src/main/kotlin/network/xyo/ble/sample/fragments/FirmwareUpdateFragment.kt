@@ -28,7 +28,7 @@ import java.io.BufferedInputStream
 import java.io.FileOutputStream
 import java.net.URL
 
-
+@kotlin.ExperimentalUnsignedTypes
 class FirmwareUpdateFragment(device: XYBluetoothDevice, deviceData : XYDeviceData) : XYDeviceFragment<FragmentFirmwareUpdateBinding>(device, deviceData), BackFragmentListener {
 
     private var firmwareFileName: String? = null

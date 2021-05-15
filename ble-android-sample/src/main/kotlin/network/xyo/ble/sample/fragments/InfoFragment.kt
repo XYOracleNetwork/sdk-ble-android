@@ -21,7 +21,7 @@ import network.xyo.ble.sample.R
 import network.xyo.ble.sample.XYDeviceData
 import network.xyo.ble.sample.databinding.FragmentInfoBinding
 
-
+@kotlin.ExperimentalUnsignedTypes
 class InfoFragment(device: XYBluetoothDevice, deviceData : XYDeviceData) : XYDeviceFragment<FragmentInfoBinding>(device, deviceData), View.OnClickListener, CompoundButton.OnCheckedChangeListener {
 
     override fun inflate(inflater: LayoutInflater, container: ViewGroup?): FragmentInfoBinding {

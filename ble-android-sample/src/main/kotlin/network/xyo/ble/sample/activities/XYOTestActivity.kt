@@ -11,7 +11,7 @@ import com.google.android.material.tabs.TabLayout
 import network.xyo.ble.sample.R
 import network.xyo.ble.sample.fragments.BeepTestFragment
 
-
+@kotlin.ExperimentalUnsignedTypes
 @Suppress("unused")
 class XYOTestActivity : XYOAppBaseActivity() {
     private lateinit var pagerAdapter: SectionsPagerAdapter

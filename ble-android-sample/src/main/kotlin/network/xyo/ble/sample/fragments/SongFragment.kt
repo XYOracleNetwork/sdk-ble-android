@@ -17,7 +17,7 @@ import network.xyo.ble.sample.XYDeviceData
 import network.xyo.ble.sample.databinding.FragmentSongBinding
 import java.nio.ByteBuffer
 
-
+@kotlin.ExperimentalUnsignedTypes
 @kotlin.ExperimentalStdlibApi
 class SongFragment(device: XYBluetoothDevice, deviceData : XYDeviceData) : XYDeviceFragment<FragmentSongBinding>(device, deviceData) {
 

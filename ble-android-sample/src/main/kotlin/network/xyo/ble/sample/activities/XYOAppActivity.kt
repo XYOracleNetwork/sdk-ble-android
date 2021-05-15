@@ -13,7 +13,7 @@ import network.xyo.ble.sample.databinding.ActivityAppBinding
 import network.xyo.ble.sample.fragments.CentralFragment
 import network.xyo.ble.sample.fragments.server.ServerFragment
 
-
+@kotlin.ExperimentalUnsignedTypes
 @kotlin.ExperimentalStdlibApi
 @Suppress("unused")
 class XYOAppActivity : XYOAppBaseActivity() {

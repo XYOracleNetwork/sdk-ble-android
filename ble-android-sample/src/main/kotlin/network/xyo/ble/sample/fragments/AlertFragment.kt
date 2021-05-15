@@ -15,7 +15,7 @@ import network.xyo.ble.sample.R
 import network.xyo.ble.sample.XYDeviceData
 import network.xyo.ble.sample.databinding.FragmentAlertBinding
 
-
+@kotlin.ExperimentalUnsignedTypes
 class AlertFragment(device: XYBluetoothDevice, deviceData : XYDeviceData) : XYDeviceFragment<FragmentAlertBinding>(device, deviceData) {
 
     override fun inflate(inflater: LayoutInflater, container: ViewGroup?): FragmentAlertBinding {

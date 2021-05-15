@@ -15,7 +15,7 @@ import network.xyo.ble.sample.R
 import network.xyo.ble.sample.XYDeviceData
 import network.xyo.ble.sample.databinding.FragmentCurrentTimeBinding
 
-
+@kotlin.ExperimentalUnsignedTypes
 class CurrentTimeFragment(device: XYBluetoothDevice, deviceData : XYDeviceData) : XYDeviceFragment<FragmentCurrentTimeBinding>(device, deviceData) {
 
     override fun inflate(inflater: LayoutInflater, container: ViewGroup?): FragmentCurrentTimeBinding {

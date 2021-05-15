@@ -15,7 +15,7 @@ import network.xyo.ble.generic.scanner.XYSmartScanStatus
 import network.xyo.ble.sample.databinding.BleStatsViewBinding
 import java.util.Date
 
-
+@kotlin.ExperimentalUnsignedTypes
 class XYBLEStatsView(context: Context, attrs: AttributeSet) : LinearLayout(context, attrs) {
 
     private val scanner = (context.applicationContext as XYApplication).scanner

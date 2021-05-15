@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import network.xyo.ble.sample.R
 
-
+@ExperimentalUnsignedTypes
 class RootServicesFragment(private var startingServices : Array<BluetoothGattService>) : Fragment() {
     private var servicesFragment: ServicesFragment? = null
 

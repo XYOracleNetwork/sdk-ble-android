@@ -18,7 +18,7 @@ import network.xyo.ble.generic.scanner.XYScanResult
  * .listener is now camel cased into the name.
  */
 
-
+@kotlin.ExperimentalUnsignedTypes
 open class XYIBeaconBluetoothDevice(context: Context, val scanResult: XYScanResult?, hash: String, transport: Int? = null) :
     XYBluetoothDevice(context, scanResult?.device, hash, transport) {
 

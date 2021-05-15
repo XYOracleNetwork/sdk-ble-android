@@ -13,7 +13,7 @@ import network.xyo.ble.sample.XYDeviceData
 import network.xyo.ble.sample.databinding.FragmentExtendedConfigBinding
 import network.xyo.ble.services.xy.ExtendedConfigService
 
-
+@kotlin.ExperimentalUnsignedTypes
 class ExtendedConfigFragment(device: XYBluetoothDevice, deviceData : XYDeviceData) : XYDeviceFragment<FragmentExtendedConfigBinding>(device, deviceData) {
 
     override fun inflate(inflater: LayoutInflater, container: ViewGroup?): FragmentExtendedConfigBinding {
