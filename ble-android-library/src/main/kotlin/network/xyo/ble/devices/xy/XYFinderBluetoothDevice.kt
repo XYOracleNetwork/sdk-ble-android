@@ -71,7 +71,7 @@ enum class XYFinderBluetoothDeviceStayAwake(val state: UByte) {
     On(1U)
 }
 
-@kotlin.ExperimentalUnsignedTypes
+
 @Suppress("unused")
 open class XYFinderBluetoothDevice(context: Context, scanResult: XYScanResult, hash: String) : XYIBeaconBluetoothDevice(context, scanResult, hash) {
 

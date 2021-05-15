@@ -17,7 +17,7 @@ import network.xyo.ble.sample.XYDeviceData
 import network.xyo.ble.sample.adapters.XYServiceListAdapter
 import network.xyo.ble.sample.databinding.FragmentServicesBinding
 
-@kotlin.ExperimentalUnsignedTypes
+
 class DeviceServicesFragment(device: XYBluetoothDevice, deviceData : XYDeviceData) : XYDeviceFragment<FragmentServicesBinding>(device, deviceData) {
     private val serviceList = XYServiceListAdapter(arrayOf())
 

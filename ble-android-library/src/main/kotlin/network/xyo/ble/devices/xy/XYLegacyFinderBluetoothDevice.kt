@@ -13,7 +13,7 @@ import network.xyo.ble.services.xy.SensorService
 import java.nio.ByteBuffer
 import java.util.*
 
-@kotlin.ExperimentalUnsignedTypes
+
 open class XYLegacyFinderBluetoothDevice(context: Context, scanResult: XYScanResult, hash: String) : XYFinderBluetoothDevice(context, scanResult, hash) {
 
     val batteryService by lazy { BatteryService(this) }

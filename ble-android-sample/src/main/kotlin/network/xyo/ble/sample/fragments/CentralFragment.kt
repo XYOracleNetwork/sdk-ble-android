@@ -9,8 +9,6 @@ import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.BaseAdapter
-import com.nabinbhandari.android.permissions.PermissionHandler
-import com.nabinbhandari.android.permissions.Permissions
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import network.xyo.ble.devices.xy.*
@@ -20,7 +18,7 @@ import network.xyo.ble.generic.scanner.XYSmartScanStatus
 import network.xyo.ble.sample.databinding.FragmentCentralBinding
 
 @kotlin.ExperimentalStdlibApi
-@kotlin.ExperimentalUnsignedTypes
+
 class CentralFragment(var adapter: BaseAdapter) : XYAppBaseFragment<FragmentCentralBinding>() {
     override fun inflate(inflater: LayoutInflater, container: ViewGroup?): FragmentCentralBinding {
         return FragmentCentralBinding.inflate(inflater, container, false)
@@ -82,7 +80,7 @@ class CentralFragment(var adapter: BaseAdapter) : XYAppBaseFragment<FragmentCent
     }
 
     private fun checkPermissions() {
-        Permissions.check(
+        /*Permissions.check(
                 this.context,
                 Manifest.permission.ACCESS_FINE_LOCATION,
                 "Location services are needed to connection and track your finders.",
@@ -100,7 +98,7 @@ class CentralFragment(var adapter: BaseAdapter) : XYAppBaseFragment<FragmentCent
                     override fun onGranted() {
                     }
                 }
-        )
+        )*/
     }
 
     override fun onResume() {

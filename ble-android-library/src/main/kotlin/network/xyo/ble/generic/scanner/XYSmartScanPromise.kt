@@ -7,7 +7,7 @@ import network.xyo.ble.utilities.XYPromise
 
 // we use this to allow java code to access our coroutines
 
-@kotlin.ExperimentalUnsignedTypes
+
 class XYSmartScanPromise(val scanner: XYSmartScan) : XYBase() {
 
     fun start() {

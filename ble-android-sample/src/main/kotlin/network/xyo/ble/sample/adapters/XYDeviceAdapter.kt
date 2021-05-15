@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import network.xyo.ble.generic.devices.XYBluetoothDevice
@@ -15,7 +16,7 @@ import network.xyo.ble.generic.scanner.XYSmartScanListener
 import java.util.concurrent.locks.ReentrantLock
 
 @kotlin.ExperimentalStdlibApi
-@kotlin.ExperimentalUnsignedTypes
+
 class XYDeviceAdapter(private val activity: Activity) : BaseAdapter() {
     private var devices: List<XYBluetoothDevice>
     private var lastSort = System.currentTimeMillis()

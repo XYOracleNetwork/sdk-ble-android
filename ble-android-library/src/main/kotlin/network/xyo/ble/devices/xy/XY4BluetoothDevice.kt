@@ -33,7 +33,7 @@ import network.xyo.ble.services.xy.PrimaryService
  * .listener is now camel cased into the name.
  */
 
-@kotlin.ExperimentalUnsignedTypes
+
 open class XY4BluetoothDevice(
     context: Context,
     scanResult: XYScanResult,
@@ -256,7 +256,7 @@ open class XY4BluetoothDevice(
             }
         }
 
-        @kotlin.ExperimentalUnsignedTypes
+
         internal fun pressFromScanResult(scanResult: XYScanResult): Boolean {
             val bytes = scanResult.scanRecord?.getManufacturerSpecificData(XYAppleBluetoothDevice.MANUFACTURER_ID)
             return if (bytes != null) {
@@ -269,7 +269,7 @@ open class XY4BluetoothDevice(
             }
         }
 
-        @kotlin.ExperimentalUnsignedTypes
+
         private fun minorFromScanResult(scanResult: XYScanResult): UShort? {
             val bytes = scanResult.scanRecord?.getManufacturerSpecificData(XYAppleBluetoothDevice.MANUFACTURER_ID)
             return if (bytes != null) {

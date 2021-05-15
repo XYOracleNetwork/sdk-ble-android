@@ -13,7 +13,7 @@ import network.xyo.ble.sample.XYDeviceData
 import network.xyo.ble.sample.databinding.FragmentSensorBinding
 import network.xyo.ble.services.xy.SensorService
 
-@kotlin.ExperimentalUnsignedTypes
+
 class SensorFragment(device: XYBluetoothDevice, deviceData : XYDeviceData) : XYDeviceFragment<FragmentSensorBinding>(device, deviceData) {
 
     override fun inflate(inflater: LayoutInflater, container: ViewGroup?): FragmentSensorBinding {

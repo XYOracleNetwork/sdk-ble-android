@@ -122,7 +122,7 @@ open class XY3BluetoothDevice(context: Context, scanResult: XYScanResult, hash: 
             }
         }
 
-        @kotlin.ExperimentalUnsignedTypes
+
         internal fun pressFromScanResult(scanResult: XYScanResult): Boolean {
             val bytes = scanResult.scanRecord?.getManufacturerSpecificData(XYAppleBluetoothDevice.MANUFACTURER_ID)
             return if (bytes != null) {

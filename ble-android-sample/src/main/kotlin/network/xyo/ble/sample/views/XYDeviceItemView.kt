@@ -17,7 +17,7 @@ import network.xyo.ble.listeners.XYFinderBluetoothDeviceListener
 import network.xyo.ble.sample.databinding.DeviceItemBinding
 
 @kotlin.ExperimentalStdlibApi
-@kotlin.ExperimentalUnsignedTypes
+
 class XYDeviceItemView(context: Context) : LinearLayout(context) {
 
     private var device: XYBluetoothDevice? = null
