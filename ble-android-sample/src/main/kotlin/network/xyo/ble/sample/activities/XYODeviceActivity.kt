@@ -18,7 +18,6 @@ import network.xyo.ble.sample.XYDeviceData
 import network.xyo.ble.sample.fragments.*
 import network.xyo.ble.sample.fragments.core.BackFragmentListener
 
-@kotlin.ExperimentalStdlibApi
 class XYODeviceActivity : XYOAppBaseActivity() {
 
     lateinit var device: XYBluetoothDevice

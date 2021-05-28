@@ -8,7 +8,6 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.location.LocationManager
 import java.util.concurrent.ConcurrentHashMap
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch

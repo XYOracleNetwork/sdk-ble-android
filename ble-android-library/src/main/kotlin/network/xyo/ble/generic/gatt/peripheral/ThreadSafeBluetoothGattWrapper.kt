@@ -5,6 +5,7 @@ import android.bluetooth.BluetoothGatt
 import android.bluetooth.BluetoothGattCharacteristic
 import android.bluetooth.BluetoothGattDescriptor
 import android.bluetooth.BluetoothGattService
+import kotlinx.coroutines.async
 import java.lang.ref.WeakReference
 import java.util.UUID
 import network.xyo.base.XYBase
@@ -39,7 +40,7 @@ open class ThreadSafeBluetoothGattWrapper(bluetoothGatt: BluetoothGatt?) : XYBas
         }
     }
 
-    suspend fun close() = bleAsync {
+    suspend fun close() = ble.async {
         val result = XYBluetoothResult<Unit>()
         gatt?.let { gatt ->
             gatt.disconnect()
@@ -47,123 +48,123 @@ open class ThreadSafeBluetoothGattWrapper(bluetoothGatt: BluetoothGatt?) : XYBas
         } ?: run {
             result.error = XYBluetoothResultErrorCode.NoGatt
         }
-        return@bleAsync result
+        return@async result
     }.await()
 
-    suspend fun disconnect() = bleAsync {
+    suspend fun disconnect() = ble.async {
         val result = XYBluetoothResult<Unit>()
         gatt?.disconnect() ?: run {
             result.error = XYBluetoothResultErrorCode.NoGatt
         }
-        return@bleAsync result
+        return@async result
     }.await()
 
-    suspend fun connect() = bleAsync {
+    suspend fun connect() = ble.async {
         val result = XYBluetoothResult<Unit>()
         gatt?.connect() ?: run {
             result.error = XYBluetoothResultErrorCode.NoGatt
         }
-        return@bleAsync result
+        return@async result
     }.await()
 
     @TargetApi(26)
-    suspend fun setPreferredPhy(txPhy: Int, rxPhy: Int, phyOptions: Int) = bleAsync {
+    suspend fun setPreferredPhy(txPhy: Int, rxPhy: Int, phyOptions: Int) = ble.async {
         val result = XYBluetoothResult<Unit>()
         gatt?.setPreferredPhy(txPhy, rxPhy, phyOptions) ?: run {
             result.error = XYBluetoothResultErrorCode.NoGatt
         }
-        return@bleAsync result
+        return@async result
     }.await()
 
     @TargetApi(26)
-    suspend fun readPhy() = bleAsync {
+    suspend fun readPhy() = ble.async {
         val result = XYBluetoothResult<Unit>()
         gatt?.readPhy() ?: run {
             result.error = XYBluetoothResultErrorCode.NoGatt
         }
-        return@bleAsync result
+        return@async result
     }.await()
 
-    suspend fun discoverServices() = bleAsync {
+    suspend fun discoverServices() = ble.async {
         val result = XYBluetoothResult<Boolean>()
         gatt?.let { gatt ->
             result.value = gatt.discoverServices()
         } ?: run {
             result.error = XYBluetoothResultErrorCode.NoGatt
         }
-        return@bleAsync result
+        return@async result
     }.await()
 
-    suspend fun readCharacteristic(characteristic: BluetoothGattCharacteristic) = bleAsync {
+    suspend fun readCharacteristic(characteristic: BluetoothGattCharacteristic) = ble.async {
         val result = XYBluetoothResult<Boolean>()
         gatt?.let { gatt ->
             result.value = gatt.readCharacteristic(characteristic)
         } ?: run {
             result.error = XYBluetoothResultErrorCode.NoGatt
         }
-        return@bleAsync result
+        return@async result
     }.await()
 
-    suspend fun writeCharacteristic(characteristic: BluetoothGattCharacteristic) = bleAsync {
+    suspend fun writeCharacteristic(characteristic: BluetoothGattCharacteristic) = ble.async {
         val result = XYBluetoothResult<Boolean>()
         gatt?.let { gatt ->
             result.value = gatt.writeCharacteristic(characteristic)
         } ?: run {
             result.error = XYBluetoothResultErrorCode.NoGatt
         }
-        return@bleAsync result
+        return@async result
     }.await()
 
-    suspend fun readDescriptor(descriptor: BluetoothGattDescriptor) = bleAsync {
+    suspend fun readDescriptor(descriptor: BluetoothGattDescriptor) = ble.async {
         val result = XYBluetoothResult<Boolean>()
         gatt?.let { gatt ->
             result.value = gatt.readDescriptor(descriptor)
         } ?: run {
             result.error = XYBluetoothResultErrorCode.NoGatt
         }
-        return@bleAsync result
+        return@async result
     }.await()
 
-    suspend fun writeDescriptor(descriptor: BluetoothGattDescriptor) = bleAsync {
+    suspend fun writeDescriptor(descriptor: BluetoothGattDescriptor) = ble.async {
         val result = XYBluetoothResult<Boolean>()
         gatt?.let { gatt ->
             result.value = gatt.writeDescriptor(descriptor)
         } ?: run {
             result.error = XYBluetoothResultErrorCode.NoGatt
         }
-        return@bleAsync result
+        return@async result
     }.await()
 
     suspend fun setCharacteristicNotification(
         characteristic: BluetoothGattCharacteristic,
         enable: Boolean
-    ) = bleAsync {
+    ) = ble.async {
         val result = XYBluetoothResult<Boolean>()
         gatt?.let { gatt ->
             result.value = gatt.setCharacteristicNotification(characteristic, enable)
         } ?: run {
             result.error = XYBluetoothResultErrorCode.NoGatt
         }
-        return@bleAsync result
+        return@async result
     }.await()
 
-    suspend fun readRemoteRssi() = bleAsync {
+    suspend fun readRemoteRssi() = ble.async {
         val result = XYBluetoothResult<Boolean>()
         gatt?.let { gatt ->
             result.value = gatt.readRemoteRssi()
         } ?: run {
             result.error = XYBluetoothResultErrorCode.NoGatt
         }
-        return@bleAsync result
+        return@async result
     }.await()
 
-    suspend fun requestMtu(mtu: Int) = bleAsync {
+    suspend fun requestMtu(mtu: Int) = ble.async {
         val result = XYBluetoothResult<Boolean>()
         gatt?.let { gatt ->
             result.value = gatt.requestMtu(mtu)
         } ?: run {
             result.error = XYBluetoothResultErrorCode.NoGatt
         }
-        return@bleAsync result
+        return@async result
     }.await()
 }

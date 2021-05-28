@@ -111,7 +111,7 @@ class XYBluetoothGattConnect(
             return XYBluetoothResult(gatt)
         }
 
-        val result = bleAsync {
+        val result = ble.async {
             var newGatt: ThreadSafeBluetoothGattWrapper? = null
             XYCallByVersion()
                 .add(Build.VERSION_CODES.O) {
@@ -140,7 +140,7 @@ class XYBluetoothGattConnect(
                     newGatt =
                         ThreadSafeBluetoothGattWrapper(connectGatt19(context, device, autoConnect))
                 }.call()
-            return@bleAsync XYBluetoothResult(newGatt)
+            return@async XYBluetoothResult(newGatt)
         }.await()
 
         if (gatt != null) {

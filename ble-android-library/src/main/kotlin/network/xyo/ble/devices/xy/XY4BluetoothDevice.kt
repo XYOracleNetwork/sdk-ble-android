@@ -8,7 +8,6 @@ import java.io.InputStream
 import java.nio.ByteBuffer
 import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import network.xyo.base.XYBase
 import network.xyo.ble.devices.apple.XYAppleBluetoothDevice
@@ -20,7 +19,6 @@ import network.xyo.ble.generic.devices.XYCreator
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResult
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResultErrorCode
 import network.xyo.ble.generic.gatt.peripheral.ble
-import network.xyo.ble.generic.gatt.peripheral.bleAsync
 import network.xyo.ble.generic.scanner.XYScanResult
 import network.xyo.ble.generic.services.standard.*
 import network.xyo.ble.listeners.XYFinderBluetoothDeviceListener
@@ -155,7 +153,7 @@ open class XY4BluetoothDevice(
 
     private fun enableButtonNotifyIfConnected() {
         if (connection?.state == BluetoothGatt.STATE_CONNECTED) {
-            bleAsync {
+            ble.launch {
                 primary.buttonState.enableNotify(true)
             }
         }

@@ -1,6 +1,5 @@
 package network.xyo.ble.sample.fragments
 
-import android.Manifest
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater

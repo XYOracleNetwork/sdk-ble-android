@@ -1,7 +1,6 @@
 package network.xyo.ble.sample
 
 import android.app.Application
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import network.xyo.base.XYBase
 import network.xyo.ble.devices.apple.XYAppleBluetoothDevice

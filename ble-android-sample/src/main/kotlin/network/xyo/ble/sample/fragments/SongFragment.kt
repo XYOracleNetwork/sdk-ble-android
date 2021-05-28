@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import network.xyo.ble.devices.xy.XY3BluetoothDevice
 import network.xyo.ble.devices.xy.XY4BluetoothDevice
@@ -18,7 +17,6 @@ import network.xyo.ble.sample.databinding.FragmentSongBinding
 import java.nio.ByteBuffer
 import network.xyo.ble.generic.gatt.peripheral.ble
 
-@kotlin.ExperimentalStdlibApi
 class SongFragment(device: XYBluetoothDevice, deviceData : XYDeviceData) : XYDeviceFragment<FragmentSongBinding>(device, deviceData) {
 
     private var currentSong = ""

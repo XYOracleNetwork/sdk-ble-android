@@ -176,9 +176,7 @@
     <string name="movement_count">Movement Count:</string>
     <string name="power">Power</string>
     <string name="net">Net</string>
-
-    <string name="img_desc_xy_logo">xyo logo</string>
-    <string name="button_beep">Beep</string>
+    
     <string name="connectable">Connectable:</string>
 
 </resources>

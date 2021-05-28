@@ -1,6 +1,5 @@
 package network.xyo.ble.reporters
 
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import network.xyo.ble.devices.xy.XYFinderBluetoothDevice
 import network.xyo.ble.devices.xy.XYFinderBluetoothDeviceButtonPress

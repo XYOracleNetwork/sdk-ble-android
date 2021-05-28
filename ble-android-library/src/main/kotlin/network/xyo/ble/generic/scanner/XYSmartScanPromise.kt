@@ -1,6 +1,5 @@
 package network.xyo.ble.generic.scanner
 
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import network.xyo.base.XYBase
 import network.xyo.ble.utilities.XYPromise

@@ -6,7 +6,6 @@ import java.util.UUID
 import kotlin.collections.HashMap
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import network.xyo.base.XYLogging
 import network.xyo.ble.generic.gatt.peripheral.ble

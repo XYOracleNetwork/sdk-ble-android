@@ -5,12 +5,13 @@ import android.bluetooth.le.AdvertiseData
 import android.bluetooth.le.AdvertiseSettings
 import android.bluetooth.le.BluetoothLeAdvertiser
 import android.content.Context
+import kotlinx.coroutines.async
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 import network.xyo.ble.generic.XYBluetoothBase
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResult
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResultErrorCode
-import network.xyo.ble.generic.gatt.peripheral.bleAsync
+import network.xyo.ble.generic.gatt.peripheral.ble
 
 open class XYBluetoothAdvertiser(context: Context) : XYBluetoothBase(context) {
     var advertisingData: AdvertiseData? = null
@@ -35,11 +36,11 @@ open class XYBluetoothAdvertiser(context: Context) : XYBluetoothBase(context) {
         listeners.remove(key)
     }
 
-    open suspend fun startAdvertising() = bleAsync {
+    open suspend fun startAdvertising() = ble.async {
         if (bleAdvertiser != null) {
 
             if (!isMultiAdvertisementSupported && advertisingResponse != null) {
-                return@bleAsync XYBluetoothResult(null, XYBluetoothResultErrorCode.AdvertisingScanResponseNotSupported)
+                return@async XYBluetoothResult(null, XYBluetoothResultErrorCode.AdvertisingScanResponseNotSupported)
             }
 
             val startCode = suspendCoroutine<Int> { cont ->
@@ -63,16 +64,16 @@ open class XYBluetoothAdvertiser(context: Context) : XYBluetoothBase(context) {
             }
 
             when (startCode) {
-                0 -> return@bleAsync XYBluetoothResult(startCode)
-                AdvertiseCallback.ADVERTISE_FAILED_ALREADY_STARTED -> return@bleAsync XYBluetoothResult(startCode, XYBluetoothResultErrorCode.AdvertisingAlreadyStarted)
-                AdvertiseCallback.ADVERTISE_FAILED_DATA_TOO_LARGE -> return@bleAsync XYBluetoothResult(startCode, XYBluetoothResultErrorCode.AdvertisingDataTooLarge)
-                AdvertiseCallback.ADVERTISE_FAILED_FEATURE_UNSUPPORTED -> return@bleAsync XYBluetoothResult(startCode, XYBluetoothResultErrorCode.AdvertisingNotSupported)
-                AdvertiseCallback.ADVERTISE_FAILED_INTERNAL_ERROR -> return@bleAsync XYBluetoothResult(startCode, XYBluetoothResultErrorCode.AdvertisingInternalError)
-                AdvertiseCallback.ADVERTISE_FAILED_TOO_MANY_ADVERTISERS -> return@bleAsync XYBluetoothResult(startCode, XYBluetoothResultErrorCode.TooManyAdvertisers)
+                0 -> return@async XYBluetoothResult(startCode)
+                AdvertiseCallback.ADVERTISE_FAILED_ALREADY_STARTED -> return@async XYBluetoothResult(startCode, XYBluetoothResultErrorCode.AdvertisingAlreadyStarted)
+                AdvertiseCallback.ADVERTISE_FAILED_DATA_TOO_LARGE -> return@async XYBluetoothResult(startCode, XYBluetoothResultErrorCode.AdvertisingDataTooLarge)
+                AdvertiseCallback.ADVERTISE_FAILED_FEATURE_UNSUPPORTED -> return@async XYBluetoothResult(startCode, XYBluetoothResultErrorCode.AdvertisingNotSupported)
+                AdvertiseCallback.ADVERTISE_FAILED_INTERNAL_ERROR -> return@async XYBluetoothResult(startCode, XYBluetoothResultErrorCode.AdvertisingInternalError)
+                AdvertiseCallback.ADVERTISE_FAILED_TOO_MANY_ADVERTISERS -> return@async XYBluetoothResult(startCode, XYBluetoothResultErrorCode.TooManyAdvertisers)
             }
         }
 
-        return@bleAsync XYBluetoothResult<Int>(XYBluetoothResultErrorCode.NoAdvertiser)
+        return@async XYBluetoothResult<Int>(XYBluetoothResultErrorCode.NoAdvertiser)
     }.await()
 
     fun stopAdvertising() {
