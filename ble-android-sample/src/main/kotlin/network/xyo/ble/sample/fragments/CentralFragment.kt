@@ -9,18 +9,15 @@ import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.BaseAdapter
-import com.nabinbhandari.android.permissions.PermissionHandler
-import com.nabinbhandari.android.permissions.Permissions
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import network.xyo.ble.devices.xy.*
 import network.xyo.ble.generic.devices.XYBluetoothDevice
 import network.xyo.ble.sample.activities.XYOTestActivity
 import network.xyo.ble.generic.scanner.XYSmartScanStatus
 import network.xyo.ble.sample.databinding.FragmentCentralBinding
+import network.xyo.ble.generic.gatt.peripheral.ble
 
 @kotlin.ExperimentalStdlibApi
-@kotlin.ExperimentalUnsignedTypes
 class CentralFragment(var adapter: BaseAdapter) : XYAppBaseFragment<FragmentCentralBinding>() {
     override fun inflate(inflater: LayoutInflater, container: ViewGroup?): FragmentCentralBinding {
         return FragmentCentralBinding.inflate(inflater, container, false)
@@ -44,7 +41,7 @@ class CentralFragment(var adapter: BaseAdapter) : XYAppBaseFragment<FragmentCent
         super.onViewCreated(view, savedInstanceState)
 
         binding.active.setOnCheckedChangeListener {_, isChecked ->
-            GlobalScope.launch {
+            ble.launch {
                 if (isChecked) {
                     scanner.start()
                 } else {
@@ -81,33 +78,9 @@ class CentralFragment(var adapter: BaseAdapter) : XYAppBaseFragment<FragmentCent
         XY4BluetoothDevice.globalReporter.removeListener(tag!!)
     }
 
-    private fun checkPermissions() {
-        Permissions.check(
-                this.context,
-                Manifest.permission.ACCESS_FINE_LOCATION,
-                "Location services are needed to connection and track your finders.",
-                object : PermissionHandler() {
-                    override fun onGranted() {
-                    }
-                }
-        )
-
-        Permissions.check(
-                this.context,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                "Allow app to access your storage in order to load firmware files?",
-                object : PermissionHandler() {
-                    override fun onGranted() {
-                    }
-                }
-        )
-    }
-
     override fun onResume() {
         log.info("onResume")
         super.onResume()
-
-        checkPermissions()
 
         activity?.runOnUiThread { adapter.notifyDataSetChanged() }
 

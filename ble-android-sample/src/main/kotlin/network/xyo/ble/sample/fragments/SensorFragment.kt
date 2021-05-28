@@ -12,8 +12,8 @@ import network.xyo.ble.generic.devices.XYBluetoothDevice
 import network.xyo.ble.sample.XYDeviceData
 import network.xyo.ble.sample.databinding.FragmentSensorBinding
 import network.xyo.ble.services.xy.SensorService
+import network.xyo.ble.generic.gatt.peripheral.ble
 
-@kotlin.ExperimentalUnsignedTypes
 class SensorFragment(device: XYBluetoothDevice, deviceData : XYDeviceData) : XYDeviceFragment<FragmentSensorBinding>(device, deviceData) {
 
     override fun inflate(inflater: LayoutInflater, container: ViewGroup?): FragmentSensorBinding {
@@ -24,7 +24,7 @@ class SensorFragment(device: XYBluetoothDevice, deviceData : XYDeviceData) : XYD
         super.onViewCreated(view, savedInstanceState)
 
         binding.buttonSensorRefresh.setOnClickListener {
-            GlobalScope.launch {
+            ble.launch {
                 readCharacteristics()
             }
         }

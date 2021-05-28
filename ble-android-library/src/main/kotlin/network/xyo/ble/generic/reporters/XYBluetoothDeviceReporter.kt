@@ -5,12 +5,13 @@ import kotlinx.coroutines.launch
 import network.xyo.base.XYBase
 import network.xyo.ble.generic.devices.XYBluetoothDevice
 import network.xyo.ble.generic.listeners.XYBluetoothDeviceListener
+import network.xyo.ble.generic.gatt.peripheral.ble
 
 open class XYBluetoothDeviceReporter<T: XYBluetoothDevice, L: XYBluetoothDeviceListener>: XYBase() {
     val listeners = HashMap<String, XYBluetoothDeviceListener>()
 
     fun addListener(key: String, listener: L) {
-        GlobalScope.launch {
+        ble.launch {
             synchronized(listeners) {
                 listeners[key] = listener
             }
@@ -18,7 +19,7 @@ open class XYBluetoothDeviceReporter<T: XYBluetoothDevice, L: XYBluetoothDeviceL
     }
 
     fun removeListener(key: String) {
-        GlobalScope.launch {
+        ble.launch {
             synchronized(listeners) {
                 listeners.remove(key)
             }
@@ -28,7 +29,7 @@ open class XYBluetoothDeviceReporter<T: XYBluetoothDevice, L: XYBluetoothDeviceL
     open fun enter(device: T) {
         synchronized(listeners) {
             for ((_, listener) in listeners) {
-                GlobalScope.launch {
+                ble.launch {
                     listener.entered(device)
                 }
             }
@@ -38,7 +39,7 @@ open class XYBluetoothDeviceReporter<T: XYBluetoothDevice, L: XYBluetoothDeviceL
     open fun exit(device: T) {
         synchronized(listeners) {
             for ((_, listener) in listeners) {
-                GlobalScope.launch {
+                ble.launch {
                     listener.exited(device)
                 }
             }
@@ -48,7 +49,7 @@ open class XYBluetoothDeviceReporter<T: XYBluetoothDevice, L: XYBluetoothDeviceL
     open fun detected(device: T) {
         synchronized(listeners) {
             for ((_, listener) in listeners) {
-                GlobalScope.launch {
+                ble.launch {
                     listener.detected(device)
                 }
             }
@@ -59,7 +60,7 @@ open class XYBluetoothDeviceReporter<T: XYBluetoothDevice, L: XYBluetoothDeviceL
         log.info("connectionStateChanged: ${device.className} : $newState")
         synchronized(listeners) {
             for ((_, listener) in listeners) {
-                GlobalScope.launch {
+                ble.launch {
                     listener.connectionStateChanged(device, newState)
                 }
             }

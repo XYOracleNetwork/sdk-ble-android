@@ -12,8 +12,8 @@ import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResult
 import network.xyo.ble.sample.R
 import network.xyo.ble.sample.XYDeviceData
 import network.xyo.ble.sample.databinding.FragmentGenericAccessBinding
+import network.xyo.ble.generic.gatt.peripheral.ble
 
-@kotlin.ExperimentalUnsignedTypes
 class GenericAccessFragment(device: XYBluetoothDevice, deviceData : XYDeviceData) : XYDeviceFragment<FragmentGenericAccessBinding>(device, deviceData) {
 
     override fun inflate(inflater: LayoutInflater, container: ViewGroup?): FragmentGenericAccessBinding {
@@ -56,7 +56,7 @@ class GenericAccessFragment(device: XYBluetoothDevice, deviceData : XYDeviceData
     }
 
     private fun getValues(device: XYFinderBluetoothDevice) {
-        GlobalScope.launch {
+        ble.launch {
             var hasConnectionError = true
 
             device.connection {

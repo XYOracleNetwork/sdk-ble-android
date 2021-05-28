@@ -14,8 +14,8 @@ import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResult
 import network.xyo.ble.sample.R
 import network.xyo.ble.sample.XYDeviceData
 import network.xyo.ble.sample.databinding.FragmentCurrentTimeBinding
+import network.xyo.ble.generic.gatt.peripheral.ble
 
-@kotlin.ExperimentalUnsignedTypes
 class CurrentTimeFragment(device: XYBluetoothDevice, deviceData : XYDeviceData) : XYDeviceFragment<FragmentCurrentTimeBinding>(device, deviceData) {
 
     override fun inflate(inflater: LayoutInflater, container: ViewGroup?): FragmentCurrentTimeBinding {
@@ -63,7 +63,7 @@ class CurrentTimeFragment(device: XYBluetoothDevice, deviceData : XYDeviceData) 
     }
 
     private fun getXY4Values(device: XY4BluetoothDevice) {
-        GlobalScope.launch {
+        ble.launch {
             var hasConnectionError = true
 
             device.connection {
@@ -86,7 +86,7 @@ class CurrentTimeFragment(device: XYBluetoothDevice, deviceData : XYDeviceData) 
 
 
     private fun getXY3Values(device: XY3BluetoothDevice) {
-        GlobalScope.launch {
+        ble.launch {
             var hasConnectionError = true
 
             device.connection {

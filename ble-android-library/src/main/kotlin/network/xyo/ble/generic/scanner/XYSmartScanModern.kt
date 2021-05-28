@@ -12,13 +12,13 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResult
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResultErrorCode
+import network.xyo.ble.generic.gatt.peripheral.ble
 import network.xyo.ble.generic.gatt.peripheral.bleAsync
 import network.xyo.ble.utilities.XYCallByVersion
 
 @TargetApi(21)
-@kotlin.ExperimentalUnsignedTypes
 class XYSmartScanModern(context: Context) : XYSmartScan(context) {
-    override suspend fun start() = GlobalScope.async {
+    override suspend fun start() = ble.async {
         log.info("start")
         super.start()
 
@@ -144,7 +144,7 @@ class XYSmartScanModern(context: Context) : XYSmartScan(context) {
                 .build()
     }
 
-    override suspend fun stop() = GlobalScope.async {
+    override suspend fun stop() = ble.async {
         log.info("stop")
         super.stop()
         val result = bleAsync {

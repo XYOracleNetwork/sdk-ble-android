@@ -10,6 +10,7 @@ import network.xyo.ble.generic.gatt.peripheral.XYBluetoothGattCallback
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResult
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResultErrorCode
 import network.xyo.ble.generic.gatt.peripheral.actions.XYBluetoothGattConnect
+import network.xyo.ble.generic.gatt.peripheral.ble
 
 suspend fun requestMtuImpl(connection: XYBluetoothGattConnect, mtu: Int, callback: XYBluetoothGattCallback): XYBluetoothResult<Int> {
     return suspendCancellableCoroutine { cont ->
@@ -30,7 +31,7 @@ suspend fun requestMtuImpl(connection: XYBluetoothGattConnect, mtu: Int, callbac
             }
         })
 
-        GlobalScope.launch {
+        ble.launch {
             if (connection.gatt?.requestMtu(mtu)?.value != true) {
                 cont.resume(XYBluetoothResult(XYBluetoothResultErrorCode.Unknown), null)
             }

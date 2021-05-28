@@ -88,7 +88,7 @@ open class XYBluetoothGatt protected constructor(
         context: CoroutineContext = bluetoothQueue,
         start: CoroutineStart = CoroutineStart.DEFAULT,
         block: suspend CoroutineScope.() -> XYBluetoothResult<T>
-    ) = GlobalScope.async(context, start) {
+    ) = ble.async(context, start) {
         val timeoutToUse = timeout ?: defaultTimeout
         return@async runBlocking {
             lastAccessTime = now
@@ -196,7 +196,7 @@ open class XYBluetoothGatt protected constructor(
     }.await()
 
     fun disconnect() {
-        GlobalScope.launch {
+        ble.launch {
             disconnectAsync().await()
         }
     }
@@ -207,7 +207,7 @@ open class XYBluetoothGatt protected constructor(
     }
 
     protected fun close() {
-        GlobalScope.launch {
+        ble.launch {
             closeAsync().await()
         }
     }
@@ -297,7 +297,7 @@ open class XYBluetoothGatt protected constructor(
     }
 
     // make a safe session to interact with the device
-    fun <T> connectionAsync(closure: suspend () -> XYBluetoothResult<T>) = GlobalScope.async {
+    fun <T> connectionAsync(closure: suspend () -> XYBluetoothResult<T>) = ble.async {
         var value: T? = null
         val error: XYBluetoothResultErrorCode
         references++

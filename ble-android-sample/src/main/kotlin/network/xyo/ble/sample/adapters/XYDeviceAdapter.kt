@@ -13,9 +13,9 @@ import network.xyo.ble.sample.views.XYDeviceItemView
 import network.xyo.ble.generic.scanner.XYSmartScan
 import network.xyo.ble.generic.scanner.XYSmartScanListener
 import java.util.concurrent.locks.ReentrantLock
+import network.xyo.ble.generic.gatt.peripheral.ble
 
 @kotlin.ExperimentalStdlibApi
-@kotlin.ExperimentalUnsignedTypes
 class XYDeviceAdapter(private val activity: Activity) : BaseAdapter() {
     private var devices: List<XYBluetoothDevice>
     private var lastSort = System.currentTimeMillis()
@@ -41,7 +41,7 @@ class XYDeviceAdapter(private val activity: Activity) : BaseAdapter() {
 
     private val sortLock = ReentrantLock()
 
-    fun refreshDevices() = GlobalScope.launch {
+    fun refreshDevices() = ble.launch {
         //we want to prevent multiple updates to go at the same time
         if (sortLock.tryLock()) {
             devices = XYBluetoothDevice.sortedList(scanner.devices.values.toList())

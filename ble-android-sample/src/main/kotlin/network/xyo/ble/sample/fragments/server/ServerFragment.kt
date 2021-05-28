@@ -23,8 +23,9 @@ import network.xyo.ble.sample.fragments.XYAppBaseFragment
 import java.nio.ByteBuffer
 import java.nio.charset.Charset
 import java.util.UUID
+import network.xyo.ble.generic.gatt.peripheral.ble
 
-@kotlin.ExperimentalUnsignedTypes
+
 class ServerFragment : XYAppBaseFragment<FragmentPeripheralBinding>() {
     private var bleServer : XYBluetoothGattServer? = null
     private var bleAdvertiser : XYBluetoothAdvertiser? = null
@@ -67,7 +68,7 @@ class ServerFragment : XYAppBaseFragment<FragmentPeripheralBinding>() {
 
         activity!!.registerReceiver(bluetoothIntentReceiver, BluetoothIntentReceiver.bluetoothDeviceIntentFilter)
 
-        GlobalScope.launch {
+        ble.launch {
             spinUpServer()
         }
     }
@@ -85,7 +86,7 @@ class ServerFragment : XYAppBaseFragment<FragmentPeripheralBinding>() {
         return server.addService(simpleService)
     }
 
-    private suspend fun spinUpServer () = GlobalScope.async {
+    private suspend fun spinUpServer () = ble.async {
         simpleService.addCharacteristic(characteristicRead)
         simpleService.addCharacteristic(characteristicWrite)
         characteristicRead.addReadResponder("countResponder", countResponder)

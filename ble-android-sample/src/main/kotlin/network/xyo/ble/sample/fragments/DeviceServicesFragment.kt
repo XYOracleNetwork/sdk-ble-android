@@ -16,8 +16,8 @@ import network.xyo.ble.sample.R
 import network.xyo.ble.sample.XYDeviceData
 import network.xyo.ble.sample.adapters.XYServiceListAdapter
 import network.xyo.ble.sample.databinding.FragmentServicesBinding
+import network.xyo.ble.generic.gatt.peripheral.ble
 
-@kotlin.ExperimentalUnsignedTypes
 class DeviceServicesFragment(device: XYBluetoothDevice, deviceData : XYDeviceData) : XYDeviceFragment<FragmentServicesBinding>(device, deviceData) {
     private val serviceList = XYServiceListAdapter(arrayOf())
 
@@ -45,7 +45,7 @@ class DeviceServicesFragment(device: XYBluetoothDevice, deviceData : XYDeviceDat
                 transition?.commit()
             }
         })
-        GlobalScope.launch {
+        ble.launch {
             updateList()
         }
     }
@@ -85,12 +85,12 @@ class DeviceServicesFragment(device: XYBluetoothDevice, deviceData : XYDeviceDat
         device.reporter.addListener("services", object: XYBluetoothDeviceListener() {
             override fun connectionStateChanged(device: XYBluetoothDevice, newState: Int) {
                 super.connectionStateChanged(device, newState)
-                GlobalScope.launch {
+                ble.launch {
                     updateList()
                 }
             }
         })
-        GlobalScope.launch {
+        ble.launch {
             updateList()
         }
     }

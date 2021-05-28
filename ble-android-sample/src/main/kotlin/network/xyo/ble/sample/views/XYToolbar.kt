@@ -7,7 +7,6 @@ import androidx.core.content.ContextCompat
 import network.xyo.ble.sample.R
 import network.xyo.ble.sample.activities.XYOAppBaseActivity
 
-@ExperimentalUnsignedTypes
 @Suppress("unused")
 open class XYToolbar : Toolbar {
 

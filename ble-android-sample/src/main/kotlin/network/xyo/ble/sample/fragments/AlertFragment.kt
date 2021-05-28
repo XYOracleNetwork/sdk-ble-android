@@ -14,8 +14,8 @@ import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResult
 import network.xyo.ble.sample.R
 import network.xyo.ble.sample.XYDeviceData
 import network.xyo.ble.sample.databinding.FragmentAlertBinding
+import network.xyo.ble.generic.gatt.peripheral.ble
 
-@kotlin.ExperimentalUnsignedTypes
 class AlertFragment(device: XYBluetoothDevice, deviceData : XYDeviceData) : XYDeviceFragment<FragmentAlertBinding>(device, deviceData) {
 
     override fun inflate(inflater: LayoutInflater, container: ViewGroup?): FragmentAlertBinding {
@@ -67,7 +67,7 @@ class AlertFragment(device: XYBluetoothDevice, deviceData : XYDeviceData) : XYDe
 
     private fun getXY4Values(device: XY4BluetoothDevice) {
         var hasConnectionError = true
-        GlobalScope.launch {
+        ble.launch {
             device.connection {
                 hasConnectionError = false
 
@@ -87,7 +87,7 @@ class AlertFragment(device: XYBluetoothDevice, deviceData : XYDeviceData) : XYDe
     }
 
     private fun getXY3Values(device: XY3BluetoothDevice) {
-        GlobalScope.launch {
+        ble.launch {
             var hasConnectionError = true
 
             device.connection {

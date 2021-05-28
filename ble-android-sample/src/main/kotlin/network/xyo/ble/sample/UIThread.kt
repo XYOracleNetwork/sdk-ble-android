@@ -1,30 +1,23 @@
 package network.xyo.ble.sample
 
-import android.os.Handler
-import android.os.Looper
 import kotlinx.coroutines.*
-import kotlin.coroutines.AbstractCoroutineContextElement
-import kotlin.coroutines.Continuation
-import kotlin.coroutines.ContinuationInterceptor
 import kotlin.coroutines.CoroutineContext
 
-private class AndroidContinuation<T>(val cont: Continuation<T>) : Continuation<T> by cont {
-    override fun resumeWith(result: Result<T>) {
-        if (Looper.myLooper() == Looper.getMainLooper()) cont.resumeWith(result)
-        else Handler(Looper.getMainLooper()).post { cont.resumeWith(result) }
+class UiCoroutineScope : CoroutineScope {
+
+    private var parentJob = Job()
+
+    override val coroutineContext: CoroutineContext
+        get() = Dispatchers.IO + parentJob
+
+    fun onStart() {
+        parentJob = Job()
     }
 
+    fun onStop() {
+        parentJob.cancel()
+        // You can also cancel the whole scope with `cancel(cause: CancellationException)`
+    }
 }
 
-object UIThread : AbstractCoroutineContextElement(ContinuationInterceptor), ContinuationInterceptor {
-    override fun <T> interceptContinuation(continuation: Continuation<T>): Continuation<T> =
-            AndroidContinuation(continuation)
-}
-
-fun ui(
-        context: CoroutineContext = UIThread,
-        start: CoroutineStart = CoroutineStart.DEFAULT,
-        block: suspend CoroutineScope.() -> Unit
-): Job {
-    return GlobalScope.launch(context, start, block)
-}
+val ui = UiCoroutineScope()

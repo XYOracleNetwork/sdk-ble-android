@@ -14,8 +14,8 @@ import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResult
 import network.xyo.ble.sample.R
 import network.xyo.ble.sample.XYDeviceData
 import network.xyo.ble.sample.databinding.FragmentBatteryBinding
+import network.xyo.ble.generic.gatt.peripheral.ble
 
-@kotlin.ExperimentalUnsignedTypes
 class BatteryFragment(device: XYBluetoothDevice, deviceData : XYDeviceData) : XYDeviceFragment<FragmentBatteryBinding>(device, deviceData) {
 
     override fun inflate(inflater: LayoutInflater, container: ViewGroup?): FragmentBatteryBinding {
@@ -68,7 +68,7 @@ class BatteryFragment(device: XYBluetoothDevice, deviceData : XYDeviceData) : XY
     }
 
     private fun getXY4Values(device: XY4BluetoothDevice) {
-        GlobalScope.launch {
+        ble.launch {
             var hasConnectionError = true
 
             device.connection {
@@ -84,7 +84,7 @@ class BatteryFragment(device: XYBluetoothDevice, deviceData : XYDeviceData) : XY
     }
 
     private fun getXY3Values(device: XY3BluetoothDevice) {
-        GlobalScope.launch {
+        ble.launch {
             var hasConnectionError = true
 
             device.connection {
@@ -101,7 +101,7 @@ class BatteryFragment(device: XYBluetoothDevice, deviceData : XYDeviceData) : XY
     }
 
     private fun getXY2Values(device: XY2BluetoothDevice) {
-        GlobalScope.launch {
+        ble.launch {
             var hasConnectionError = true
 
             device.connection {
