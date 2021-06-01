@@ -21,23 +21,9 @@ buildscript {
     }
 }
 
-Properties versionProps = new Properties()
-def versionPropsFile = file('version.properties')
-
-if (versionPropsFile.exists())
-    versionProps.load(new FileInputStream(versionPropsFile))
-
-def increment = 0
-
-def runTasks = gradle.startParameter.taskNames
-
-if (':ble-android-library:assemble' in runTasks) {
-    increment = 1
-}
-
 def majorVersion = 4
 def minorVersion = 0
-def patch = versionProps['VERSION_PATCH'].toInteger() + increment
+def patch = 41
 
 def verString = majorVersion + '.' + minorVersion + '.' + patch
 
@@ -48,9 +34,6 @@ task printVersion {
 android {
     compileSdkVersion 30
     buildToolsVersion '30.0.3'
-
-    versionProps['VERSION_PATCH'] = patch.toString()
-    versionProps.store(versionPropsFile.newWriter(), null) 
 
     compileOptions {
         sourceCompatibility = 1.8
