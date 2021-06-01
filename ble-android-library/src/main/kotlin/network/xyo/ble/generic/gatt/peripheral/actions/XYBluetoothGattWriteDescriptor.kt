@@ -8,6 +8,7 @@ import network.xyo.ble.generic.gatt.peripheral.XYBluetoothGattCallback
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResult
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResultErrorCode
 import network.xyo.ble.generic.gatt.peripheral.ThreadSafeBluetoothGattWrapper
+import network.xyo.ble.generic.gatt.peripheral.ble
 
 class XYBluetoothGattWriteDescriptor(
     gatt: ThreadSafeBluetoothGattWrapper,
@@ -63,7 +64,7 @@ class XYBluetoothGattWriteDescriptor(
                         }
                     }
                     gattCallback.addListener(listenerName, listener)
-                    GlobalScope.launch {
+                    ble.launch {
                         if (gatt.writeDescriptor(descriptorToWrite).value != true) {
                             error = XYBluetoothResultErrorCode.DescriptorWriteFailedToStart
                             gattCallback.removeListener(listenerName)

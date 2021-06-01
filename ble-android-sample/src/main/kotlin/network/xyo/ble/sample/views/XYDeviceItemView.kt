@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import network.xyo.ble.generic.devices.XYBluetoothDevice
 import network.xyo.ble.devices.apple.XYIBeaconBluetoothDevice
@@ -15,9 +14,9 @@ import network.xyo.ble.sample.activities.XYODeviceActivity
 import network.xyo.base.XYBase
 import network.xyo.ble.listeners.XYFinderBluetoothDeviceListener
 import network.xyo.ble.sample.databinding.DeviceItemBinding
+import network.xyo.ble.generic.gatt.peripheral.ble
 
 @kotlin.ExperimentalStdlibApi
-@kotlin.ExperimentalUnsignedTypes
 class XYDeviceItemView(context: Context) : LinearLayout(context) {
 
     private var device: XYBluetoothDevice? = null
@@ -80,7 +79,7 @@ class XYDeviceItemView(context: Context) : LinearLayout(context) {
         }
 
         override fun detected(device: XYBluetoothDevice) {
-            GlobalScope.launch(Dispatchers.Main) {
+            ble.launch(Dispatchers.Main) {
                 update()
             }
         }

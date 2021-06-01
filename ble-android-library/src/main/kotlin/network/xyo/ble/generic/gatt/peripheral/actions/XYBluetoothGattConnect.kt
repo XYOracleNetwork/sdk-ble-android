@@ -46,7 +46,7 @@ class XYBluetoothGattConnect(
         val gatt = this.gatt
         if (gatt != null) {
             log.error("finalize: Finalize closing up connection!!!!")
-            GlobalScope.launch {
+            ble.launch {
                 log.info("finalize: launch")
                 close()
             }
@@ -111,7 +111,7 @@ class XYBluetoothGattConnect(
             return XYBluetoothResult(gatt)
         }
 
-        val result = bleAsync {
+        val result = ble.async {
             var newGatt: ThreadSafeBluetoothGattWrapper? = null
             XYCallByVersion()
                 .add(Build.VERSION_CODES.O) {
@@ -140,7 +140,7 @@ class XYBluetoothGattConnect(
                     newGatt =
                         ThreadSafeBluetoothGattWrapper(connectGatt19(context, device, autoConnect))
                 }.call()
-            return@bleAsync XYBluetoothResult(newGatt)
+            return@async XYBluetoothResult(newGatt)
         }.await()
 
         if (gatt != null) {
@@ -196,7 +196,7 @@ class XYBluetoothGattConnect(
     }
 
     override fun completeStartCoroutine(cont: CancellableContinuation<XYBluetoothResultErrorCode?>, value: XYBluetoothResultErrorCode?) {
-        GlobalScope.launch {
+        ble.launch {
             if (value != XYBluetoothResultErrorCode.None) {
                 close()
             }
@@ -226,7 +226,7 @@ class XYBluetoothGattConnect(
                             }
                             newState == BluetoothGatt.STATE_CONNECTED -> {
                                 log.info("connect:connected")
-                                GlobalScope.launch {
+                                ble.launch {
                                     completeStartCoroutine(cont, discover().error)
                                 }
                             }

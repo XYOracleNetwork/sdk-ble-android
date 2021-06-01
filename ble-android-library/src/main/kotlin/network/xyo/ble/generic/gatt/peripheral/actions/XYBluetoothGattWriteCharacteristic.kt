@@ -8,6 +8,7 @@ import network.xyo.ble.generic.gatt.peripheral.XYBluetoothGattCallback
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResult
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResultErrorCode
 import network.xyo.ble.generic.gatt.peripheral.ThreadSafeBluetoothGattWrapper
+import network.xyo.ble.generic.gatt.peripheral.ble
 
 class XYBluetoothGattWriteCharacteristic(
     gatt: ThreadSafeBluetoothGattWrapper,
@@ -71,7 +72,7 @@ class XYBluetoothGattWriteCharacteristic(
                         }
                     }
                     gattCallback.addListener(listenerName, listener)
-                    GlobalScope.launch {
+                    ble.launch {
                         val writeStarted = gatt.writeCharacteristic(characteristicToWrite).value
                         if (writeStarted != true) {
                             error = XYBluetoothResultErrorCode.WriteCharacteristicFailedToStart

@@ -4,15 +4,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import network.xyo.ble.devices.xy.XY4BluetoothDevice
 import network.xyo.ble.generic.devices.XYBluetoothDevice
 import network.xyo.ble.sample.XYDeviceData
 import network.xyo.ble.sample.databinding.FragmentPrimaryBinding
 import network.xyo.ble.services.xy.PrimaryService
+import network.xyo.ble.generic.gatt.peripheral.ble
 
-@kotlin.ExperimentalUnsignedTypes
 class PrimaryFragment(device: XYBluetoothDevice, deviceData : XYDeviceData) : XYDeviceFragment<FragmentPrimaryBinding>(device, deviceData) {
 
     override fun inflate(inflater: LayoutInflater, container: ViewGroup?): FragmentPrimaryBinding {
@@ -23,7 +22,7 @@ class PrimaryFragment(device: XYBluetoothDevice, deviceData : XYDeviceData) : XY
         super.onViewCreated(view, savedInstanceState)
 
         binding.buttonPrimaryRefresh.setOnClickListener {
-            GlobalScope.launch {
+            ble.launch {
                 readCharacteristics()
             }
         }

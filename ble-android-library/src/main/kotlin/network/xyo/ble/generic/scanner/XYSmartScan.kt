@@ -8,7 +8,6 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.location.LocationManager
 import java.util.concurrent.ConcurrentHashMap
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -16,6 +15,7 @@ import network.xyo.ble.devices.xy.XYMobileBluetoothDevice
 import network.xyo.ble.generic.XYBluetoothBase
 import network.xyo.ble.generic.devices.XYBluetoothDevice
 import network.xyo.ble.generic.listeners.XYBluetoothDeviceListener
+import network.xyo.ble.generic.gatt.peripheral.ble
 
 enum class XYSmartScanListenerScanFailed {
     Unknown,
@@ -38,7 +38,6 @@ enum class XYSmartScanStatus {
     LocationDisabled
 }
 
-@kotlin.ExperimentalUnsignedTypes
 @Suppress("unused")
 abstract class XYSmartScan(context: Context) : XYBluetoothBase(context) {
 
@@ -90,7 +89,7 @@ abstract class XYSmartScan(context: Context) : XYBluetoothBase(context) {
     }
 
     private fun startStatusChecker() {
-        GlobalScope.launch {
+        ble.launch {
             while (true) {
                 if (status != oldStatus) {
                     reportStatusChanged()
@@ -150,7 +149,7 @@ abstract class XYSmartScan(context: Context) : XYBluetoothBase(context) {
     private fun reportStatusChanged() {
         if (status != oldStatus) {
             oldStatus = status
-            GlobalScope.launch {
+            ble.launch {
                 synchronized(listeners) {
                     for (listener in listeners) {
                         listener.value.statusChanged(status)
@@ -181,7 +180,7 @@ abstract class XYSmartScan(context: Context) : XYBluetoothBase(context) {
             _background = background
         }
 
-    open suspend fun start() = GlobalScope.async {
+    open suspend fun start() = ble.async {
         log.info("start")
         startTime = now
         return@async true
@@ -191,7 +190,7 @@ abstract class XYSmartScan(context: Context) : XYBluetoothBase(context) {
         return startTime != null
     }
 
-    open suspend fun stop() = GlobalScope.async {
+    open suspend fun stop() = ble.async {
         log.info("stop")
         startTime = null
         scanResultCount = 0
@@ -206,7 +205,7 @@ abstract class XYSmartScan(context: Context) : XYBluetoothBase(context) {
     }
 
     fun addListener(key: String, listener: XYSmartScanListener) {
-        GlobalScope.launch {
+        ble.launch {
             synchronized(listeners) {
                 listeners[key] = listener
             }
@@ -214,7 +213,7 @@ abstract class XYSmartScan(context: Context) : XYBluetoothBase(context) {
     }
 
     fun removeListener(key: String) {
-        GlobalScope.launch {
+        ble.launch {
             synchronized(listeners) {
                 listeners.remove(key)
             }
@@ -274,7 +273,7 @@ abstract class XYSmartScan(context: Context) : XYBluetoothBase(context) {
         // log.info("reportEntered")
         synchronized(listeners) {
             for ((_, listener) in listeners) {
-                GlobalScope.launch {
+                ble.launch {
                     listener.entered(device)
                 }
             }
@@ -285,7 +284,7 @@ abstract class XYSmartScan(context: Context) : XYBluetoothBase(context) {
         // log.info("reportExited")
         synchronized(listeners) {
             for ((_, listener) in listeners) {
-                GlobalScope.launch {
+                ble.launch {
                     listener.exited(device)
                 }
             }
@@ -296,7 +295,7 @@ abstract class XYSmartScan(context: Context) : XYBluetoothBase(context) {
         // log.info("reportDetected")
         synchronized(listeners) {
             for ((_, listener) in listeners) {
-                GlobalScope.launch {
+                ble.launch {
                     listener.detected(device)
                 }
             }

@@ -1,6 +1,5 @@
 package network.xyo.ble.sample.activities
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.SparseArray
 import android.view.ViewGroup
@@ -13,7 +12,6 @@ import network.xyo.ble.sample.databinding.ActivityAppBinding
 import network.xyo.ble.sample.fragments.CentralFragment
 import network.xyo.ble.sample.fragments.server.ServerFragment
 
-@kotlin.ExperimentalUnsignedTypes
 @kotlin.ExperimentalStdlibApi
 @Suppress("unused")
 class XYOAppActivity : XYOAppBaseActivity() {

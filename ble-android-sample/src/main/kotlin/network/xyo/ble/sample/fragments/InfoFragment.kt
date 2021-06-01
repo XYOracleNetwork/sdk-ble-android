@@ -20,8 +20,8 @@ import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResultErrorCode
 import network.xyo.ble.sample.R
 import network.xyo.ble.sample.XYDeviceData
 import network.xyo.ble.sample.databinding.FragmentInfoBinding
+import network.xyo.ble.generic.gatt.peripheral.ble
 
-@kotlin.ExperimentalUnsignedTypes
 class InfoFragment(device: XYBluetoothDevice, deviceData : XYDeviceData) : XYDeviceFragment<FragmentInfoBinding>(device, deviceData), View.OnClickListener, CompoundButton.OnCheckedChangeListener {
 
     override fun inflate(inflater: LayoutInflater, container: ViewGroup?): FragmentInfoBinding {
@@ -131,7 +131,7 @@ class InfoFragment(device: XYBluetoothDevice, deviceData : XYDeviceData) : XYDev
     override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
         when (buttonView?.id) {
             R.id.button_stayConnected -> {
-                GlobalScope.launch {
+                ble.launch {
                     device.stayConnected = isChecked
                     updateUI()
                 }
@@ -178,7 +178,7 @@ class InfoFragment(device: XYBluetoothDevice, deviceData : XYDeviceData) : XYDev
     }
 
     /*private fun testRefreshGatt() {
-        GlobalScope.launch {
+        ble.launch {
             val connection = device?.connectGatt()?.await()
             val device: XYBluetoothDevice? = activity?.device
             val connection = device?.connect()?.await()
@@ -192,7 +192,7 @@ class InfoFragment(device: XYBluetoothDevice, deviceData : XYDeviceData) : XYDev
     }*/
 
     private fun connect() {
-        GlobalScope.launch {
+        ble.launch {
             val result = device.connect()
             val error = result.error
             if (error != XYBluetoothResultErrorCode.None) {
@@ -205,7 +205,7 @@ class InfoFragment(device: XYBluetoothDevice, deviceData : XYDeviceData) : XYDev
     }
 
     private fun disconnect() {
-        GlobalScope.launch {
+        ble.launch {
             device.disconnectAsync().await()
             updateUI()
         }
@@ -217,7 +217,7 @@ class InfoFragment(device: XYBluetoothDevice, deviceData : XYDeviceData) : XYDev
             binding.buttonFind.isEnabled = false
         }
 
-        GlobalScope.launch {
+        ble.launch {
             (device as? XYFinderBluetoothDevice)?.find()
             activity?.runOnUiThread {
                 this@InfoFragment.isVisible.let { binding.buttonFind.isEnabled = true }
@@ -232,7 +232,7 @@ class InfoFragment(device: XYBluetoothDevice, deviceData : XYDeviceData) : XYDev
             binding.buttonFind.isEnabled = false
         }
 
-        GlobalScope.launch {
+        ble.launch {
             (device as? XYFinderBluetoothDevice)?.stopFind()
             activity?.runOnUiThread {
                 this@InfoFragment.isVisible.let { binding.buttonFind.isEnabled = true }
@@ -246,7 +246,7 @@ class InfoFragment(device: XYBluetoothDevice, deviceData : XYDeviceData) : XYDev
             binding.buttonStayAwake.isEnabled = false
         }
 
-        GlobalScope.launch {
+        ble.launch {
             val stayAwake = (device as? XYFinderBluetoothDevice)?.stayAwake()
             if (stayAwake == null) {
                 log.info("Stay Awake Failed to Complete Call")
@@ -265,7 +265,7 @@ class InfoFragment(device: XYBluetoothDevice, deviceData : XYDeviceData) : XYDev
             binding.buttonFallAsleep.isEnabled = false
         }
 
-        GlobalScope.launch {
+        ble.launch {
             val fallAsleep = (device as? XYFinderBluetoothDevice)?.fallAsleep()
             if (fallAsleep == null) {
                 log.error("Fall Asleep Failed to Complete Call")
@@ -284,7 +284,7 @@ class InfoFragment(device: XYBluetoothDevice, deviceData : XYDeviceData) : XYDev
             binding.buttonLock.isEnabled = false
         }
 
-        GlobalScope.launch {
+        ble.launch {
             val locked = (device as? XYFinderBluetoothDevice)?.lock()
             when {
                 locked == null -> log.error("Device does not support Lock")
@@ -306,7 +306,7 @@ class InfoFragment(device: XYBluetoothDevice, deviceData : XYDeviceData) : XYDev
             binding.buttonUnlock.isEnabled = false
         }
 
-        GlobalScope.launch {
+        ble.launch {
             val unlocked = (device as? XYFinderBluetoothDevice)?.unlock()
             when {
                 unlocked == null -> log.error("Device does not support Unlock")
@@ -324,7 +324,7 @@ class InfoFragment(device: XYBluetoothDevice, deviceData : XYDeviceData) : XYDev
 
 
     private suspend fun updateStayAwakeEnabledStates() {
-        return GlobalScope.async {
+        return ble.async {
             log.info("updateStayAwakeEnabledStates")
             val xy4 = device as? XY4BluetoothDevice
             if (xy4 != null) {
@@ -349,7 +349,7 @@ class InfoFragment(device: XYBluetoothDevice, deviceData : XYDeviceData) : XYDev
     }
 
     private fun enableButtonNotify(enable: Boolean) {
-        GlobalScope.launch {
+        ble.launch {
             val xy4 = device as? XY4BluetoothDevice
             if (xy4 != null) {
                 val notify = xy4.primary.buttonState.enableNotify(enable)

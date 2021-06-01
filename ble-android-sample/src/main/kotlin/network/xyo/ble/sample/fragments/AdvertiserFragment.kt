@@ -8,7 +8,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.RadioButton
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import network.xyo.ble.generic.gatt.server.XYBluetoothAdvertiser
 import network.xyo.ble.generic.gatt.server.XYIBeaconAdvertiseDataCreator
@@ -16,8 +15,8 @@ import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResultErrorCode
 import network.xyo.ble.sample.databinding.FragmentAdvertiserBinding
 import java.nio.ByteBuffer
 import java.util.UUID
+import network.xyo.ble.generic.gatt.peripheral.ble
 
-@ExperimentalUnsignedTypes
 class AdvertiserFragment(private var advertiser: XYBluetoothAdvertiser?) : XYAppBaseFragment<FragmentAdvertiserBinding>() {
     private var isInIBeacon = false
 
@@ -29,7 +28,7 @@ class AdvertiserFragment(private var advertiser: XYBluetoothAdvertiser?) : XYApp
         super.onViewCreated(view, savedInstanceState)
 
         binding.update.setOnClickListener {
-            GlobalScope.launch {
+            ble.launch {
                 updateAdvertisingMode()
                 updateAdvertisingPower()
                 updateConnectible()

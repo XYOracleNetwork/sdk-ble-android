@@ -8,6 +8,7 @@ import network.xyo.ble.generic.gatt.peripheral.XYBluetoothGattCallback
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResult
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResultErrorCode
 import network.xyo.ble.generic.gatt.peripheral.ThreadSafeBluetoothGattWrapper
+import network.xyo.ble.generic.gatt.peripheral.ble
 
 class XYBluetoothGattDiscover(
     gatt: ThreadSafeBluetoothGattWrapper,
@@ -54,7 +55,7 @@ class XYBluetoothGattDiscover(
                             }
                         }
                         gattCallback.addListener(listenerName, listener)
-                        GlobalScope.launch {
+                        ble.launch {
                             val discoverStarted = gatt.discoverServices().value
                             if (discoverStarted != true) {
                                 error = XYBluetoothResultErrorCode.DiscoverServicesFailedToStart

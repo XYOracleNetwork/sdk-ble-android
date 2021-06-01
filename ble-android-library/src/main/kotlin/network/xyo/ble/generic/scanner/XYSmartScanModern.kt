@@ -8,51 +8,39 @@ import android.bluetooth.le.ScanSettings
 import android.content.Context
 import android.os.Build
 import java.lang.IllegalStateException
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
-import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResult
-import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResultErrorCode
-import network.xyo.ble.generic.gatt.peripheral.bleAsync
+import network.xyo.ble.generic.gatt.peripheral.ble
 import network.xyo.ble.utilities.XYCallByVersion
 
 @TargetApi(21)
-@kotlin.ExperimentalUnsignedTypes
 class XYSmartScanModern(context: Context) : XYSmartScan(context) {
-    override suspend fun start() = GlobalScope.async {
+    override suspend fun start() = ble.async {
         log.info("start")
         super.start()
 
-        val result = bleAsync {
+        val bluetoothAdapter = bluetoothManager?.adapter
 
-            val bluetoothAdapter = bluetoothManager?.adapter
-
-            bluetoothAdapter?.let {
-                val scanner = it.bluetoothLeScanner
-                if (scanner == null) {
-                    log.info("startScan:Failed to get Bluetooth Scanner. Disabled?")
-                    return@bleAsync XYBluetoothResult(false)
-                } else {
-                    if (status != XYSmartScanStatus.BluetoothDisabled && status != XYSmartScanStatus.BluetoothUnavailable) {
-                        val filters = ArrayList<ScanFilter>()
-                        try {
-                            scanner.startScan(filters, getSettings(), callback)
-                        } catch (ex: IllegalStateException) {
-                            log.info("Turning Scanner on after BT disable")
-                        }
+        bluetoothAdapter?.let {
+            val scanner = it.bluetoothLeScanner
+            if (scanner == null) {
+                log.info("startScan:Failed to get Bluetooth Scanner. Disabled?")
+                return@async false
+            } else {
+                if (status != XYSmartScanStatus.BluetoothDisabled && status != XYSmartScanStatus.BluetoothUnavailable) {
+                    val filters = ArrayList<ScanFilter>()
+                    try {
+                        scanner.startScan(filters, getSettings(), callback)
+                    } catch (ex: IllegalStateException) {
+                        log.info("Turning Scanner on after BT disable")
                     }
                 }
-
-                return@bleAsync XYBluetoothResult(true)
             }
 
-            log.info("Bluetooth Disabled")
-            return@bleAsync XYBluetoothResult(false)
-        }.await()
-
-        if (result.error != XYBluetoothResultErrorCode.None) {
-            return@async false
+            return@async true
         }
-        return@async result.value ?: false
+
+        log.info("Bluetooth Disabled")
+        return@async false
     }.await()
 
     private val callback = object : ScanCallback() {
@@ -144,30 +132,24 @@ class XYSmartScanModern(context: Context) : XYSmartScan(context) {
                 .build()
     }
 
-    override suspend fun stop() = GlobalScope.async {
+    override suspend fun stop() = ble.async {
         log.info("stop")
         super.stop()
-        val result = bleAsync {
-            val bluetoothAdapter = this@XYSmartScanModern.bluetoothAdapter
 
-            if (bluetoothAdapter == null) {
-                log.info("stop: Bluetooth Disabled")
-                return@bleAsync XYBluetoothResult(false)
-            }
+        val bluetoothAdapter = this@XYSmartScanModern.bluetoothAdapter
 
-            val scanner = bluetoothAdapter.bluetoothLeScanner
-            if (scanner == null) {
-                log.info("stop:Failed to get Bluetooth Scanner. Disabled?")
-                return@bleAsync XYBluetoothResult(false)
-            }
-
-            scanner.stopScan(callback)
-            return@bleAsync XYBluetoothResult(true)
-        }.await()
-
-        if (result.error != XYBluetoothResultErrorCode.None) {
+        if (bluetoothAdapter == null) {
+            log.info("stop: Bluetooth Disabled")
             return@async false
         }
-        return@async result.value ?: false
+
+        val scanner = bluetoothAdapter.bluetoothLeScanner
+        if (scanner == null) {
+            log.info("stop:Failed to get Bluetooth Scanner. Disabled?")
+            return@async false
+        }
+
+        scanner.stopScan(callback)
+        return@async true
     }.await()
 }

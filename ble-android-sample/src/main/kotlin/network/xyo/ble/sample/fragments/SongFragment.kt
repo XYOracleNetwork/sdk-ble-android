@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import network.xyo.ble.devices.xy.XY3BluetoothDevice
 import network.xyo.ble.devices.xy.XY4BluetoothDevice
@@ -16,9 +15,8 @@ import network.xyo.ble.sample.R
 import network.xyo.ble.sample.XYDeviceData
 import network.xyo.ble.sample.databinding.FragmentSongBinding
 import java.nio.ByteBuffer
+import network.xyo.ble.generic.gatt.peripheral.ble
 
-@kotlin.ExperimentalUnsignedTypes
-@kotlin.ExperimentalStdlibApi
 class SongFragment(device: XYBluetoothDevice, deviceData : XYDeviceData) : XYDeviceFragment<FragmentSongBinding>(device, deviceData) {
 
     private var currentSong = ""
@@ -254,7 +252,7 @@ class SongFragment(device: XYBluetoothDevice, deviceData : XYDeviceData) : XYDev
             is XY4BluetoothDevice -> {
                 val xy4 = (device as? XY4BluetoothDevice)
                 xy4?.let {
-                    GlobalScope.launch {
+                    ble.launch {
                         var hasConnectionError = true
                         it.connection {
                             it.unlock()
@@ -293,7 +291,7 @@ class SongFragment(device: XYBluetoothDevice, deviceData : XYDeviceData) : XYDev
     }
 
     private fun getXY4Values(device: XY4BluetoothDevice) {
-        GlobalScope.launch {
+        ble.launch {
             var hasConnectionError = true
 
             device.connection {
@@ -309,7 +307,7 @@ class SongFragment(device: XYBluetoothDevice, deviceData : XYDeviceData) : XYDev
     }
 
     private fun getXY3Values(device: XY3BluetoothDevice) {
-        GlobalScope.launch {
+        ble.launch {
             var hasConnectionError = true
 
             device.connection {

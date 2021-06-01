@@ -8,13 +8,13 @@ import android.util.SparseArray
 import java.nio.ByteBuffer
 import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import network.xyo.base.XYBase
 import network.xyo.ble.devices.xy.XY4BluetoothDevice
 import network.xyo.ble.generic.ads.XYBleAd
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothGattClient
+import network.xyo.ble.generic.gatt.peripheral.ble
 import network.xyo.ble.generic.scanner.XYScanRecord
 import network.xyo.ble.generic.scanner.XYScanResult
 import network.xyo.ble.generic.listeners.XYBluetoothDeviceListener
@@ -111,7 +111,7 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, val has
             return
         }
         checkingForExit = true
-        GlobalScope.launch {
+        ble.launch {
             while (checkingForExit && !cancelNotifications) {
                 // log.info("checkForExit: $id : $rssi : $now : $outOfRangeDelay : $lastAdTime : $lastAccessTime")
                 delay(outOfRangeDelay)
@@ -160,7 +160,7 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, val has
                                             // make it thread safe
                                             val localNotifyExit = notifyExit
                                             if (localNotifyExit != null) {
-                                                GlobalScope.launch {
+                                                ble.launch {
                                                     localNotifyExit(this@XYBluetoothDevice)
                                                 }
                                             }
@@ -213,14 +213,14 @@ open class XYBluetoothDevice(context: Context, device: BluetoothDevice?, val has
         reporter.connectionStateChanged(this, newState)
         // if a connection drop means we should mark it as out of range, then lets do it!
         if (exitAfterDisconnect) {
-            GlobalScope.launch {
+            ble.launch {
                 rssi = null
                 onExit()
 
                 // make it thread safe
                 val localNotifyExit = notifyExit
                 if (localNotifyExit != null) {
-                    GlobalScope.launch {
+                    ble.launch {
                         localNotifyExit(this@XYBluetoothDevice)
                     }
                 }

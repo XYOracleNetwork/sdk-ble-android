@@ -1,13 +1,12 @@
 package network.xyo.ble.generic.scanner
 
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import network.xyo.base.XYBase
 import network.xyo.ble.utilities.XYPromise
+import network.xyo.ble.generic.gatt.peripheral.ble
 
 // we use this to allow java code to access our coroutines
 
-@kotlin.ExperimentalUnsignedTypes
 class XYSmartScanPromise(val scanner: XYSmartScan) : XYBase() {
 
     fun start() {
@@ -15,7 +14,7 @@ class XYSmartScanPromise(val scanner: XYSmartScan) : XYBase() {
     }
 
     fun start(promise: XYPromise<Boolean>? = null) {
-        GlobalScope.launch {
+        ble.launch {
             val result = scanner.start()
             promise?.resolve(result)
         }
@@ -26,7 +25,7 @@ class XYSmartScanPromise(val scanner: XYSmartScan) : XYBase() {
     }
 
     fun stop(promise: XYPromise<Boolean>? = null) {
-        GlobalScope.launch {
+        ble.launch {
             val result = scanner.stop()
             promise?.resolve(result)
         }

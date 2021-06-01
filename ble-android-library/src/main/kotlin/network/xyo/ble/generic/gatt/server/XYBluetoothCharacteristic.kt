@@ -6,9 +6,9 @@ import java.util.UUID
 import kotlin.collections.HashMap
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import network.xyo.base.XYLogging
+import network.xyo.ble.generic.gatt.peripheral.ble
 import network.xyo.ble.generic.gatt.server.responders.XYBluetoothReadResponder
 import network.xyo.ble.generic.gatt.server.responders.XYBluetoothWriteResponder
 
@@ -87,7 +87,7 @@ open class XYBluetoothCharacteristic(uuid: UUID, properties: Int, permissions: I
         return null
     }
 
-    suspend fun waitForWriteRequest(deviceFilter: BluetoothDevice?) = GlobalScope.async {
+    suspend fun waitForWriteRequest(deviceFilter: BluetoothDevice?) = ble.async {
         log.info("Arie: waitForWriteRequest")
         return@async suspendCoroutine<ByteArray?> { cont ->
             val responderKey = "waitForWriteRequest $deviceFilter"
@@ -107,7 +107,7 @@ open class XYBluetoothCharacteristic(uuid: UUID, properties: Int, permissions: I
         }
     }.await()
 
-    suspend fun waitForReadRequest(whatToRead: ByteArray?, deviceFilter: BluetoothDevice?) = GlobalScope.async {
+    suspend fun waitForReadRequest(whatToRead: ByteArray?, deviceFilter: BluetoothDevice?) = ble.async {
         val readValue = whatToRead ?: value
         value = readValue
 

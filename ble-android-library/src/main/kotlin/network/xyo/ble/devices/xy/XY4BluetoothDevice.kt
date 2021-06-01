@@ -8,7 +8,6 @@ import java.io.InputStream
 import java.nio.ByteBuffer
 import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import network.xyo.base.XYBase
 import network.xyo.ble.devices.apple.XYAppleBluetoothDevice
@@ -19,6 +18,7 @@ import network.xyo.ble.generic.devices.XYBluetoothDevice
 import network.xyo.ble.generic.devices.XYCreator
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResult
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResultErrorCode
+import network.xyo.ble.generic.gatt.peripheral.ble
 import network.xyo.ble.generic.scanner.XYScanResult
 import network.xyo.ble.generic.services.standard.*
 import network.xyo.ble.listeners.XYFinderBluetoothDeviceListener
@@ -33,7 +33,6 @@ import network.xyo.ble.services.xy.PrimaryService
  * .listener is now camel cased into the name.
  */
 
-@kotlin.ExperimentalUnsignedTypes
 open class XY4BluetoothDevice(
     context: Context,
     scanResult: XYScanResult,
@@ -154,7 +153,7 @@ open class XY4BluetoothDevice(
 
     private fun enableButtonNotifyIfConnected() {
         if (connection?.state == BluetoothGatt.STATE_CONNECTED) {
-            GlobalScope.launch {
+            ble.launch {
                 primary.buttonState.enableNotify(true)
             }
         }
@@ -175,7 +174,7 @@ open class XY4BluetoothDevice(
         val functionName = "ensureStayAwake"
         log.info(functionName, "started")
 
-        GlobalScope.launch {
+        ble.launch {
             var result = false
             log.info(functionName, "async")
             connection {
@@ -256,7 +255,6 @@ open class XY4BluetoothDevice(
             }
         }
 
-        @kotlin.ExperimentalUnsignedTypes
         internal fun pressFromScanResult(scanResult: XYScanResult): Boolean {
             val bytes = scanResult.scanRecord?.getManufacturerSpecificData(XYAppleBluetoothDevice.MANUFACTURER_ID)
             return if (bytes != null) {
@@ -269,7 +267,6 @@ open class XY4BluetoothDevice(
             }
         }
 
-        @kotlin.ExperimentalUnsignedTypes
         private fun minorFromScanResult(scanResult: XYScanResult): UShort? {
             val bytes = scanResult.scanRecord?.getManufacturerSpecificData(XYAppleBluetoothDevice.MANUFACTURER_ID)
             return if (bytes != null) {

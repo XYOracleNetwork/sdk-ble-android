@@ -11,8 +11,8 @@ import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResult
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResultErrorCode
 import network.xyo.ble.sample.databinding.FragmentTestBinding
 import java.lang.Exception
+import network.xyo.ble.generic.gatt.peripheral.ble
 
-@kotlin.ExperimentalUnsignedTypes
 class BeepTestFragment : XYAppBaseFragment<FragmentTestBinding>() {
 
     override fun inflate(inflater: LayoutInflater, container: ViewGroup?): FragmentTestBinding {
@@ -107,7 +107,7 @@ class BeepTestFragment : XYAppBaseFragment<FragmentTestBinding>() {
         super.onViewCreated(view, savedInstanceState)
         binding.startAsync.setOnClickListener {
             scanner.devices.forEach { (_, value) ->
-                GlobalScope.launch {
+                ble.launch {
                     when (value) {
                         is XY4BluetoothDevice -> {
                             doBeepXY4(value)
@@ -124,7 +124,7 @@ class BeepTestFragment : XYAppBaseFragment<FragmentTestBinding>() {
         }
 
         binding.startAsync.setOnClickListener {
-            GlobalScope.launch {
+            ble.launch {
                 scanner.devices.forEach { (_, value) ->
                     when (value) {
                         is XY4BluetoothDevice -> {

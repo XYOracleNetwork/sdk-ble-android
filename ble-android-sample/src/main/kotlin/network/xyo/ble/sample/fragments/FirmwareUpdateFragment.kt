@@ -13,7 +13,6 @@ import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import network.xyo.ble.devices.xy.XY4BluetoothDevice
@@ -27,8 +26,8 @@ import network.xyo.ble.sample.fragments.core.BackFragmentListener
 import java.io.BufferedInputStream
 import java.io.FileOutputStream
 import java.net.URL
+import network.xyo.ble.generic.gatt.peripheral.ble
 
-@kotlin.ExperimentalUnsignedTypes
 class FirmwareUpdateFragment(device: XYBluetoothDevice, deviceData : XYDeviceData) : XYDeviceFragment<FragmentFirmwareUpdateBinding>(device, deviceData), BackFragmentListener {
 
     private var firmwareFileName: String? = null
@@ -55,7 +54,7 @@ class FirmwareUpdateFragment(device: XYBluetoothDevice, deviceData : XYDeviceDat
     }
 
     private fun loadImageFromServer() {
-        GlobalScope.launch {
+        ble.launch {
             readFromServer()
             loadList()
         }
@@ -188,7 +187,7 @@ class FirmwareUpdateFragment(device: XYBluetoothDevice, deviceData : XYDeviceDat
     }
 
     private fun refreshAdapter() {
-        GlobalScope.launch {
+        ble.launch {
             //need to connect before refreshing
             val result = device.connect()
             // val result = device?.refreshGatt()?.await()
@@ -203,7 +202,7 @@ class FirmwareUpdateFragment(device: XYBluetoothDevice, deviceData : XYDeviceDat
     }
 
     private fun performUpdate() {
-        GlobalScope.launch {
+        ble.launch {
             if (firmwareFileName != null) {
                 updateInProgress = true
                 activity?.runOnUiThread {

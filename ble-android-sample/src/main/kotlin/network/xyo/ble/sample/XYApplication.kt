@@ -1,17 +1,16 @@
 package network.xyo.ble.sample
 
 import android.app.Application
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import network.xyo.base.XYBase
 import network.xyo.ble.devices.apple.XYAppleBluetoothDevice
 import network.xyo.ble.devices.apple.XYIBeaconBluetoothDevice
 import network.xyo.ble.devices.xy.XY4BluetoothDevice
 import network.xyo.ble.devices.xy.XYFinderBluetoothDevice
+import network.xyo.ble.generic.gatt.peripheral.ble
 import network.xyo.ble.generic.scanner.XYSmartScan
 import network.xyo.ble.generic.scanner.XYSmartScanModern
 
-@kotlin.ExperimentalUnsignedTypes
 class XYApplication : Application() {
     private var _scanner: XYSmartScan? = null
     val scanner: XYSmartScan
@@ -38,7 +37,7 @@ class XYApplication : Application() {
 
     override fun onTerminate() {
         log.info("onTerminate")
-        GlobalScope.launch {
+        ble.launch {
             scanner.stop()
         }
         super.onTerminate()

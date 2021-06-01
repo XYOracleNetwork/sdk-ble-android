@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import network.xyo.ble.devices.xy.XY2BluetoothDevice
 import network.xyo.ble.devices.xy.XY3BluetoothDevice
@@ -12,8 +11,8 @@ import network.xyo.ble.generic.devices.XYBluetoothDevice
 import network.xyo.ble.sample.XYDeviceData
 import network.xyo.ble.sample.databinding.FragmentExtendedConfigBinding
 import network.xyo.ble.services.xy.ExtendedConfigService
+import network.xyo.ble.generic.gatt.peripheral.ble
 
-@kotlin.ExperimentalUnsignedTypes
 class ExtendedConfigFragment(device: XYBluetoothDevice, deviceData : XYDeviceData) : XYDeviceFragment<FragmentExtendedConfigBinding>(device, deviceData) {
 
     override fun inflate(inflater: LayoutInflater, container: ViewGroup?): FragmentExtendedConfigBinding {
@@ -24,7 +23,7 @@ class ExtendedConfigFragment(device: XYBluetoothDevice, deviceData : XYDeviceDat
         super.onViewCreated(view, savedInstanceState)
 
         binding.buttonExtendedConfigRefresh.setOnClickListener {
-            GlobalScope.launch {
+            ble.launch {
                 readCharacteristics()
             }
         }

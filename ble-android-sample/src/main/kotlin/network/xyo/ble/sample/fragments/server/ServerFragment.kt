@@ -10,7 +10,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import network.xyo.ble.generic.bluetooth.BluetoothIntentReceiver
@@ -23,8 +22,9 @@ import network.xyo.ble.sample.fragments.XYAppBaseFragment
 import java.nio.ByteBuffer
 import java.nio.charset.Charset
 import java.util.UUID
+import network.xyo.ble.generic.gatt.peripheral.ble
 
-@kotlin.ExperimentalUnsignedTypes
+
 class ServerFragment : XYAppBaseFragment<FragmentPeripheralBinding>() {
     private var bleServer : XYBluetoothGattServer? = null
     private var bleAdvertiser : XYBluetoothAdvertiser? = null
@@ -63,29 +63,29 @@ class ServerFragment : XYAppBaseFragment<FragmentPeripheralBinding>() {
         binding.serverPagerContainer.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(binding.serverTabs))
         binding.serverPagerContainer.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(binding.serverTabs) as ViewPager.OnPageChangeListener)
         binding.serverTabs.addOnTabSelectedListener(TabLayout.ViewPagerOnTabSelectedListener(binding.serverPagerContainer))
-        bleAdvertiser = XYBluetoothAdvertiser(context!!.applicationContext)
+        bleAdvertiser = XYBluetoothAdvertiser(requireContext().applicationContext)
 
-        activity!!.registerReceiver(bluetoothIntentReceiver, BluetoothIntentReceiver.bluetoothDeviceIntentFilter)
+        requireActivity().registerReceiver(bluetoothIntentReceiver, BluetoothIntentReceiver.bluetoothDeviceIntentFilter)
 
-        GlobalScope.launch {
+        ble.launch {
             spinUpServer()
         }
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        activity!!.unregisterReceiver(bluetoothIntentReceiver)
+        requireActivity().unregisterReceiver(bluetoothIntentReceiver)
         bleServer?.stopServer()
     }
 
     private suspend fun createTestServer(): XYBluetoothResult<Int> {
-        val server = XYBluetoothGattServer(context!!.applicationContext)
+        val server = XYBluetoothGattServer(requireContext().applicationContext)
         server.startServer()
         bleServer = server
         return server.addService(simpleService)
     }
 
-    private suspend fun spinUpServer () = GlobalScope.async {
+    private suspend fun spinUpServer () = ble.async {
         simpleService.addCharacteristic(characteristicRead)
         simpleService.addCharacteristic(characteristicWrite)
         characteristicRead.addReadResponder("countResponder", countResponder)

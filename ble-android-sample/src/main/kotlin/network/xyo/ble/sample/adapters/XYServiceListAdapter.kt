@@ -7,9 +7,9 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import network.xyo.ble.sample.R
+import network.xyo.ble.generic.gatt.peripheral.ble
 
 @Suppress("unused")
 class XYServiceListAdapter(services : Array<BluetoothGattService>) : RecyclerView.Adapter<XYServiceListAdapter.ViewHolder>() {
@@ -43,14 +43,14 @@ class XYServiceListAdapter(services : Array<BluetoothGattService>) : RecyclerVie
 
     fun addItem(item: BluetoothGattService) {
         list.add(item)
-        GlobalScope.launch(Dispatchers.Main) {
+        ble.launch(Dispatchers.Main) {
             notifyDataSetChanged()
         }
     }
 
     fun clear() {
         list.clear()
-        GlobalScope.launch(Dispatchers.Main) {
+        ble.launch(Dispatchers.Main) {
             notifyDataSetChanged()
         }
     }

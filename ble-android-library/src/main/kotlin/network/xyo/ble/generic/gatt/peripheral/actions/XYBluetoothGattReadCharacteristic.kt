@@ -8,6 +8,7 @@ import network.xyo.ble.generic.gatt.peripheral.XYBluetoothGattCallback
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResult
 import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResultErrorCode
 import network.xyo.ble.generic.gatt.peripheral.ThreadSafeBluetoothGattWrapper
+import network.xyo.ble.generic.gatt.peripheral.ble
 
 class XYBluetoothGattReadCharacteristic(
     gatt: ThreadSafeBluetoothGattWrapper,
@@ -58,7 +59,7 @@ class XYBluetoothGattReadCharacteristic(
                 }
             }
             gattCallback.addListener(listenerName, listener)
-            GlobalScope.launch {
+            ble.launch {
                 if (gatt.readCharacteristic(characteristicToRead).hasError()) {
                     error = XYBluetoothResultErrorCode.ReadCharacteristicFailedToStart
                     gattCallback.removeListener(listenerName)

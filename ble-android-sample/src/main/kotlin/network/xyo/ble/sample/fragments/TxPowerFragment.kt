@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import network.xyo.ble.devices.xy.XY2BluetoothDevice
 import network.xyo.ble.devices.xy.XY3BluetoothDevice
@@ -15,9 +14,9 @@ import network.xyo.ble.generic.gatt.peripheral.XYBluetoothResult
 import network.xyo.ble.sample.R
 import network.xyo.ble.sample.XYDeviceData
 import network.xyo.ble.sample.databinding.FragmentTxPowerBinding
+import network.xyo.ble.generic.gatt.peripheral.ble
 
 
-@kotlin.ExperimentalUnsignedTypes
 class TxPowerFragment(device: XYBluetoothDevice, deviceData : XYDeviceData) : XYDeviceFragment<FragmentTxPowerBinding>(device, deviceData) {
 
     override fun inflate(inflater: LayoutInflater, container: ViewGroup?): FragmentTxPowerBinding {
@@ -75,7 +74,7 @@ class TxPowerFragment(device: XYBluetoothDevice, deviceData : XYDeviceData) : XY
     }
 
     private fun getXY4Values(device: XY4BluetoothDevice) {
-        GlobalScope.launch {
+        ble.launch {
             var hasConnectionError = true
 
             device.connection {
@@ -92,7 +91,7 @@ class TxPowerFragment(device: XYBluetoothDevice, deviceData : XYDeviceData) : XY
     }
 
     private fun getXY3Values(device: XY3BluetoothDevice) {
-        GlobalScope.launch {
+        ble.launch {
             var hasConnectionError = true
 
             device.connection {
@@ -109,7 +108,7 @@ class TxPowerFragment(device: XYBluetoothDevice, deviceData : XYDeviceData) : XY
     }
 
     private fun getXY2Values(device: XY2BluetoothDevice) {
-        GlobalScope.launch {
+        ble.launch {
             var hasConnectionError = true
 
             device.connection {
