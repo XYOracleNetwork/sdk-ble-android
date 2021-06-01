@@ -8,7 +8,7 @@ class UiCoroutineScope : CoroutineScope {
     private var parentJob = Job()
 
     override val coroutineContext: CoroutineContext
-        get() = Dispatchers.IO + parentJob
+        get() = Dispatchers.Main + parentJob
 
     fun onStart() {
         parentJob = Job()
