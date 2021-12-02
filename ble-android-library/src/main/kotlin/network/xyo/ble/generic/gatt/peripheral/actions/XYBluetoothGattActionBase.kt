@@ -1,6 +1,7 @@
 package network.xyo.ble.generic.gatt.peripheral.actions
 
 import kotlinx.coroutines.CancellableContinuation
+import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.launch
 import network.xyo.base.XYBase
 import network.xyo.ble.generic.gatt.peripheral.ble

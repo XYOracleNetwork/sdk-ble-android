@@ -1,6 +1,7 @@
 package network.xyo.ble.generic.scanner
 
 import android.bluetooth.BluetoothAdapter
+import android.bluetooth.BluetoothManager
 import android.bluetooth.le.ScanCallback
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -71,7 +72,7 @@ abstract class XYSmartScan(context: Context) : XYBluetoothBase(context) {
                 if (intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, -1) == BluetoothAdapter.STATE_OFF) {
                     log.info(">>>> Bluetooth Adapter Disabled <<<<")
                     if (restartingBluetooth && started()) {
-                        BluetoothAdapter.getDefaultAdapter().enable()
+                        bluetoothManager?.adapter?.enable()
                         restartingBluetooth = false
                     }
                 } else {
@@ -201,7 +202,7 @@ abstract class XYSmartScan(context: Context) : XYBluetoothBase(context) {
         log.info(">>>>> restartBluetooth: Restarting Bluetooth Adapter <<<<<")
 
         restartingBluetooth = true
-        BluetoothAdapter.getDefaultAdapter().disable()
+        bluetoothManager?.adapter?.disable()
     }
 
     fun addListener(key: String, listener: XYSmartScanListener) {
