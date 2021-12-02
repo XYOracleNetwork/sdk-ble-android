@@ -8,8 +8,8 @@ buildscript {
 
     ext {
         experimentalsEnabled = [
-                "-Xuse-experimental=kotlinx.coroutines.InternalCoroutinesApi",
-                "-Xuse-experimental=kotlinx.coroutines.ExperimentalCoroutinesApi"
+                "-Xopt-in=kotlinx.coroutines.InternalCoroutinesApi",
+                "-Xopt-in=kotlinx.coroutines.ExperimentalCoroutinesApi"
         ]
     }
 
@@ -31,7 +31,7 @@ task printVersion {
 }
 
 android {
-    compileSdkVersion 30
+    compileSdkVersion 31
     buildToolsVersion '30.0.3'
 
     compileOptions {
@@ -48,11 +48,8 @@ android {
 
     defaultConfig {
         minSdkVersion 21
-        targetSdkVersion 30
-        defaultPublishConfig 'release'
+        targetSdkVersion 31
     }
-
-    defaultPublishConfig "release"
 
     lintOptions {
         htmlReport false
@@ -66,10 +63,6 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
-    }
-
-    dexOptions {
-        javaMaxHeapSize "4G"
     }
 
     packagingOptions {
@@ -107,8 +100,8 @@ publishing {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.github.XYOracleNetwork:sdk-base-android:4.2.16'
-    implementation 'org.jetbrains:annotations:17.0.0'
-    implementation 'org.bouncycastle:bcpkix-jdk15on:1.64'
+    implementation 'org.jetbrains:annotations:23.0.0'
+    implementation 'org.bouncycastle:bcpkix-jdk15to18:1.70'
     implementation "org.jetbrains.kotlin:kotlin-stdlib:1.6.0"
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.0'
 
