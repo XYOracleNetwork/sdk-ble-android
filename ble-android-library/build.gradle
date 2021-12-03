@@ -71,6 +71,7 @@ android {
         exclude 'META-INF/build.kotlin_module'
         exclude 'META-INF/atomicfu.kotlin_module'
         exclude 'META-INF/library_release.kotlin_module'
+        exclude 'META-INF/sdk-base-android'
     }
 }
 
